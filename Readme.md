@@ -1,6 +1,6 @@
 # Project README
 
-The project aims to create a web application with a backend using NestJs and a frontend using VueJs. The application will use PostgreSQL as its database and will be launched with Docker. The goal is to build a single-page application that is compatible with Chrome and at least one other browser.
+The project aims to create a mutliplayer pong game as a web application with a backend using NestJs and a frontend using VueJs. The application will use PostgreSQL as its database and will be launched with Docker. The goal is to build a single-page application that is compatible with Chrome and at least one other browser.
 
 ## General Requirements
 
