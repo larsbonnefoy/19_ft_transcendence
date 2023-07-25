@@ -1,15 +1,15 @@
 # Project README
 
-The project aims to create a web application with a backend using NestJs and a frontend using a TypeScript framework, likely React. The application will use PostgreSQL as its database and will be launched with Docker. The goal is to build a single-page application that is compatible with at least one browser, preferably Chrome, and allows users to navigate using the back and forward buttons in the browser.
+The project aims to create a mutliplayer pong game as a web application with a backend using NestJs and a frontend using VueJs. The application will use PostgreSQL as its database and will be launched with Docker. The goal is to build a single-page application that is compatible with Chrome and at least one other browser.
 
 ## General Requirements
 
 - Backend: NestJs
-- Frontend: TypeScript framework (React)
+- Frontend: TypeScript framework (VueJs)
 - Library: Use the latest stable one available
 - Database: PostgreSQL
 - Application Type: Single-page application
-- Browser Compatibility: Compatible with at least one browser, preferably Chrome
+- Browser Compatibility: Compatible with Chrome and at least one other browser.
 - Launch: The entire application should be launched using Docker
 
 ## Security Requirements
@@ -46,4 +46,4 @@ The project aims to create a web application with a backend using NestJs and a f
 - Customization: Users can customize the game with different maps and power-ups, with an option to play a vanilla version
 - Responsive Gameplay: Implement measures to handle network issues and ensure a smooth gaming experience
 
-Please note that this is just an overview of the project requirements and features. Detailed implementation and technical specifications would be provided in individual documentation files for each component (backend, frontend, chat, game, etc.). Good luck with your project! If you have any questions or need further assistance, feel free to ask.
+Please note that this is just an overview of the project requirements and features. Detailed implementation and technical specifications would be provided in individual documentation files for each component (backend, frontend, chat, game, etc.).
