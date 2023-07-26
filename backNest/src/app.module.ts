@@ -7,7 +7,7 @@ import { join } from 'path'; // New
 @Module({
   imports: [
     ServeStaticModule.forRoot({ // New
-      rootPath: '/Users/yhuberla/Documents/cursus/19_transendence/frontVue',//join(__dirname, '/../', 'frontVue'), // New
+      rootPath: '/Users/yhuberla/Documents/cursus/transcendence/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     }), // New
   ],
   controllers: [AppController],
