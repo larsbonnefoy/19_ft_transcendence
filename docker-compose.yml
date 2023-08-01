@@ -15,39 +15,46 @@ services:
       - .env
     ports:
       - 3000:3000 # was 9229:9229
-    depends_on:
+    # depends_on:
       # - redis
-      - postgres
+      # - postgres
     networks:
       - nesjs-network
     volumes:
-      - ./backNest:backNest #./app:/usr/src/app
-      - backNest #/usr/src/app/node_modules
+    - type: bind
+      source: ./frontVue
+      target: /usr/src/app/frontVue/
+    #   #- ./backNest:backNest 
+    #   #- backNest
+    #   - ./app:/usr/src/app
+    #   - /usr/src/app/node_modules
     restart: always
 
-  postgres:
-    container_name: postgres
-    image: postgres:latest
-    networks:
-      - nesjs-network
-    environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_DB: "${POSTGRES_DB_PREFIX}_${POSTGRES_DB_NAME}"
-      PG_DATA: backNest/postgresql/data
-    ports:
-      - ${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}
-    volumes:
-      - pgdata:postgresql/data
-    restart: always
+  # postgres:
+  #   container_name: postgres
+  #   image: postgres:latest
+  #   networks:
+  #     - nesjs-network
+  #   environment:
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_DB: "${POSTGRES_DB_PREFIX}_${POSTGRES_DB_NAME}"
+  #     PG_DATA: /var/lib/postgresql/data
+  #   ports:
+  #     - ${POSTGRES_DB_PORT}:${POSTGRES_DB_PORT}
+  #   volumes:
+  #     - pgdata:/usr/src/app/node_modules #postgresql/data
+  #   restart: always
   
 volumes:
   pgdata:
-    driver: local
-    driver_opts:
-      type: none
-      device: backNest
-      o: bind
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     device: backNest
+  #     o: bind
+
+
 
 networks:
   nesjs-network:
