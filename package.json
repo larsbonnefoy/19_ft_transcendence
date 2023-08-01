@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "vue-tsc": "^1.8.6"
+  },
+  "dependencies": {
+    "nestjs": "^0.0.1"
   }
 }
