@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "NodeNext",
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "strict": true
   },
   "files": [],
   "references": [
@@ -10,9 +11,6 @@
     },
     {
       "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.vitest.json"
     }
   ]
 }

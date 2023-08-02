@@ -1,0 +1,29 @@
+[
+    {                    
+        "link": {"text": "Login"},
+        "title": "Log Page",
+        "content": "This is the Log page",
+        "published": false
+
+    },
+    {                    
+        "link": {"text": "Chat"},
+        "title": "Chat Page",
+        "content": "This is the Chat page",
+        "published": true
+
+    },
+    {                    
+        "link": {"text": "Game"},
+        "title": "Game Page",
+        "content": "This is the Game page",
+        "published": true
+
+    },
+    {                    
+        "link": {"text": "Profile"},
+        "title": "Profile Page",
+        "content": "This is the Profile page",
+        "published": true
+    }     
+]

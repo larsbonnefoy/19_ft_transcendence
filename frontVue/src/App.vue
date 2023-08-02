@@ -1,85 +1,53 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <!-- Should hide header bar when loggin in -->
+    <header-bar
+        :pages="pages"
+        :active-page="activePage"
+        :nav-link-click="(index: number) => activePage = index"> 
+    </header-bar>
 
-    <div class="wrapper">
-      <HelloWorld msg="  DID it!" />
+    <!-- 
+    <page-content
+        v-if="pages.length > 1"
+        :page="pages[activePage]">
+    </page-content> -->
+    <createPage
+        :page-created="pageCreated">
+    </createPage>
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+<script lang="ts">
+import headerBar from './components/HeaderBar.vue';
+import pageContent from './components/PageContent.vue';
+import createPage from './components/CreatePage.vue';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+export default {
+    components : {
+        headerBar,
+        pageContent,
+        createPage
+    },
+    created() {
+        this.getPages();
+    }, 
+    data() {
+        return {
+            activePage: 0,
+            pages: [] as Object[]
+        };
+    },
+    methods: {
+        async getPages() {
+            let res= await fetch('pages.json');
+            let data : any = [];
+            data= await res.json();
+            
+            this.pages = data;
+        },
+        pageCreated(pageObj: Object) {
+            this.pages.push(pageObj);
+        }
+    }
+};
+</script>
