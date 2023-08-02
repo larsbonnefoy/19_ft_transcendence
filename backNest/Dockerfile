@@ -46,21 +46,13 @@ COPY package*.json ./
 
 RUN npm install
 
-RUN npm install glob rimraf vue 
+RUN npm install glob rimraf 
 
 COPY . .
 
 RUN npm run build
 
 EXPOSE 3000
-
-WORKDIR /usr/src/app/frontVue/
-
-RUN npm install
-
-RUN npm run build
-
-WORKDIR /usr/src/app
 
 FROM node:fermium-alpine as prod
 RUN apk --update add postgresql-client

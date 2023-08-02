@@ -11,23 +11,44 @@ services:
       dockerfile: Dockerfile
     entrypoint: ["./wait-for-postgres.sh", "npm", "run", "start:dev"]
     # entrypoint: ["npm", "run", "start:dev"]
+    ports:
+      - 3000:3000
     env_file:
       - .env
-    ports:
-      - 3000:3000 # was 9229:9229
-    # depends_on:
+    depends_on:
+      - vue
       # - redis
       # - postgres
     networks:
       - nesjs-network
-    volumes:
-    - type: bind
-      source: ./frontVue
-      target: /usr/src/app/frontVue/
-    #   #- ./backNest:backNest 
-    #   #- backNest
-    #   - ./app:/usr/src/app
-    #   - /usr/src/app/node_modules
+    # volumes:
+    # - type: bind
+    #   source: ./frontVue
+    #   target: /usr/src/app/frontVue/
+    restart: always
+  
+  vue:
+    container_name: "vue_dev"
+    image: "vue_dev"
+    environment:
+      - NODE_ENV:dev
+    build:
+      context: ./frontVue
+      target: "dev"
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
+    # depends_on:
+    #   - api
+      # - postgres
+    networks:
+      - nesjs-network
+    # volumes:
+    # - type: bind
+    #   source: ./frontVue
+    #   target: /usr/src/app/
     restart: always
 
   # postgres:
