@@ -6,7 +6,8 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getHello(): object {
+    console.log("in default controller");
+    return this.appService.getJSON();
   }
 }
