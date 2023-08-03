@@ -1,85 +1,78 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { ref, computed, watch } from 'vue'
+let id = 0;
+const hideCompleted = ref(false)
+const newToDo = ref('');
+
+
+const toDos = ref( [
+  {id: id++, text:'todo1', done: false},
+  {id: id++, text:'todo2', done: false},
+  {id: id++, text:'todo3', done: false},
+  ]
+)
+
+function addToDo () {
+  let newId:number = toDos.value.length;
+  toDos.value.push({id: newId, text: newToDo.value, done:false});
+  newToDo.value = '';
+}
+
+function removeToDo (todo: Object) {
+  toDos.value = toDos.value.filter((t) => t !== todo);
+}
+
+const filteredToDos = computed(() => {
+  return hideCompleted.value 
+  ? toDos.value.filter((t) => !t.done)
+  : toDos.value
+})
+
+/* API */
+const todoId = ref(1)
+const todoData = ref(null)
+
+async function fetchData() {
+  todoData.value = null
+  const res = await fetch(
+    `http://localhost:3000/`, {
+       
+      }
+    // `https://jsonplaceholder.typicode.com/todos/${todoId.value}`
+  )
+  todoData.value = await res.json()
+}
+fetchData()
+
+watch(todoId, fetchData)
+/* --- */
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+  <form @submit.prevent="addToDo">
+  <input v-model="newToDo">
+  <button > Add To Do </button>
+  </form>
+  <ul>
+    <li v-for="todo in filteredToDos" :key="todo.id">
+      <input type="checkbox" v-model="todo.done">
+      <span :class="{done : todo.done}"> {{ todo.text }} </span>
+      <button @click="removeToDo(todo)">X</button>
+    </li>
+  </ul>
+  <button @click="hideCompleted = !hideCompleted">
+  {{ hideCompleted ? 'Show' : 'Hide' }}
+  </button>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <p>Todo id: {{ todoId }}</p>
+  <button @click="todoId++">Fetch next todo</button>
+  <p v-if="!todoData">Loading...</p>
+  <pre v-else>{{ todoData }}</pre>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+<style>
+.done {
+  text-decoration: line-through;
 }
 </style>
