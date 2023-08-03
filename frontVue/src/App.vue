@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 let id = 0;
 const hideCompleted = ref(false)
 const newToDo = ref('');
+
 
 const toDos = ref( [
   {id: id++, text:'todo1', done: false},
@@ -26,6 +27,23 @@ const filteredToDos = computed(() => {
   ? toDos.value.filter((t) => !t.done)
   : toDos.value
 })
+
+/* API */
+const todoId = ref(1)
+const todoData = ref(null)
+
+async function fetchData() {
+  todoData.value = null
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/todos/${todoId.value}`
+  )
+  todoData.value = await res.json()
+}
+fetchData()
+
+watch(todoId, fetchData)
+/* --- */
+
 </script>
 
 <template>
@@ -43,6 +61,11 @@ const filteredToDos = computed(() => {
   <button @click="hideCompleted = !hideCompleted">
   {{ hideCompleted ? 'Show' : 'Hide' }}
   </button>
+
+  <p>Todo id: {{ todoId }}</p>
+  <button @click="todoId++">Fetch next todo</button>
+  <p v-if="!todoData">Loading...</p>
+  <pre v-else>{{ todoData }}</pre>
 </template>
 
 <style>
