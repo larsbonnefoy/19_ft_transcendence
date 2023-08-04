@@ -1,6 +1,8 @@
 *.swp
 frontVueOld
 
+#Hide the environement from git
+*.env
 # OS
 .DS_Store
 

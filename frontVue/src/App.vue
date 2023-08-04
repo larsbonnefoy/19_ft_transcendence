@@ -35,9 +35,11 @@ const todoData = ref(null)
 async function fetchData() {
   todoData.value = null
   const res = await fetch(
-    `http://localhost:3000/`, {
-       
-      }
+    `http://localhost:3000/${toDos.value[toDos.value.length - 1].text}?id=${todoId.value}`, {
+    // `http://localhost:3000/bonjour`, {
+      // method: "POST",
+      // body: "this is the body"
+    }
     // `https://jsonplaceholder.typicode.com/todos/${todoId.value}`
   )
   todoData.value = await res.json()
