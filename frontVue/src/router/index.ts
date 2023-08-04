@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import Landing from '@/views/Landing.vue';
 import Login from '@/views/Login.vue';
 import CreateAccount from '@/views/CreateAccount.vue';
 import Home from '@/views/Home.vue';
@@ -13,8 +12,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'landing',
-      component: Landing,
+      name: 'login',
+      component: Login
     },
     {
       path: '/createAccount',
@@ -26,11 +25,7 @@ const router = createRouter({
       name: 'home',
       component: Home
     },
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
+
     {
       path: '/game',
       name: 'game',
