@@ -63,8 +63,8 @@ services:
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
     restart: always
 volumes:
   pgdata:
