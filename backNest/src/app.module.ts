@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
+import { UserController } from './user.controller';
 import { UserModule } from './user.module';
 import { UserService } from './user.service';
 import { DataSource } from 'typeorm';
@@ -30,7 +31,7 @@ import { DataSource } from 'typeorm';
     // }), // New
   ],
   controllers: [AppController],
-  providers: [AppService, UserService],
+  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
