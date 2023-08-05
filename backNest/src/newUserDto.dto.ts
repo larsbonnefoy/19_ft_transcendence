@@ -1,11 +1,15 @@
 // import { Transform } from 'class-transformer';
 // import { IsBoolean, IsDate, IsNumber, IsNumberString, IsOptional } from 'class-validator';
 // import { toBoolean, toLowerCase, toNumber, trim, toDate } from './common/helper/cast.helper';
+import { IsNotEmpty, IsAlpha, IsStrongPassword } from "class-validator";
 
 export class newUserDto {
-
+  @IsNotEmpty()
+  @IsAlpha()
   public name: string;
-
+  
+  @IsNotEmpty()
+  @IsStrongPassword()
   public password: string;
 //   @Transform(({ value }) => toNumber(value, { default: 1, min: 1 }))
 //   @IsNumber()
