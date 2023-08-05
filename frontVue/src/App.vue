@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-
-const router = useRouter();
-const route = useRoute();
+//import { ref, computed, watch } from 'vue'
+//import { useRouter, useRoute } from 'vue-router'
+import HeaderBar from './components/HeaderBar.vue'
 
 /* API
 const todoId = ref(1)
@@ -24,7 +22,9 @@ watch(todoId, fetchData)
 </script>
 
 <template>
-  <RouterView></RouterView>
+    <HeaderBar></HeaderBar>
+
+    <RouterView></RouterView>
 
 
 <!-- 

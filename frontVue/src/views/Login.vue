@@ -2,7 +2,6 @@
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter();
-const route = useRoute();
 
 const navigateToHome = () => {
       router.push('/home');
@@ -15,6 +14,7 @@ const navigateToHome = () => {
 </script>
 
 <template>
+<div class="fullscreen-background">
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
@@ -34,7 +34,7 @@ const navigateToHome = () => {
               </div>
               <br>
               <div class="d-flex justify-content-between">
-              <button @click="navigateToHome" type="submit" class="btn btn-outline-primary">Login</button>
+              <button @click="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
               <button @click="navigateToRegister" type="submit" class="btn btn-outline-secondary">Don't have an account?</button>
               </div>
             </form>
@@ -43,8 +43,22 @@ const navigateToHome = () => {
       </div>
     </div>
   </div>
+  </div>
 </template>
 
-<style>
+<style scoped >
+.fullscreen-background {
+    
+    /* Set background image and styles */
+    background-image: url('backgroundv2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 
+    position: fixed;
+    /* Reset margin and padding */
+
+    /* Set full viewport height */
+    width: 100%;
+    height: 100%;
+}
 </style>
