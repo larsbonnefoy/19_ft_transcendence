@@ -5,11 +5,12 @@ import { AppService } from './app.service';
 // import { join } from 'path'; // New
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { UserController } from './user.controller';
-import { UserModule } from './user.module';
-import { UserService } from './user.service';
+import { User } from './user/user.entity';
+import { UserModule } from './user/user.module';
 import { DataSource } from 'typeorm';
+
+import { Match } from './match/match.entity';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [
@@ -20,12 +21,13 @@ import { DataSource } from 'typeorm';
       username: 'user',
       password: 'secret',
       database: 'db_nestjs',
-      entities: [User],
+      entities: [User, Match],
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User]),
-    UserModule
+    TypeOrmModule.forFeature([User, Match]),
+    UserModule,
+	MatchModule,
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
