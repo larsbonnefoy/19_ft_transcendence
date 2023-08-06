@@ -5,6 +5,7 @@ import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res }
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './newUserDto.dto';
+import { check } from 'prettier';
 
 @Controller("user")
 export class UserController {
@@ -27,11 +28,30 @@ export class UserController {
   @Get('add')
   async addUser(@Res() res: any, @Query() query: newUserDto) {
 	console.log("got from query: %s as name and %s as password", query.name, query.password);
+	const check_base = await this.userService.findName(query.name);
+	if (check_base != null) {
+		res.json({"user":"already exists"});
+		return ;
+	}
     const nUser: User = new User;
     nUser.name = query.name;
     nUser.password = query.password;
     await this.userService.createUser(nUser);
     res.json({"user":"created"});
+  }
+
+  @Get("connect")
+  async connect(@Res() res: any, @Query() query: newUserDto) {
+	  console.log("trying connection: %s as name and %s as password", query.name, query.password);
+	  const user = await this.userService.findName(query.name);
+	  if (user == null) {
+		  res.json({"error":"user doesn't exists"});
+		  return ;
+	  } else if (user.password != query.password) {
+		  res.json({"error":"bad password"});
+		  return ;
+	  }
+	  res.json({"connection":"successful"});
   }
 
   @Get('del')
