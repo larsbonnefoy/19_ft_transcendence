@@ -1,4 +1,4 @@
-version: '3.3' #'3.8'
+version: '3.8'
 services:
   api: # nest js
     container_name: "api_dev"
@@ -7,7 +7,7 @@ services:
       - NODE_ENV:dev
     build:
       context: ./backNest
-      # target: "dev"
+      target: "dev"
       dockerfile: Dockerfile
     entrypoint: ["./wait-for-postgres.sh", "npm", "run", "start:dev"]
     # entrypoint: ["npm", "run", "start:dev"]
@@ -34,7 +34,7 @@ services:
       - NODE_ENV:dev
     build:
       context: ./frontVue
-      # target: "dev"
+      target: "dev"
       dockerfile: Dockerfile
     env_file:
       - .env
