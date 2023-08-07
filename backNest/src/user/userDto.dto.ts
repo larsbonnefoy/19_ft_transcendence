@@ -9,24 +9,28 @@ export class newUserDto {
   public name: string;
   
   @IsNotEmpty()
+  @IsAlpha()
+  public username: string;
+  
+  @IsNotEmpty()
   @IsStrongPassword()
   public password: string;
-//   @Transform(({ value }) => toNumber(value, { default: 1, min: 1 }))
-//   @IsNumber()
-//   @IsOptional()
-//   public page: number = 1;
-
-//   @Transform(({ value }) => toBoolean(value))
-//   @IsBoolean()
-//   @IsOptional()
-//   public foo: boolean = false;
-
-//   @Transform(({ value }) => trim(value))
-//   @IsOptional()
-//   public bar: string;
-
-//   @Transform(({ value }) => toLowerCase(value))
-//   @IsOptional()
+  //   @Transform(({ value }) => toNumber(value, { default: 1, min: 1 }))
+  //   @IsNumber()
+  //   @IsOptional()
+  //   public page: number = 1;
+  
+  //   @Transform(({ value }) => toBoolean(value))
+  //   @IsBoolean()
+  //   @IsOptional()
+  //   public foo: boolean = false;
+  
+  //   @Transform(({ value }) => trim(value))
+  //   @IsOptional()
+  //   public bar: string;
+  
+  //   @Transform(({ value }) => toLowerCase(value))
+  //   @IsOptional()
 //   public elon: string;
 
 //   @IsNumberString()
@@ -37,4 +41,13 @@ export class newUserDto {
 //   @IsDate()
 //   @IsOptional()
 //   public date: Date;
+}
+
+export class connectUserDto {
+	@IsNotEmpty()
+	@IsAlpha()
+	public username: string;
+	
+	@IsNotEmpty()
+	public password: string;
 }
