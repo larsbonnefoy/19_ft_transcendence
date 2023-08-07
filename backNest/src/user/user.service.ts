@@ -14,19 +14,28 @@ export class UserService {
     return await this.userRepository.save(User);
   }
 
+  async change_username(loggin42: string, username: string) {
+    await this.userRepository.update(loggin42, {username:username});
+  }
+
+  async addWin(loggin42: string, win: number) {
+    ++win;
+    await this.userRepository.update(loggin42, {win:win});
+  }
+
   findAll(): Promise<User[]> {
     return this.userRepository.find();
   }
 
-  findOne(loggin42: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ loggin42 });
+  findOne(str: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ loggin42:str });
   }
 
-  findUserName(username: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ username });
+  findUsername(str: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ username:str });
   }
 
-  async remove(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  async remove(loggin42: string): Promise<void> {
+    await this.userRepository.delete(loggin42);
   }
 }

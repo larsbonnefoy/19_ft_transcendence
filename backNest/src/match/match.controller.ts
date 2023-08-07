@@ -14,19 +14,19 @@ import { newMatchDto } from './newMatchDto.dto';
 export class MatchController {
   constructor(private readonly userService: UserService, private readonly matchService: MatchService) {}
   
-  @Get('history:name')
+  @Get('history:username')
   async history(@Res() res: any, @Param() params: any) {
-	const name: string = params.name.slice(1)
-    console.log("got request for Match history of player %s", name);
+	const username: string = params.name.slice(1);
+    console.log("got request for Match history of player %s", username);
     const messages = await this.matchService.findAll();
 	let response : Array<Match> = new Array(0);
 	for (let match of messages) {
-		if (match.player1 == name || match.player2 == name) {
+		if (match.player1 == username || match.player2 == username) {
 			response.push(match);
 		}
 	}
 	if (response.length == 0)
-		res.json({"No match history for player":name});
+		res.json({"No match history for player":username});
 	else
 		res.json(response);
   }
@@ -53,6 +53,11 @@ export class MatchController {
   @Get('del')
   async delMatch(@Res() res: any, @Query('id', ParseIntPipe) id: number) {
 	console.log("match/del request with id %d", id);
+  const check_base = await this.matchService.findOne(id);
+	if (check_base == null) {
+		res.json({"Match":"doesn't exist"});
+		return ;
+	}
     this.matchService.remove(id);
     res.json({"Match":"deleted"});
   }
