@@ -2,7 +2,7 @@
 import axios from "axios"
 import { onMounted, ref } from "vue";
 
-const users = ref([]);
+const users:any = ref([]);
 
 onMounted(async () => {
     try {
@@ -24,15 +24,23 @@ onMounted(async () => {
       <th scope="col">loggin42</th>
       <th scope="col">username</th>
       <th scope="col">status</th>
-      <th scope="col">elo</th>
+      <th scope="col">elo</th>      
+      <th scope="col">friends</th>
+      <th scope="col">Win(s)</th>
+      <th scope="col">Loss(es)</th>
+      <th scope="col">Avatar</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="(user, index) in users">
         <th scope="row">{{ user.loggin42  }}</th>
         <td> {{ user.username }}</td>
-        <td> {{ user.status }}</td>
         <td> {{ user.elo  }}</td>
+        <td> {{ user.status }}</td>
+        <td> {{ user.friends }}</td>
+        <td> {{ user.win }}</td>
+        <td> {{ user.loss }}</td>
+        <td> {{ user.photo }}</td>
     </tr>
   </tbody>
 </table>

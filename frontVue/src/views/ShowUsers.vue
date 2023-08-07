@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import UserList from '@/components/UserList.vue'
-import axios from "axios"
 
 const data = ref([]);
 </script>
