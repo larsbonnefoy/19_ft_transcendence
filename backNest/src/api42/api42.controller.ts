@@ -9,12 +9,12 @@ import { Observable } from 'rxjs';
 export class Api42Controller {
 	constructor(private api42Service: Api42Service){}
 
-	@Get()
+	@Get('getToken')
 	async findAll(@Query('code') query: string) 
 	{
 		console.log("ayo");
 
-		const apiJSON : string = await this.api42Service.findAll(query);
+		const apiJSON : string = await this.api42Service.getToken(query);
 
 		return apiJSON;
 	}

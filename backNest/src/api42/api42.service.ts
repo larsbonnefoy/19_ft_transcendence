@@ -12,7 +12,7 @@ export class Api42Service
 {
 	constructor(private readonly httpService: HttpService) {}
 
-async findAll(query : string) : Promise<string>
+async getToken(query : string) : Promise<string>
 	{
 		// https://api.intra.42.fr//oauth/token
 		// client_credentials
