@@ -16,7 +16,8 @@ import { MatchModule } from './match/match.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
+      host: 'localhost', // if running with docker, comment this and use line below
+      // host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
       port: 5432,
       username: 'user',
       password: 'secret',
