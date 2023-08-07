@@ -31,7 +31,7 @@ export enum UserStatus {
 export class User {
 //   @PrimaryGeneratedColumn()
   @PrimaryColumn({ type: "text" })
-  name: string;
+  loggin42: string;
 
   @Column({ type: "text", unique: true })
   username: string;
@@ -41,6 +41,9 @@ export class User {
 
   @Column({ type: "enum", enum: UserStatus, default: UserStatus.ONLINE })
   status: UserStatus;
+
+  @Column({type: 'numeric', default: 1000})
+  elo: number;
 
 //   @OneToMany(type => Photo, photo => photo.user)
 //   photos: Photo[];

@@ -18,8 +18,8 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  findOne(name: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ name });
+  findOne(loggin42: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ loggin42 });
   }
 
   findUserName(username: string): Promise<User | null> {

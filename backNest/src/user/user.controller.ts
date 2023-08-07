@@ -35,8 +35,8 @@ export class UserController {
 		return ;
 	}
     const nUser: User = new User;
-    nUser.name = query.name;
-	nUser.username = query.username;
+    nUser.loggin42 = query.name;
+	  nUser.username = query.username;
     nUser.password = query.password;
     await this.userService.createUser(nUser);
     res.json({"user":"created"});

@@ -11,15 +11,15 @@ export const useUserStore = defineStore('user', {
             return state.user 
         }, 
         getUserName(state) {
-            return this.user?.name
+            return this.user?.loggin42
         },
     },
     actions: {
         async fetchUsers() {
           try {
-                const data = await axios.get('../public/User.json');
+                const data = await axios.get('http://localhost:3000/user/one:japerin');
+                console.log(data.data.loggin42);
                 this.user = data.data;
-                //console.log(this.user?.name);
             }
             catch (error) {
               alert(error);
@@ -30,8 +30,9 @@ export const useUserStore = defineStore('user', {
   })
 
   interface UserInfo {
-    name: string
+    loggin42: string
+    username: string
+    password:string
+    status: string
     elo: number
-    status: boolean
-    logged: boolean
   }
