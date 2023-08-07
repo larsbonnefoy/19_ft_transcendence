@@ -31,10 +31,24 @@ export class UserController {
     }
     let wins:number = current_user.win;
     ++wins;
-    await this.userService.addWin(current_user.loggin42, current_user.win);
-    res.json({"success":`${current_user.loggin42} now has ${wins} wins`});
+    await this.userService.addWin(current_user.loggin42, wins);
+    res.json({"success":`${username} now has ${wins} wins`});
   }
   
+  @Get('addLoss:username')
+  async addLoss(@Res() res: any, @Param() params: any) {
+    const username: string = params.username.slice(1);
+    console.log("increment loss field for user with username %s", username);
+    const current_user = await this.userService.findUsername(username);
+    if (current_user == null) {
+      res.json({"error":`no user with ${username} as username`});
+      return ;
+    }
+    let loss:number = current_user.loss;
+    ++loss;
+    await this.userService.addLoss(current_user.loggin42, loss);
+    res.json({"success":`${username} now has ${loss} loss`});
+  }
 
   @Get('change_username')
   async changeUsername(@Res() res: any, @Query() query: changeUsernameDto) {

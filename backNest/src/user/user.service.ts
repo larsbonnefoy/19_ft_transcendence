@@ -19,8 +19,11 @@ export class UserService {
   }
 
   async addWin(loggin42: string, win: number) {
-    ++win;
     await this.userRepository.update(loggin42, {win:win});
+  }
+
+  async addLoss(loggin42: string, loss: number) {
+    await this.userRepository.update(loggin42, {loss:loss});
   }
 
   findAll(): Promise<User[]> {
