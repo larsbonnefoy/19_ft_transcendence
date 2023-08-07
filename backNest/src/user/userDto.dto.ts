@@ -1,20 +1,19 @@
 // import { Transform } from 'class-transformer';
 // import { IsBoolean, IsDate, IsNumber, IsNumberString, IsOptional } from 'class-validator';
 // import { toBoolean, toLowerCase, toNumber, trim, toDate } from './common/helper/cast.helper';
-import { IsNotEmpty, IsAlpha, IsStrongPassword } from "class-validator";
+import { IsNotEmpty, IsAlpha, IsAlphanumeric, IsStrongPassword } from "class-validator";
 
 export class newUserDto {
   @IsNotEmpty()
   @IsAlpha()
-  public name: string;
+  public loggin42: string;
   
   @IsNotEmpty()
-  @IsAlpha()
+  @IsAlphanumeric()
   public username: string;
   
-  @IsNotEmpty()
-  @IsStrongPassword()
-  public password: string;
+
+
   //   @Transform(({ value }) => toNumber(value, { default: 1, min: 1 }))
   //   @IsNumber()
   //   @IsOptional()
@@ -43,11 +42,12 @@ export class newUserDto {
 //   public date: Date;
 }
 
-export class connectUserDto {
-	@IsNotEmpty()
-	@IsAlpha()
-	public username: string;
-	
-	@IsNotEmpty()
-	public password: string;
+export class changeUsernameDto {
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  public old: string;
+  
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  public new: string;
 }
