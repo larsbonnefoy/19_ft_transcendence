@@ -3,6 +3,7 @@ frontVueOld
 
 #Hide the environement from git
 *.env
+.env
 # OS
 .DS_Store
 

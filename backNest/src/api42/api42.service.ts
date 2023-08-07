@@ -14,12 +14,7 @@ export class Api42Service
 
 async getToken(query : string) : Promise<string>
 	{
-		// https://api.intra.42.fr//oauth/token
-		// client_credentials
-		// const req : Response = await fetch('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2f106f36bdac3ac02f5555c178177423c9af72f59dc797d1fd439cdec8ca9985&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi42&response_type=code');
-		// const tmp : string = req.url;
-		// return (tmp);
-		// console.log(tmp);
+		console.log("query : ");
 		console.log(query);
 		const response : string = await this.httpService.axiosRef.post('https://api.intra.42.fr/oauth/token', {
 				// grant_type: 'client_credentials',
@@ -27,7 +22,7 @@ async getToken(query : string) : Promise<string>
 				client_id: process.env.API_UID,
 				client_secret: process.env.API_SECRET,
 				code: query,
-				redirect_uri: 'http://localhost:3000/api42'
+				redirect_uri: 'http://localhost:3000/api42/getToken'
   			}, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
@@ -36,16 +31,17 @@ async getToken(query : string) : Promise<string>
 		// console.log(response.data)
 		return (response.data);
 	}).catch(function(error){
-		console.log(error)
-		return(error)
+		// console.log(error.data)
+		// error.status = 401;
+		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER
 	});
 	// const res : JSON = await response
-	const res : string = response;
-	console.log(res);
+	// const res : string = response;
+	console.log(response);
 	// console.log(res["access_token"]);
 	// const access_token : string = res["access_token"];
-
-	return (res);
+	console.log("getToken : ended");
+	return (response);
 	}
 }
 
