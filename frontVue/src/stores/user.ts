@@ -17,9 +17,9 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUsers() {
           try {
-                const data = await axios.get('http://localhost:3000/user/one:japerin');
-                console.log(data.data.loggin42);
-                this.user = data.data;
+                const data = await axios.get('http://localhost:3000/user/get');
+                console.log(data.data[0]);
+                this.user = data.data[0];
             }
             catch (error) {
               alert(error);
