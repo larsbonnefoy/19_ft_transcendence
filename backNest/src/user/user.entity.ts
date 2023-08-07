@@ -18,22 +18,29 @@
 // }
 
 
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany } from 'typeorm';
 // import { Photo } from '../photos/photo.entity';
+
+export enum UserStatus {
+    ONLINE = "online",
+    OFFLINE = "offline",
+    INGAME = "ingame",
+}
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+//   @PrimaryGeneratedColumn()
+  @PrimaryColumn({ type: "text" })
   name: string;
 
-  @Column()
+  @Column({ type: "text", unique: true })
+  username: string;
+  
+  @Column({ type: "text" })
   password: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ type: "enum", enum: UserStatus, default: UserStatus.ONLINE })
+  status: UserStatus;
 
 //   @OneToMany(type => Photo, photo => photo.user)
 //   photos: Photo[];

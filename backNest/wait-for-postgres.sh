@@ -1,6 +1,5 @@
 #!/bin/sh
 
-exec "$@" # npm run start:dev
 echo "IN WAIT-FOR-POSTGRES.SH"
 
 # wait-for-postgres.sh
@@ -10,3 +9,5 @@ until PGPASSWORD=$POSTGRES_PASSWORD PGUSER=$POSTGRES_USER PGHOST=$POSTGRES_DB_HO
 done
 
 >&2 echo "Postgres is up"
+
+exec "$@" # npm run start:dev
