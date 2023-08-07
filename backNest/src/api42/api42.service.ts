@@ -22,7 +22,8 @@ async getToken(query : string) : Promise<string>
 				client_id: process.env.API_UID,
 				client_secret: process.env.API_SECRET,
 				code: query,
-				redirect_uri: 'http://localhost:3000/api42/getToken'
+				redirect_uri: 'http://localhost:5173/auth'
+				// redirect_uri: 'http://localhost:3000/api42/getToken'
   			}, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded'
