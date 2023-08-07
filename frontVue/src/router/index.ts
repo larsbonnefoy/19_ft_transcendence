@@ -5,6 +5,8 @@ import CreateAccount from '@/views/CreateAccount.vue';
 import Home from '@/views/Home.vue';
 import Game from '@/views/Game.vue';
 import Chat from '@/views/Chat.vue';
+import Profile from '@/views/Profile.vue';
+
 
 
 const router = createRouter({
@@ -35,7 +37,12 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: Chat
-    }
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
+    },
   ]
 })
 
