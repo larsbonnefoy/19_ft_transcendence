@@ -5,19 +5,25 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         // for data that is not yet loaded
         user: null as UserInfo | null,
+        isLoggedIn: false,
     }),
     getters: {
-        getUsers(state) {
+        getUser(state) {
             return state.user 
         }, 
         getUserName: (state) => state.user?.username,
+        getLogStatus: (state) => state.isLoggedIn,        
+        getStatus: (state) => state.user?.status,
+
     },
     actions: {
         async fetchUser() {
           try {
                 const data = await axios.get('http://localhost:3000/user/get');
-                console.log(data.data[0]);
                 this.user = data.data[0];
+                
+                console.log("fetched user")
+                console.log(data.data[0]);
             }
             catch (error) {
               alert(error);
@@ -27,27 +33,20 @@ export const useUserStore = defineStore('user', {
         async setName(newUsername:string) {
             if (this.user) {
                 const oldUsername = this.user.username;
-                console.log('From user.ts: ')
-                console.log(this.user.username);
-                try {
-                    const res = await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername } });
-                    console.log(res)
+                try {                    
+                    await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername } });
                     this.user.username = newUsername;
                 }
                 catch (error) {
-                    //should return to component that an error occured
-                    alert(error);
-                    console.log(error);
+                    return error;
                 }
-                //update bd aswell
             }
-
         },
+        setLogStatus(statusValue: boolean) {
+            this.isLoggedIn = statusValue;
+        }
       },
   })
-
-  //        
-
 
   interface UserInfo {
     loggin42: string

@@ -8,12 +8,10 @@ onMounted(() => {
   store.fetchUser();
 });
 
-const name = store
 </script>
 
 <template>
-    <h1> Welcome {{ store.$state.user?.loggin42 }}</h1>
-    
+    <h1> Welcome {{ store.$state.user?.username }}</h1>
 </template>
 
 <style>

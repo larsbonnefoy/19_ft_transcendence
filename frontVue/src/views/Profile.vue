@@ -7,12 +7,13 @@ const store = useUserStore();
 const username = ref();
 
 onMounted(() => {
-  store.fetchUser();
-  username.value = store.getUserName;
+    store.fetchUser();
+    username.value = store.getUserName;
 });
 
 let submit = (() => {
-    store.setName(username.value);
+    const ret = store.setName(username.value);
+    //console.log(ret);
 });
 
 </script>
@@ -25,6 +26,7 @@ let submit = (() => {
                 <div class="card" style="border-radius: 15px;">
                     <div class="card-body text-center">
                         <h4> {{ store.getUserName }}</h4>
+                        <p>{{ store.getStatus }}</p>
                         <div class="mt-3 mb-4">
                         <img src="/placeholder_avatar_white.png"
                             class="rounded-circle img-fluid" style="width: 100px;" />
