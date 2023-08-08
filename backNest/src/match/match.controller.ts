@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res } from '@nestjs/common';
+import { Response } from 'express';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 
@@ -15,7 +16,7 @@ export class MatchController {
   constructor(private readonly userService: UserService, private readonly matchService: MatchService) {}
   
   @Get('history:username')
-  async history(@Res() res: any, @Param() params: any) {
+  async history(@Res() res: Response, @Param() params: any) {
 	const username: string = params.name.slice(1);
     console.log("got request for Match history of player %s", username);
     const messages = await this.matchService.findAll();
@@ -26,20 +27,20 @@ export class MatchController {
 		}
 	}
 	if (response.length == 0)
-		res.json({"No match history for player":username});
+    res.status(409).json({"No match history for player":username});
 	else
 		res.json(response);
   }
   
   @Get('get')
-  async getMatch(@Res() res: any) {
+  async getMatch(@Res() res: Response) {
 	console.log("Get /match");
     const messages = await this.matchService.findAll();
     res.json(messages);
   }
 
   @Get('add')
-  async addMatch(@Res() res: any, @Query() query: newMatchDto) {
+  async addMatch(@Res() res: Response, @Query() query: newMatchDto) {
 	console.log("got from query: %s vs %s, result %d-%d", query.player1, query.player2, query.score1, query.score2);
     const nMatch: Match = new Match;
     nMatch.player1 = query.player1;
@@ -51,11 +52,11 @@ export class MatchController {
   }
 
   @Get('del')
-  async delMatch(@Res() res: any, @Query('id', ParseIntPipe) id: number) {
+  async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
 	console.log("match/del request with id %d", id);
   const check_base = await this.matchService.findOne(id);
 	if (check_base == null) {
-		res.json({"Match":"doesn't exist"});
+		res.status(409).json({"Match":"doesn't exist"});
 		return ;
 	}
     this.matchService.remove(id);
