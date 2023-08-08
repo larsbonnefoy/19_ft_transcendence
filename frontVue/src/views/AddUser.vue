@@ -13,6 +13,8 @@ const submitForm = async () => {
     try {
         const res = await axios.get('http://localhost:3000/user/add', { params: { loggin42: loggin.value, username : username.value } });
         console.log(res);
+        loggin.value = '';
+        username.value = '';
     }
     catch (error) {
         console.error('Error:', error);
