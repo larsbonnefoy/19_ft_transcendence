@@ -6,7 +6,7 @@ import { IsNotEmpty, IsAlpha, IsAlphanumeric, IsStrongPassword } from "class-val
 export class newUserDto {
   @IsNotEmpty()
   @IsAlpha()
-  public loggin42: string;
+  public login42: string;
   
   @IsNotEmpty()
   @IsAlphanumeric()
@@ -50,4 +50,14 @@ export class changeUsernameDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   public new: string;
+}
+
+export class setFriendsDto {
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  public f1: string;
+  
+  @IsNotEmpty()
+  @IsAlphanumeric()
+  public f2: string;
 }

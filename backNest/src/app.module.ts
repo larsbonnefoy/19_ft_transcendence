@@ -28,7 +28,7 @@ import { MatchModule } from './match/match.module';
     }),
     TypeOrmModule.forFeature([User, Match]),
     UserModule,
-	MatchModule,
+    MatchModule,
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
