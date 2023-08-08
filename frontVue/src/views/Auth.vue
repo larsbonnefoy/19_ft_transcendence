@@ -1,6 +1,11 @@
 <script setup lang="ts">
-const urlParams = new URLSearchParams(window.location.search)
-// const response : Response = await fetch(`http://localhost:3000/getToken?{this.$route.query.test}`);
+// import { ref } from 'vue';
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+const urlParams = new URLSearchParams(window.location.search);
 let code : string | null;
 if (urlParams.has('code'))
 {
@@ -12,15 +17,21 @@ else
 }
 const response : Response = await fetch(`http://localhost:3000/api42/getToken?code=${code}`);
 console.log("ayo");
-const resJson : any = await response.json();
-// if (response.ok)
-console.log(resJson['access_token']);
+// const resJson : any = await response.json();
+// console.log(resJson);
+console.log(response.headers);
+// console.log("response :");
+// console.log(resJson['access_token']);
+// console.log("cookies :");
+// console.log(getCookie('access_token'));
+console.log("ended");
+
 </script>
 
 <template>
-    <h1> auth </h1>
-	<span>code: {{ code }}</span>
-	<span> status: {{ response.status }} </span>
+    <p> auth </p>
+	<!-- <span>code: {{ code }}</span> -->
+	<!-- <span> status: {{ response.status }} </span> -->
 </template> 
 
 

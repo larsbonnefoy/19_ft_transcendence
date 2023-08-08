@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ParseIntPipe, Res } from '@nestjs/common';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 import { AppService } from './app.service';

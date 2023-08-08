@@ -11,7 +11,7 @@ services:
       dockerfile: Dockerfile
     entrypoint: ["./wait-for-postgres.sh", "npm", "run", "start:dev"]
     # entrypoint: ["npm", "run", "start:dev"]
-    #ports:
+    # ports:
     # - 3000:3000
     env_file:
       - .env

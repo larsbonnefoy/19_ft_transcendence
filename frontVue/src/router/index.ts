@@ -6,7 +6,7 @@ import Home from '@/views/Home.vue';
 import Game from '@/views/Game.vue';
 import Chat from '@/views/Chat.vue';
 import loginIntra from '@/views/loginIntra.vue';
-import auth from '@/views/Auth.vue';
+import Auth from '@/views/Auth.vue';
 
 
 const router = createRouter({
@@ -49,7 +49,7 @@ const router = createRouter({
 	{
       path: '/auth',
       name: 'auth',
-      component: auth,
+      component: Auth,
     }
   ]
 })

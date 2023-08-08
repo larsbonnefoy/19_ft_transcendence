@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Api42Controller } from './api42.controller';
 import { HttpModule } from '@nestjs/axios';
 import { Axios, AxiosResponse } from 'axios';
+import * as cookieParser from 'cookie-parser';
 
 @Module(
 		{  

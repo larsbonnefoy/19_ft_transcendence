@@ -34,11 +34,11 @@ async getToken(query : string) : Promise<string>
 	}).catch(function(error){
 		// console.log(error.data)
 		// error.status = 401;
-		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER
+		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
 	});
 	// const res : JSON = await response
 	// const res : string = response;
-	console.log(response);
+	// console.log(response);
 	// console.log(res["access_token"]);
 	// const access_token : string = res["access_token"];
 	console.log("getToken : ended");
