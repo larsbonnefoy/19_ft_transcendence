@@ -59,18 +59,46 @@ export class MatchController {
     nMatch.score1 = query.score1;
     nMatch.score2 = query.score2;
     await this.matchService.createMatch(nMatch);
+    if (+query.score1 > +query.score2) {
+      let wins:number = p1.win;
+      ++wins;
+      await this.userService.addWin(p1.login42, wins);
+      let loss = p2.loss;
+      ++loss;
+      await this.userService.addLoss(p2.login42, loss);
+      console.log("player1 wins");
+    }
+    else {
+      let wins:number = p2.win;
+      ++wins;
+      await this.userService.addWin(p2.login42, wins);
+      let loss = p1.loss;
+      ++loss;
+      await this.userService.addLoss(p1.login42, loss);
+      console.log("player2 wins");
+    }
     res.json({"Match":"created"});
   }
-
+  
   @Get('del')
   async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
-	console.log("match/del request with id %d", id);
-  const check_base = await this.matchService.findOne(id);
-	if (check_base == null) {
-		res.status(409).json({"Match":"doesn't exist"});
-		return ;
-	}
-    this.matchService.remove(id);
+    console.log("match/del request with id %d", id);
+    const check_base = await this.matchService.findOne(id);
+    if (check_base == null) {
+      res.status(409).json({"Match":"doesn't exist"});
+      return ;
+    }
+    await this.matchService.remove(id);
     res.json({"Match":"deleted"});
   }
+  
+  @Get('delAll')
+  async delAll(@Res() res: Response) {
+    const matchs = await this.matchService.findAll();
+    for (let match of matchs) {
+      await this.matchService.remove(match.id);
+    }
+    res.json({"Matchs":"deleted"});
+  }
+
 }
