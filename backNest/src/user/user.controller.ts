@@ -7,11 +7,33 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
 import { changeUsernameDto } from './userDto.dto';
-// import { connectUserDto } from './userDto.dto';
+import { setFriendsDto } from './userDto.dto';
 
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('LogFromUser:username')
+  async LogFromUser(@Res() res: Response, @Param() params: any) {
+    const username: string = params.username.slice(1);
+    const user = await this.userService.findUsername(username);
+    if (user == null) {
+      res.status(409).json({"error":"no user with that username"});
+      return ;
+    }
+    res.json({"login42":user.login42});
+  }
+  
+  @Get('UserFromLog:login42')
+  async UserFromLog(@Res() res: Response, @Param() params: any) {
+    const login42: string = params.login42.slice(1);
+    const user = await this.userService.findOne(login42);
+    if (user == null) {
+      res.status(409).json({"error":"no user with that login"});
+      return ;
+    }
+    res.json({"username":user.username});
+  }
   
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
@@ -32,7 +54,7 @@ export class UserController {
     }
     let wins:number = current_user.win;
     ++wins;
-    await this.userService.addWin(current_user.loggin42, wins);
+    await this.userService.addWin(current_user.login42, wins);
     res.json({"success":`${username} now has ${wins} wins`});
   }
   
@@ -47,7 +69,7 @@ export class UserController {
     }
     let loss:number = current_user.loss;
     ++loss;
-    await this.userService.addLoss(current_user.loggin42, loss);
+    await this.userService.addLoss(current_user.login42, loss);
     res.json({"success":`${username} now has ${loss} loss`});
   }
 
@@ -68,8 +90,61 @@ export class UserController {
       res.status(409).json({"error":`username ${query.new} already taken`});
       return ;
     }
-    await this.userService.change_username(current_user.loggin42, query.new);
+    await this.userService.change_username(current_user.login42, query.new);
     res.json({"success":`username changed from ${query.old} to ${query.new}`});
+  }
+  
+  @Get('set_friends')
+  async setFriends(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("setting friendship between %s and %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    for (let friend of user_1.friends) {
+      if (friend == user_2.login42) {
+        res.status(409).json({"error":"c'est déjà ton pote boloss"});
+        return ;
+      }
+    }
+    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
+    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+    res.json({"success":`friendship blooming between ${query.f1} and ${query.f2}`});
+  }
+  
+  @Get('unset_friends')
+  async unsetFriends(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("unsetting friendship between %s and %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    let notfriends: boolean = true;
+    for (let friend of user_1.friends) {
+      if (friend == user_2.login42) {
+        notfriends = false;
+        break ;
+      }
+    }
+    if (notfriends) {
+      res.status(409).json({"error":"can't unset friend if not friends in first place"});
+      return ;
+    }
+    await this.userService.remove_friend(user_1.login42, user_1.friends, user_2.login42);
+    await this.userService.remove_friend(user_2.login42, user_2.friends, user_1.login42);
+    res.json({"success":`friendship sunk between ${query.f1} and ${query.f2}`});
   }
 
   @Get('get')
@@ -81,29 +156,38 @@ export class UserController {
 
   @Get('add')
   async addUser(@Res() res: any, @Query() query: newUserDto) {
-    console.log("got from query: %s as loggin42 and %s as username", query.loggin42, query.username);
-    const check_base = await this.userService.findOne(query.loggin42);
+    console.log("got from query: %s as login42 and %s as username", query.login42, query.username);
+    const check_base = await this.userService.findOne(query.login42);
     if (check_base != null) {
       res.status(409).json({"user":"already exists"});
       return ;
     }
     const nUser: User = new User;
-    nUser.loggin42 = query.loggin42;
+    nUser.login42 = query.login42;
 	  nUser.username = query.username;
     await this.userService.createUser(nUser);
     res.json({"user":"created"});
   }
-
   
-  @Get('del')
-  async delUser(@Res() res: any, @Query() loggin42: string) {
-    console.log("got del request with loggin42 %d", loggin42);
-    const check_base = await this.userService.findOne(loggin42);
+  @Get('delAll')
+  async delAll(@Res() res: any) {
+    const users = await this.userService.findAll();
+    for (let user of users) {
+      this.userService.remove(user.username);
+    }
+    res.json({"users":"deleted"});
+  }
+  
+  @Get('del:username')
+  async delUser(@Res() res: any, @Param() params: any) {
+    const username: string = params.username.slice(1);
+    console.log("got del request with username %s", username);
+    const check_base = await this.userService.findUsername(username);
     if (check_base == null) {
-      res.status(409).json({"user":"doesn't exist"});
+      res.status(409).json({"user":"doesn't exist"}); //TODO loop through friends and unset this one
       return ;
     }
-    this.userService.remove(loggin42);
+    this.userService.remove(username);
     res.json({"user":"deleted"});
   }
 }

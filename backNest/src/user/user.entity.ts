@@ -12,7 +12,7 @@ export enum UserStatus {
 export class User {
   //   @PrimaryGeneratedColumn()
   @PrimaryColumn({ type: "text", unique: true })
-  loggin42: string;
+  login42: string;
   
   @Column({ type: "text", unique: true })
   username: string;
@@ -23,7 +23,7 @@ export class User {
   @Column({ type: "enum", enum: UserStatus, default: UserStatus.ONLINE })
   status: UserStatus;
   
-  @Column({type: "simple-array", default: null})
+  @Column({type: "simple-array", default: ""})
   friends: string[];
   
   @Column({type: 'numeric', default: 0})
