@@ -21,10 +21,10 @@ onMounted(async () => {
 <table class="table table-dark">
   <thead>
     <tr>
-      <th scope="col">loggin42</th>
+      <th scope="col">login42</th>
       <th scope="col">username</th>
-      <th scope="col">status</th>
-      <th scope="col">elo</th>      
+      <th scope="col">elo</th>     
+      <th scope="col">status</th> 
       <th scope="col">friends</th>
       <th scope="col">Win(s)</th>
       <th scope="col">Loss(es)</th>
@@ -33,7 +33,7 @@ onMounted(async () => {
   </thead>
   <tbody>
     <tr v-for="(user, index) in users">
-        <th scope="row">{{ user.loggin42  }}</th>
+        <th scope="row">{{ user.login42  }}</th>
         <td> {{ user.username }}</td>
         <td> {{ user.elo  }}</td>
         <td> {{ user.status }}</td>

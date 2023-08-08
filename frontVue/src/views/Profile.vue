@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { ref, onMounted, onBeforeMount, onUpdated } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const store = useUserStore();
 
 const username = ref();
 
 onMounted(() => {
-    store.fetchUser();
     username.value = store.getUserName;
 });
 
 let submit = (() => {
     const ret = store.setName(username.value);
-    //console.log(ret);
+    console.log(ret);
 });
 
 </script>

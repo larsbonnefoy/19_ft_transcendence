@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
-                const data = await axios.get('http://localhost:3000/user/get');
+                const data = await axios.get('http://localhost:3000/user/get/');
                 this.user = data.data[0];
                 
                 console.log("fetched user")
@@ -46,6 +46,7 @@ export const useUserStore = defineStore('user', {
             this.isLoggedIn = statusValue;
         }
       },
+      persist: true,
   })
 
   interface UserInfo {

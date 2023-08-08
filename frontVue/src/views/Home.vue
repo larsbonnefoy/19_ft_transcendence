@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { watch, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
@@ -7,11 +7,12 @@ const store = useUserStore();
 onMounted(() => {
   store.fetchUser();
 });
+store.setLogStatus(true);
 
 </script>
 
 <template>
-    <h1> Welcome {{ store.$state.user?.username }}</h1>
+    <h1> Welcome {{ store.getUserName}}</h1>
 </template>
 
 <style>
