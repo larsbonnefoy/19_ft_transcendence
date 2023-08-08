@@ -173,7 +173,7 @@ export class UserController {
   async delAll(@Res() res: any) {
     const users = await this.userService.findAll();
     for (let user of users) {
-      this.userService.remove(user.username);
+      await this.userService.remove(user.username);
     }
     res.json({"users":"deleted"});
   }
@@ -195,7 +195,7 @@ export class UserController {
         console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
       }
     }
-    this.userService.remove(username);
+    await this.userService.remove(username);
     res.json({"user":"deleted"});
   }
 }

@@ -33,10 +33,12 @@ export class UserService {
   }
   
   async addWin(login42: string, win: number) {
+    console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
   }
-
+  
   async addLoss(login42: string, loss: number) {
+    console.log("loss for %s, now at %d loss", login42, loss);
     await this.userRepository.update(login42, {loss:loss});
   }
 
