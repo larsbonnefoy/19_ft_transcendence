@@ -146,14 +146,14 @@ export class UserController {
     await this.userService.remove_friend(user_2.login42, user_2.friends, user_1.login42);
     res.json({"success":`friendship sunk between ${query.f1} and ${query.f2}`});
   }
-
+  
   @Get('get')
     async getUser(@Res() res: any) {
-    console.log("got get request");
+      console.log("got get request");
     const messages = await this.userService.findAll();
     res.json(messages);
   }
-
+  
   @Get('add')
   async addUser(@Res() res: any, @Query() query: newUserDto) {
     console.log("got from query: %s as login42 and %s as username", query.login42, query.username);
@@ -182,10 +182,18 @@ export class UserController {
   async delUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);
     console.log("got del request with username %s", username);
-    const check_base = await this.userService.findUsername(username);
-    if (check_base == null) {
-      res.status(409).json({"user":"doesn't exist"}); //TODO loop through friends and unset this one
+    const current_user = await this.userService.findUsername(username);
+    if (current_user == null) {
+      res.status(409).json({"user":"doesn't exist"});
       return ;
+    }
+    for (let friend of current_user.friends) {
+      const other = await this.userService.findOne(friend);
+      if (other != null) {
+        await this.userService.remove_friend(current_user.login42, current_user.friends, other.login42);
+        await this.userService.remove_friend(other.login42, other.friends, current_user.login42);
+        console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
+      }
     }
     this.userService.remove(username);
     res.json({"user":"deleted"});
