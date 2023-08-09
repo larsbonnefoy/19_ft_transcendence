@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { watch, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 
 onMounted(() => {
-  store.fetchUsers();
+  store.fetchUser();
 });
+store.setLogStatus(true);
 
-const name = store
 </script>
 
 <template>
-    <h1> Home View {{ store.$state.user?.loggin42 }}</h1>
-    <p> elo {{ store.$state.user?.elo }}</p>
-    <p> status {{ store.$state.user?.status }}</p>
+    <h1> Welcome {{ store.getUserName}}</h1>
 </template>
 
 <style>

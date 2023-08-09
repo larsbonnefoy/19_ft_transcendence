@@ -14,16 +14,32 @@ export class UserService {
     return await this.userRepository.save(User);
   }
 
-  async change_username(loggin42: string, username: string) {
-    await this.userRepository.update(loggin42, {username:username});
+  async change_username(login42: string, username: string) {
+    await this.userRepository.update(login42, {username:username});
+  }
+  
+  async add_friend(login42: string, current_friend_list: string[], friend: string) {
+    current_friend_list.push(friend);
+    await this.userRepository.update(login42, {friends:current_friend_list});
   }
 
-  async addWin(loggin42: string, win: number) {
-    await this.userRepository.update(loggin42, {win:win});
+  async remove_friend(login42: string, current_friend_list: string[], friend: string) {
+    let new_friend_list: Array<string> = new Array(0);
+    for (let iter of current_friend_list) {
+      if (iter != friend)
+        new_friend_list.push(iter);
+    }
+    await this.userRepository.update(login42, {friends:new_friend_list});
   }
-
-  async addLoss(loggin42: string, loss: number) {
-    await this.userRepository.update(loggin42, {loss:loss});
+  
+  async addWin(login42: string, win: number) {
+    console.log("win for %s, now at %d wins", login42, win);
+    await this.userRepository.update(login42, {win:win});
+  }
+  
+  async addLoss(login42: string, loss: number) {
+    console.log("loss for %s, now at %d loss", login42, loss);
+    await this.userRepository.update(login42, {loss:loss});
   }
 
   findAll(): Promise<User[]> {
@@ -31,14 +47,28 @@ export class UserService {
   }
 
   findOne(str: string): Promise<User | null> {
-    return this.userRepository.findOneBy({ loggin42:str });
+    return this.userRepository.findOneBy({ login42:str });
   }
 
   findUsername(str: string): Promise<User | null> {
     return this.userRepository.findOneBy({ username:str });
   }
 
-  async remove(loggin42: string): Promise<void> {
-    await this.userRepository.delete(loggin42);
+  // getUsername(login42: string): string {
+  //   const user = this.userRepository.findOneBy({ login42:login42 });
+  //   if (user == null)
+  //     return "";
+  //   return user.then.arguments.username;
+  // }
+
+  // getLoginFromUsername(username: string): string {
+  //   const user = this.userRepository.findOneBy({ username: username });
+  //   if (user == null)
+  //     return "";
+  //   return user.then.arguments.login42;
+  // }
+
+  async remove(username: string): Promise<void> {
+    await this.userRepository.delete({username:username});
   }
 }

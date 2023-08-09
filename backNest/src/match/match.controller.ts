@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res } from '@nestjs/common';
+import { Response } from 'express';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 
-// import { User } from '../user/user.entity';
+import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
 import { Match } from './match.entity';
@@ -13,52 +14,91 @@ import { newMatchDto } from './newMatchDto.dto';
 @Controller("match")
 export class MatchController {
   constructor(private readonly userService: UserService, private readonly matchService: MatchService) {}
-  
+
   @Get('history:username')
-  async history(@Res() res: any, @Param() params: any) {
-	const username: string = params.name.slice(1);
+  async history(@Res() res: Response, @Param() params: any) {
+	const username: string = params.username.slice(1);
     console.log("got request for Match history of player %s", username);
+    const user = await this.userService.findUsername(username);
+    if (user == null) {
+      res.status(409).json({"error":"no player with that username"});
+      return ;
+    }
     const messages = await this.matchService.findAll();
 	let response : Array<Match> = new Array(0);
 	for (let match of messages) {
-		if (match.player1 == username || match.player2 == username) {
+		if (match.player1 == user.login42 || match.player2 == user.login42) {
 			response.push(match);
 		}
 	}
 	if (response.length == 0)
-		res.json({"No match history for player":username});
+    res.status(409).json({"No match history for player":username});
 	else
 		res.json(response);
   }
   
   @Get('get')
-  async getMatch(@Res() res: any) {
+  async getMatch(@Res() res: Response) {
 	console.log("Get /match");
     const messages = await this.matchService.findAll();
     res.json(messages);
   }
 
   @Get('add')
-  async addMatch(@Res() res: any, @Query() query: newMatchDto) {
-	console.log("got from query: %s vs %s, result %d-%d", query.player1, query.player2, query.score1, query.score2);
+    async addMatch(@Res() res: Response, @Query() query: newMatchDto) {
+    console.log("got from query: %s vs %s, result %d-%d", query.player1, query.player2, query.score1, query.score2);
     const nMatch: Match = new Match;
-    nMatch.player1 = query.player1;
-    nMatch.player2 = query.player2;
+    const p1 = await this.userService.findUsername(query.player1);
+    const p2 = await this.userService.findUsername(query.player2);
+    if (p1 == null || p2 == null) {
+      res.status(409).json({"error":"username not found in database"});
+      return ;
+    }
+    nMatch.player1 = p1.login42;
+    nMatch.player2 = p2.login42;
     nMatch.score1 = query.score1;
     nMatch.score2 = query.score2;
     await this.matchService.createMatch(nMatch);
+    if (+query.score1 > +query.score2) {
+      let wins:number = p1.win;
+      ++wins;
+      await this.userService.addWin(p1.login42, wins);
+      let loss = p2.loss;
+      ++loss;
+      await this.userService.addLoss(p2.login42, loss);
+      console.log("player1 wins");
+    }
+    else {
+      let wins:number = p2.win;
+      ++wins;
+      await this.userService.addWin(p2.login42, wins);
+      let loss = p1.loss;
+      ++loss;
+      await this.userService.addLoss(p1.login42, loss);
+      console.log("player2 wins");
+    }
     res.json({"Match":"created"});
   }
-
+  
   @Get('del')
-  async delMatch(@Res() res: any, @Query('id', ParseIntPipe) id: number) {
-	console.log("match/del request with id %d", id);
-  const check_base = await this.matchService.findOne(id);
-	if (check_base == null) {
-		res.json({"Match":"doesn't exist"});
-		return ;
-	}
-    this.matchService.remove(id);
+  async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
+    console.log("match/del request with id %d", id);
+    const check_base = await this.matchService.findOne(id);
+    if (check_base == null) {
+      res.status(409).json({"Match":"doesn't exist"});
+      return ;
+    }
+    await this.matchService.remove(id);
     res.json({"Match":"deleted"});
   }
+  
+  @Get('delAll')
+  async delAll(@Res() res: Response) {
+    const matchs = await this.matchService.findAll();
+    for (let match of matchs) {
+      await this.matchService.remove(match.id);
+    }
+    res.json({"Matchs":"deleted"});
+  }
+
 }
