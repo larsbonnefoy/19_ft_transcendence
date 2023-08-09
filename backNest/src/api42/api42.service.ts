@@ -1,4 +1,4 @@
-import { Injectable, Req, Query } from '@nestjs/common';
+import { Injectable, Req, Query, UnauthorizedException } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Api42Controller } from './api42.controller';
 import { HttpService } from '@nestjs/axios';
@@ -6,11 +6,18 @@ import { Api42 } from './api42.interface';
 import { Axios, AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 import { request } from 'http';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from '../user/user.service';
+import { jwtConstants } from './constant';
 
 @Injectable()
 export class Api42Service 
 {
-	constructor(private readonly httpService: HttpService) {}
+	constructor(
+		private readonly httpService: HttpService,
+		private usersService: UserService,
+		private jwtService: JwtService
+		) {}
 
 async getToken(query : string) : Promise<string>
 	{
@@ -39,7 +46,6 @@ async getToken(query : string) : Promise<string>
 
 async getLogin42(access_token : string) : Promise<string>
 {
-	// const access_token : string = res["access_token"];
 	console.log("fetch login42");
 	const userInfo : string = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`).then(function(response){
 		return (response.data);
@@ -54,7 +60,6 @@ async getLogin42(access_token : string) : Promise<string>
 
 async getImage42(access_token : string) : Promise<string>
 {
-	// const access_token : string = res["access_token"];
 	console.log("fetch login42");
 	const userInfo : string = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`).then(function(response){
 		return (response.data);
@@ -66,4 +71,28 @@ async getImage42(access_token : string) : Promise<string>
 	console.log("getImage : ended");
 	return (userInfo['image']['versions']['large']);
 	}
+
+async createJWT(login42 : string) : Promise<any>
+{
+	const payload = {sub : login42}
+	return {
+		jwt_token: await this.jwtService.signAsync(payload),
+		};
+}
+
+async isAuth(jwtToken : string) : Promise<boolean>
+{
+	try {
+		const payload = await this.jwtService.verifyAsync(
+			jwtToken,
+			{
+				secret: jwtConstants.secret
+			}
+		);
+	} 
+	catch {
+		return false;
+	}
+	return true;
+}
 }
