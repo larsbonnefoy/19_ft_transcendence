@@ -22,3 +22,5 @@ frontVueOld
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/extensions.json
+>>>>>>> main

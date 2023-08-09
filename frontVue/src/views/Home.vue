@@ -1,9 +1,18 @@
 <script setup lang="ts">
+import { watch, onMounted } from 'vue';
+import { useUserStore } from '@/stores/user';
+
+const store = useUserStore();
+
+onMounted(() => {
+  store.fetchUser();
+});
+store.setLogStatus(true);
 
 </script>
 
 <template>
-    <h1> Home View </h1>
+    <h1> Welcome {{ store.getUserName}}</h1>
 </template>
 
 <style>

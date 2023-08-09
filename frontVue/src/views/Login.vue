@@ -7,9 +7,9 @@ const navigateToHome = () => {
       router.push('/home');
     };
 
-    const navigateToRegister = () => {
-      router.push('/createAccount');
-    };
+const navigateToRegister = () => {
+  router.push('/createAccount');
+};
 
 </script>
 

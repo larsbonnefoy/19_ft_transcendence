@@ -39,7 +39,7 @@ services:
     env_file:
       - .env
     ports:
-      - 8080:80
+      - 8080:8080
     # depends_on:
     #   - api
       # - postgres
@@ -63,8 +63,8 @@ services:
       PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
-    # ports:
-    #   - 5432:5432
+    ports:
+      - 5432:5432
     restart: always
 volumes:
   pgdata:
