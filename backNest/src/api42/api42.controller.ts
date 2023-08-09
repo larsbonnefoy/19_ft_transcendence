@@ -12,15 +12,14 @@ export class Api42Controller {
 	constructor(private api42Service: Api42Service){}
 
 	@Get('getToken')
-	async findAll(@Res({ passthrough: true }) response: Response, @Query('code') query: string) 
+	async findAll(@Query('code') query: string) 
 	{
-		console.log("ayo");
+		console.log("getIntraInfos");
 
-		// response.cookie('access_token', query['access_token']);
-		// response.header("test", "test");
-		const login42 : string = await this.api42Service.getToken(query);
-		// console.log(response.json());	
-		return login42;
+		const access_token  : string = await this.api42Service.getToken(query);
+		const intraLogin : string = await this.api42Service.getLogin42(access_token);
+		const intraPhoto : string = await this.api42Service.getImage42(access_token);
+		return ;
 	}
 
 }

@@ -32,21 +32,38 @@ async getToken(query : string) : Promise<string>
 		// console.log(error.data)
 		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
 	});
-	// const res : JSON = await response
-	// const res : string = response;
-	// console.log(response);
-	console.log(response["access_token"]);
-	// const access_token : string = res["access_token"];
-	console.log("fetch login42");
-	const userInfo : string = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${response["access_token"]}`).then(function(response){
-		return (response.data);
-	}).catch(function(error){
-		// console.log(error.data)
-		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
-	});
-	console.log(userInfo['login']);
-	console.log("getToken : ended");
-	return (userInfo['login']);
-	}
+	//TODO manage errors
+
+	return (response["access_token"])
 }
 
+async getLogin42(access_token : string) : Promise<string>
+{
+	// const access_token : string = res["access_token"];
+	console.log("fetch login42");
+	const userInfo : string = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`).then(function(response){
+		return (response.data);
+	}).catch(function(error){
+		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
+	});
+	//TODO manage errors
+	console.log(userInfo['login']);
+	console.log("getlogin: ended");
+	return (userInfo['login']);
+}
+
+async getImage42(access_token : string) : Promise<string>
+{
+	// const access_token : string = res["access_token"];
+	console.log("fetch login42");
+	const userInfo : string = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`).then(function(response){
+		return (response.data);
+	}).catch(function(error){
+		return(error) //TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
+	});
+	//TODO manage errors
+	console.log(userInfo['image']['versions']['large']);
+	console.log("getImage : ended");
+	return (userInfo['image']['versions']['large']);
+	}
+}
