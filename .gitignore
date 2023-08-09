@@ -1,6 +1,9 @@
 *.swp
 frontVueOld
 
+#Hide the environement from git
+*.env
+.env
 # OS
 .DS_Store
 
@@ -19,3 +22,5 @@ frontVueOld
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/extensions.json
+>>>>>>> main
