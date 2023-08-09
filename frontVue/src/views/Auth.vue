@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import { ref } from 'vue';
+import {useRouter} from 'vue-router'
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -19,12 +19,13 @@ const response : Response = await fetch(`http://localhost:3000/api42/getToken?co
 console.log("ayo");
 // const resJson : any = await response.json();
 // console.log(resJson);
-console.log(response);
-// console.log("response :");
-// console.log(resJson['access_token']);
-// console.log("cookies :");
-// console.log(getCookie('access_token'));
+const jwtToken : string = (await response.json())['jwt_token']
+console.log(jwtToken)
+sessionStorage.setItem('jwt_token', jwtToken);
 console.log("ended");
+
+const router = useRouter();
+router.push('/home');
 
 </script>
 
