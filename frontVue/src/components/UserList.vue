@@ -40,8 +40,15 @@ onMounted(async () => {
         <td> {{ user.friends }}</td>
         <td> {{ user.win }}</td>
         <td> {{ user.loss }}</td>
-        <td> {{ user.photo }}</td>
+        <td> <img :src=user.photo   ></td>
     </tr>
   </tbody>
 </table>
 </template>
+
+<style>
+img {
+  height: 32px;
+  width: auto;
+}
+</style>

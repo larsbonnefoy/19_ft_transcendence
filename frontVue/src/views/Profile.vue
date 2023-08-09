@@ -27,8 +27,8 @@ let submit = (() => {
                         <h4> {{ store.getUserName }}</h4>
                         <p>{{ store.getStatus }}</p>
                         <div class="mt-3 mb-4">
-                        <img src="/placeholder_avatar_white.png"
-                            class="rounded-circle img-fluid" style="width: 100px;" />
+                        <img :src=store.getImg
+                            class="rounded-circle img-fluid" style="width: 200px;" />
                         </div>
                         <div class="form-group row justify-content-center">
                             <label for="inputPassword" class="col-sm-5 col-form-label">Username: </label>

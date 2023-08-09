@@ -25,7 +25,7 @@ sessionStorage.setItem('jwt_token', jwtToken);
 console.log("ended");
 
 const router = useRouter();
-router.push('/home');
+router.push('/showUsers');
 
 </script>
 
