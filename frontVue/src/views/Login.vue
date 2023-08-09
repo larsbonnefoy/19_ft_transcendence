@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
+import axios from "axios"
+
 
 const router = useRouter();
 
@@ -11,6 +13,8 @@ const navigateToRegister = () => {
   router.push('/createAccount');
 };
 
+const loginWith42 = () => {
+}
 </script>
 
 <template>
@@ -35,6 +39,7 @@ const navigateToRegister = () => {
               <br>
               <div class="d-flex justify-content-between">
               <button @click="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
+              <button @click="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
               <button @click="navigateToRegister" type="submit" class="btn btn-outline-secondary">Don't have an account?</button>
               </div>
             </form>

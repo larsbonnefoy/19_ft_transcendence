@@ -11,6 +11,7 @@ import { DataSource } from 'typeorm';
 
 import { Match } from './match/match.entity';
 import { MatchModule } from './match/match.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { MatchModule } from './match/match.module';
     TypeOrmModule.forFeature([User, Match]),
     UserModule,
     MatchModule,
+    AuthModule,
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
