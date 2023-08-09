@@ -16,11 +16,11 @@ export class Api42Controller {
 	{
 		console.log("ayo");
 
-		response.cookie('access_token', query['access_token']);
+		// response.cookie('access_token', query['access_token']);
 		// response.header("test", "test");
-		const apiJSON : string = await this.api42Service.getToken(query);
-		console.log(response.json());	
-		return apiJSON;
+		const login42 : string = await this.api42Service.getToken(query);
+		// console.log(response.json());	
+		return login42;
 	}
 
 }

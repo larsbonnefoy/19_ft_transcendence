@@ -19,7 +19,7 @@ const response : Response = await fetch(`http://localhost:3000/api42/getToken?co
 console.log("ayo");
 // const resJson : any = await response.json();
 // console.log(resJson);
-console.log(response.headers);
+console.log(response);
 // console.log("response :");
 // console.log(resJson['access_token']);
 // console.log("cookies :");
