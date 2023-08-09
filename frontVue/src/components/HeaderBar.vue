@@ -2,8 +2,10 @@
 import {ref, computed, watch, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import HeaderBarLink from './HeaderBarLink.vue'
+import { useUserStore } from '@/stores/user';
 const route = useRoute();
 const router = useRouter();
+const store = useUserStore();
 
 
 const toDisplayNav = ['home', 'chat', 'game'];
@@ -15,6 +17,10 @@ const displayLinks = computed(() => {
     return toDisplayWhere.includes(route.name);
 });
 
+const logout = () => {
+    store.setLogStatus(false);
+    store.$reset();
+}
 /*
 watch(() => route.name, () => {
   console.debug(route.name);
@@ -56,7 +62,11 @@ watch(() => route.name, () => {
                         </router-link>                    
                     </li>
                     <li>
-                        <router-link to="/" class="nav-link">
+                        <router-link 
+                        to="/" 
+                        class="nav-link"
+                        @click.native="logout"
+                        >
                             LogOut
                         </router-link>
                     </li>

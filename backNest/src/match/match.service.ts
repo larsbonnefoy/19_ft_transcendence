@@ -23,10 +23,6 @@ export class MatchService {
     return this.matchRepository.findOneBy({ id });
   }
 
-//   findName(name: string): Promise<Match | null> {
-//     return this.matchRepository.findOneBy({ name });
-//   }
-
   async remove(id: number): Promise<void> {
     await this.matchRepository.delete(id);
   }

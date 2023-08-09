@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Match {
@@ -7,7 +7,7 @@ export class Match {
 
   @Column()
   player1: string;
-
+  
   @Column()
   player2: string;
 
