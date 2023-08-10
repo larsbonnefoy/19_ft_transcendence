@@ -7,9 +7,7 @@ export const useUserStore = defineStore('user', {
         user: null as UserInfo | null,
     }),
     getters: {
-        getUser(state) {
-            return state.user 
-        }, 
+        getUser: (state) => state.user,
         getUserName: (state) => state.user?.username,
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
@@ -41,7 +39,7 @@ export const useUserStore = defineStore('user', {
             }
         },
       },
-      persist: true,
+     persist: true,
   })
 
   interface UserInfo {

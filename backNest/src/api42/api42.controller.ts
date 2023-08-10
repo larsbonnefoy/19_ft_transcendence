@@ -30,8 +30,6 @@ export class Api42Controller {
 		user.photo = intraPhoto;
 		this.userService.createUser(user);
 		return jwtToken;
-		// const jsonString : string = "{ jwt_token: " + jwtToken['jwt_token'] +  " login42: " + intraLogin + "}";
-		// return JSON.parse(jsonString); 
 	}
 	
 	@Post('isAuth')

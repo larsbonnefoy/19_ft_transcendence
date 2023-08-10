@@ -19,7 +19,7 @@ sessionStorage.setItem('jwt_token', jwtToken);
 console.log("ended");
 
 
-//router.push('/');
+router.push('/home');
 
 </script>
 

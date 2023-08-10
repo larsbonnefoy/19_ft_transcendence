@@ -9,7 +9,23 @@ import Profile from '@/views/Profile.vue';
 import ShowUsers from '@/views/ShowUsers.vue';
 import Admin from '@/views/Admin.vue';
 import ErrorPage from '@/views/Error.vue';
+import axios from 'axios';
+import { useUserStore } from '@/stores/user';
 
+
+async function validAccess(): Promise<boolean> {
+  let jwt_token = sessionStorage.getItem("jwt_token");
+  if (jwt_token) {
+    try {
+      const canAccess = await axios.post("http://localhost:3000/api42/isAuth", {token : jwt_token})
+      return canAccess.data;
+    }
+    catch {
+      return false;
+    }
+  }
+  return false;
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +49,13 @@ const router = createRouter({
     {
       path: '/chat',
       name: 'chat',
-      component: Chat
+      component: Chat,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+      }
     },
 	  {
       path: '/auth',
@@ -62,6 +84,14 @@ const router = createRouter({
       component: ErrorPage
     }
   ]
+})
+
+
+router.beforeResolve((to, from) => {
+  if (to.name === "home") {
+    const store = useUserStore();
+    store.fetchUser();
+  }
 })
 
 export default router

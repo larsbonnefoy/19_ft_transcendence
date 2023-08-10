@@ -5,8 +5,9 @@ import HeaderBar from './components/HeaderBar.vue'
 <template>
   <div class="bg-dark vh-100 text-light">
     <HeaderBar></HeaderBar>
-
-    <RouterView></RouterView>
+    <Suspense>
+      <RouterView></RouterView>
+    </Suspense>
   </div>
 </template>
 

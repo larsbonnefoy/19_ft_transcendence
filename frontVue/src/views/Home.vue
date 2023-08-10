@@ -4,10 +4,6 @@ import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 
-onMounted(() => {
-  store.fetchUser();
-});
-
 </script>
 
 <template>
