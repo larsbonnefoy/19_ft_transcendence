@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
         getUserName: (state) => state.user?.username,
         getLogStatus: (state) => state.isLoggedIn,        
         getStatus: (state) => state.user?.status,
-
+        getImg: (state) => state.user?.photo,
     },
     actions: {
         async fetchUser() {
@@ -54,6 +54,7 @@ export const useUserStore = defineStore('user', {
     username: string
     password:string
     status: string
+    photo: string
     elo: number
     win: number
     loss: number
