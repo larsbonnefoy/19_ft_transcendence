@@ -29,11 +29,20 @@ export class Api42Controller {
 		user.username = intraLogin;
 		user.photo = intraPhoto;
 		this.userService.createUser(user);
+		// console.log('decode: ');
+		// console.log(this.api42Service.decodeJWT(jwtToken['jwt_token']));
 		return jwtToken;
 	}
 	
 	@Post('isAuth')
 	isAuth(@Body() jwtDto: jwtDto ) {
 		return this.api42Service.isAuth(jwtDto.token);
+	}
+
+	@Post('getLoggedUser')
+	async getLoggedUser(@Body() jwtDto: jwtDto )
+	{
+		const login42 : string = this.api42Service.decodeJWT(jwtDto.token);//decode JWT only returns the user login;
+		return this.userService.findOne(login42);
 	}
 }
