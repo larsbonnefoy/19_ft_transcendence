@@ -55,7 +55,7 @@ watch(() => route.name, () => {
                     </div>
                 </div>
           
-                <img src="/placeholder_avatar_white.png" >
+                <img :src=store.getImg >
                 <ul class="navbar-nav">
                     <li>
                         <router-link to="/profile" class="nav-link">
@@ -79,7 +79,8 @@ watch(() => route.name, () => {
 
 <style scoped>
 img {
-    width: 32px;
-    height: 32px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
 }
 </style>

@@ -8,7 +8,7 @@ const navigateToHome = () => {
       router.push('/home');
 };
 const loginWith42 = () => {
-  window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${import.meta.env.VITE_API_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth&response_type=code`;
+  window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-420d7dc50567706ef53ee6496c9d2959e43f46727608cf99aa3e85ca68219411&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth&response_type=code`;
 }
 </script>
 
