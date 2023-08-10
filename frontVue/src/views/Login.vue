@@ -1,19 +1,14 @@
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
-import axios from "axios"
-
+import { useRouter} from 'vue-router'
 
 const router = useRouter();
 
 const navigateToHome = () => {
       router.push('/home');
-    };
-
-const navigateToRegister = () => {
-  router.push('/createAccount');
 };
 
 const loginWith42 = () => {
+  window.location.href = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-420d7dc50567706ef53ee6496c9d2959e43f46727608cf99aa3e85ca68219411&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth&response_type=code";
 }
 </script>
 
@@ -28,19 +23,9 @@ const loginWith42 = () => {
           </div>
           <div class="card-body">
             <form>
-              <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username">
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
-              </div>
-              <br>
               <div class="d-flex justify-content-between">
               <button @click="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
-              <button @click="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
-              <button @click="navigateToRegister" type="submit" class="btn btn-outline-secondary">Don't have an account?</button>
+              <button @click.prevent="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
               </div>
             </form>
           </div>

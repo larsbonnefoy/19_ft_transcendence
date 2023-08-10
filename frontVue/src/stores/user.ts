@@ -5,14 +5,12 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         // for data that is not yet loaded
         user: null as UserInfo | null,
-        isLoggedIn: false,
     }),
     getters: {
         getUser(state) {
             return state.user 
         }, 
         getUserName: (state) => state.user?.username,
-        getLogStatus: (state) => state.isLoggedIn,        
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
     },
@@ -42,9 +40,6 @@ export const useUserStore = defineStore('user', {
                 }
             }
         },
-        setLogStatus(statusValue: boolean) {
-            this.isLoggedIn = statusValue;
-        }
       },
       persist: true,
   })

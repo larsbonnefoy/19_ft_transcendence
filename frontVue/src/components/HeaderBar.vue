@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref, computed, watch, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
-import HeaderBarLink from './HeaderBarLink.vue'
 import { useUserStore } from '@/stores/user';
 const route = useRoute();
 const router = useRouter();
@@ -17,8 +16,10 @@ const displayLinks = computed(() => {
     return toDisplayWhere.includes(route.name);
 });
 
+//just remove auth token, not whole localstorage!!
 const logout = () => {
-    store.setLogStatus(false);
+    sessionStorage.clear();
+    localStorage.clear();
     store.$reset();
 }
 /*

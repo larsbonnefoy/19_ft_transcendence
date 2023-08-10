@@ -4,8 +4,6 @@ import { Response } from 'express';
 import { Api42Service } from './api42.service';
 // import { Api42 } from './api42.interface';
 import { AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
-import * as cookieParser from 'cookie-parser';
 import { jwtDto } from './jwtDto.dto';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';

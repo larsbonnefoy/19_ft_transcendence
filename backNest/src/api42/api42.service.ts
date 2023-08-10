@@ -4,7 +4,6 @@ import { Api42Controller } from './api42.controller';
 import { HttpService } from '@nestjs/axios';
 import { Api42 } from './api42.interface';
 import { Axios, AxiosResponse } from 'axios';
-import { Observable } from 'rxjs';
 import { request } from 'http';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';

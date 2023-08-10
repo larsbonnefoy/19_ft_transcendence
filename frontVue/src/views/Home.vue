@@ -7,7 +7,6 @@ const store = useUserStore();
 onMounted(() => {
   store.fetchUser();
 });
-store.setLogStatus(true);
 
 </script>
 
