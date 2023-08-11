@@ -2,6 +2,8 @@
 import {ref, computed, watch, reactive} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user';
+
+import HeaderLink from './HeaderLink.vue';
 const route = useRoute();
 const router = useRouter();
 const store = useUserStore();
@@ -35,43 +37,33 @@ watch(() => route.name, () => {
     <nav class="navbar-dark bg-dark navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">ft_pong</a>
-            
-            <!--
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            </button>
-            -->
             <template v-if="displayLinks">
 
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div v-for="(route, index) in routesToDisplay" :key="index">
                         <ul class="navbar-nav">
                             <li>
-                                <router-link :to="route.path" class="nav-link">
-                                    {{ route.name }}
-                                </router-link>
+                                <HeaderLink :route="route"> </HeaderLink>
                             </li>
                         </ul>
                     </div>
                 </div>
           
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-info dropdown-toggle mx-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ store.getUserName }}
+                    </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <router-link to="/profile" class="dropdown-item">
+                                Profile
+                            </router-link>  
+                            <div class="dropdown-divider"></div>
+                            <router-link to="/" class="dropdown-item" @click.native="logout">
+                                LogOut
+                            </router-link>
+                        </div>
+                    </div>
                 <img :src=store.getImg >
-                <ul class="navbar-nav">
-                    <li>
-                        <router-link to="/profile" class="nav-link">
-                            Profile
-                        </router-link>                    
-                    </li>
-                    <li>
-                        <router-link 
-                        to="/" 
-                        class="nav-link"
-                        @click.native="logout"
-                        >
-                            LogOut
-                        </router-link>
-                    </li>
-                </ul>
             </template>
         </div>
     </nav>

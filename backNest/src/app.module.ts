@@ -13,7 +13,6 @@ import { DataSource } from 'typeorm';
 
 import { Match } from './match/match.entity';
 import { MatchModule } from './match/match.module';
-import { AuthModule } from './auth/auth.module';
 
 import { Api42Service } from './api42/api42.service';
 import { HttpModule } from '@nestjs/axios';
