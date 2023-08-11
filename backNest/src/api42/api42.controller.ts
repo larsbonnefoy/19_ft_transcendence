@@ -24,11 +24,19 @@ export class Api42Controller {
 		
 		console.log(jwtToken)
 		//create a User object 
-		const user : User  = new User
-		user.login42 = intraLogin;
-		user.username = intraLogin;
-		user.photo = intraPhoto;
-		this.userService.createUser(user);
+		if (!(await this.userService.findOne(intraLogin)))
+		{
+			console.log("creating a db entry");
+			const user : User  = new User
+			user.login42 = intraLogin;
+			user.username = await this.api42Service.setUserName(intraLogin);
+			user.photo = intraPhoto;
+			this.userService.createUser(user);
+		}
+		else
+		{
+			console.log("user already in the db");
+		}
 		// console.log('decode: ');
 		// console.log(this.api42Service.decodeJWT(jwtToken['jwt_token']));
 		return jwtToken;

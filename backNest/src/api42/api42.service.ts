@@ -118,4 +118,17 @@ export class Api42Service
 			return null;
 		}
 	}
+
+	async setUserName(login42 : string) : Promise<string>
+	{
+		let res : string = login42;
+		let i : number = 1
+		while (await this.usersService.findUsername(res) != null)
+		{
+			res = login42 + i;
+			console.log(res);
+			i++;
+		}
+		return res;
+	}
 }
