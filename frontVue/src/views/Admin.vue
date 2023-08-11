@@ -1,11 +1,29 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
+import {ref} from 'vue'
+import axios, { AxiosError } from 'axios';
 
 const router = useRouter();
 
-const navigateToHome = () => {
+const login = ref("");
+
+async function navigateToHome() {
+  try {
+    if (login.value != "") {
+      const response : any = await axios.get('http://localhost:3000/api42/admin', { 
+        params: {
+          login42: login.value
+        }
+      })
+      sessionStorage.setItem('jwt_token', response.data.jwt_token);
       router.push('/home');
-    };
+    }
+  }
+  catch (error: any){
+    console.error(error.name + ": " + error.message);
+    console.error(error); 
+  }
+};
 
 </script>
 
@@ -22,15 +40,11 @@ const navigateToHome = () => {
             <form>
               <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder="Enter username">
-              </div>
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password">
+                <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter username">
               </div>
               <br>
               <div class="d-flex justify-content-between">
-              <button @click="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
+              <button @click.prevent="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
               </div>
             </form>
           </div>
@@ -40,20 +54,3 @@ const navigateToHome = () => {
   </div>
   </div>
 </template>
-
-<style scoped >
-.fullscreen-background {
-    
-    /* Set background image and styles */
-    background-image: url('backgroundv2.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-
-    position: fixed;
-    /* Reset margin and padding */
-
-    /* Set full viewport height */
-    width: 100%;
-    height: 100%;
-}
-</style>

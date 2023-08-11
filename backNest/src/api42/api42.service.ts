@@ -1,14 +1,8 @@
 import { Injectable, Req, Query, UnauthorizedException } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { Api42Controller } from './api42.controller';
 import { HttpService } from '@nestjs/axios';
-import { Api42 } from './api42.interface';
-import { Axios, AxiosResponse } from 'axios';
-import { request } from 'http';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { jwtConstants } from './constant';
-import { access } from 'fs';
 
 @Injectable()
 export class Api42Service 
@@ -86,7 +80,7 @@ export class Api42Service
 		const payload = {sub : login42}
 		return {
 			jwt_token: await this.jwtService.signAsync(payload),
-			};
+		};
 	}
 
 	async isAuth(jwtToken : string) : Promise<boolean>
@@ -104,6 +98,7 @@ export class Api42Service
 		}
 		return true;
 	}
+	
 	decodeJWT(jwtToken : string) : string | null
 	{
 		try {
@@ -118,4 +113,5 @@ export class Api42Service
 			return null;
 		}
 	}
+
 }

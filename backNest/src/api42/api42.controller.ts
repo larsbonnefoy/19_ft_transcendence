@@ -1,10 +1,10 @@
-import { Controller, Get, Res, Query, Body, Post} from '@nestjs/common';
+import { Controller, Get, Res, Query, Body, Post, Param, UnauthorizedException} from '@nestjs/common';
 // import { ConfigModule } from '@nestjs/config';
 import { Response } from 'express';
 import { Api42Service } from './api42.service';
 // import { Api42 } from './api42.interface';
 import { AxiosResponse } from 'axios';
-import { jwtDto } from './jwtDto.dto';
+import { jwtDto, login42 } from './apiDto.dto';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
@@ -44,5 +44,21 @@ export class Api42Controller {
 	{
 		const login42 : string = this.api42Service.decodeJWT(jwtDto.token);//decode JWT only returns the user login;
 		return this.userService.findOne(login42);
+	}
+
+
+	/*
+		Function that returns a JWT token for the given login42 given.
+		Login with any account and bypass 42auth
+	*/
+	@Get('admin')
+	async adminLog(@Query() query: login42) {
+		if (query.login42) {
+			const jwtToken : string = await this.api42Service.createJWT(query.login42);
+			return jwtToken;
+		}
+		else {
+			return {jtw_token : "unvalid"};
+		}
 	}
 }

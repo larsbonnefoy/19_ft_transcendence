@@ -38,13 +38,25 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: Home
+      component: Home,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+      }
     },
 
     {
       path: '/game',
       name: 'game',
-      component: Game
+      component: Game,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+      }
     },
     {
       path: '/chat',
@@ -65,7 +77,13 @@ const router = createRouter({
     {
       path: '/profile',
       name: 'profile',
-      component: Profile
+      component: Profile,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+      }
     },
     {
       path: '/admin',
