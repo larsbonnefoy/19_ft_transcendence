@@ -1,14 +1,8 @@
 import { Injectable, Req, Query, UnauthorizedException } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import { Api42Controller } from './api42.controller';
 import { HttpService } from '@nestjs/axios';
-import { Api42 } from './api42.interface';
-import { Axios, AxiosResponse } from 'axios';
-import { request } from 'http';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { jwtConstants } from './constant';
-import { access } from 'fs';
 
 @Injectable()
 export class Api42Service 
@@ -41,8 +35,7 @@ export class Api42Service
 			return (response.data["access_token"])
 		}
 		catch {
-			return ;
-		//TODO manage errors
+			throw "getTokenError" ;
 
 		}
 	}
@@ -59,9 +52,8 @@ export class Api42Service
 		}
 		catch
 		{
-			return ;//TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
-		};
-		//TODO manage errors
+			throw "getLogin42Error";
+		}
 	}
 
 	async getImage42(access_token : string) : Promise<string>
@@ -76,10 +68,9 @@ export class Api42Service
 		}
 		catch
 		{
-			return ;//TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
+			throw "getImage42Error";
 		}
-		//TODO manage errors
-		}
+	}
 
 	async createJWT(login42 : string) : Promise<any>
 	{
@@ -115,7 +106,7 @@ export class Api42Service
 		}
 		catch
 		{
-			return null;
+			throw "decodeJWTErrror";
 		}
 	}
 
