@@ -3,7 +3,7 @@ import HeaderBar from './components/HeaderBar.vue'
 </script>
 
 <template>
-  <div class="bg-dark vh-100 text-light">
+  <div class="bg-secondary vh-100 text-light">
     <HeaderBar></HeaderBar>
     <Suspense>
       <RouterView></RouterView>

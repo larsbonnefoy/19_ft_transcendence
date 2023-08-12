@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute, type RouteRecordRaw} from 'vue-router'
-import {computed, ref} from 'vue'
+import {computed, reactive} from 'vue'
 
 const props = defineProps<{
     route: RouteRecordRaw
@@ -18,8 +18,14 @@ const isActive = computed(() => {
     <router-link 
     :to="route.path" 
     class="nav-link"
-    :class="{active: isActive}"
+    :class="{active: isActive, currentRouteStyle: isActive}"
     >
-        {{ route.name }}
+    {{ route.name }}
     </router-link>
 </template>
+
+<style scoped>
+.currentRouteStyle {
+    text-decoration: underline;
+}
+</style>

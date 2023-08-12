@@ -44,6 +44,11 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
+        else {
+          console.log("Before enter");
+          const store = useUserStore();
+          await store.fetchUser();
+        }
       }
     },
 
@@ -104,12 +109,12 @@ const router = createRouter({
   ]
 })
 
-
+/*
 router.beforeResolve((to, from) => {
   if (to.name === "home") {
     const store = useUserStore();
     store.fetchUser();
   }
 })
-
+*/
 export default router

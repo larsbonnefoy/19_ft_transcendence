@@ -11,7 +11,7 @@ if (urlParams.has('code')) {
 		console.log(jwtToken)
 		//  get user id.
 		sessionStorage.setItem('jwt_token', jwtToken);
-		console.log("ended");
+		console.log("auth ended, going to home");
 		router.push('/home');
 	}
 	catch {

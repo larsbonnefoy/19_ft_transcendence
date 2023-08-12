@@ -24,21 +24,17 @@ const logout = () => {
     localStorage.clear();
     store.$reset();
 }
-/*
-watch(() => route.name, () => {
-  console.debug(route.name);
-      // Optionally you can set immediate: true config for the watcher to run on init
-      //}, { immediate: true });
-});
-*/
+
+
 </script>
 
 <template>
     <nav class="navbar-dark bg-dark navbar navbar-expand-lg">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">ft_pong</a>
+            <router-link to="/home" class="navbar-brand">
+                ft_pong
+            </router-link>
             <template v-if="displayLinks">
-
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div v-for="(route, index) in routesToDisplay" :key="index">
                         <ul class="navbar-nav">
@@ -50,7 +46,7 @@ watch(() => route.name, () => {
                 </div>
           
                 <div class="btn-group">
-                    <button type="button" class="btn btn-outline-info dropdown-toggle mx-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-outline-secondary dropdown-toggle mx-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ store.getUserName }}
                     </button>
                         <div class="dropdown-menu dropdown-menu-right">
