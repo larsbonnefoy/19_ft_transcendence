@@ -13,7 +13,6 @@ const route = useRoute();
 const router = useRouter();
 let user: UserInfo;
 const foundUser = ref(true);
-
 console.log("route params");
 console.log(route.params.username);
 
@@ -52,6 +51,8 @@ async function getUserInfo() {
 }
 
 await getUserInfo();
+
+watch(() => route.params.username, getUserInfo);
 
 </script>
 
