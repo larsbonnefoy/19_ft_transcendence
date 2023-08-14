@@ -2,7 +2,7 @@
 import axios from 'axios';
 import MatchHistoryGame from './MatchHistoryGame.vue';
 import {ref} from 'vue'
-import {type match} from '../types'
+import {type match} from '../../types'
 
 const props = defineProps<{
     username : string

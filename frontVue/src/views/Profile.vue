@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import { ref, onMounted, watch } from 'vue';
-import ProfileCard from '@/components/ProfileCard.vue';
-import MatchHistory from '@/components/MatchHistory.vue';
+import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
+import MatchHistory from '@/components/Matches/MatchHistory.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import {type UserInfo} from '../types'

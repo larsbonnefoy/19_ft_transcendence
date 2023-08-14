@@ -103,6 +103,11 @@ const router = createRouter({
     },
     {
       path: '/:notFound',
+      name: 'notFound',
+      component: ErrorPage
+    },
+    {
+      path:'/:pathMatch(.*)*',
       name: 'default',
       component: ErrorPage
     }

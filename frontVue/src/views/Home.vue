@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { watch, onMounted } from 'vue';
 import { useUserStore } from '@/stores/user';
-import FriendsList from '@/components/FriendsList.vue';
-import MatchHistory from '@/components/MatchHistory.vue';
+import FriendsList from '@/components/Socials/FriendsList.vue';
+import MatchHistory from '@/components/Matches/MatchHistory.vue';
 
 const store = useUserStore();
 

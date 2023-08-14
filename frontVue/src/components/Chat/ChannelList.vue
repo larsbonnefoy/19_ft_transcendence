@@ -88,7 +88,6 @@ const toggleView = () => {
   width: 25%;
   border-right: 1px solid #dee2e6;
   overflow: hidden;
-  background-color: #f0f0f0;
   margin: 0;  /* Resetting margins */
   padding: 0; /* Resetting padding */
 }

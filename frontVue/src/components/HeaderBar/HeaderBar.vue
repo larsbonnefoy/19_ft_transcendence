@@ -27,7 +27,7 @@ const logout = () => {
 
 /*
 const profile = () => {
-    router.push({path: 'profile', params: {username: store.getUserName}});
+    router.push({path: `profile/${store.getUserName}`});
 }
 */
 
@@ -55,6 +55,9 @@ const profile = () => {
                         {{ store.getUserName }}
                     </button>
                         <div class="dropdown-menu dropdown-menu-right">
+                            <!--
+                            <button class="dropdown-item" @click="profile"> Profile </button>
+                             -->
                             <router-link 
                             :to="{
                                 name:'profile',
