@@ -25,6 +25,11 @@ const logout = () => {
     //store.$reset();
 }
 
+/*
+const profile = () => {
+    router.push({path: 'profile', params: {username: store.getUserName}});
+}
+*/
 
 </script>
 
@@ -50,7 +55,8 @@ const logout = () => {
                         {{ store.getUserName }}
                     </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <router-link :to="{
+                            <router-link 
+                            :to="{
                                 name:'profile',
                                 params: {
                                     username: store.getUserName
@@ -58,7 +64,7 @@ const logout = () => {
                             }" 
                             class="dropdown-item">
                                 Profile
-                            </router-link>  
+                            </router-link>
                             <div class="dropdown-divider"></div>
                             <router-link to="/" class="dropdown-item" @click.native="logout">
                                 LogOut

@@ -10,7 +10,12 @@ import {type UserInfo} from '../types'
 
 const store = useUserStore();
 const route = useRoute();
+const router = useRouter();
 let user: UserInfo;
+const foundUser = ref(true);
+
+console.log("route params");
+console.log(route.params.username);
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
@@ -20,15 +25,18 @@ async function getUserInfo() {
             const res = await axios.get(`http://localhost:3000/user/one:${route.params.username}`);
             console.log(res.data);
             if (!res.data) {
-                //router.push("/:notFound")
+                foundUser.value = false;
             }
+
             /*
             Truc degeu pour display une image en attendant
             */
             else {
                 user = res.data
-                if (user.photo == "no photo yet") {
-                    user.photo = "../../assets/placeholder_avatar.png"
+                if (user) {
+                    if (user.photo == "no photo yet") {
+                        user.photo = "../../assets/placeholder_avatar.png"
+                    }
                 }
             }
         }
@@ -37,26 +45,24 @@ async function getUserInfo() {
         }
     }
     else {
-        user = store.getUser
+        if (store.getUser) {
+            user = store.getUser
+        }
     }
 }
 
 await getUserInfo();
 
-/*
-TODO
-Get username form route, if it is the current logged user, dont need to call db and get info from store
-*/
 </script>
 
 <template>
-<template v-if="user != undefined" class="col-2">
+<template v-if="foundUser" class="col-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-4 p-0">
                 <h1 style="text-align: center;"> Games </h1>
                 <MatchHistory 
-                    :username="user?.username"
+                    :username="user.username"
                 >
                 </MatchHistory>
             </div>
@@ -68,6 +74,9 @@ Get username form route, if it is the current logged user, dont need to call db 
             </div>
         </div>
     </div>
+</template>
+<template v-else>
+<h1 style="text-align: center"> User not found </h1>
 </template>
 </template>
 

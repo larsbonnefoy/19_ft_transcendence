@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', {
         user: null as UserInfo | null,
     }),
     getters: {
-        getUser: (state) => state.user,
+        getUser: (state): UserInfo | null => state.user,
         getUserName: (state) => state.user?.username,
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
@@ -48,6 +48,41 @@ export const useUserStore = defineStore('user', {
                     });
                 // }
                 */
+            }
+        },
+        async addFriend(newFriend: string) {
+            try {
+                const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
+                console.log(resLogin.data.login42);
+                const res = await axios.get("http://localhost:3000/user/set_friends", {
+                    params: {
+                        f1: this.user?.username,
+                        f2: newFriend
+                    }
+                })
+                
+                this.user?.friends.push(resLogin.data.login42);
+
+            }
+            catch (error) {
+                console.log(error);
+            }
+        },
+        async removeFriend(FriendtoRemove: string) {
+            try {
+                const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
+                const res = await axios.get("http://localhost:3000/user/unset_friends", {
+                    params: {
+                        f1: this.user?.username,
+                        f2: FriendtoRemove
+                    }
+                })
+                if (this.user) {
+                    this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
+                }
+            }
+            catch (error) {
+                console.log(error);
             }
         },
       },

@@ -6,10 +6,12 @@ import axios, { AxiosError } from 'axios';
 const router = useRouter();
 
 const login = ref("");
-
+const wrongLogin = ref(false);
 async function navigateToHome() {
   try {
     if (login.value != "") {
+      /* Check if user exists first*/
+      await axios.get(`http://localhost:3000/user/UserFromLog:${login.value}`)
       const response : any = await axios.get('http://localhost:3000/api42/admin', { 
         params: {
           login42: login.value
@@ -20,8 +22,8 @@ async function navigateToHome() {
     }
   }
   catch (error: any){
+    wrongLogin.value = true;
     console.error(error.name + ": " + error.message);
-    console.error(error); 
   }
 };
 
@@ -42,6 +44,7 @@ async function navigateToHome() {
                 <label for="username">Username</label>
                 <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter username">
               </div>
+              <p v-if="wrongLogin" style="color: red;" class="small"> Wrong Username </p>
               <br>
               <div class="d-flex justify-content-between">
               <button @click.prevent="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>

@@ -17,11 +17,11 @@ const store = useUserStore();
       >
       </MatchHistory>
     </div>
-    <div class="col-7">
+    <div class="col-8">
       <h2 style="text-align: center;"> Some More Content?? </h2>
       <p style="text-align: center;"> genre les succes </p>
     </div>
-    <div class="col-2 p-0">
+    <div class="col-1 p-0">
         <FriendsList></FriendsList>
     </div>
   </div>

@@ -25,6 +25,7 @@ else {
 </script>
 
 <template>
+	<!-- Could display loading state here -->
     <p> auth </p>
 	<!-- <span>code: {{ code }}</span> -->
 	<!-- <span> status: {{ response.status }} </span> -->
