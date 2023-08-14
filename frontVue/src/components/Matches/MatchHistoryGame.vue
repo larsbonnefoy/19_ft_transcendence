@@ -38,6 +38,13 @@ const gameWon = computed(() => {
     return user.score > opponent.score;
 })
 
+try {
+    const resUsername = await axios.get(`http://localhost:3000/user/UserFromLog:${opponent.login42}`)
+    opponentUsername = resUsername.data.username;
+}
+catch (error) {
+    console.log(error)
+}
 </script>
 
 <template>
@@ -45,7 +52,19 @@ const gameWon = computed(() => {
   class="list-group-item p-3 border border-dark border-1 text"
   :class="{'list-group-item-success': gameWon, 'list-group-item-danger' : !gameWon}"
   >
-  {{ props.username }} : {{ user.score }} | {{ opponent.login42 }} : {{ opponent.score }}
+  {{ props.username }} : {{ user.score }} |
+    <router-link 
+        :to="{
+            name:'profile',
+            params: {
+                username: opponentUsername
+            }
+        }"
+        style="color: black;"
+    >
+    {{ opponentUsername }}
+    </router-link>
+    : {{ opponent.score }}
     </li>
 </template>
 

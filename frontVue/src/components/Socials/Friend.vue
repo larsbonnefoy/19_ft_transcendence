@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { type UserInfo } from '@/types';
 import {ref} from 'vue';
+import GameButton from '../ProfileDisplay/GameButton.vue';
+import MessageButton from '../ProfileDisplay/MessageButton.vue';
 
 const props = defineProps<{
     login42 : string
@@ -53,7 +55,8 @@ catch (error) {
                             <p class="small text-muted m-1">elo: {{ friend.elo }}</p>
                         </div>
                     </div>
-                    
+                    <GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
+                    <MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
                 </div>
             </div>
         </div>

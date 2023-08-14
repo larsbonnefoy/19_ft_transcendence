@@ -11,7 +11,7 @@ const store = useUserStore();
 <template>
 <div class="container-fluid">
   <div class="row">
-    <div v-if="store.getUserName != undefined" class="col-3">
+    <div v-if="store.getUserName != undefined" class="col-2">
       <MatchHistory 
       :username="store.getUserName"
       >
@@ -21,7 +21,7 @@ const store = useUserStore();
       <h2 style="text-align: center;"> Some More Content?? </h2>
       <p style="text-align: center;"> genre les succes </p>
     </div>
-    <div class="col-1 p-0">
+    <div class="col-2 p-0">
         <FriendsList></FriendsList>
     </div>
   </div>

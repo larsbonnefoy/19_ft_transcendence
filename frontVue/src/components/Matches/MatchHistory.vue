@@ -12,6 +12,7 @@ let matches: match[];
 let login: string = "";
 
 const succesReqHistory = ref(false);
+
 /*
 Verifier que si le user n'as pas de match (=> si le call a match history rate ou n'as pas de valeur)
 Display message "Make friends and play game" ou un truc du genre
@@ -30,7 +31,7 @@ catch (error : any) {
 </script>
 
 <template>
-    <h2 class="title"> {{ props.username }}'s games </h2>
+    <h2> {{ props.username }}'s games </h2>
         <template v-if="succesReqHistory">
             <div class="border border-dark border-2 m-5">
                 <ul v-for="(match, index) in matches" class="list-groupe m-0 p-0" :key="index">
@@ -49,9 +50,9 @@ catch (error : any) {
 </template>
 
 <style>
-.title {
+h2 {
     text-align: center;
-    margin:5%
+    margin: 10%;
 }
 </style>
 

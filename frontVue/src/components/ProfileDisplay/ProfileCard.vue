@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import { ref, computed } from 'vue';
-import {type UserInfo} from '../types'
+import {type UserInfo} from '../../types'
 import { useRouter } from 'vue-router';
 import AddRemoveButton from './AddRemoveButton.vue';
-import MessageButton from './MessageButton.vue'
+import MessageButton from './MessageButton.vue';
+import GameButton from './GameButton.vue';
 
 const router = useRouter();
 
@@ -55,7 +56,8 @@ let submit = (async () => {
                     </div>
                     <div v-else>
                         <AddRemoveButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"></AddRemoveButton>
-                        <MessageButton class="m-2"></MessageButton>
+                        <GameButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"> </GameButton>
+                        <MessageButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"></MessageButton>
                     </div>
                     
                     <div class="d-flex justify-content-between text-center mt-5 mb-2">
