@@ -95,6 +95,7 @@ export class Api42Service
 		}
 		return true;
 	}
+
 	decodeJWT(jwtToken : string) : string | null
 	{
 		try {

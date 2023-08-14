@@ -13,11 +13,11 @@ import { DataSource } from 'typeorm';
 
 import { Match } from './match/match.entity';
 import { MatchModule } from './match/match.module';
-import { AuthModule } from './auth/auth.module';
 
 import { Api42Service } from './api42/api42.service';
 import { HttpModule } from '@nestjs/axios';
 import { Axios, AxiosResponse } from 'axios';
+import { TwofaModule } from './twofa/twofa.module';
 
 @Module({
   imports: [
@@ -38,7 +38,8 @@ import { Axios, AxiosResponse } from 'axios';
     MatchModule,
     Axios,
     HttpModule,
-    Api42Module
+    Api42Module,
+    TwofaModule
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
