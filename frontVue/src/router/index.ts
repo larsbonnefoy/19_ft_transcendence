@@ -80,7 +80,7 @@ const router = createRouter({
       component: Auth,
     },
     {
-      path: '/profile',
+      path: '/profile/:username',
       name: 'profile',
       component: Profile,
       beforeEnter: async (to, from) => {

@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
+import Friend from './Friend.vue';
 const userStore = useUserStore();
 
 const friends = userStore.getFriends
-
+const friend: any = friends[0]
 </script>
 
 <template>
 <h2> Socials </h2>
-<div v-for="(friend, index) in friends" class="list-group" :key="index">
-    <a href="#" class="list-group-item list-group-item-action list-group-item-dark friendsDisplay">{{ friend }} - <span style="font-style: italic;"> online </span></a>
-    <!-- 
-    <img src="../../assets/presence_available.png" />
-    -->
+<div class="border border-dark border-2 m-3">
+    <div v-for="(friend, index) in friends" :key="index">
+        <Friend :login42="friend">
+        </Friend>
+    </div>
 </div>
 </template>
 
@@ -23,5 +24,6 @@ h2 {
 }
 .friendsDisplay {
     font-size: small;
+    text-align: center;
 }
 </style>

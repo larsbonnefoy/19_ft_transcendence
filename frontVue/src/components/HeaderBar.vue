@@ -22,7 +22,7 @@ const displayLinks = computed(() => {
 const logout = () => {
     sessionStorage.clear();
     localStorage.clear();
-    store.$reset();
+    //store.$reset();
 }
 
 
@@ -50,7 +50,13 @@ const logout = () => {
                         {{ store.getUserName }}
                     </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <router-link to="/profile" class="dropdown-item">
+                            <router-link :to="{
+                                name:'profile',
+                                params: {
+                                    username: store.getUserName
+                                }
+                            }" 
+                            class="dropdown-item">
                                 Profile
                             </router-link>  
                             <div class="dropdown-divider"></div>

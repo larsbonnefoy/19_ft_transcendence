@@ -5,3 +5,14 @@ export interface match {
     score1: number,
     score2: number
 }
+
+export interface UserInfo {
+    login42: string
+    username: string
+    status: string
+    photo: string
+    elo: number
+    win: number
+    loss: number
+    friends: string[]
+  }

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
+import {type UserInfo} from '../types' 
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -12,6 +13,8 @@ export const useUserStore = defineStore('user', {
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
+        getLogin42: (state) => state.user?.login42,
+
     },
     actions: {
         async fetchUser() {
@@ -31,27 +34,22 @@ export const useUserStore = defineStore('user', {
         async setName(newUsername:string) {
             if (this.user) {
                 const oldUsername = this.user.username;
-                try {                    
+                //try {                    
                     await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername } });
                     this.user.username = newUsername;
-                }
-                catch (error) {
-                    return error;
-                }
+                    /*
+                    return new Promise<number>((resolve) => {
+                        resolve(200);
+                    });
+                //}
+                //catch (error) {
+                    return new Promise<number>((reject) => {
+                        reject(409);
+                    });
+                // }
+                */
             }
         },
       },
      persist: true,
   })
-
-  interface UserInfo {
-    loggin42: string
-    username: string
-    password:string
-    status: string
-    photo: string
-    elo: number
-    win: number
-    loss: number
-    friends: UserInfo[]
-  }

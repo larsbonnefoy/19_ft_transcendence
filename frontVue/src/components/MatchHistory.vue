@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import MatchHistoryGame from './MatchHistoryGame.vue';
 import {ref} from 'vue'
 import {type match} from '../types'
@@ -32,8 +32,8 @@ catch (error : any) {
 <template>
     <h2 class="title"> {{ props.username }}'s games </h2>
         <template v-if="succesReqHistory">
-            <div class="border border-dark border-2">
-                <ul v-for="(match, index) in matches" class="list-groupe m-0 p-0">
+            <div class="border border-dark border-2 m-5">
+                <ul v-for="(match, index) in matches" class="list-groupe m-0 p-0" :key="index">
                     <MatchHistoryGame
                     :username="props.username"
                     :login="login"
