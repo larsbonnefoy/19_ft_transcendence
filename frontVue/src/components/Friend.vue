@@ -28,33 +28,32 @@ catch (error) {
 </script>
 
 <template>
-    <div class="container p-0 border border-dark border-1">
+    <div class="container p-0">
         <div class="card">
-            <div class="card-body p-1">
+            <div class="card-body p-0">
                 <div class="d-flex text-black">
-                    <div class="flex-shrink-0">
-                        <router-link 
-                            :to="{
-                                name:'profile',
-                                params: {
-                                    username: FriendUsername
-                                }
-                            }"
-                        >
-                        <img class="profileImg" :src="friend.photo">
-                        </router-link>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <div class="d-flex justify-content-start rounded-3 p-2 m-1 textDisplay"
-                            style="background-color: #efefef;">
-                            <div>
-                                <p class="small text-muted m-1">{{ friend.username }}: {{ friend.status }}</p>
-                            </div>
-                            <div class="px-3">
-                                <p class="small text-muted m-1">elo: {{ friend.elo }}</p>
-                            </div>
+                    
+                    <router-link 
+                        :to="{
+                            name:'profile',
+                            params: {
+                                username: FriendUsername
+                            }
+                        }"
+                        class=""
+                    >
+                    <img class="profileImg m-1" :src="friend.photo">
+                    </router-link>
+
+                    <div class="flex-grow-1 ms-1 friendsDisplay">
+                        <div>
+                            <p class="small text-muted m-1">{{ friend.username }}: {{ friend.status }}</p>
+                        </div>
+                        <div class="">
+                            <p class="small text-muted m-1">elo: {{ friend.elo }}</p>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -62,12 +61,13 @@ catch (error) {
 </template>
 
 <style scoped>
-.textDisplay {
-    font-size: small;
-}
 .profileImg {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 3px;
+}
+.friendsDisplay {
+    font-size: small;
+    text-align: left;
 }
 </style>

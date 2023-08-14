@@ -4,13 +4,12 @@ import Friend from './Friend.vue';
 const userStore = useUserStore();
 
 const friends = userStore.getFriends
-const friend: any = friends[0]
 </script>
 
 <template>
 <h2> Socials </h2>
-<div class="border border-dark border-2 m-3">
-    <div v-for="(friend, index) in friends" :key="index">
+<div class="m-3">
+    <div v-for="(friend, index) in friends" :key="index" class="m-1">
         <Friend :login42="friend">
         </Friend>
     </div>
@@ -22,8 +21,5 @@ h2 {
     text-align: center;
     margin: 10%;
 }
-.friendsDisplay {
-    font-size: small;
-    text-align: center;
-}
+
 </style>
