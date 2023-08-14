@@ -1,0 +1,17 @@
+{
+  "channels": [
+    {
+      "id": "1",
+      "name": "General",
+      "messages": [
+        { "sender": "Alice", "text": "Hi there!", "id": "1" },
+        { "sender": "User", "text": "Hello Alice!", "id": "2" }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Tech Talk",
+      "messages": []
+    }
+  ]
+}
