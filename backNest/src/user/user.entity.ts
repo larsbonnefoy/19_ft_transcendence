@@ -35,7 +35,6 @@ export class User {
   @Column({ type: "text", default: "no photo yet" })
   photo: string; // TODO, don't know how to store a photo yet
   
-  
   @Column({ type: "boolean", default: "false" })
   has2fa: boolean;  
 

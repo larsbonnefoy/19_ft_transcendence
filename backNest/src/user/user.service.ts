@@ -56,14 +56,14 @@ export class UserService {
 
   async enable2fa(login42: string, secret : string)
   {
-	await this.userRepository.update(login42, {has2fa:true});
-	await this.userRepository.update(login42, {twofaSecret:secret});//TODO make in two step doesnt make any sense in one (if the qr code fails we still put the secret in the db but if the challenge fails we need to discard the 2fa and retry)
+	  await this.userRepository.update(login42, {has2fa:true});
+	  await this.userRepository.update(login42, {twofaSecret:secret});
   }
 
   async disable2fa(login42: string)
   {
-	await this.userRepository.update(login42, {has2fa:false});
-	await this.userRepository.update(login42, {twofaSecret:null});
+	  await this.userRepository.update(login42, {has2fa:false});
+	  await this.userRepository.update(login42, {twofaSecret:null});
   }
   // getUsername(login42: string): string {
   //   const user = this.userRepository.findOneBy({ login42:login42 });

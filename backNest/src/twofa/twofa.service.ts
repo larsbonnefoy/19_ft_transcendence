@@ -25,13 +25,20 @@ export class TwofaService {
 		return toDataURL(otpUrl)
 	}
 
-	verify2fa(twofaCode : string, secret: string) : boolean
+	verify2fa(twofaCode : string | null, secret: string | null) : boolean
 	{
-		return authenticator.verify(
+		if (!twofaCode != null && secret != null)
+		{ 
+			return authenticator.verify(
 			{
 				token: twofaCode,
 				secret: secret
 			}
-		);
+			);
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
