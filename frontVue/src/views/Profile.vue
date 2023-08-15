@@ -61,7 +61,7 @@ watch(() => route.params.username, getUserInfo);
 <template v-if="foundUser" class="col-2">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-4 p-0">
+            <div class="col-4 p-5">
                 <GameHistory 
                     :username-prop="user.username"
                 >

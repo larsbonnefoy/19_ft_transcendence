@@ -31,7 +31,7 @@ await getGames();
 </script>
 
 <template>
-    <h2> {{username}}'s games </h2>
+    <h2 style="text-align: center; "> {{username}}'s games </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 42rem; max-height: 50rem;">
         <template v-for="(game, index) in games" :key="index">
             <Game :game-prop="game" :login-prop="login" :username-prop="username"> </Game>
