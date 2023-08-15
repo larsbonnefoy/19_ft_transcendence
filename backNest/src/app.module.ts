@@ -26,9 +26,9 @@ import { TwofaModule } from './twofa/twofa.module';
       host: 'localhost', // if running with docker, comment this and use line below
       // host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
       port: 5432,
-      username: 'user',
-      password: 'secret',
-      database: 'db_nestjs',
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
       entities: [User, Match],
       synchronize: true,
       autoLoadEntities: true,
