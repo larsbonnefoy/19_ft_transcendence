@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
 import { TwofaService } from './twofa.service';
-import { jwtDto } from '../api42/jwtDto.dto';
+import { jwtDto } from '../api42/apiDto.dto';
 import { UserService } from '../user/user.service';
 import { Api42Service } from '../api42/api42.service';
 
