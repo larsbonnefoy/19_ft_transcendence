@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onUpdated } from 'vue';
-import ProfileButton from './ProfileButton.vue'; // Adjust the path based on your project structure
+import ProfileButton from '@/components/ProfileButton.vue'; // Adjust the path based on your project structure
 
 const props = defineProps({
   messages: Array
