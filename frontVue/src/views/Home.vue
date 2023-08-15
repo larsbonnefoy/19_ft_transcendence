@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { watch, onMounted, ref, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
-import FriendsList from '@/components/Socials/FriendsList.vue';
-import MatchHistory from '@/components/Matches/MatchHistory.vue';
+//import FriendsList from '@/components/Socials/FriendsList.vue';
 import GameHistory from '@/components/Matches/GameHistory.vue';
+import FriendsList from '@/components/Socials/FriendsListBis.vue';
 const store = useUserStore();
 
 const userExists = computed(() => {
@@ -31,7 +31,7 @@ const userExists = computed(() => {
     </div>
 
     <div class="col-3">
-        <FriendsList></FriendsList>
+      <FriendsList></FriendsList>
     </div>
   </div>
 </div>
