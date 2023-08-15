@@ -2,14 +2,13 @@
 import { ref, computed } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 
-// State
 const numberOfChannels = 30;
 const channels = ref(Array.from({ length: numberOfChannels }, (_, i) => ({
   id: i + 1,
   name: `Channel ${i + 1}`
 })));
 
-const searchTerm = ref(''); // Track the user's search term
+const searchTerm = ref('');
 const showSearchBar = ref(false);
 
 const toggleSearchBar = () => {
@@ -17,7 +16,6 @@ const toggleSearchBar = () => {
 };
 
 const filteredChannels = computed(() => {
-  // Choose the data source based on the currentView
   const source = currentView.value === 'private' ? privateMessages.value : channels.value;
   
   return source.filter(channel => 
@@ -26,7 +24,6 @@ const filteredChannels = computed(() => {
 });
 
 const createChannel = () => {
-  // Your logic to create a new channel goes here
   alert('Create new channel functionality goes here.');
 };
 const numberOfPrivateMessages = 10;
@@ -35,10 +32,8 @@ const privateMessages = ref(Array.from({ length: numberOfPrivateMessages }, (_, 
   name: `Private Message ${i + 1}`
 })));
 
-// Track the currently selected view
-const currentView = ref('private'); // 'channels' or 'private'
+const currentView = ref('private');
 
-// Methods
 const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
 };
@@ -80,7 +75,7 @@ const toggleView = () => {
 .header-section {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; /* Existing margin */
+  margin-bottom: 10px;
 }
 
 .channel-list {
@@ -89,8 +84,8 @@ const toggleView = () => {
   border-right: 1px solid #dee2e6;
   overflow: hidden;
   background-color: #f0f0f0;
-  margin: 0;  /* Resetting margins */
-  padding: 0; /* Resetting padding */
+  margin: 0;  
+  padding: 0;
 }
 
 h3 {
@@ -100,7 +95,7 @@ h3 {
   cursor: pointer;
   transition: background-color 0.6s ease;
   text-align: center;
-  margin: 5px 0; /* Existing margin */
+  margin: 5px 0;
   flex:1;
 }
 
@@ -109,10 +104,10 @@ h3:hover {
 }
 
 .channel-scroll {
-  max-height: calc(100vh - 10vh); /* Dynamically calculated considering other static elements */
+  max-height: calc(100vh - 10vh);
   overflow-y: auto;
-  margin: 0; /* Resetting margins */
-  padding: 0; /* Resetting padding */
+  margin: 0; 
+  padding: 0;
 }
 
 .search-bar {
@@ -145,7 +140,7 @@ h3:hover {
   transition: opacity 0.5s ease, transform 0.6s ease;
 }
 .slide-fade-leave-active {
-  transition: opacity 0.4s ease, transform 0.3s ease; /* Quicker leave phase */
+  transition: opacity 0.4s ease, transform 0.3s ease;
 }
 .slide-fade-enter-from {
   opacity: 0;

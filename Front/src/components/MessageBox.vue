@@ -1,39 +1,40 @@
-<script lang="ts">
-import { defineProps, ref, onUpdated, emit } from 'vue';
+<script setup lang="ts">
+import { ref, onUpdated } from 'vue';
+import ProfileButton from '@/components/ProfileButton.vue'; // Adjust the path based on your project structure
 
-export default {
-  props: {
-    messages: Array
-  },
-  setup(props, { emit }) {
-    const messageBoxRef = ref(null);
-    const lastMessageRef = ref(null);
+const props = defineProps({
+  messages: Array
+});
 
-    onUpdated(() => {
-      emit('updated');
-    });
+const emit = defineEmits();
 
-    return {
-      messageBoxRef,
-      lastMessageRef
-    };
-  }
+const messageBoxRef = ref(null);
+const lastMessageRef = ref(null);
+
+onUpdated(() => {
+  emit('updated');
+});
+
+function handleProfileClick(username: string) {
+  emit('open-profile', username);
 }
 </script>
 
 <template>
-    <div class="message-box" ref="messageBoxRef">
-      <div v-for="(message, index) in messages" :key="message.id" class="message" 
-           :ref="index === messages.length - 1 ? 'lastMessageRef' : null">
-        <div class="message-user">
-          <strong>{{ message.sender === 'me' ? 'You' : message.user }}</strong>
-        </div>
-        <div class="message-content">
-          {{ message.content }}
-        </div>
+  <div class="message-box" ref="messageBoxRef">
+    <div v-for="(message, index) in messages" :key="message.id" class="message" 
+         :class="{ 'sent-by-me': message.sender === 'me' }"
+         :ref="index === messages.length - 1 ? 'lastMessageRef' : null">
+      <div class="message-user">
+        <ProfileButton :username="message.sender === 'me' ? 'You' : message.user" @open-profile="handleProfileClick"/>
+      </div>
+      <div class="message-content">
+        {{ message.content }}
       </div>
     </div>
+  </div>
 </template>
+
   
 <style scoped>
 .message-box {
@@ -58,5 +59,24 @@ export default {
   border-radius: 12px;
   display: inline-block;
   max-width: 80%;
+  white-space: normal;      /* Allow text to wrap */
+  word-wrap: break-word;    /* Break long words */
+}
+
+.sent-by-me {
+  text-align: right;
+}
+
+.sent-by-me .message-user {
+  margin-bottom: 5px;
+  color: #888;
+}
+
+.sent-by-me .message-content {
+  background-color: #e2f0fb; 
+  display: inline-block;
+  max-width: 80%;
+  white-space: normal;    
+  word-wrap: break-word;   
 }
 </style>

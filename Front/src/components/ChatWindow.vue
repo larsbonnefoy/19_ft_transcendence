@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref, nextTick, defineEmits } from 'vue';
 import MessageBox from './MessageBox.vue';
-import { $scrollTo } from 'vue-scrollto';
-
 
 const newMessage = ref("");
 const messages = ref([
@@ -11,6 +9,8 @@ const messages = ref([
 ]);
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
+
+const emit = defineEmits();
 
 const sendMessage = () => {
   if (newMessage.value.trim()) {
@@ -29,14 +29,19 @@ const autoScroll = () => {
 };
 
 const handleUpdate = () => {
-    console.log("MessageBox updated!");  // This will log a message every time the @updated event is emitted
+    console.log("MessageBox updated!"); 
     autoScroll();
 };
+
+function handleOpenProfile(username: string) {
+  emit('open-profile', username);
+}
 </script>
+
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
-    <MessageBox :messages="messages" class="chat-messages" @updated="autoScroll" />
+    <MessageBox :messages="messages" class="chat-messages" @updated="autoScroll" @open-profile="handleOpenProfile" />
     <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
     <div class="chat-input-container">
       <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type a message..." />
@@ -113,31 +118,31 @@ const handleUpdate = () => {
 /* Send Button */
 .chat-input-container .send-button {
     position: absolute;
-    right: 0; /* Adjusted for the button to fit perfectly with the input */
-    background-color: #007BFF; /* Primary color */
-    color: #ffffff; /* Text color */
+    right: 0; 
+    background-color: #007BFF; 
+    color: #ffffff; 
     border: none;
-    padding: 0.5rem 1rem; /* Vertical padding same as input, horizontal padding adjusted */
-    border-top-left-radius: 0; /* Square on the left to fit with the input */
-    border-bottom-left-radius: 0; /* Square on the left to fit with the input */
-    border-top-left-radius: 25px; /* Rounded top left corner */
-    border-bottom-left-radius: 25px; /* Rounded bottom left corner */
-    border-top-right-radius: 25px; /* Keep the top right corner rounded */
-    border-bottom-right-radius: 25px; /* Keep the bottom right corner rounded */
+    padding: 0.5rem 1rem; 
+    border-top-left-radius: 0; 
+    border-bottom-left-radius: 0; 
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px; 
+    border-top-right-radius: 25px; 
+    border-bottom-right-radius: 25px; 
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s; /* Smooth color change and subtle click effect */
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    height: 100%; /* Full height of the container */
+    transition: background-color 0.3s, transform 0.1s; 
+    outline: none; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    height: 100%; 
 }
 
 .chat-input-container .send-button:hover {
-    background-color: #0056b3; /* Darker shade for hover */
-}
+    background-color: #0056b3;
+} 
 
 .chat-input-container .send-button:active {
-    transform: scale(0.97); /* Slightly scale down the button when clicked for a "pressed" effect */
+    transform: scale(0.97); 
 }
 
 </style>

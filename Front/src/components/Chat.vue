@@ -4,13 +4,16 @@ import ChannelList from './ChannelList.vue';
 import ChatWindow from './ChatWindow.vue';
 import ProfileWindow from './ProfileWindow.vue';
 
-// Components for template
-const components = { ChannelList, ChatWindow };
+const selectedUsername = ref(null);
 
-// Dummy channel for the demo. In a real-world app, this might come from selecting a channel in ChannelList.
+function handleOpenProfile(username) {
+  selectedUsername.value = username;
+  console.log('Current selected username:', selectedUsername.value);
+}
+
 const selectedChannel = ref({ id: 1, name: 'General' });
-</script>
 
+</script>
 
 <template>
   <div class="container-fluid">
@@ -18,13 +21,12 @@ const selectedChannel = ref({ id: 1, name: 'General' });
       <!-- Channels Column -->  
       <ChannelList  />
       <!-- Chat Window -->
-      <ChatWindow :currentChannel="selectedChannel"/>
+      <ChatWindow :currentChannel="selectedChannel" @open-profile="handleOpenProfile"/>
       <!-- Profile Window -->
-      <ProfileWindow />
+      <ProfileWindow :username="selectedUsername"/>
     </div>
   </div>
 </template>
 
 <style>
 </style>
-
