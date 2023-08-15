@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { ref, onMounted, watch } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 import MatchHistory from '@/components/Matches/MatchHistory.vue';
+import GameHistory from '@/components/Matches/GameHistory.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import {type UserInfo} from '../types'
@@ -61,11 +62,10 @@ watch(() => route.params.username, getUserInfo);
     <div class="container-fluid">
         <div class="row">
             <div class="col-4 p-0">
-                <h1 style="text-align: center;"> Games </h1>
-                <MatchHistory 
-                    :username="user.username"
+                <GameHistory 
+                    :username-prop="user.username"
                 >
-                </MatchHistory>
+                </GameHistory>
             </div>
             <div class="col-4 p-0">
                 <ProfileCard :user="user"> </ProfileCard>
