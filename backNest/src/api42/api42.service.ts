@@ -35,8 +35,7 @@ export class Api42Service
 			return (response.data["access_token"])
 		}
 		catch {
-			return ;
-		//TODO manage errors
+			throw "getTokenError" ;
 
 		}
 	}
@@ -53,9 +52,8 @@ export class Api42Service
 		}
 		catch
 		{
-			return ;//TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
-		};
-		//TODO manage errors
+			throw "getLogin42Error";
+		}
 	}
 
 	async getImage42(access_token : string) : Promise<string>
@@ -70,10 +68,9 @@ export class Api42Service
 		}
 		catch
 		{
-			return ;//TODO CATCH HTTP ERROR CODE AND SHOW SOME ERROR MESSAGE TO THE USER ft_delog
+			throw "getImage42Error";
 		}
-		//TODO manage errors
-		}
+	}
 
 	async createJWT(login42 : string) : Promise<any>
 	{
@@ -98,7 +95,7 @@ export class Api42Service
 		}
 		return true;
 	}
-	
+
 	decodeJWT(jwtToken : string) : string | null
 	{
 		try {
@@ -110,8 +107,21 @@ export class Api42Service
 		}
 		catch
 		{
-			return null;
+			throw "decodeJWTErrror";
 		}
+	}
+
+	async setUserName(login42 : string) : Promise<string>
+	{
+		let res : string = login42;
+		let i : number = 1
+		while (await this.usersService.findUsername(res) != null)
+		{
+			res = login42 + i;
+			console.log(res);
+			i++;
+		}
+		return res;
 	}
 
 }
