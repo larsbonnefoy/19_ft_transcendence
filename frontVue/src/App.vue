@@ -11,5 +11,8 @@ import HeaderBar from './components/HeaderBar/HeaderBar.vue'
   </div>
 </template>
 
-<style>
+<style scoped>
+.bgColor {
+  background-color: #051323;
+}
 </style>

@@ -27,7 +27,8 @@ const userExists = computed(() => {
 
     <div class="col-5">
       <h2 style="text-align: center;"> Some More Content?? </h2>
-      <p style="text-align: center;"> genre les succes </p>
+      <p style="text-align: center;"> genre les succes </p>      
+      <p style="text-align: center;"> et les games en live </p>
     </div>
 
     <div class="col-3">
