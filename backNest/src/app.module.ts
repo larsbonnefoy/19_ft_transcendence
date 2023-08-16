@@ -18,6 +18,9 @@ import { Api42Service } from './api42/api42.service';
 import { HttpModule } from '@nestjs/axios';
 import { Axios, AxiosResponse } from 'axios';
 import { TwofaModule } from './twofa/twofa.module';
+import { ChatModule } from './chat/chat.module';
+import { chatMessage } from './chat/chat.entity';
+
 
 @Module({
   imports: [
@@ -29,7 +32,7 @@ import { TwofaModule } from './twofa/twofa.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
-      entities: [User, Match],
+      entities: [User, Match, Chat, ChatMessage],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -39,7 +42,8 @@ import { TwofaModule } from './twofa/twofa.module';
     Axios,
     HttpModule,
     Api42Module,
-    TwofaModule
+    TwofaModule,
+    ChatModule,
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
