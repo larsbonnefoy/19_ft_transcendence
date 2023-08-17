@@ -68,9 +68,9 @@ Should set max lenght of username here
                     </div>
                     <div v-if="modProfile" class="form-group row justify-content-left">
                         <h4> {{ user.username }}</h4>
-                        <ChangeUsername> </ChangeUsername>
-                        <UploadAvatar></UploadAvatar>
-                        <DoubleAuthButton></DoubleAuthButton>
+                        <ChangeUsername class="my-3"> </ChangeUsername>
+                        <UploadAvatar class="my-3"></UploadAvatar>
+                        <DoubleAuthButton class="my-3"></DoubleAuthButton>
                         <div v-if="activeUser" > 
                             <img class="ModProfilePic m-5" src="../../../assets/left-arrow.png" @click.prevent="toggleModProfile">
                         </div>

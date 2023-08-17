@@ -53,25 +53,26 @@ const lenLeft = computed(() => max - username.value.length);
 </script>
 
 <template>
-    <div class="col-6 textDisplay"> 
-        Change Username:
-    </div>
-    <div class="col-6">
-        <div class="form-group">
-            <div class="input-group">
-                <input type="text" class="form-control" :maxlength="max" v-model="username" @keypress="isAlphaNum" @keyup.enter="submit"/>
-                <div class="input-group-append">
-                    <span class="input-group-text"> {{ lenLeft }}</span>
+    <div class="row"> 
+        <div class="col-6 textDisplay"> 
+            Change Username:
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" class="form-control" :maxlength="max" v-model="username" @keypress="isAlphaNum" @keyup.enter="submit"/>
+                    <div class="input-group-append">
+                        <span class="input-group-text"> {{ lenLeft }}</span>
+                    </div>
                 </div>
+                <Transition name="slide-fade"> 
+                    <div  v-if="changedUsername" :class="changeSuccess ? 'alert-success' : 'alert-danger'" class="alert p-0" role="alert">
+                        {{ textDisplay }}
+                    </div>
+                </Transition>
             </div>
-            <Transition name="slide-fade"> 
-                <div  v-if="changedUsername" :class="changeSuccess ? 'alert-success' : 'alert-danger'" class="alert p-0" role="alert">
-                    {{ textDisplay }}
-                </div>
-            </Transition>
         </div>
     </div>
-
 </template>
 
 <style scoped>

@@ -3,7 +3,7 @@
 </script>
 
 <template>
-<div class="mb-3">
+<div class="my-3">
   <label for="formFileSm" class="form-label">Upload Avatar</label>
   <input class="form-control form-control-sm" id="formFileSm" type="file">
 </div>
