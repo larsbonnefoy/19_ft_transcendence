@@ -3,7 +3,7 @@ import {ref} from 'vue'
 import axios from 'axios';
 const max = 6
 const digits2fa = ref();
-
+const success2fa = ref(false);
 function isDigit(e: any) {
     let char = String.fromCharCode(e.keyCode);
         if(/^[0-9]+$/.test(char)) {
@@ -17,7 +17,7 @@ function isDigit(e: any) {
 let submit = (async () => {
         try {
             const data = await axios.post('http://localhost:3000/twofa/verify/', {token: sessionStorage.getItem('jwt_token'), code: digits2fa.value});
-            console.log(digits2fa.value);
+            
             console.log(data.data);
         }
         catch (error:any) {

@@ -14,6 +14,8 @@ export const useUserStore = defineStore('user', {
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
         getLogin42: (state) => state.user?.login42,
+        get2fa: (state) => state.user?.has2fa,
+
     },
     actions: {
         async fetchUser() {
@@ -29,6 +31,30 @@ export const useUserStore = defineStore('user', {
               console.log("fetch user error : " + error);
 			  this.user = null;
           }
+        },
+        //What happens if change 2fa but token not valid anymore?? (=> No token or expired token)
+        async change2fa(value: boolean) {
+            if (this.user) { 
+                this.user.has2fa = value;
+                if (value) {
+                    try { 
+                        const data = await axios.post('http://localhost:3000/twofa/enable/', {token: sessionStorage.getItem('jwt_token')});
+                        console.log(data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+                if (!value) {
+                    try {
+                        const data = await axios.post('http://localhost:3000/twofa/disable/', {token: sessionStorage.getItem('jwt_token')});
+                        console.log(data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
         },
         async setName(newUsername:string) {
             if (this.user) {

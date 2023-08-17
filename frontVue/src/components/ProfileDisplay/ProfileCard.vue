@@ -71,7 +71,7 @@ Should set max lenght of username here
                         <h4> {{ user.username }}</h4>
                         <ChangeUsername class="my-3"> </ChangeUsername>
                         <UploadAvatar class="my-3"></UploadAvatar>
-                        <DoubleAuthButton class="my-3"></DoubleAuthButton>
+                        <DoubleAuthButton></DoubleAuthButton>
                         <div v-if="activeUser" > 
                             <img class="ModProfilePic m-5" src="../../../assets/left-arrow.png" @click.prevent="toggleModProfile">
                         </div>

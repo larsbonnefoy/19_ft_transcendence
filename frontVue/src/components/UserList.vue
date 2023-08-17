@@ -26,6 +26,7 @@ onMounted(async () => {
       <th scope="col">elo</th>     
       <th scope="col">status</th> 
       <th scope="col">friends</th>
+      <th scope="col">2fa</th>
       <th scope="col">Win(s)</th>
       <th scope="col">Loss(es)</th>
       <th scope="col">Avatar</th>
@@ -38,6 +39,7 @@ onMounted(async () => {
         <td> {{ user.elo  }}</td>
         <td> {{ user.status }}</td>
         <td> {{ user.friends }}</td>
+        <td> {{ user.has2fa }}</td>
         <td> {{ user.win }}</td>
         <td> {{ user.loss }}</td>
         <td> <img :src=user.photo   ></td>
