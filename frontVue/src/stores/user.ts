@@ -14,7 +14,6 @@ export const useUserStore = defineStore('user', {
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
         getLogin42: (state) => state.user?.login42,
-
     },
     actions: {
         async fetchUser() {

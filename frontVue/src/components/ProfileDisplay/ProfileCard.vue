@@ -24,6 +24,7 @@ const modProfile = ref(false);
 function toggleModProfile() {
     modProfile.value = !modProfile.value;
 }
+
 /*
 Should set max lenght of username here
 */

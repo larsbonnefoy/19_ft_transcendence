@@ -19,9 +19,10 @@ export class TwofaController {
 			console.log(jwtDto.token);
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
+			await this.userService.update2faSecret(login42, twofaJSON['secret']); //TODO CYPHER SECRET
 			console.log(twofaJSON);
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
-			console.log('hmmm : '+ qrUrl);
+			// console.log('hmmm : '+ qrUrl);
 			// this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
 			return (qrUrl);
 		}
@@ -44,7 +45,8 @@ export class TwofaController {
 		{
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
-			this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
+			console.log(twofaJSON);
+			await this.userService.enable2fa(login42); //TODO CYPHER SECRET
 			console.log("user : ");
 			console.log(this.userService.findOne(login42));
 		}
@@ -60,6 +62,7 @@ export class TwofaController {
 	{
 			const login42 = this.api42Service.decodeJWT(body['token']);
 			console.log('code :' + body['code'])
+			console.log(await this.userService.findOne(login42))
 			console.log("twofaSecret " + (await this.userService.findOne(login42)).twofaSecret)
 			return (this.twofaService.verify2fa(body['code'], (await this.userService.findOne(login42)).twofaSecret));
 	}
@@ -69,7 +72,6 @@ export class TwofaController {
 	{
 		try
 		{
-
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
 			await this.userService.disable2fa(login42);
 			return 'ok';
@@ -109,7 +111,7 @@ export class TwofaController {
 			console.log('yo')
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
 			console.log('hmmm : '+ qrUrl);
-			this.userService.enable2fa(login42, twofaJSON['secret']);
+			this.userService.enable2fa(login42);
 			const htmlStr : string = "<!DOCTYPE html>\n<html>\n<head>\n<title>Base64 QR</title>\n</head>\n<body>\n<h1>Base64 QR</h1>\n<img alt=\"qr\" src=" + qrUrl + ">\n</body>\n</html>"
 			await response.status(200).send(htmlStr);
 			// return (qrUrl);

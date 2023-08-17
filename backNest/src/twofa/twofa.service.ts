@@ -20,8 +20,8 @@ export class TwofaService {
 
 	async generateQR(otpUrl : string)
 	{
-		console.log('generate:')
-		console.log(otpUrl);
+		// console.log('generate:')
+		// console.log(otpUrl);
 		return toDataURL(otpUrl)
 	}
 

@@ -54,10 +54,14 @@ export class UserService {
     return this.userRepository.findOneBy({ username:str });
   }
 
-  async enable2fa(login42: string, secret : string)
+  async update2faSecret(login42: string, secret : string)
+  {
+	  const test = await this.userRepository.update(login42, {twofaSecret:secret});
+  }
+
+  async enable2fa(login42: string)
   {
 	  await this.userRepository.update(login42, {has2fa:true});
-	  await this.userRepository.update(login42, {twofaSecret:secret});
   }
 
   async disable2fa(login42: string)
