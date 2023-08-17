@@ -3,8 +3,10 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Times
 @Entity()
 export class ChatMessage 
 {
-	@PrimaryColumn({ type: "timestamptz", default: Date.now})
-	time: Date;
+	// @PrimaryColumn({ type: "timestamptz", default: Date.now()})
+	// time: Date;
+	@PrimaryColumn({ type: "text", default: 'oi'})
+	time: string;
 
 	@Column()
 	message: string;
