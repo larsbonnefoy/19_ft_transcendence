@@ -17,6 +17,11 @@ import { MatchModule } from './match/match.module';
 import { Api42Service } from './api42/api42.service';
 import { HttpModule } from '@nestjs/axios';
 import { Axios, AxiosResponse } from 'axios';
+import { TwofaModule } from './twofa/twofa.module';
+import { ChatModule } from './chat/chat.module';
+import { ChatMessage } from './chat/chat.entity';
+import { Chat } from './chat/chat.entity';
+
 
 @Module({
   imports: [
@@ -25,10 +30,10 @@ import { Axios, AxiosResponse } from 'axios';
       host: 'localhost', // if running with docker, comment this and use line below
       // host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
       port: 5432,
-      username: 'user',
-      password: 'secret',
-      database: 'db_nestjs',
-      entities: [User, Match],
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
+    entities: [User, Match/*, Chat, ChatMessage*/],
       synchronize: true,
       autoLoadEntities: true,
     }),
@@ -37,7 +42,9 @@ import { Axios, AxiosResponse } from 'axios';
     MatchModule,
     Axios,
     HttpModule,
-    Api42Module
+    Api42Module,
+    TwofaModule,
+    ChatModule,
     // ServeStaticModule.forRoot({ // New
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New

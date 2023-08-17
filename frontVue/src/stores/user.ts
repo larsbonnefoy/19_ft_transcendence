@@ -19,16 +19,16 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
-                //console.log(sessionStorage.getItem('jwt_token'));
-
+                console.log("fetch user : " + sessionStorage.getItem('jwt_token'));
                 const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: sessionStorage.getItem('jwt_token')});
                 this.user = data.data;
                 console.log("fetched user")
                 console.log(data.data);
             }
             catch (error) {
-              alert(error);
-              console.log(error);
+            //   alert(error);
+              console.log("fetch user error : " + error);
+			  this.user = null;
           }
         },
         async setName(newUsername:string) {

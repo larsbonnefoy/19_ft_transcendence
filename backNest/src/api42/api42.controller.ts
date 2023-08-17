@@ -1,10 +1,7 @@
-import { Controller, Get, Res, Query, Body, Post, Param, UnauthorizedException} from '@nestjs/common';
-// import { ConfigModule } from '@nestjs/config';
-import { Response } from 'express';
+import { Controller, Get, Res, Query, Body, Post} from '@nestjs/common';
 import { Api42Service } from './api42.service';
-// import { Api42 } from './api42.interface';
-import { AxiosResponse } from 'axios';
-import { jwtDto, login42 } from './apiDto.dto';
+import { jwtDto } from './apiDto.dto';
+import { login42 } from './apiDto.dto';
 import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
@@ -13,25 +10,40 @@ export class Api42Controller {
 	constructor(private api42Service: Api42Service, private userService : UserService){}
 
 	@Get('getToken')
-	async findAll(	@Body() signInDto: Record<string, any>, @Query('code') query: string) 
+	async findAll(@Res({passthrough: true}) response, @Body() signInDto: Record<string, any>, @Query('code') query: string) 
 	{
 		console.log("getIntraInfos");
+		try
+		{
+			const access_token  : string = await this.api42Service.getToken(query);
+			// const access_token  : string = "badAccess";
+			const intraLogin : string = await this.api42Service.getLogin42(access_token);
+			const intraPhoto : string = await this.api42Service.getImage42(access_token);	 
+			const jwtToken : string = await this.api42Service.createJWT(intraLogin);
 
-		const access_token  : string = await this.api42Service.getToken(query);
-		const intraLogin : string = await this.api42Service.getLogin42(access_token);
-		const intraPhoto : string = await this.api42Service.getImage42(access_token);	 
-		const jwtToken : string = await this.api42Service.createJWT(intraLogin);
-		
-		console.log(jwtToken)
+			console.log(jwtToken)
 		//create a User object 
-		const user : User  = new User
-		user.login42 = intraLogin;
-		user.username = intraLogin;
-		user.photo = intraPhoto;
-		this.userService.createUser(user);
-		// console.log('decode: ');
-		// console.log(this.api42Service.decodeJWT(jwtToken['jwt_token']));
-		return jwtToken;
+			if (!(await this.userService.findOne(intraLogin)))
+			{
+				console.log("creating a db entry");
+				const user : User  = new User
+				user.login42 = intraLogin;
+				user.username = await this.api42Service.setUserName(intraLogin);
+				user.photo = intraPhoto;
+				this.userService.createUser(user);
+			}
+			else
+			{
+				console.log("user already in the db");
+			}
+			return jwtToken;
+		}
+		catch (error)
+		{
+			response.status(500).send(error);
+			console.error("api42/getToken error : " + error);
+			return ;
+		}	
 	}
 	
 	@Post('isAuth')
@@ -40,10 +52,19 @@ export class Api42Controller {
 	}
 
 	@Post('getLoggedUser')
-	async getLoggedUser(@Body() jwtDto: jwtDto )
+	async getLoggedUser(@Body() jwtDto: jwtDto, @Res({passthrough: true}) response)
 	{
-		const login42 : string = this.api42Service.decodeJWT(jwtDto.token);//decode JWT only returns the user login;
-		return this.userService.findOne(login42);
+		try
+		{
+			const login42 : string = this.api42Service.decodeJWT(jwtDto.token);//decode JWT only returns the user login;
+			return this.userService.findOne(login42);
+		}
+		catch (error)
+		{
+			console.error("api42/getLoggedUserError : " + error);
+			response.status(500).send(error);
+			return;
+		}
 	}
 
 

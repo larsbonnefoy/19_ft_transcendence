@@ -2,7 +2,6 @@
 import { useUserStore } from '@/stores/user';
 import { ref, onMounted, watch } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
-import MatchHistory from '@/components/Matches/MatchHistory.vue';
 import GameHistory from '@/components/Matches/GameHistory.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
