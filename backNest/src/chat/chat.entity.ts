@@ -1,25 +1,22 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Timestamp, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../user/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Timestamp, ManyToOne, JoinColumn, Relation } from 'typeorm';
 
 @Entity()
 export class ChatMessage 
 {
 	// @PrimaryColumn({ type: "timestamptz", default: Date.now()})
 	// time: Date;
-	@PrimaryColumn({ type: "text", default: 'oi'})
-	time: string;
+	@PrimaryColumn({type: 'timestamp',  nullable: false, default: () => 'CURRENT_TIMESTAMP' })
+	time: Date;
 
 	@Column()
 	message: string;
 
-	@Column()
-	user_login42: string;
+	@ManyToOne(() => User, (user) => user.messages )
+	user: Relation<User>;
 
-	@Column()
-	chat_id: string;
-
-	// @ManyToOne(() => Chat, chat => chat.id)
-	// @JoinColumn({ name: 'chat_id' })
-	// chat: Chat;
+	@ManyToOne(() => Chat, (chat) => chat.messages)
+	chat: Relation<Chat>;
 }
 
 
@@ -31,6 +28,9 @@ export class Chat
 	
 	@Column({ type: "text", default: null})
 	password: string
+
+	@OneToMany(() => ChatMessage, (message) => message.chat)
+	messages: Relation<ChatMessage[]>;
 
 }
 

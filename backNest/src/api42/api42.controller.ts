@@ -40,7 +40,7 @@ export class Api42Controller {
 		}
 		catch (error)
 		{
-			response.status(500).send(error);
+			response.status(500).send(error);//YOOOOOO
 			console.error("api42/getToken error : " + error);
 			return ;
 		}	

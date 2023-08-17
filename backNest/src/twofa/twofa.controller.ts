@@ -28,7 +28,7 @@ export class TwofaController {
 		}
 		catch (error)
 		{
-			console.log("error");
+			console.log(error);
 			try
 			{
 				const login42 = this.api42Service.decodeJWT(jwtDto.token);
