@@ -34,11 +34,13 @@ let submit = (async () => {
         }
     }
     changedUsername.value = true;
+    setTimeout(() => changedUsername.value = false, 3000);
 })
 
+/* si le username contient _ ou - backi envoie une erreur*/
 function isAlphaNum(e: any) {
     let char = String.fromCharCode(e.keyCode);
-        if(/^[A-Za-z0-9]+$/.test(char)) {
+        if(/^[A-Za-z0-9_-]+$/.test(char)) {
             return true;
         }
         else {
@@ -62,18 +64,32 @@ const lenLeft = computed(() => max - username.value.length);
                     <span class="input-group-text"> {{ lenLeft }}</span>
                 </div>
             </div>
+            <Transition name="slide-fade"> 
+                <div  v-if="changedUsername" :class="changeSuccess ? 'alert-success' : 'alert-danger'" class="alert p-0" role="alert">
+                    {{ textDisplay }}
+                </div>
+            </Transition>
         </div>
     </div>
-    <Transition> 
-        <div  v-if="changedUsername" :class="changeSuccess ? 'alert-success' : 'alert-danger'" class="alert" role="alert">
-            {{ textDisplay }}
-        </div>
-    </Transition>
+
 </template>
 
 <style scoped>
 .textDisplay {
     text-align: left;
     margin: auto;
+}
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(20px);
+  opacity: 0;
 }
 </style>

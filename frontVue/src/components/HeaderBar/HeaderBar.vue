@@ -50,14 +50,11 @@ const profile = () => {
                     </div>
                 </div>
           
-                <div class="btn-group">
+                <div class="btn-group mx-2">
                     <button type="button" class="btn btn-outline-secondary dropdown-toggle mx-3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ store.getUserName }}
                     </button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <!--
-                            <button class="dropdown-item" @click="profile"> Profile </button>
-                             -->
                             <router-link 
                             :to="{
                                 name:'profile',
@@ -74,7 +71,7 @@ const profile = () => {
                             </router-link>
                         </div>
                     </div>
-                <img :src=store.getImg >
+                <img class="mx-3" :src=store.getImg >
             </template>
         </div>
     </nav>
@@ -82,8 +79,8 @@ const profile = () => {
 
 <style scoped>
 img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
+    height: 60px;
+    width: auto;
+    border-radius: 20%;
 }
 </style>
