@@ -11,8 +11,8 @@ export class TwofaController {
 	private userService : UserService, 
 	private api42Service: Api42Service) {}
 
-	@Post('enable')
-	async enable2fa(@Body() jwtDto: jwtDto)
+	@Post('create')
+	async create2fa(@Body() jwtDto: jwtDto)
 	{
 		try
 		{
@@ -22,7 +22,7 @@ export class TwofaController {
 			console.log(twofaJSON);
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
 			console.log('hmmm : '+ qrUrl);
-			this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
+			// this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
 			return (qrUrl);
 		}
 		catch (error)
@@ -37,7 +37,66 @@ export class TwofaController {
 			return error;
 		}
 	}
+	@Post('enable')
+	async enable2fa(@Body() jwtDto: jwtDto)
+	{
+		try
+		{
+			const login42 = this.api42Service.decodeJWT(jwtDto.token);
+			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
+			this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
+			console.log("user : ");
+			console.log(this.userService.findOne(login42));
+		}
+		catch (error)
+		{
+			return error;
+		}
 
+	}
+
+	@Post('verify')
+	async verify(@Body() body:string)
+	{
+			const login42 = this.api42Service.decodeJWT(body['token']);
+			console.log('code :' + body['code'])
+			console.log("twofaSecret " + (await this.userService.findOne(login42)).twofaSecret)
+			return (this.twofaService.verify2fa(body['code'], (await this.userService.findOne(login42)).twofaSecret));
+	}
+
+	@Post('disable')
+	async disable2fa(@Body() jwtDto: jwtDto)
+	{
+		try
+		{
+
+			const login42 = this.api42Service.decodeJWT(jwtDto.token);
+			await this.userService.disable2fa(login42);
+			return 'ok';
+		}
+		catch (error)
+		{
+			return error;
+		}
+	}
+
+	@Post('status')
+	async status(@Body() jwtDto: jwtDto)
+	{
+		try
+		{
+			const login42 = this.api42Service.decodeJWT(jwtDto.token);
+			console.log("status : ");
+			console.log((await this.userService.findOne(login42)).has2fa);
+			return ((await this.userService.findOne(login42)).has2fa);
+		}
+		catch (error)
+		{
+			return (error);
+		}
+	}
+
+	//GET IS METHOD ARE ONLY USE IN TESTING 
 	@Get('enable')//to remove
 	async enable2faGET(@Query() jwtDto : jwtDto, @Res({passthrough: true}) response)
 	{
@@ -62,32 +121,6 @@ export class TwofaController {
 			return error;
 		}
 	}
-
-	@Post('login')
-	async login(@Body() body:string)
-	{
-			const login42 = this.api42Service.decodeJWT(body['jwt_token']);
-			console.log('code :' + body['code'])
-			console.log("twofaSecret " + (await this.userService.findOne(login42)).twofaSecret)
-			return (this.twofaService.verify2fa(body['code'], (await this.userService.findOne(login42)).twofaSecret));
-	}
-
-	@Post('disable')
-	async disable2fa(@Body() jwtDto: jwtDto)
-	{
-		try
-		{
-
-			const login42 = this.api42Service.decodeJWT(jwtDto.token);
-			await this.userService.disable2fa(login42);
-			return ;
-		}
-		catch (error)
-		{
-			return error;
-		}
-	}
-
 	@Get('disable')
 	async disable2faGET(@Query() jwtDto: jwtDto)
 	{

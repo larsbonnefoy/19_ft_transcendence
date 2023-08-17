@@ -15,9 +15,9 @@ export class ChatMessage
 	@Column()
 	chat_id: string;
 
-	@ManyToOne(() => Chat, chat => chat.id)
-	@JoinColumn({ name: 'chat_id' })
-	chat: Chat;
+	// @ManyToOne(() => Chat, chat => chat.id)
+	// @JoinColumn({ name: 'chat_id' })
+	// chat: Chat;
 }
 
 

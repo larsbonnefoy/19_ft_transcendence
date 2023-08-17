@@ -19,7 +19,8 @@ import { HttpModule } from '@nestjs/axios';
 import { Axios, AxiosResponse } from 'axios';
 import { TwofaModule } from './twofa/twofa.module';
 import { ChatModule } from './chat/chat.module';
-import { chatMessage } from './chat/chat.entity';
+import { ChatMessage } from './chat/chat.entity';
+import { Chat } from './chat/chat.entity';
 
 
 @Module({
@@ -32,7 +33,7 @@ import { chatMessage } from './chat/chat.entity';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
-      entities: [User, Match, Chat, ChatMessage],
+    entities: [User, Match/*, Chat, ChatMessage*/],
       synchronize: true,
       autoLoadEntities: true,
     }),
