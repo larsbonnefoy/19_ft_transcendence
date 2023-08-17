@@ -1,5 +1,5 @@
 import { User } from '../user/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Timestamp, ManyToOne, JoinColumn, Relation } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Timestamp, ManyToOne, JoinColumn, Relation, OneToOne, ManyToMany } from 'typeorm';
 
 @Entity()
 export class ChatMessage 
@@ -31,6 +31,9 @@ export class Chat
 
 	@OneToMany(() => ChatMessage, (message) => message.chat)
 	messages: Relation<ChatMessage[]>;
+
+	@ManyToMany(() => User, (user) => user.chats)
+	users: Relation<User[]>;
 
 }
 

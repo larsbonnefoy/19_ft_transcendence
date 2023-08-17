@@ -1,6 +1,6 @@
 
-import { ChatMessage } from '../chat/chat.entity';
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Relation } from 'typeorm';
+import { Chat, ChatMessage } from '../chat/chat.entity';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Relation, ManyToMany } from 'typeorm';
 // import { Photo } from '../photos/photo.entity';
 
 export enum UserStatus {
@@ -42,8 +42,11 @@ export class User {
   @Column({ type: "text", default: null})
   twofaSecret: string | null; 
 
-	@OneToMany(() => ChatMessage, (message) => message.chat)
-	messages: Relation<ChatMessage[]>;
+  @OneToMany(() => ChatMessage, (message) => message.chat)
+  messages: Relation<ChatMessage[]>;
+
+  @ManyToMany(() => Chat, (chat) => chat.users)
+  chats: Relation<Chat[]>;
 }
   // import {
   //     Entity,
