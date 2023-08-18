@@ -32,10 +32,6 @@ async function setUserOpponent() {
         user = {  login42:game.value.player2, score:game.value.score2};
         opponent = { login42:game.value.player1, score:game.value.score1};
     }
-    //console.log("user");
-    //console.log(user);
-    //console.log("opponent");
-    //console.log(opponent);
     try {
         const resUsername = await axios.get(`http://localhost:3000/user/UserFromLog:${opponent.login42}`)
         const resElo = await axios.get(`http://localhost:3000/user/getElo:${opponent.login42}`)

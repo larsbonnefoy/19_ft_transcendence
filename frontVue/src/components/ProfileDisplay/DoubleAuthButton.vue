@@ -6,7 +6,6 @@ import { useUserStore } from '@/stores/user';
 const store = useUserStore();
 
 const TwoFactor = ref(store.get2fa);
-console.log(TwoFactor.value);
 
 const defaultState = ref(true);
 const QrCode = ref("");
@@ -31,7 +30,6 @@ function isDigit(e: any) {
 let submit = (async () => {
         try {
             const data = await axios.post('http://localhost:3000/twofa/verify/', {token: sessionStorage.getItem('jwt_token'), code: digits2fa.value});
-            console.log(data.data);
             if (data.data == true) {
                 success2fa.value = true;
                 defaultState.value = true;
