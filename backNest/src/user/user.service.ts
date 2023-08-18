@@ -42,6 +42,13 @@ export class UserService {
     await this.userRepository.update(login42, {loss:loss});
   }
 
+  async change_elo(login42: string, newelo: number) {
+    if (newelo < 100)
+      newelo = 100;
+    console.log("%s now has %d elo", login42, newelo);
+    await this.userRepository.update(login42, {elo:newelo});
+  }
+
   findAll(): Promise<User[]> {
     return this.userRepository.find();
   }

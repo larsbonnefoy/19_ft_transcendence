@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res } from '@nestjs/common';
+import exp from 'constants';
 import { Response } from 'express';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
@@ -59,23 +60,22 @@ export class MatchController {
     nMatch.score1 = query.score1;
     nMatch.score2 = query.score2;
     await this.matchService.createMatch(nMatch);
+    let expected_result:number = 1.0 / (1 + 10 ** ((p2.elo - p1.elo) / 400));
     if (+query.score1 > +query.score2) {
-      let wins:number = p1.win;
-      ++wins;
-      await this.userService.addWin(p1.login42, wins);
-      let loss = p2.loss;
-      ++loss;
-      await this.userService.addLoss(p2.login42, loss);
+      await this.userService.addWin(p1.login42, +p1.win + 1);
+      await this.userService.addLoss(p2.login42, +p2.loss + 1);
+      await this.userService.change_elo(p1.login42, +p1.elo + (1 - expected_result) * 16);
+      await this.userService.change_elo(p2.login42, +p2.elo - (1 - expected_result) * 16);
       console.log("player1 wins");
+      console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
     }
     else {
-      let wins:number = p2.win;
-      ++wins;
-      await this.userService.addWin(p2.login42, wins);
-      let loss = p1.loss;
-      ++loss;
-      await this.userService.addLoss(p1.login42, loss);
+      await this.userService.addWin(p2.login42, +p2.win + 1);
+      await this.userService.addLoss(p1.login42, +p1.loss + 1);
+      await this.userService.change_elo(p1.login42, +p1.elo - expected_result * 16);
+      await this.userService.change_elo(p2.login42, +p2.elo + expected_result * 16);
       console.log("player2 wins");
+      console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
     }
     res.json({"Match":"created"});
   }

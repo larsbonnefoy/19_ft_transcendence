@@ -34,7 +34,18 @@ export class UserController {
     }
     res.json({"username":user.username});
   }
-  
+
+  @Get('getElo:login42')
+  async GetEloFromLogin(@Res() res: Response, @Param() params: any) {
+    const login42: string = params.login42.slice(1);
+    const user = await this.userService.findOne(login42);
+    if (user == null) {
+      res.status(409).json({"error":"no user with that login"});
+      return ;
+    }
+    res.json({"elo":user.elo});
+  }
+ 
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);
