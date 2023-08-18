@@ -15,4 +15,5 @@ export interface UserInfo {
     win: number
     loss: number
     friends: string[]
+    has2fa: boolean
   }
