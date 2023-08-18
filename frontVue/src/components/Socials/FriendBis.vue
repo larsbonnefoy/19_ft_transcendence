@@ -25,7 +25,6 @@ async function getFriend() {
         if (friend.photo == "no photo yet") {
             friend.photo = "../../assets/placeholder_avatar_white.png"
         }
-        console.log(friend.photo);
     }
     catch (error) {
         console.error(error);

@@ -4,6 +4,8 @@ export interface match {
     player2: string,
     score1: number,
     score2: number
+    elo1: number,
+    elo2: number
 }
 
 export interface UserInfo {

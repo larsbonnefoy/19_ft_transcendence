@@ -20,9 +20,7 @@ async function getUserInfo() {
     if (route.params.username != store.getUserName) {
         //get sur un profile qui existe pas envoie NULL est pas une erreur, a corriger (ou a mediter)
         try {
-            console.log("get other profile");
             const res = await axios.get(`http://localhost:3000/user/one:${route.params.username}`);
-            console.log(res.data);
             if (!res.data) {
                 foundUser.value = false;
             }

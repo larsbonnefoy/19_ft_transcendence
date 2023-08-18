@@ -20,7 +20,6 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
-                console.log("fetch user : " + sessionStorage.getItem('jwt_token'));
                 const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: sessionStorage.getItem('jwt_token')});
                 this.user = data.data;
                 console.log("fetched user")
@@ -75,6 +74,9 @@ export const useUserStore = defineStore('user', {
                 // }
                 */
             }
+        },
+        async setStatus(newStatus:string) {
+            //send new status to db;
         },
         async addFriend(newFriend: string) {
             try {

@@ -45,7 +45,6 @@ const router = createRouter({
           return '/';
         }
         else {
-          console.log("Before enter");
           const store = useUserStore();
           await store.fetchUser();
         }
