@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import axios from "axios"
 import {useRouter} from 'vue-router'
+
 const router = useRouter();
 const urlParams = new URLSearchParams(window.location.search);
 let code : string | null;
+
+//TODO check error throws here, display right information (=> reload right page)
 try
 {
  	if (!urlParams.has('code'))
@@ -11,15 +15,17 @@ try
 	const response : Response = await fetch(`http://localhost:3000/api42/getToken?code=${code}`);
 	if (response.status != 200 && response.status != 201)
 		throw "getToken failed";
-	console.log("ayo");
 
 	const jwtToken : string = (await response.json())['jwt_token'];
-	// const jwtToken : string = "badToken" 
-	console.log(jwtToken)
-	//  get user id.
 	sessionStorage.setItem('jwt_token', jwtToken);
-	console.log("ended");
-    router.push('/home');
+
+	const res = await axios.post('http://localhost:3000/twofa/status/', {token: sessionStorage.getItem('jwt_token')});
+	if (res.data == true) {
+		router.push('/home');
+	}
+	else {
+		router.push('/home');
+	};
 }
 catch (error)
 {

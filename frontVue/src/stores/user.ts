@@ -35,10 +35,10 @@ export const useUserStore = defineStore('user', {
         //What happens if change 2fa but token not valid anymore?? (=> No token or expired token)
         async change2fa(value: boolean) {
             if (this.user) { 
-                this.user.has2fa = value;
                 if (value) {
                     try { 
                         const data = await axios.post('http://localhost:3000/twofa/enable/', {token: sessionStorage.getItem('jwt_token')});
+                        this.user.has2fa = value;
                         console.log(data);
                     }
                     catch (error) {
@@ -48,6 +48,7 @@ export const useUserStore = defineStore('user', {
                 if (!value) {
                     try {
                         const data = await axios.post('http://localhost:3000/twofa/disable/', {token: sessionStorage.getItem('jwt_token')});
+                        this.user.has2fa = value;
                         console.log(data);
                     }
                     catch (error) {

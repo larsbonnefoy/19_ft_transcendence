@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import axios from 'axios'
-import DoubleAuthValidation from './DoubleAuthValidation.vue';
 import {ref, watch} from 'vue'
 import { useUserStore } from '@/stores/user';
 
