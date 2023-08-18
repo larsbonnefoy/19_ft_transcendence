@@ -20,7 +20,8 @@ const username = toRef(props, "usernameProp");
 
 let opponent: player;
 let user: player;
-let opponentUsername: string; 
+let opponentUsername: string;
+let opponentElo: number;
 
 async function setUserOpponent() {
     if (game.value.player1 == login.value) {
@@ -37,7 +38,9 @@ async function setUserOpponent() {
     //console.log(opponent);
     try {
         const resUsername = await axios.get(`http://localhost:3000/user/UserFromLog:${opponent.login42}`)
+        const resElo = await axios.get(`http://localhost:3000/user/getElo:${opponent.login42}`)
         opponentUsername = resUsername.data.username;
+        opponentElo = resElo.data.elo;
     }
     catch (error) {
         console.log(error)
@@ -58,7 +61,7 @@ await setUserOpponent();
         <div class="col-5 p-0"> {{ username }} : {{ user.score }} </div>
         <div v-if="gameWon" class="col-2 p-0 gameWon"> Won </div>
         <div v-else class="col-2 p-0 gameLost"> Lost </div>
-        <div class="col-5 p-0">  {{ opponentUsername }} : {{ opponent.score }} </div>
+        <div class="col-5 p-0">  {{ opponentUsername }} : {{ opponent.score }} <span class="eloDisplay mx-1">({{ Math.ceil(opponentElo)}}) </span></div>
         </div>
     </div>
 </template>
@@ -70,6 +73,11 @@ await setUserOpponent();
     text-align: center;
 }
 
+.eloDisplay {
+    font-size: medium;
+    font-weight: 400;
+    color: grey;
+}
 .gameWon {
     color: green;
 }

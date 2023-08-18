@@ -61,7 +61,7 @@ Should set max lenght of username here
                                 <p class="text-muted mb-0">Losses</p>
                             </div>
                             <div>
-                                <p class="mb-2 h5">{{ user.elo }}</p>
+                                <p class="mb-2 h5">{{ Math.ceil(user.elo) }}</p>
                                 <p class="text-muted mb-0">Elo </p>
                             </div>
                         </div>
