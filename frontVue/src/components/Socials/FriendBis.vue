@@ -2,7 +2,6 @@
 import { type UserInfo } from '@/types';
 import {ref} from 'vue'
 import axios from 'axios';
-import Friend from './Friend.vue';
 import GameButton from '../ProfileDisplay/GameButton.vue';
 import MessageButton from '../ProfileDisplay/MessageButton.vue';
 import Status from '../ProfileDisplay/Status.vue';
