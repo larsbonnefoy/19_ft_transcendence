@@ -3,6 +3,8 @@ import { TwofaService } from './twofa.service';
 import { jwtDto } from '../api42/apiDto.dto';
 import { UserService } from '../user/user.service';
 import { Api42Service } from '../api42/api42.service';
+import { createCipheriv, createDecipheriv, randomBytes, scrypt } from 'crypto';
+import { promisify } from 'util';
 
 @Controller('twofa')
 export class TwofaController {
@@ -19,7 +21,18 @@ export class TwofaController {
 			console.log(jwtDto.token);
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
-			await this.userService.update2faSecret(login42, twofaJSON['secret']); //TODO CYPHER SECRET
+			
+			const iv = randomBytes(16);
+			const key = (await promisify(scrypt)(process.env.ENC_KEY, process.env.ENC_SALT, 32)) as Buffer;
+			const cipher = createCipheriv(process.env.ENC_ALG, key, iv);
+			console.log('lesgo ?');
+			const secret = Buffer.concat([iv, cipher.update(twofaJSON['secret']), cipher.final()]);
+			console.log(secret);
+			console.log("twofa : " + twofaJSON['secret']);
+			
+
+
+			await this.userService.update2faSecret(login42, secret); //TODO CYPHER SECRET
 			console.log(twofaJSON);
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
 			// console.log('hmmm : '+ qrUrl);
@@ -60,11 +73,27 @@ export class TwofaController {
 	@Post('verify')
 	async verify(@Body() body:string)
 	{
+
 			const login42 = this.api42Service.decodeJWT(body['token']);
+		
+
+			const secret = (await this.userService.findOne(login42)).twofaSecret
+			
+			console.log('secret encrypted :' + secret);
+
+			const iv = secret.slice(0,16);
+			const key = (await promisify(scrypt)(process.env.ENC_KEY, process.env.ENC_SALT, 32)) as Buffer;
+			const decipher = createDecipheriv('aes-256-ctr', key, iv);
+			const decrypted = Buffer.concat([
+			  decipher.update(secret.slice(16)),
+			  decipher.final(),
+			]);
+
 			console.log('code :' + body['code'])
-			console.log(await this.userService.findOne(login42))
-			console.log("twofaSecret " + (await this.userService.findOne(login42)).twofaSecret)
-			return (this.twofaService.verify2fa(body['code'], (await this.userService.findOne(login42)).twofaSecret));
+			// console.log(await this.userService.findOne(login42))
+			console.log("twofaSecret decrypted : " + decrypted.toString());
+			console.log(this.twofaService.verify2fa(body['code'], decrypted.toString()));
+			return (this.twofaService.verify2fa(body['code'], decrypted.toString()));
 	}
 
 	@Post('disable')

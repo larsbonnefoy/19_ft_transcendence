@@ -33,8 +33,13 @@ export class Chat
 	messages: Relation<ChatMessage[]>;
 
 	@ManyToMany(() => User, (user) => user.chats)
-	users: Relation<User[]>;
-
+	chatters: Relation<User[]>;
+	
+	@ManyToOne(() => User, (user) => user.owned)
+	owner: Relation<User>;
+	
+	@ManyToMany(() => User, (user) => user.administered)
+	admins: Relation<User[]>;
 }
 
 

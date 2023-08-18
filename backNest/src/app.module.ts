@@ -21,6 +21,7 @@ import { TwofaModule } from './twofa/twofa.module';
 import { ChatModule } from './chat/chat.module';
 import { ChatMessage } from './chat/chat.entity';
 import { Chat } from './chat/chat.entity';
+import { TwofaController } from './twofa/twofa.controller';
 
 
 @Module({
@@ -49,7 +50,7 @@ import { Chat } from './chat/chat.entity';
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
   ],
-  controllers: [Api42Controller, AppController],
+  controllers: [Api42Controller, AppController, TwofaController],
   providers: [AppService, Api42Service],
 })
 export class AppModule {
