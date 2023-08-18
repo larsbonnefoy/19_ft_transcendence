@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, UserStatus } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -47,6 +47,10 @@ export class UserService {
       newelo = 100;
     console.log("%s now has %d elo", login42, newelo);
     await this.userRepository.update(login42, {elo:newelo});
+  }
+
+  async set_status(login42: string, newstatus: string) {
+    await this.userRepository.update(login42, {status:newstatus});
   }
 
   findAll(): Promise<User[]> {

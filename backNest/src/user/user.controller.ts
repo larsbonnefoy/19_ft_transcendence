@@ -3,11 +3,9 @@ import { Response } from 'express';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 
-import { User } from './user.entity';
+import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
-import { newUserDto } from './userDto.dto';
-import { changeUsernameDto } from './userDto.dto';
-import { setFriendsDto } from './userDto.dto';
+import { newUserDto, changeUsernameDto, setStatusDto, setFriendsDto } from './userDto.dto';
 
 @Controller("user")
 export class UserController {
@@ -44,6 +42,34 @@ export class UserController {
       return ;
     }
     res.json({"elo":user.elo});
+  }
+
+  @Get('getStatus:login42')
+  async GetStatusFromLogin(@Res() res: Response, @Param() params: any) {
+    const login42: string = params.login42.slice(1);
+    const user = await this.userService.findOne(login42);
+    if (user == null) {
+      res.status(409).json({"error":"no user with that login"});
+      return ;
+    }
+    res.json({"status":user.status});
+  }
+
+  @Get('setStatus:login42')
+  async SetStatusFromLogin(@Res() res: Response, @Param() params: any, @Query() query: setStatusDto) {
+    if (query.new < 0 || query.new > 2) {
+      res.status(409).json({"error":"status must be 0 1 2"});
+      return ;
+    }
+    const login42: string = params.login42.slice(1);
+    const user = await this.userService.findOne(login42);
+    if (user == null) {
+      res.status(409).json({"error":"no user with that login"});
+      return ;
+    }
+    console.log("%s is now %s", login42, UserStatus[query.new]);
+    await this.userService.set_status(login42, UserStatus[query.new]);
+    res.json({"success":`status changed from ${user.status} to ${UserStatus[query.new]}`});
   }
  
   @Get('one:username')

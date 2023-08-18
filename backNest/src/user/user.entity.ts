@@ -2,11 +2,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany } from 'typeorm';
 // import { Photo } from '../photos/photo.entity';
 
-export enum UserStatus {
-  ONLINE = "online",
-  OFFLINE = "offline",
-  INGAME = "ingame",
-}
+export const UserStatus: Array<string> = ["online", "offline", "ingame"];
 
 @Entity()
 export class User {
@@ -20,8 +16,8 @@ export class User {
   @Column({type: 'numeric', default: 1000})
   elo: number;
   
-  @Column({ type: "enum", enum: UserStatus, default: UserStatus.ONLINE })
-  status: UserStatus;
+  @Column({ type: "text", default: UserStatus[0] })
+  status: string;
   
   @Column({type: "simple-array", default: ""})
   friends: string[];
