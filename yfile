@@ -1,9 +1,13 @@
 My todo:
 - photos
 - achievements
-- elo modif like chess
+			- 1 10 100 games played
+			- INCOGNITO: changed username
+			- MAKEUP ARTIST: changed profile picture
+			- FLAWLESS: won a game without conceding any point
+			- YOU AND ME: made your first friend
 - id in user?
-- change username taked toker
+- change username takes toker
 
 
 
@@ -37,6 +41,8 @@ list of .env content:
 
 
 
+my done:
+- elo modif like chess
 
 
 
