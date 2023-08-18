@@ -59,24 +59,32 @@ export class MatchController {
     nMatch.player2 = p2.login42;
     nMatch.score1 = query.score1;
     nMatch.score2 = query.score2;
-    await this.matchService.createMatch(nMatch);
     let expected_result:number = 1.0 / (1 + 10 ** ((p2.elo - p1.elo) / 400));
     if (+query.score1 > +query.score2) {
       await this.userService.addWin(p1.login42, +p1.win + 1);
       await this.userService.addLoss(p2.login42, +p2.loss + 1);
-      await this.userService.change_elo(p1.login42, +p1.elo + (1 - expected_result) * 16);
-      await this.userService.change_elo(p2.login42, +p2.elo - (1 - expected_result) * 16);
+      let newelo1: number = +p1.elo + (1 - expected_result) * 16;
+      await this.userService.change_elo(p1.login42, newelo1);
+      let newelo2: number = +p2.elo - (1 - expected_result) * 16;
+      await this.userService.change_elo(p2.login42, newelo2);
+      nMatch.elo1 = Math.ceil(newelo1);
+      nMatch.elo2 = Math.ceil(newelo2);
       console.log("player1 wins");
       console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
     }
     else {
       await this.userService.addWin(p2.login42, +p2.win + 1);
       await this.userService.addLoss(p1.login42, +p1.loss + 1);
+      let newelo1: number = +p1.elo - expected_result * 16;
       await this.userService.change_elo(p1.login42, +p1.elo - expected_result * 16);
+      let newelo2: number = +p2.elo + expected_result * 16;
       await this.userService.change_elo(p2.login42, +p2.elo + expected_result * 16);
+      nMatch.elo1 = Math.ceil(newelo1);
+      nMatch.elo2 = Math.ceil(newelo2);
       console.log("player2 wins");
       console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
     }
+    await this.matchService.createMatch(nMatch);
     res.json({"Match":"created"});
   }
   
