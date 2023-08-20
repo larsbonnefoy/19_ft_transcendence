@@ -34,21 +34,21 @@ const achievementList: Achievement[] = [
         max: 1
     },
     {
-        name: "Warming Up",
+        name: "Pro player",
         imageUrl: "../../../assets/Achievements/5games.png",
-        description: "Play 5 Games",
+        description: "Play 50 Games",
         progress: () => {
-            const val = (props.userProp.win*1 + props.userProp.loss*1) / 5
+            const val = (props.userProp.win*1 + props.userProp.loss*1) / 50
             return val < 1 ? val : 1;
         },
-        max: 5
+        max: 50
     },    
     {
         name: "Master",
         imageUrl: "../../../assets/Achievements/100games.png",
-        description: "Play 100 Games",
+        description: "Win 100 Games",
         progress: () => {
-            const val = ((props.userProp.win * 1) + (props.userProp.loss*1)) / 100
+            const val = (props.userProp.win * 1) / 100
             return val < 1 ? val : 1;
         },
         max: 100    
