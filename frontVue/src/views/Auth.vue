@@ -94,7 +94,7 @@ let submit = (async () => {
 							</div>
 							<Transition name="slide-fade">
 							<div  v-if="!success2fa" class="alert p-0 alert-danger m-1" role="alert" style="text-align: center;">
-									<p> Wrong 2fa code </p>
+									<p style="margin:auto;"> Wrong 2fa code </p>
 							</div>
 							</Transition>
 							</form>

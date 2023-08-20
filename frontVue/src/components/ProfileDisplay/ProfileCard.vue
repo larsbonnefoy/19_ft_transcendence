@@ -35,7 +35,7 @@ Should set max lenght of username here
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col m-5">
             <div class="card m-5" style="border-radius: 15px;">
-                <div class="card-body text-center"  style="min-height: 542px;"> <!-- White Profile card-->
+                <div class="card-body text-center"  style="min-height: 60vh; max-height: 70vh;"> <!-- White Profile card-->
                     <div v-if="!modProfile"> 
                         <h4> {{ user.username }}</h4>
                         <Status :status="user.status"> </Status> <!-- Meme pb que avec les games, ne se refresh pas correctement-->
@@ -65,7 +65,7 @@ Should set max lenght of username here
                                 <p class="text-muted mb-0">Elo </p>
                             </div>
                         </div>
-                        <img v-if="activeUser" class="ModProfilePic" src="../../../assets/pen.png" @click.prevent="toggleModProfile" >
+                        <img v-if="activeUser" class="ModProfilePic" src="../../../assets/pen.png" @click.prevent="toggleModProfile" > <!-- Btn to toggle profile only displays if its current user-->
                     </div>
                     <div v-if="modProfile" class="form-group row justify-content-left">
                         <h4> {{ user.username }}</h4>

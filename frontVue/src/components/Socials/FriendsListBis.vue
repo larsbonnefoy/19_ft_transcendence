@@ -15,7 +15,7 @@ if (friends != undefined && friends.length != 0) {
 <template>
     <h2 style="text-align: center; " class="m-5">Friends </h2>
     <div v-if="hasFriends"> 
-        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 42rem; max-height: 65rem;">
+        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
             <template v-for="(friend, index) in friends" :key="index">
                 <FriendBis :login42="friend"></FriendBis>
             </template>

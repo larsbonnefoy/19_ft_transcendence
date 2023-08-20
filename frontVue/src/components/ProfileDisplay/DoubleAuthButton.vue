@@ -14,6 +14,7 @@ const QrCode = ref("");
 const max = 6
 const digits2fa = ref();
 const success2fa = ref();
+const display2faFailed = ref(false);
 
 function isDigit(e: any) {
     let char = String.fromCharCode(e.keyCode);
@@ -36,6 +37,7 @@ let submit = (async () => {
                 store.change2fa(true);
             }
             else {
+                display2faFailed.value = true;
                 success2fa.value = false; 
             }
         }
@@ -65,7 +67,7 @@ async function toggle() {
 </script>
 
 <template>
-    <div class="row"> 
+    <div class="row" style="margin: auto;"> 
         <div class="col-6 textDisplay"> 
             Google 2FA
         </div>
@@ -81,13 +83,13 @@ async function toggle() {
             <div v-if="TwoFactor"> <!-- Generate qr code when 2fa is enabled-->
                 <img class="QrImg my-5" :src="QrCode">
                 <input type="text" class="form-control codeInput" :maxlength="max" v-model="digits2fa" @keypress="isDigit" @keyup.enter="submit"/>
-                <div  v-if="!success2fa" class="alert alert-danger p-0" role="alert">
-                        <p> 2fa failed </p>
+                <div  v-if="display2faFailed && !success2fa" class="alert alert-danger p-0" role="alert">
+                        <p style="margin: auto;"> 2fa failed </p>
                 </div>
             </div>
         </div>
         <div  v-if="success2fa" class="alert alert-success p-0" role="alert">
-            <p> 2fa ok </p>
+            <p style="margin: auto;"> 2fa ok </p>
         </div>
     </div>
 </template>
@@ -99,7 +101,7 @@ async function toggle() {
 }
 
 .QrImg {
-    height: 300px;
-    width: 300px;
+    height: 200px;
+    width: 200px;
 }
 </style>
