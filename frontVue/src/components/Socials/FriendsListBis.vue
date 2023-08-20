@@ -13,7 +13,7 @@ if (friends != undefined && friends.length != 0) {
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5"> {{ userStore.getUserName }}'s Friends </h2>
+    <h2 style="text-align: center; " class="m-5">Friends </h2>
     <div v-if="hasFriends"> 
         <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 42rem; max-height: 65rem;">
             <template v-for="(friend, index) in friends" :key="index">

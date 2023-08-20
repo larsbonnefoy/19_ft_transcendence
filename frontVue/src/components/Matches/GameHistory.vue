@@ -29,8 +29,8 @@ await getGames();
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5"> {{username}}'s games </h2>
-    <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 45rem; max-height: 65rem;">
+    <h2 style="text-align: center; " class="m-5">Games </h2>
+    <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
         <template v-for="(game, index) in games.slice().reverse()" :key="index">
             <Game :game-prop="game" :login-prop="login" :username-prop="username"> </Game>
         </template>

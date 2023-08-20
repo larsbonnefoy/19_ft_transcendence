@@ -86,10 +86,10 @@ const achievementList: Achievement[] = [
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5"> {{ props.userProp.username }}'s Achievements </h2>
-    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 42rem; max-height: 65rem;">
+    <h2 style="text-align: center; " class="m-5">Achievements </h2>
+    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 80vh;">
         <template v-for="(achievement, index) in achievementList" :key="index">
-           <AchievementDisplay :achiev-id="index" :achiev-status="true" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+           <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
         </template>
     </div>
 </template>

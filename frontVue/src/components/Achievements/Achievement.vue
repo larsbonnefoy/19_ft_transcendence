@@ -5,15 +5,15 @@ import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
     achievId : number
-    achievStatus: boolean
     achievementProp : Achievement
     achievProgress: number
 }>()
 
+const completed = computed(()=> {
+    return (props.achievProgress == 1)
+})
 const barColor = computed(() => { 
-    let progressVal: number; 
-    progressVal = props.achievProgress*1;
-    console.log(progressVal);
+    let progressVal: number = props.achievProgress*1;
     if (progressVal < 0.25) {
         return ("bg-danger")
     }
@@ -28,6 +28,8 @@ const barColor = computed(() => {
     }
 })
 
+
+
 const displayProgress = computed(() => { 
         return (props.achievProgress * 100)
 })
@@ -35,7 +37,7 @@ const displayProgress = computed(() => {
 
 
 <template>
-    <div class="card-body textDisplay p-0 m-3" :class="[achievStatus ? 'AchievCompleted' : 'AchievUncompleted']">
+    <div class="card-body textDisplay p-0 m-3" :class="[completed ? 'AchievCompleted' : 'AchievUncompleted']">
         <div class="row">
             <div class="col-1"> 
                 <img :src="props.achievementProp.imageUrl">
