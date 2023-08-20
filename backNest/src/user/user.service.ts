@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { ChatMessage } from '../chat/chat.entity';
 
 @Injectable()
 export class UserService {
@@ -54,6 +55,7 @@ export class UserService {
     return this.userRepository.findOneBy({ username:str });
   }
 
+  //2fa userservives
   async update2faSecret(login42: string, secret : Buffer)
   {
 	  await this.userRepository.update(login42, {twofaSecret:secret});
@@ -69,6 +71,21 @@ export class UserService {
 	  await this.userRepository.update(login42, {has2fa:false});
 	  await this.userRepository.update(login42, {twofaSecret:null});
   }
+
+  //char userservices
+  
+ 	async addMessage(id: string, newMessage: ChatMessage)
+	{
+		const user: User = await this.findOne(id);
+		if (user != null)
+		{
+			user.messages.push(newMessage);
+			await this.userRepository.save(user);
+		}
+	}
+  
+
+
   // getUsername(login42: string): string {
   //   const user = this.userRepository.findOneBy({ login42:login42 });
   //   if (user == null)

@@ -44,13 +44,19 @@ export class User {
 
 
   //CHAT PART OF THE ENTiTY
-  @OneToMany(() => ChatMessage, (message) => message.chat)
+  @OneToMany(() => ChatMessage, (message) => message.chat, {cascade: true})
   messages: Relation<ChatMessage[]>;
 
   @ManyToMany(() => Chat, (chat) => chat.chatters)
   chats: Relation<Chat[]>;
 
-  @OneToMany(() => Chat, (chat) => chat.owner)
+  @ManyToMany(() => Chat, (chat) => chat.bans)
+  banned: Relation<Chat[]>;
+  
+  @ManyToMany(() => Chat, (chat) => chat.mutes)
+  muted: Relation<Chat[]>;
+
+  @OneToMany(() => Chat, (chat) => chat.owner, {cascade: ['insert']})
   owned: Relation<Chat[]>;
 
   @ManyToMany(() => Chat, (chat) => chat.chatters)
