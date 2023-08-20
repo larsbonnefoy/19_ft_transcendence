@@ -16,7 +16,7 @@ export class User {
   @Column({type: 'numeric', default: 1000})
   elo: number;
   
-  @Column({ type: "text", default: UserStatus[0] })
+  @Column({ type: "text", default: UserStatus[1] })
   status: string;
   
   @Column({type: "simple-array", default: ""})

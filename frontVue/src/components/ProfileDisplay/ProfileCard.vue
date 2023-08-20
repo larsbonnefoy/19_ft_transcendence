@@ -8,7 +8,7 @@ import GameButton from './GameButton.vue';
 import DoubleAuthButton from './DoubleAuthButton.vue';
 import ChangeUsername from './ChangeUsername.vue';
 import UploadAvatar from './UploadAvatar.vue'
-
+import Status from './Status.vue';
 const props = defineProps<{
     user : UserInfo
 }>()
@@ -38,7 +38,7 @@ Should set max lenght of username here
                 <div class="card-body text-center"  style="min-height: 542px;"> <!-- White Profile card-->
                     <div v-if="!modProfile"> 
                         <h4> {{ user.username }}</h4>
-                        <p>{{ user.status}}</p>
+                        <Status :status="user.status"> </Status> <!-- Meme pb que avec les games, ne se refresh pas correctement-->
                         <div class="mt-3 mb-4">
                         <img class="ProfilePic" :src=user.photo />
                         </div>

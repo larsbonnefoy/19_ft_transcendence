@@ -9,7 +9,6 @@ const hasFriends = ref(false);
 const friends = userStore.getFriends
 if (friends != undefined && friends.length != 0) {
     hasFriends.value = true;
-    console.log(friends.length);
 }
 </script>
 

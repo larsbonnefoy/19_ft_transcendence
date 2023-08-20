@@ -12,14 +12,11 @@ const props = defineProps<{
 
 let FriendUsername: string="";
 let friend: UserInfo;
-let friendElo: number;
 //get et Set status aussi
 async function getFriend() {
     try {
         const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
         FriendUsername = resUsrName.data.username;
-        const resElo = await axios.get(`http://localhost:3000/user/getElo:${props.login42}`)
-        friendElo = resElo.data.elo; 
         const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`)
         friend = resUsr.data;
         if (friend.photo == "no photo yet") {
@@ -38,7 +35,7 @@ await getFriend();
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
         <div class="col-1 p-0 buttonStyle">
-            <Status status="online"></Status>
+            <Status :status="friend.status"></Status>
         </div>
         <div class="col-5">
             <div class="row"> 
@@ -56,7 +53,7 @@ await getFriend();
                 </div>
                 <div class="col-8">
                     <p class="m-0"> {{ login42 }} </p>
-                    <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friendElo) }} </p>
+                    <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friend.elo) }} </p>
                 </div> 
             </div>
         </div>

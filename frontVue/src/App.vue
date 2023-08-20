@@ -7,7 +7,7 @@ window.addEventListener("beforeunload", leavingApp);
 const store = useUserStore();
 
 async function leavingApp() {
-  if (store.getUser != undefined) {
+  if (store.getUser != null) {
     store.setStatus("offline");
   }
   //set Status to offline

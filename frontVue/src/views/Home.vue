@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { watch, onMounted, ref, computed } from 'vue';
 import { useUserStore } from '@/stores/user';
-//import FriendsList from '@/components/Socials/FriendsList.vue';
 import GameHistory from '@/components/Matches/GameHistory.vue';
 import FriendsList from '@/components/Socials/FriendsListBis.vue';
+import AchievmentsList from '@/components/Achievements/AchievementsList.vue';
 const store = useUserStore();
 
-const userExists = computed(() => {
-    if (store.getUserName == undefined || store.getUserName == null) {
-      return false;
-    }
-    return true;
-})
+await store.setStatus("online");
 
 </script>
 
@@ -25,10 +19,11 @@ const userExists = computed(() => {
       </GameHistory>
     </div>
 
-    <div class="col-5">
+    <div v-if="store.getUserName != undefined" class="col-5">
       <h2 style="text-align: center;"> Some More Content?? </h2>
       <p style="text-align: center;"> genre les succes </p>      
       <p style="text-align: center;"> et les games en live </p>
+      <AchievmentsList :username-prop="store.getUserName"> </AchievmentsList>
     </div>
 
     <div class="col-3">

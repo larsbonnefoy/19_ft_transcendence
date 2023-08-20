@@ -19,7 +19,8 @@ const displayLinks = computed(() => {
 });
 
 //just remove auth token, not whole localstorage!!
-const logout = () => {
+const logout = async () => {
+    await store.setStatus("offline");
     sessionStorage.clear();
     localStorage.clear();
     //store.$reset();

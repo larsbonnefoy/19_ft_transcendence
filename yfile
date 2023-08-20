@@ -1,11 +1,11 @@
 My todo:
 - photos
 - achievements
-			- 1 10 100 games played
-			- INCOGNITO: changed username
-			- MAKEUP ARTIST: changed profile picture
-			- FLAWLESS: won a game without conceding any point
-			- YOU AND ME: made your first friend
+			- 1 10 100 games played 							(id 0, 1, 2)
+			- INCOGNITO: changed username						(id 3)
+			- MAKEUP ARTIST: changed profile picture			(id 4)
+			- FLAWLESS: won a game without conceding any point	(id 5)
+			- YOU AND ME: made your first friend				(id 6)
 - id in user?
 - change username takes token
 - set friend requests in database? so that you can only be friends if request is accepted

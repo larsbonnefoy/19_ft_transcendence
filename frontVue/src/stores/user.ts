@@ -56,8 +56,10 @@ export const useUserStore = defineStore('user', {
                 }
             }
         },
+        /* Uses string to convert to int to call online:0, offline:1, ingame:2  */
         async setName(newUsername:string) {
             if (this.user) {
+
                 const oldUsername = this.user.username;
                 //try {                    
                     await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername } });
@@ -76,7 +78,28 @@ export const useUserStore = defineStore('user', {
             }
         },
         async setStatus(newStatus:string) {
-            //send new status to db;
+            let statusValue: number;
+            if (this.user) { 
+                switch(newStatus) {
+                    case"online":
+                        statusValue = 0;
+                        break;
+                    case"offline":
+                        statusValue = 1;
+                        break;
+                    case "ingame":
+                        statusValue = 2;
+                        break;
+                    default:
+                        statusValue = -1; //if written wrong, will endup making backend fail and throw error 
+                }
+                try { 
+                    await axios.get(`http://localhost:3000/user/setStatus:${this.user.login42}`, {params : { new: statusValue }});
+                    this.user.status = newStatus;
+                }
+                catch (error) {
+                }
+            }
         },
         async addFriend(newFriend: string) {
             try {

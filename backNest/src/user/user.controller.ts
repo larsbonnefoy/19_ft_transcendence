@@ -55,6 +55,7 @@ export class UserController {
     res.json({"status":user.status});
   }
 
+  /* Could take jwt_Token instead of login42 */
   @Get('setStatus:login42')
   async SetStatusFromLogin(@Res() res: Response, @Param() params: any, @Query() query: setStatusDto) {
     if (query.new < 0 || query.new > 2) {
