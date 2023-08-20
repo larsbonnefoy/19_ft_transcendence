@@ -19,11 +19,8 @@ await store.setStatus("online");
       </GameHistory>
     </div>
 
-    <div v-if="store.getUserName != undefined" class="col-5">
-      <h2 style="text-align: center;"> Some More Content?? </h2>
-      <p style="text-align: center;"> genre les succes </p>      
-      <p style="text-align: center;"> et les games en live </p>
-      <AchievmentsList :username-prop="store.getUserName"> </AchievmentsList>
+    <div v-if="store.getUser != null" class="col-5">
+      <AchievmentsList :user-prop="store.getUser"> </AchievmentsList>
     </div>
 
     <div class="col-3">

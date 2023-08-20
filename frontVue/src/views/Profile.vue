@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { ref, onMounted, watch } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 import GameHistory from '@/components/Matches/GameHistory.vue';
+import AchievementsList from '@/components/Achievements/AchievementsList.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import {type UserInfo} from '../types'
@@ -65,7 +66,7 @@ watch(() => route.params.username, getUserInfo);
                 <ProfileCard :user="user"> </ProfileCard>
             </div>
             <div class="col-4 p-0">
-                <h1 style="text-align: center;"> Achievements </h1>
+                <AchievementsList :user-prop="user"> </AchievementsList>
             </div>
         </div>
     </div>

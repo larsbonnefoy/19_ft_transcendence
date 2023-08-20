@@ -15,7 +15,8 @@ export const useUserStore = defineStore('user', {
         getFriends: (state) => state.user?.friends,
         getLogin42: (state) => state.user?.login42,
         get2fa: (state) => state.user?.has2fa,
-
+        getWin: (state) => state.user?.win,
+        getLoss: (state) => state.user?.loss,
     },
     actions: {
         async fetchUser() {

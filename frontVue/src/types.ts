@@ -18,4 +18,12 @@ export interface UserInfo {
     loss: number
     friends: string[]
     has2fa: boolean
-  }
+}
+
+export interface Achievement {
+    name: string
+    imageUrl: string
+    description: string
+    progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
+    max: number
+}

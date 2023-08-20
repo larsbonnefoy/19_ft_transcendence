@@ -13,7 +13,6 @@ curl -G -d 'player1=lars' -d 'player2=lucas' -d 'score1=3' -d 'score2=8' localho
 curl -G -d 'player1=lars' -d 'player2=lucas' -d 'score1=3' -d 'score2=2' localhost:3000/match/add
 curl -G -d 'player1=lars' -d 'player2=hugo' -d 'score1=3' -d 'score2=4' localhost:3000/match/add
 curl -G -d 'player1=lars' -d 'player2=hugo' -d 'score1=3' -d 'score2=3' localhost:3000/match/add
-curl -G -d 'player1=lars' -d 'player2=yann' -d 'score1=8' -d 'score2=0' localhost:3000/match/add
 curl -G -d 'player1=hugo' -d 'player2=yann' -d 'score1=8' -d 'score2=6' localhost:3000/match/add
 curl -G -d 'player1=lucas' -d 'player2=yann' -d 'score1=8' -d 'score2=7' localhost:3000/match/add
 curl -G -d 'player1=lucas' -d 'player2=yann' -d 'score1=10' -d 'score2=9' localhost:3000/match/add
