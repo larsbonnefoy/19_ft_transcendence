@@ -22,13 +22,13 @@ function openProfile() {
 .profile-button {
   background-color: transparent;
   border: none;
-  color: inherit;
+  color: white;
   cursor: pointer;
 }
 .profile-button:hover {
   background-color: transparent;
   border: none;
-  color: inherit;
+  color: white;
   text-decoration: underline;
   cursor: pointer;
 }
