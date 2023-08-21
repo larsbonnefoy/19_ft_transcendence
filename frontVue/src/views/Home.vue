@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import GameHistory from '@/components/Matches/GameHistory.vue';
-import FriendsList from '@/components/Socials/FriendsListBis.vue';
+import SocialsList from '@/components/Socials/SocialsList.vue';
 import AchievmentsList from '@/components/Achievements/AchievementsList.vue';
 const store = useUserStore();
 
@@ -24,7 +24,7 @@ await store.setStatus("online");
     </div>
 
     <div class="col-3">
-      <FriendsList></FriendsList>
+      <SocialsList></SocialsList>
     </div>
   </div>
 </div>

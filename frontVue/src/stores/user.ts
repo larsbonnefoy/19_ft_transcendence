@@ -13,10 +13,13 @@ export const useUserStore = defineStore('user', {
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
+        getPending: (state) => state.user?.pending,
+        getBlocked: (state) => state.user?.blocked_users,
         getLogin42: (state) => state.user?.login42,
         get2fa: (state) => state.user?.has2fa,
         getWin: (state) => state.user?.win,
         getLoss: (state) => state.user?.loss,
+        getAchievement: (state) => state.user?.achievements,
     },
     actions: {
         async fetchUser() {

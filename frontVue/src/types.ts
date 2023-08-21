@@ -17,7 +17,10 @@ export interface UserInfo {
     win: number
     loss: number
     friends: string[]
+    pending: string[]
+    blocked_users: string[]
     has2fa: boolean
+    achievements: number
 }
 
 export interface Achievement {

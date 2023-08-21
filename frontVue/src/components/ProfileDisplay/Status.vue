@@ -4,20 +4,21 @@ const props = defineProps<{
     status : string
 }>()
 
+let color: string;
 let statusImg: string;
 
 switch(props.status) {
     case"online":
-        statusImg = "../../../assets/presence_available.png";
+        color = "circle-green"
         break;
     case"offline":
-        statusImg = "../../../assets/presence_offline.png";
+        color = "circle-grey"
         break;
     case "ingame":
-        statusImg = "../../../assets/presence_busy.png";
+        color = "circle-blue"
         break;
     default:
-        statusImg = "../../../assets/presence_offline.png";
+        color = "circle-grey"
 }
 
 </script>
@@ -25,11 +26,35 @@ switch(props.status) {
 
 <template>
     <div>
-    <img class="statusImg" :src="statusImg">
+    <div :class="color"> </div>
     </div>
 </template>
 
 <style>
+.circle-blue {
+    height: 0.8vw;
+    width: 0.8vw;
+    border-radius: 50%;
+    background-color: #108fe3;
+    margin: auto;
+}
+
+.circle-green {
+    height: 0.8vw;
+    width: 0.8vw;
+    border-radius: 50%;
+    background-color: #41952e;
+    margin: auto;
+}
+
+.circle-grey {
+    height: 0.8vw;
+    width: 0.8vw;
+    border-radius: 50%;
+    background-color: #bdbfbb;
+    margin: auto;
+}
+
 .statusImg{
     height: 15px;
     width: auto;
