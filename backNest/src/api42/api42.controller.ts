@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Query, Body, Post} from '@nestjs/common';
+import { Controller, Get, Res, Query, Body, Post, forwardRef, Inject} from '@nestjs/common';
 import { Api42Service } from './api42.service';
 import { jwtDto } from './apiDto.dto';
 import { login42 } from './apiDto.dto';
@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 
 @Controller('api42')
 export class Api42Controller {
-	constructor(private api42Service: Api42Service, private userService : UserService){}
+	constructor(private api42Service: Api42Service, @Inject(forwardRef(() => UserService)) private userService : UserService){}
 
 	@Get('getToken')
 	async findAll(@Res({passthrough: true}) response, @Body() signInDto: Record<string, any>, @Query('code') query: string) 

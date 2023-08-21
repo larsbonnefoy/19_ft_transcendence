@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { ChatMessage } from '../chat/chat.entity';
+import { Api42Service } from '../api42/api42.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    // @Inject(forwardRef(() => Api42Service))
+    // private  api42Service: Api42Service
   ) {}
 
   async createUser(User: User): Promise<User> {

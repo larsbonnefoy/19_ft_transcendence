@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject } from '@nestjs/common';
 import { Response } from 'express';
+import { Api42Service } from '../api42/api42.service';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 
@@ -11,7 +12,7 @@ import { setFriendsDto } from './userDto.dto';
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService) {}
 
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
@@ -75,6 +76,18 @@ export class UserController {
 
   @Get('change_username')
   async changeUsername(@Res() res: any, @Query() query: changeUsernameDto) {
+    const jwtToken : string = query.token;
+    try
+    {
+      const token : string = this.api42Service.decodeJWT(jwtToken);
+      console.log("trest : " + token);
+    }
+    catch (error)
+    {
+      console.error(error);
+      res.status(409).json({"error":error});
+      return;
+    }
     console.log("changing username form %s to %s", query.old, query.new);
     if (query.old == query.new) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
