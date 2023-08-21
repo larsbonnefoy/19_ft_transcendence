@@ -66,7 +66,7 @@ export const useUserStore = defineStore('user', {
 
                 const oldUsername = this.user.username;
                 //try {                    
-                    await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername , token: sessionStorage.getItem('jwt_token')} });
+                    await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername , token: sessionStorage.getItem('jwt_token')}, headers: {token: sessionStorage.getItem('jwt_token')} });
                     this.user.username = newUsername;
                     /*
                     return new Promise<number>((resolve) => {

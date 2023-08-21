@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject, UseGuards, Request } from '@nestjs/common';
 import { Response } from 'express';
 import { Api42Service } from '../api42/api42.service';
+import { AuthGuard } from '../guard/auth.guard';
 // import { IsInt, IsString } from 'class-validator';
 // import { identity } from 'rxjs';
 
@@ -112,13 +113,15 @@ export class UserController {
     res.json({"success":`${username} now has ${loss} loss`});
   }
 
+  @UseGuards(AuthGuard)
   @Get('change_username')
-  async changeUsername(@Res() res: any, @Query() query: changeUsernameDto) {
-    const jwtToken : string = query.token;
+  async changeUsername(@Request() req: any, @Res() res: any, @Query() query: changeUsernameDto) {
+    // const jwtToken : string = query.token;
     try
     {
-      const token : string = this.api42Service.decodeJWT(jwtToken);
-      console.log("trest : " + token);
+      // const token : string = this.api42Service.decodeJWT(jwtToken);
+      const sessionId : string = req.user;
+      console.log("trest : " + sessionId);
     }
     catch (error)
     {
