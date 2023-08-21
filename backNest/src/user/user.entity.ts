@@ -22,11 +22,20 @@ export class User {
   @Column({type: "simple-array", default: ""})
   friends: string[];
   
+  @Column({type: "simple-array", default: ""})
+  pending: string[];
+  
+  @Column({type: "simple-array", default: ""})
+  blocked_users: string[];
+  
   @Column({type: 'numeric', default: 0})
   win: number;
   
   @Column({type: 'numeric', default: 0})
   loss: number;
+  
+  @Column({type: 'numeric', default: 0})
+  achievements: number;
 
   @Column({ type: "text", default: "no photo yet" })
   photo: string; // TODO, don't know how to store a photo yet
