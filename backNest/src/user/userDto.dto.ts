@@ -42,16 +42,16 @@ export class newUserDto {
 //   public date: Date;
 }
 
-export class changeUsernameDto {
-  @IsNotEmpty()
-  public token: string;
-  @IsNotEmpty()
-  @IsAlphanumeric()
-  public old: string;
-  @IsNotEmpty()
-  @IsAlphanumeric()
-  public new: string;
-}
+// export class changeUsernameDto {
+//   @IsNotEmpty()
+//   public token: string;
+//   @IsNotEmpty()
+//   @IsAlphanumeric()
+//   public old: string;
+//   @IsNotEmpty()
+//   @IsAlphanumeric()
+//   public new: string;
+// }
 
 export class setFriendsDto {
   @IsNotEmpty()
@@ -61,10 +61,4 @@ export class setFriendsDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   public f2: string;
-}
-
-export class setStatusDto {
-  @IsNotEmpty()
-  @IsNumberString() //may want to change this ?
-  public new: number;
 }

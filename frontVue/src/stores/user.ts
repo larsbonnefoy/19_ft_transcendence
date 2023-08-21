@@ -64,9 +64,9 @@ export const useUserStore = defineStore('user', {
         async setName(newUsername:string) {
             if (this.user) {
 
-                const oldUsername = this.user.username;
+                // const oldUsername = this.user.username;
                 //try {                    
-                    await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername , token: sessionStorage.getItem('jwt_token')}, headers: {token: sessionStorage.getItem('jwt_token')} });
+                    await axios.get(`http://localhost:3000/user/change_username:${newUsername}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
                     this.user.username = newUsername;
                     /*
                     return new Promise<number>((resolve) => {
@@ -98,7 +98,7 @@ export const useUserStore = defineStore('user', {
                         statusValue = -1; //if written wrong, will endup making backend fail and throw error 
                 }
                 try { 
-                    await axios.get(`http://localhost:3000/user/setStatus:${this.user.login42}`, {params : { new: statusValue }});
+                    await axios.get(`http://localhost:3000/user/setStatus:${statusValue}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
                     this.user.status = newStatus;
                 }
                 catch (error) {
