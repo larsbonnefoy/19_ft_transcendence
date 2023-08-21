@@ -106,18 +106,39 @@ export const useUserStore = defineStore('user', {
             }
         },
         async addFriend(newFriend: string) {
+            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
+            console.log(resLogin.data.login42);
+            await axios.get("http://localhost:3000/user/add_friend", {
+                params: {
+                    f1: this.user?.username,
+                    f2: newFriend
+                }
+            })
+        },
+        async acceptFriendRequest(newFriend: string) {
+            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
+            console.log(resLogin.data.login42);
+            const res = await axios.get("http://localhost:3000/user/accept_request", {
+                params: {
+                    f1: this.user?.username,
+                    f2: newFriend
+                }
+            })
+            this.user?.friends.push(resLogin.data.login42);
+        },
+        async declineFriendRequest(newFriend: string) {
             try {
                 const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
                 console.log(resLogin.data.login42);
-                const res = await axios.get("http://localhost:3000/user/set_friends", {
+                const res = await axios.get("http://localhost:3000/user/refuse_request", {
                     params: {
                         f1: this.user?.username,
                         f2: newFriend
                     }
                 })
-                
-                this.user?.friends.push(resLogin.data.login42);
-
+                if (this.user) {
+                    this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42)
+                }
             }
             catch (error) {
                 console.log(error);
