@@ -131,6 +131,178 @@ export class UserController {
     await this.userService.change_username(current_user.login42, query.new);
     res.json({"success":`username changed from ${query.old} to ${query.new}`});
   }
+
+  @Get('add_friend')
+  async addFriend(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s sends friend request to %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    for (let friend of user_1.friends) {
+      if (friend == user_2.login42) {
+        res.status(409).json({"error":"c'est déjà ton pote boloss"});
+        return ;
+      }
+    }
+    for (let pending of user_2.pending) {
+      if (pending == user_1.login42) {
+        res.status(409).json({"error":"tu l'as déjà invité boloss"});
+        return ;
+      }
+    }
+    await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
+    res.json({"success":`${query.f1} sent friend request to ${query.f2}`});
+  }
+  
+  @Get('remove_request')
+  async removeRequest(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s removes friend request towards %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    let notpending: boolean = true;
+    for (let pending of user_2.pending) {
+      if (pending == user_1.login42) {
+        notpending = false;
+        break ;
+      }
+    }
+    if (notpending) {
+      res.status(409).json({"error":"can't remove request if no request in first place"});
+      return ;
+    }
+    await this.userService.remove_pending(user_2.login42, user_2.pending, user_1.login42);
+    res.json({"success":`${query.f1} withdrew friend request to ${query.f2}`});
+  }
+  
+  @Get('accept_request')
+  async acceptRequest(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s accepts %s friend request", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    console.log("debug");
+    let notpending: boolean = true;
+    for (let pending of user_1.pending) {
+      if (pending == user_2.login42) {
+        notpending = false;
+        break ;
+      }
+    }
+    if (notpending) {
+      res.status(409).json({"error":"can't accept request if no request in first place"});
+      return ;
+    }
+    await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
+    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
+    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+    res.json({"success":`friendship blooming between ${query.f1} and ${query.f2}`});
+  }
+  
+  @Get('refuse_request')
+  async refuseRequest(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s refuses %s friend request", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    let notpending: boolean = true;
+    for (let pending of user_1.pending) {
+      if (pending == user_2.login42) {
+        notpending = false;
+        break ;
+      }
+    }
+    if (notpending) {
+      res.status(409).json({"error":"can't refuse request if no request in first place"});
+      return ;
+    }
+    await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
+    res.json({"success":`request refused between ${query.f1} and ${query.f2}`});
+  }
+  
+  @Get('block_user')
+  async blockUser(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s blocks %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    let alreadyblocked: boolean = false;
+    for (let pending of user_1.blocked_users) {
+      if (pending == user_2.login42) {
+        alreadyblocked = true;
+        break ;
+      }
+    }
+    if (alreadyblocked) {
+      res.status(409).json({"error":"can't block if blocked in first place"});
+      return ;
+    }
+    await this.userService.block_user(user_1.login42, user_1.blocked_users, user_2.login42);
+    res.json({"success":`${query.f1} blocked ${query.f2}`});
+  }
+  
+  @Get('unblock_user')
+  async unblockUser(@Res() res:any, @Query() query: setFriendsDto) {
+    console.log("%s unblocks %s", query.f1, query.f2);
+    if (query.f1 == query.f2) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
+      return ;
+    }
+    const user_1 = await this.userService.findUsername(query.f1);
+    const user_2 = await this.userService.findUsername(query.f2);
+    if (user_1 == null || user_2 == null) {
+      res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    let notpending: boolean = true;
+    for (let pending of user_1.blocked_users) {
+      if (pending == user_2.login42) {
+        notpending = false;
+        break ;
+      }
+    }
+    if (notpending) {
+      res.status(409).json({"error":"can't unblock if not blocked in first place"});
+      return ;
+    }
+    await this.userService.unblock_user(user_1.login42, user_1.blocked_users, user_2.login42);
+    res.json({"success":`${query.f1} unblocked ${query.f2}`});
+  }
   
   @Get('set_friends')
   async setFriends(@Res() res:any, @Query() query: setFriendsDto) {
