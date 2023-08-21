@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, UserStatus } from './user.entity';
 import { ChatMessage } from '../chat/chat.entity';
 import { Api42Service } from '../api42/api42.service';
 
@@ -22,6 +22,34 @@ export class UserService {
     await this.userRepository.update(login42, {username:username});
   }
   
+  async add_pending(login42: string, current_pending_list: string[], friend: string) {
+    current_pending_list.push(friend);
+    await this.userRepository.update(login42, {pending:current_pending_list});
+  }
+  
+  async remove_pending(login42: string, current_pending_list: string[], friend: string) {
+    let new_pending_list: Array<string> = new Array(0); //should this be freed after update??
+    for (let iter of current_pending_list) {
+      if (iter != friend)
+      new_pending_list.push(iter);
+    }
+    await this.userRepository.update(login42, {pending:new_pending_list});
+  }
+  
+  async block_user(login42: string, current_blocked_users: string[], friend: string) {
+    current_blocked_users.push(friend);
+    await this.userRepository.update(login42, {blocked_users:current_blocked_users});
+  }
+  
+  async unblock_user(login42: string, current_blocked_users: string[], friend: string) {
+    let new_blocked_users: Array<string> = new Array(0);
+    for (let iter of current_blocked_users) {
+      if (iter != friend)
+      new_blocked_users.push(iter);
+    }
+    await this.userRepository.update(login42, {pending:new_blocked_users});
+  }
+
   async add_friend(login42: string, current_friend_list: string[], friend: string) {
     current_friend_list.push(friend);
     await this.userRepository.update(login42, {friends:current_friend_list});
@@ -44,6 +72,17 @@ export class UserService {
   async addLoss(login42: string, loss: number) {
     console.log("loss for %s, now at %d loss", login42, loss);
     await this.userRepository.update(login42, {loss:loss});
+  }
+
+  async change_elo(login42: string, newelo: number) {
+    if (newelo < 100)
+      newelo = 100;
+    console.log("%s now has %d elo", login42, newelo);
+    await this.userRepository.update(login42, {elo:newelo});
+  }
+
+  async set_status(login42: string, newstatus: string) {
+    await this.userRepository.update(login42, {status:newstatus});
   }
 
   findAll(): Promise<User[]> {

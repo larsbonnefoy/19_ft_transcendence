@@ -12,6 +12,7 @@ const props = defineProps<{
 interface player {
     login42: string
     score: number
+    elo: number
 }
 
 const game = toRef(props, "gameProp");
@@ -20,21 +21,17 @@ const username = toRef(props, "usernameProp");
 
 let opponent: player;
 let user: player;
-let opponentUsername: string; 
+let opponentUsername: string;
 
 async function setUserOpponent() {
     if (game.value.player1 == login.value) {
-        user = { login42:game.value.player1, score:game.value.score1};
-        opponent = { login42:game.value.player2, score:game.value.score2};
+        user = { login42:game.value.player1, score:game.value.score1, elo:game.value.elo1};
+        opponent = { login42:game.value.player2, score:game.value.score2, elo:game.value.elo2};
     }
     else {
-        user = {  login42:game.value.player2, score:game.value.score2};
-        opponent = { login42:game.value.player1, score:game.value.score1};
+        user = {  login42:game.value.player2, score:game.value.score2, elo:game.value.elo2};
+        opponent = { login42:game.value.player1, score:game.value.score1, elo:game.value.elo1};
     }
-    //console.log("user");
-    //console.log(user);
-    //console.log("opponent");
-    //console.log(opponent);
     try {
         const resUsername = await axios.get(`http://localhost:3000/user/UserFromLog:${opponent.login42}`)
         opponentUsername = resUsername.data.username;
@@ -55,10 +52,10 @@ await setUserOpponent();
 <template>
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
-        <div class="col-5 p-0"> {{ username }} : {{ user.score }} </div>
+        <div class="col-5 p-0"> <span class="eloDisplay mx-1">({{ user.elo}}) </span> {{ username }} : {{ user.score }} </div>
         <div v-if="gameWon" class="col-2 p-0 gameWon"> Won </div>
         <div v-else class="col-2 p-0 gameLost"> Lost </div>
-        <div class="col-5 p-0">  {{ opponentUsername }} : {{ opponent.score }} </div>
+        <div class="col-5 p-0">   {{ opponent.score }} : {{ opponentUsername }} <span class="eloDisplay mx-1">({{ opponent.elo}}) </span></div>
         </div>
     </div>
 </template>
@@ -70,6 +67,11 @@ await setUserOpponent();
     text-align: center;
 }
 
+.eloDisplay {
+    font-size: medium;
+    font-weight: 400;
+    color: grey;
+}
 .gameWon {
     color: green;
 }

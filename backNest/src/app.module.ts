@@ -30,10 +30,10 @@ import { TwofaController } from './twofa/twofa.controller';
       type: 'postgres',
       host: 'localhost', // if running with docker, comment this and use line below
       // host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
-      port: 5432,
+      port: +process.env.POSTGRES_DB_PORT,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
+      database: process.env.POSTGRES_DB,
     entities: [User, Match, Chat, ChatMessage],
       synchronize: true,
       autoLoadEntities: true,

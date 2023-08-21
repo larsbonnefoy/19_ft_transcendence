@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import axios from 'axios';
 import { type UserInfo } from '@/types';
-import {ref} from 'vue';
+import {ref} from 'vue'
+import axios from 'axios';
 import GameButton from '../ProfileDisplay/GameButton.vue';
 import MessageButton from '../ProfileDisplay/MessageButton.vue';
+import Status from '../ProfileDisplay/Status.vue';
 
 const props = defineProps<{
     login42 : string
@@ -11,66 +12,71 @@ const props = defineProps<{
 
 let FriendUsername: string="";
 let friend: UserInfo;
-/*
-    Atm on recup toutes les infos du user (genre ses amis aussi), ca risque de faire bcp de requests quand y aura bcp d'amis
-    Il faudrait: username, login, status, photo, elo;
-*/
-try {
-    const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
-    FriendUsername = resUsrName.data.username;
-    const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`)
-    friend = resUsr.data;
-    if (friend.photo == "no photo yet") {
-        friend.photo = "../../assets/placeholder_avatar.png"
+//get et Set status aussi
+async function getFriend() {
+    try {
+        const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
+        FriendUsername = resUsrName.data.username;
+        const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`)
+        friend = resUsr.data;
+        if (friend.photo == "no photo yet") {
+            friend.photo = "../../assets/placeholder_avatar_white.png"
+        }
+    }
+    catch (error) {
+        console.error(error);
     }
 }
-catch (error) {
-    console.error(error);
-}
+
+await getFriend();
 </script>
 
 <template>
-    <div class="container p-0">
-        <div class="card">
-            <div class="card-body p-0">
-                <div class="d-flex text-black">
-                    
+    <div class="card-body textDisplay p-0 m-3">
+        <div class="row">
+        <div class="col-1 p-0 buttonStyle">
+            <Status :status="friend.status"></Status>
+        </div>
+        <div class="col-5">
+            <div class="row"> 
+                <div class="col-4"> 
                     <router-link 
-                        :to="{
-                            name:'profile',
-                            params: {
-                                username: FriendUsername
-                            }
-                        }"
-                        class=""
+                    :to="{
+                        name:'profile',
+                        params: {
+                            username: FriendUsername
+                        }
+                    }"
                     >
                     <img class="profileImg m-1" :src="friend.photo">
                     </router-link>
-
-                    <div class="flex-grow-1 ms-1 friendsDisplay">
-                        <div>
-                            <p class="small text-muted m-1">{{ friend.username }}: {{ friend.status }}</p>
-                        </div>
-                        <div class="">
-                            <p class="small text-muted m-1">elo: {{ friend.elo }}</p>
-                        </div>
-                    </div>
-                    <GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
-                    <MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
                 </div>
+                <div class="col-8">
+                    <p class="m-0"> {{ login42 }} </p>
+                    <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friend.elo) }} </p>
+                </div> 
             </div>
+        </div>
+        <!-- Add a getter to get status-->
+
+        <div class="col-3 p-0 buttonStyle">
+            <GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
+        </div>
+        <div class="col-3 p-0 buttonStyle">
+            <MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
+        </div>
         </div>
     </div>
 </template>
 
-<style scoped>
+<style scoped> 
 .profileImg {
     width: 45px;
     height: 45px;
     border-radius: 3px;
 }
-.friendsDisplay {
-    font-size: small;
-    text-align: left;
+.buttonStyle {
+    margin: auto;
+    text-align: center;
 }
 </style>

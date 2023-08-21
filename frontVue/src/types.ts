@@ -4,6 +4,8 @@ export interface match {
     player2: string,
     score1: number,
     score2: number
+    elo1: number,
+    elo2: number
 }
 
 export interface UserInfo {
@@ -15,4 +17,16 @@ export interface UserInfo {
     win: number
     loss: number
     friends: string[]
-  }
+    pending: string[]
+    blocked_users: string[]
+    has2fa: boolean
+    achievements: number
+}
+
+export interface Achievement {
+    name: string
+    imageUrl: string
+    description: string
+    progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
+    max: number
+}

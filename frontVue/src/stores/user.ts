@@ -13,12 +13,17 @@ export const useUserStore = defineStore('user', {
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
+        getPending: (state) => state.user?.pending,
+        getBlocked: (state) => state.user?.blocked_users,
         getLogin42: (state) => state.user?.login42,
+        get2fa: (state) => state.user?.has2fa,
+        getWin: (state) => state.user?.win,
+        getLoss: (state) => state.user?.loss,
+        getAchievement: (state) => state.user?.achievements,
     },
     actions: {
         async fetchUser() {
           try {
-                console.log("fetch user : " + sessionStorage.getItem('jwt_token'));
                 const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: sessionStorage.getItem('jwt_token')});
                 this.user = data.data;
                 console.log("fetched user")
@@ -30,8 +35,35 @@ export const useUserStore = defineStore('user', {
 			  this.user = null;
           }
         },
+        //What happens if change 2fa but token not valid anymore?? (=> No token or expired token)
+        async change2fa(value: boolean) {
+            if (this.user) { 
+                if (value) {
+                    try { 
+                        const data = await axios.post('http://localhost:3000/twofa/enable/', {token: sessionStorage.getItem('jwt_token')});
+                        this.user.has2fa = value;
+                        console.log(data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+                if (!value) {
+                    try {
+                        const data = await axios.post('http://localhost:3000/twofa/disable/', {token: sessionStorage.getItem('jwt_token')});
+                        this.user.has2fa = value;
+                        console.log(data);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
+        },
+        /* Uses string to convert to int to call online:0, offline:1, ingame:2  */
         async setName(newUsername:string) {
             if (this.user) {
+
                 const oldUsername = this.user.username;
                 //try {                    
                     await axios.get('http://localhost:3000/user/change_username/', { params: { old: oldUsername, new: newUsername , token: sessionStorage.getItem('jwt_token')} });
@@ -47,6 +79,30 @@ export const useUserStore = defineStore('user', {
                     });
                 // }
                 */
+            }
+        },
+        async setStatus(newStatus:string) {
+            let statusValue: number;
+            if (this.user) { 
+                switch(newStatus) {
+                    case"online":
+                        statusValue = 0;
+                        break;
+                    case"offline":
+                        statusValue = 1;
+                        break;
+                    case "ingame":
+                        statusValue = 2;
+                        break;
+                    default:
+                        statusValue = -1; //if written wrong, will endup making backend fail and throw error 
+                }
+                try { 
+                    await axios.get(`http://localhost:3000/user/setStatus:${this.user.login42}`, {params : { new: statusValue }});
+                    this.user.status = newStatus;
+                }
+                catch (error) {
+                }
             }
         },
         async addFriend(newFriend: string) {

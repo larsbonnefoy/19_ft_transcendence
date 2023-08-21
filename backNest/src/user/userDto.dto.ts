@@ -1,7 +1,7 @@
-// import { Transform } from 'class-transformer';
+import { Transform } from 'class-transformer';
 // import { IsBoolean, IsDate, IsNumber, IsNumberString, IsOptional } from 'class-validator';
 // import { toBoolean, toLowerCase, toNumber, trim, toDate } from './common/helper/cast.helper';
-import { IsNotEmpty, IsAlpha, IsAlphanumeric, IsStrongPassword, isNotEmpty } from "class-validator";
+import { IsNotEmpty, IsAlpha, IsAlphanumeric, IsStrongPassword, IsNumber, IsNumberString } from "class-validator";
 
 export class newUserDto {
   @IsNotEmpty()
@@ -61,4 +61,10 @@ export class setFriendsDto {
   @IsNotEmpty()
   @IsAlphanumeric()
   public f2: string;
+}
+
+export class setStatusDto {
+  @IsNotEmpty()
+  @IsNumberString() //may want to change this ?
+  public new: number;
 }
