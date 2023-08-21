@@ -60,25 +60,10 @@ export const useUserStore = defineStore('user', {
                 }
             }
         },
-        /* Uses string to convert to int to call online:0, offline:1, ingame:2  */
         async setName(newUsername:string) {
             if (this.user) {
-
-                // const oldUsername = this.user.username;
-                //try {                    
                     await axios.get(`http://localhost:3000/user/change_username:${newUsername}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
                     this.user.username = newUsername;
-                    /*
-                    return new Promise<number>((resolve) => {
-                        resolve(200);
-                    });
-                //}
-                //catch (error) {
-                    return new Promise<number>((reject) => {
-                        reject(409);
-                    });
-                // }
-                */
             }
         },
         async setStatus(newStatus:string) {
@@ -106,8 +91,6 @@ export const useUserStore = defineStore('user', {
             }
         },
         async addFriend(newFriend: string) {
-            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
-            console.log(resLogin.data.login42);
             await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
         },
         async acceptFriendRequest(newFriend: string) {
