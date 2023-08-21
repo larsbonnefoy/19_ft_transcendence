@@ -10,8 +10,11 @@ export class TwofaService {
 	
 	async generate2fa(user: User) : Promise<any>
 	{
+		console.log("AYO")
 		const secret = authenticator.generateSecret();
+		console.log("AYO")
 		const otpUrl = authenticator.keyuri(user.login42, "ft_pong", secret);
+		console.log("AYO")
 		return {
 			secret,
 			otpUrl

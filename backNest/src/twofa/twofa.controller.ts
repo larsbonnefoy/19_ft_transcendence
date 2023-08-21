@@ -18,16 +18,21 @@ export class TwofaController {
 	{
 		try
 		{
+			console.log("create2fa")
 			console.log(jwtDto.token);
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
+			console.log("login43")
+			console.log(login42);
+			// console.log(await this.userService.findOne(login42));	
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
+			console.log('lesgo ?');
 			
 			const iv = randomBytes(16);
 			const key = (await promisify(scrypt)(process.env.ENC_KEY, process.env.ENC_SALT, 32)) as Buffer;
 			const cipher = createCipheriv(process.env.ENC_ALG, key, iv);
 			console.log('lesgo ?');
 			const secret = Buffer.concat([iv, cipher.update(twofaJSON['secret']), cipher.final()]);
-			console.log(secret);
+			console.log("y" + secret);
 			console.log("twofa : " + twofaJSON['secret']);
 			
 
@@ -51,6 +56,7 @@ export class TwofaController {
 			return error;
 		}
 	}
+
 	@Post('enable')
 	async enable2fa(@Body() jwtDto: jwtDto)
 	{
@@ -93,7 +99,15 @@ export class TwofaController {
 			// console.log(await this.userService.findOne(login42))
 			console.log("twofaSecret decrypted : " + decrypted.toString());
 			console.log(this.twofaService.verify2fa(body['code'], decrypted.toString()));
-			return (this.twofaService.verify2fa(body['code'], decrypted.toString()));
+			let jwtToken: string | null;
+			const state = this.twofaService.verify2fa(body['code'], decrypted.toString())
+			if (state === true)
+			{
+				jwtToken = await this.api42Service.createJWT(login42, true);
+			}
+			else
+				jwtToken = "{jwt_token: null}";
+			return ({is_valid:state, jwt_token: jwtToken['jwt_token']});
 	}
 
 	@Post('disable')
