@@ -40,7 +40,7 @@ Should set max lenght of username here
                         <h4> {{ user.username }}</h4>
                         <Status :status="user.status"> </Status> <!-- Meme pb que avec les games, ne se refresh pas correctement-->
                         <div class="mt-3 mb-4">
-                        <img class="ProfilePic" :src=user.photo />
+                        <img class="ProfilePic m-2" :src=user.photo />
                         </div>
 
                         <!-- Displays only if we are on the current Users page-->
@@ -86,8 +86,7 @@ Should set max lenght of username here
 <style scoped>
 .ProfilePic {
     height: fit-content;
-    max-width: 300px;
-    max-height: 300px;
+    width: 15vw;
     border-radius: 10%;
 }
 

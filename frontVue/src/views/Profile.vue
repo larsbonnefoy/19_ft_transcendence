@@ -22,11 +22,11 @@ async function getUserInfo() {
             if (!res.data) {
                 foundUser.value = false;
             }
-
             /*
             Truc degeu pour display une image en attendant
             */
             else {
+                console.log(res.data);
                 user = res.data
                 if (user) {
                     if (user.photo == "no photo yet") {
