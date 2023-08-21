@@ -124,6 +124,9 @@ export const useUserStore = defineStore('user', {
                     f2: newFriend
                 }
             })
+            if (this.user != null) {
+                this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
+            }
             this.user?.friends.push(resLogin.data.login42);
         },
         async declineFriendRequest(newFriend: string) {
