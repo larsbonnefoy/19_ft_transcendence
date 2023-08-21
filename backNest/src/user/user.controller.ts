@@ -75,11 +75,20 @@ export class UserController {
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }
  
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getMyself(@Request() req: any, @Res() res: any) {
+    const user: User = await this.userService.findOne(req.user);
+    console.log("got myself from %s", user.username);
+    res.json(user);
+  }
+
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);
     console.log("got request for user with username %s", username);
-    const messages = await this.userService.findUsername(username);
+    let messages: User = await this.userService.findUsername(username);
+    // messages.twofaSecret = null;
     res.json(messages);
   }
   

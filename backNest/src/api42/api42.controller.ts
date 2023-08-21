@@ -29,7 +29,8 @@ export class Api42Controller {
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
 				newUser.photo = intraPhoto;
-				this.userService.createUser(user);
+				this.userService.createUser(newUser);
+				console.log("oi")
 			}
 			else
 			{
