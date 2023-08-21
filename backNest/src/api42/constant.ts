@@ -1,4 +1,4 @@
 
 export const jwtConstants = {
-    secret: process.env.JWT_SECRET, //TODO LMAO NEED TO BE RANDOM KEY
+    secret: "yo", //TODO LMAO NEED TO BE RANDOM KEY
   };

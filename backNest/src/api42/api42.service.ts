@@ -75,9 +75,9 @@ export class Api42Service
 		}
 	}
 
-	async createJWT(login42 : string) : Promise<any>
+	async createJWT(login42 : string, state: boolean) : Promise<any>
 	{
-		const payload = {sub : login42, auth:true}
+		const payload = {sub : login42, auth: state}
 		return {
 			jwt_token: await this.jwtService.signAsync(payload),
 		};
@@ -94,10 +94,13 @@ export class Api42Service
 					secret: process.env.JWT_SECRET
 				}
 			);
+			console.log("hmm,?")
+			console.log(payload);
 		if (!payload['auth'] || payload['auth'] === false)
 			return false;
 		} 
-		catch {
+		catch (error) {
+			console.log(error);
 			return false;
 		}
 		return true;
