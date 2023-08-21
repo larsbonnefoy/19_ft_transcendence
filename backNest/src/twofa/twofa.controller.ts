@@ -99,6 +99,32 @@ export class TwofaController {
 			// console.log(await this.userService.findOne(login42))
 			console.log("twofaSecret decrypted : " + decrypted.toString());
 			console.log(this.twofaService.verify2fa(body['code'], decrypted.toString()));
+			return (this.twofaService.verify2fa(body['code'], decrypted.toString()));
+	}
+
+	@Post('login')
+	async login(@Body() body:string)
+	{
+
+			const login42 = this.api42Service.decodeJWT(body['token']);
+		
+
+			const secret = (await this.userService.findOne(login42)).twofaSecret
+			
+			console.log('secret encrypted :' + secret);
+
+			const iv = secret.slice(0,16);
+			const key = (await promisify(scrypt)(process.env.ENC_KEY, process.env.ENC_SALT, 32)) as Buffer;
+			const decipher = createDecipheriv('aes-256-ctr', key, iv);
+			const decrypted = Buffer.concat([
+			  decipher.update(secret.slice(16)),
+			  decipher.final(),
+			]);
+
+			console.log('code :' + body['code'])
+			// console.log(await this.userService.findOne(login42))
+			console.log("twofaSecret decrypted : " + decrypted.toString());
+			console.log(this.twofaService.verify2fa(body['code'], decrypted.toString()));
 			let jwtToken: string | null;
 			const state = this.twofaService.verify2fa(body['code'], decrypted.toString())
 			if (state === true)
