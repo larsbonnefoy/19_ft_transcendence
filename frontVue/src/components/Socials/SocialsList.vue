@@ -1,29 +1,27 @@
 <script setup lang="ts">
-import {ref} from 'vue'
+import {ref, computed} from 'vue'
 import { useUserStore } from '@/stores/user';
 import Friend from './Friend.vue';
 import Pending from './Pending.vue';
 import Blocked from './Blocked.vue'
 const userStore = useUserStore();
 
-const hasFriends = ref(false);
-const hasPending = ref(false);
-const hasBlocked = ref(false);
-
 const friends = userStore.getFriends
-if (friends != undefined && friends.length != 0) {
-    hasFriends.value = true;
-}
-
 const pendings = userStore.getPending
-if (pendings != undefined && pendings.length != 0) {
-    hasPending.value = true;
-}
-
 const blocked = userStore.getBlocked
-if (blocked != undefined && blocked.length != 0) {
-    hasBlocked.value = true;
-}
+
+const hasFriends = computed(() => {
+  return (userStore.getFriends?.length != 0)
+})
+
+const hasPendings = computed(() => {
+  return (userStore.getPending?.length != 0)
+})
+
+const hasBlocked = computed(() => {
+  return (userStore.getBlocked?.length != 0)
+})
+
 </script>
 
 <template>
@@ -42,8 +40,8 @@ if (blocked != undefined && blocked.length != 0) {
         <h3 style="text-align: center;"> No Friends </h3>
     </div>
 
-    <div v-if="hasPending">
-        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 10vh;">
+    <div v-if="hasPendings">
+        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 15vh;">
             <div class="card-body">
             <h5 class="card-title">Pending</h5> 
                 <template v-for="(pendingUser, index) in pendings" :key="index">
@@ -54,7 +52,7 @@ if (blocked != undefined && blocked.length != 0) {
     </div>
 
     <div v-if="hasBlocked">
-        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 10vh;">
+        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 15vh;">
             <div class="card-body">
             <h5 class="card-title">Blocked</h5> 
                 <template v-for="(blockedUser, index) in blocked" :key="index">

@@ -1,67 +1,89 @@
 <script setup lang="ts">
 import {ref, computed} from 'vue'
+import { type UserInfo } from '@/types';
 import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
+const err = ref(false);
 
 const props = defineProps<{
-    profileUsername : string
-    profileLogin42: string
-    profilePending: string[]
+    pendingUser: UserInfo
 }>()
 
-const isPendingRecv = ref(store.getPending?.includes(props.profileLogin42));
+const isPendingRecv = ref(store.getPending?.includes(props.pendingUser.login42));
 
 const isPendingSend = ref();
 if (store.getLogin42 != undefined) {
-    isPendingSend.value = props.profilePending.includes(store.getLogin42);
+    isPendingSend.value = props.pendingUser.pending.includes(store.getLogin42);
 }
-
 
 //pt devoir switch ca dans le button direct
 const isFriend = computed(() => {
-    const index = store.getFriends?.indexOf(props.profileLogin42);
-    if (index !== -1) {
-        return true;
+    if (store.getLogin42) {
+        if (store.getFriends?.includes(props.pendingUser.login42)) {
+            return 1;
+        }
     }
     return false;
 })
 
 async function addFriend() {
     try {
-        await store.addFriend(props.profileUsername);
+        await store.addFriend(props.pendingUser.username);
         isPendingSend.value = true;
     }
     catch (error){
+        location.reload();
         console.log(error)
     }
 }
 
 async function removeFriend() {
-    await store.removeFriend(props.profileUsername);
+    try {
+        await store.removeFriend(props.pendingUser.username);
+    }
+    catch (error) {
+        location.reload();
+        console.log(error);
+    }
 }
 
 async function confirmRequest() {
-    await store.acceptFriendRequest(props.profileUsername);
-    isPendingRecv.value = false;
+    try {
+        await store.acceptFriendRequest(props.pendingUser.username);
+        isPendingRecv.value = false;
+    }
+    catch (error) {
+        location.reload();
+        console.log(error);
+    }
 }
 
 async function declineFriendRequest() {
-    await store.declineFriendRequest(props.profileUsername);
-    isPendingRecv.value = false;
+    try {
+        await store.declineFriendRequest(props.pendingUser.username);
+        isPendingRecv.value = false;
+    }
+    catch (error) {
+        location.reload();
+        console.log(error)
+    }
 }
 </script>
 
 <template>
-    <template v-if="isPendingRecv">
-        <button type="button" class="btn btn-warning mx-3"  @click="confirmRequest"> Accept </button> 
-        <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
-    </template>
-    <template v-else-if="isPendingSend">
-        <button type="button" class="btn btn-outline-warning mx-3"> Pending </button>
-    </template>
-    <template v-else>
-        <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>
-        <button v-else type="button" class="btn btn-success" @click="addFriend">Add Friend</button>
-    </template>
+        <div v-if="isPendingRecv">
+            <button type="button" class="btn btn-warning mx-3"  @click="confirmRequest"> Accept </button> 
+            <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
+        </div>
+        <div v-else-if="isPendingSend">
+            <button type="button" class="btn btn-outline-warning mx-3"> Pending </button>
+        </div>
+        <div v-else>
+            <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>
+            <button v-else type="button" class="btn btn-success" @click="addFriend">Add Friend</button>
+        </div>
+        <div v-if="err">
+            <p>Oops Something went Wrong, try a refresh bg</p>
+        </div>
 </template>

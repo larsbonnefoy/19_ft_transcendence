@@ -13,13 +13,13 @@ export const useUserStore = defineStore('user', {
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
-        getPending: (state) => state.user?.pending,
         getBlocked: (state) => state.user?.blocked_users,
         getLogin42: (state) => state.user?.login42,
         get2fa: (state) => state.user?.has2fa,
         getWin: (state) => state.user?.win,
         getLoss: (state) => state.user?.loss,
         getAchievement: (state) => state.user?.achievements,
+        getPending: (state) => state.user?.pending,
     },
     actions: {
         async fetchUser() {
@@ -116,18 +116,10 @@ export const useUserStore = defineStore('user', {
             }
         },
         async removeFriend(FriendtoRemove: string) {
-            try {
-                console.log("a");
-                const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
-                console.log("b");
-                const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
-                console.log("c");
-                if (this.user) {
-                    this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
-                }
-            }
-            catch (error) {
-                console.log(error);
+            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
+            const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
+            if (this.user) {
+                this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
             }
         },
       },

@@ -52,7 +52,7 @@ await getFriend();
                     </router-link>
                 </div>
                 <div class="col-8">
-                    <p class="m-0"> {{ login42 }} </p>
+                    <p class="m-0"> {{ friend.username }} </p>
                     <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friend.elo) }} </p>
                 </div> 
             </div>

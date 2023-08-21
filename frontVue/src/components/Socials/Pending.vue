@@ -31,7 +31,6 @@ await getPending();
 </script>
 
 <template>
-    <!-- <h3> Pending Requests </h3>-->
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
             <div class="col-1 p-0 buttonStyle">
@@ -52,14 +51,14 @@ await getPending();
                         </router-link>
                     </div>
                     <div class="col-8">
-                        <p class="m-0"> {{ login42 }} </p>
+                        <p class="m-0"> {{ pendingUser.username }} </p>
                         <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(pendingUser.elo) }} </p>
                     </div> 
                 </div>
             </div>
 
         <div class="col-6 p-0 buttonStyle">
-            <AddPendingRemoveButton :profile-username="pendingUser.username" :profile-login42="pendingUser.login42" :profile-pending="pendingUser.pending" class="m-2"></AddPendingRemoveButton>
+            <AddPendingRemoveButton :pending-user="pendingUser"></AddPendingRemoveButton>
         </div>
         </div>
    </div>    

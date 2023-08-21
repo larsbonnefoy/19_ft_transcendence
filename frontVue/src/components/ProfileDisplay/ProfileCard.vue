@@ -48,7 +48,7 @@ Should set max lenght of username here
 
                         <div v-if="!activeUser" class=row>
                             <div class="m-2">
-                                <AddPendingRemoveButton :profile-username="user.username" :profile-login42="user.login42" :profile-pending="user.pending"></AddPendingRemoveButton>
+                                <AddPendingRemoveButton :pending-user="user"></AddPendingRemoveButton>
                             </div>
                             <div class="my-4"> 
                                 <GameButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"> </GameButton>

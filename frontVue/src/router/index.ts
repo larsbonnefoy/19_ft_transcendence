@@ -87,6 +87,11 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
+        else {
+          const store = useUserStore();
+          //could only fetch friends list here with another function
+          await store.fetchUser();
+        }
       }
     },
     {

@@ -11,7 +11,6 @@ My todo:
 - set friend requests in database? so that you can only be friends if request is accepted
 
 
-
 list of .env content:
 -backNest/.env
 		#Postgres
