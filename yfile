@@ -27,6 +27,11 @@ list of .env content:
 		API_UID="" #go on intra stettings and get this
 		API_SECRET="" #go on intra stettings and get this
 
+		#ENCRIPTION FOR @FA SECRETS
+		ENC_KEY= 'random bytes'
+		ENC_SALT= 'random bytes'
+		ENC_ALG='aes-256-ctr'
+
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
 
@@ -36,7 +41,6 @@ list of .env content:
 		POSTGRES_PASSWORD=secret
 		POSTGRES_DB=db_nestjs
 		PG_DATA=/var/lib/postgresql/data
-
 
 
 
