@@ -61,7 +61,7 @@ function isDigit(e: any) {
 
 let submit = (async () => {
         try {
-            const data = await axios.post('http://localhost:3000/twofa/verify/', {token: sessionStorage.getItem('jwt_token'), code: digits2fa.value});
+            const data = await axios.post('http://localhost:3000/twofa/login/', {token: sessionStorage.getItem('jwt_token'), code: digits2fa.value});
             console.log(data.data.is_valid);
             console.log(data.data.jwt_token);
             if (data.data.is_valid) {
