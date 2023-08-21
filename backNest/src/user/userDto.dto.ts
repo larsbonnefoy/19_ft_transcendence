@@ -52,13 +52,3 @@ export class newUserDto {
 //   @IsAlphanumeric()
 //   public new: string;
 // }
-
-export class setFriendsDto {
-  @IsNotEmpty()
-  @IsAlphanumeric()
-  public f1: string;
-  
-  @IsNotEmpty()
-  @IsAlphanumeric()
-  public f2: string;
-}

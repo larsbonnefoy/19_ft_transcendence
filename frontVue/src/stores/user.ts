@@ -108,22 +108,12 @@ export const useUserStore = defineStore('user', {
         async addFriend(newFriend: string) {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
-            await axios.get("http://localhost:3000/user/add_friend", {
-                params: {
-                    f1: this.user?.username,
-                    f2: newFriend
-                }
-            })
+            await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
         },
         async acceptFriendRequest(newFriend: string) {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
-            const res = await axios.get("http://localhost:3000/user/accept_request", {
-                params: {
-                    f1: this.user?.username,
-                    f2: newFriend
-                }
-            })
+            const res = await axios.get(`http://localhost:3000/user/accept_request:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
             if (this.user != null) {
                 this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
             }
@@ -133,12 +123,7 @@ export const useUserStore = defineStore('user', {
             try {
                 const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
                 console.log(resLogin.data.login42);
-                const res = await axios.get("http://localhost:3000/user/refuse_request", {
-                    params: {
-                        f1: this.user?.username,
-                        f2: newFriend
-                    }
-                })
+                const res = await axios.get(`http://localhost:3000/user/refuse_request:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
                 if (this.user) {
                     this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42)
                 }
@@ -149,13 +134,11 @@ export const useUserStore = defineStore('user', {
         },
         async removeFriend(FriendtoRemove: string) {
             try {
+                console.log("a");
                 const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
-                const res = await axios.get("http://localhost:3000/user/unset_friends", {
-                    params: {
-                        f1: this.user?.username,
-                        f2: FriendtoRemove
-                    }
-                })
+                console.log("b");
+                const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
+                console.log("c");
                 if (this.user) {
                     this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
                 }

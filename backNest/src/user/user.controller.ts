@@ -7,7 +7,7 @@ import { AuthGuard } from '../guard/auth.guard';
 
 import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
-import { newUserDto, setFriendsDto } from './userDto.dto';
+import { newUserDto } from './userDto.dto';
 
 @Controller("user")
 export class UserController {
@@ -322,17 +322,19 @@ export class UserController {
     res.json({"success":`${user_1.username} unblocked ${friendusername}`});
   }
   
-  @Get('set_friends')
-  async setFriends(@Res() res:any, @Query() query: setFriendsDto) {
-    console.log("setting friendship between %s and %s", query.f1, query.f2);
-    if (query.f1 == query.f2) {
-      res.status(409).json({"error":"c'est déjà toi boloss."});
-      return ;
-    }
-    const user_1 = await this.userService.findUsername(query.f1);
-    const user_2 = await this.userService.findUsername(query.f2);
+  @UseGuards(AuthGuard)
+  @Get('set_friends:username')
+  async setFriends(@Request() req: any, @Res() res:any, @Param() param: any) {
+    const friendusername: string = param.username.slice(1);
+    const user_1 = await this.userService.findOne(req.user);
+    const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
       res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    console.log("setting friendship between %s and %s", user_1.username, friendusername);
+    if (user_1.username == friendusername) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
     for (let friend of user_1.friends) {
@@ -343,20 +345,22 @@ export class UserController {
     }
     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
-    res.json({"success":`friendship blooming between ${query.f1} and ${query.f2}`});
+    res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
   }
   
-  @Get('unset_friends')
-  async unsetFriends(@Res() res:any, @Query() query: setFriendsDto) {
-    console.log("unsetting friendship between %s and %s", query.f1, query.f2);
-    if (query.f1 == query.f2) {
-      res.status(409).json({"error":"c'est déjà toi boloss."});
-      return ;
-    }
-    const user_1 = await this.userService.findUsername(query.f1);
-    const user_2 = await this.userService.findUsername(query.f2);
+  @UseGuards(AuthGuard)
+  @Get('unset_friend:username')
+  async unsetFriends(@Request() req: any, @Res() res:any, @Param() param: any) {
+    const friendusername: string = param.username.slice(1);
+    const user_1 = await this.userService.findOne(req.user);
+    const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
       res.status(409).json({"error":`no user with such username`});
+      return ;
+    }
+    console.log("unsetting friendship between %s and %s", user_1.username, friendusername);
+    if (user_1.username == friendusername) {
+      res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
     let notfriends: boolean = true;
@@ -372,7 +376,7 @@ export class UserController {
     }
     await this.userService.remove_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.remove_friend(user_2.login42, user_2.friends, user_1.login42);
-    res.json({"success":`friendship sunk between ${query.f1} and ${query.f2}`});
+    res.json({"success":`friendship sunk between ${user_1.username} and ${friendusername}`});
   }
   
   @Get('get')
