@@ -19,8 +19,19 @@ curl -G -d 'player1=lucas' -d 'player2=yann' -d 'score1=10' -d 'score2=9' localh
 curl -G -d 'player1=lucas' -d 'player2=hugo' -d 'score1=10' -d 'score2=4' localhost:3000/match/add
 
 curl -G -d 'f1=lars' -d 'f2=hugo' localhost:3000/user/set_friends
-curl -G -d 'f1=lars' -d 'f2=alexis' localhost:3000/user/set_friends
-curl -G -d 'f1=lars' -d 'f2=yann' localhost:3000/user/set_friends
-curl -G -d 'f1=lars' -d 'f2=lucas' localhost:3000/user/set_friends
-curl -G -d 'f1=hugo' -d 'f2=alexis' localhost:3000/user/set_friends
-curl -G -d 'f1=alexis' -d 'f2=lucas' localhost:3000/user/set_friends
+curl -G -d 'f1=lars' -d 'f2=hugo' localhost:3000/user/unset_friends
+
+curl -G -d 'f1=lars' -d 'f2=hugo' localhost:3000/user/add_friend
+curl -G -d 'f1=lars' -d 'f2=alexis' localhost:3000/user/add_friend
+curl -G -d 'f1=lars' -d 'f2=yann' localhost:3000/user/add_friend
+curl -G -d 'f1=lars' -d 'f2=lucas' localhost:3000/user/add_friend
+curl -G -d 'f1=hugo' -d 'f2=alexis' localhost:3000/user/add_friend
+curl -G -d 'f1=alexis' -d 'f2=lucas' localhost:3000/user/add_friend
+
+curl -G -d 'f1=hugo' -d 'f2=lars' localhost:3000/user/accept_request
+curl -G -d 'f1=alexis' -d 'f2=lars' localhost:3000/user/accept_request
+curl -G -d 'f1=yann' -d 'f2=lars' localhost:3000/user/refuse_request
+curl -G -d 'f1=alexis' -d 'f2=hugo' localhost:3000/user/accept_request
+curl -G -d 'f1=lucas' -d 'f2=alexis' localhost:3000/user/accept_request
+
+curl -G -d 'f1=lucas' -d 'f2=yann' localhost:3000/user/block_user
