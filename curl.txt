@@ -1,0 +1,4 @@
+curl -X POST -d "roomId=testroom&userId=hdelmas&message=testmessage" localhost:3000/chat/message 
+curl localhost:3000/chat/all
+curl -X POST -d "id=testroom" localhost:3000/chat/create
+curl -X POST -d "id=testroom" localhost:3000/chat/delete

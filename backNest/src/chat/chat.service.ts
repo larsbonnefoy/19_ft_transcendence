@@ -81,6 +81,7 @@ export class ChatService
 	async deleteRoom(id: string)
 	{
 		 await this.chatRepository.delete(id);
+		 return ;
 	}
 
 	async setPassword(roomId: string, pass: string)
@@ -153,8 +154,20 @@ export class ChatService
 		const chat: Chat = await this.findOne(roomId);
 		if (chat != null)
 		{
-			chat.messages.push(newMessage);
-			// await this.chatRepository.update(roomId, {messages: messages})
+
+			// const messages : ChatMessage[] = chat.messages;
+			console.log(chat.messages);
+			console.log(newMessage);
+			if (chat.messages)
+			{
+				chat.messages.push(newMessage);
+			}
+			else
+				chat.messages = [newMessage, newMessage];
+			console.log(newMessage);
+			console.log(chat.messages);	
+			const yo = chat.messages
+			// await this.chatRepository.update(roomId, {messages: yo})
 			await this.chatRepository.save(chat);
 		}
 	}
