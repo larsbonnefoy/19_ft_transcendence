@@ -52,3 +52,38 @@ export class newUserDto {
 //   @IsAlphanumeric()
 //   public new: string;
 // }
+
+// export class profileDto {
+//   @IsNotEmpty()
+//   login42: string;
+
+//   @IsNotEmpty()
+//   username: string;
+  
+//   @IsNotEmpty()
+//   elo: number;
+  
+//   @IsNotEmpty()
+//   status: string;
+  
+//   @IsNotEmpty()
+//   friends: string[];
+  
+//   @IsNotEmpty()
+//   pending: string[];
+  
+//   @IsNotEmpty()
+//   blocked_users: string[];
+  
+//   @IsNotEmpty()
+//   win: number;
+  
+//   @IsNotEmpty()
+//   loss: number;
+  
+//   @IsNotEmpty()
+//   achievements: number;
+
+//   @IsNotEmpty()
+//   photo: string;
+// }

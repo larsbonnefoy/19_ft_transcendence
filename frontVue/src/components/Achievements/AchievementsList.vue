@@ -77,7 +77,7 @@ const achievementList: Achievement[] = [
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",
-        description: "Make a new Friend",
+        description: "Make your first Friend",
         progress: () => { return 0},
         max: 1
     },
