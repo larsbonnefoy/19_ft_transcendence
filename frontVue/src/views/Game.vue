@@ -8,6 +8,7 @@ const store = useUserStore();
 const canvasWidth = 800;
 const canvasHeight = 600;
 const ballRadius = 10;
+const ballSpeed = 10; //speed should be at least > 2
 const paddleWidth = 2 * ballRadius;
 const paddleHeight = 8 * ballRadius;
 const key_d = 68;
@@ -19,7 +20,7 @@ const key_w = 87;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
-let startDirection = 5;
+let startDirection = 1;
 let score0: number = 0;
 let score1: number = 0;
 let leftPaddle = {
@@ -88,7 +89,8 @@ let myBall = {
 	x : canvasWidth / 2,
 	y : canvasHeight / 2,
 	radius : ballRadius,
-	speedx : startDirection,
+	speed: ballSpeed, 
+	speedx : startDirection * ballSpeed,
 	speedy : 0,
 	color : "red",
 	update : function(){
@@ -113,11 +115,12 @@ let myBall = {
           this.speedy *= -1;
       }
 	  if (leftPaddle.ballCollision()) {
-		(this.x > leftPaddle.x) ? this.speedx = 5 : this.speedx = -5;
-		this.speedy = (this.y - leftPaddle.y) * 5 / leftPaddle.height;
+		  this.speedy = (this.y - leftPaddle.y) * (this.speed - 2) / (leftPaddle.height / 2);
+		  console.log(this.speedy);
+		  (this.x > leftPaddle.x) ? this.speedx = this.speed : this.speedx = - this.speed;
 	} else if (rightPaddle.ballCollision()) {
-		(this.x > rightPaddle.x) ? this.speedx = 5 : this.speedx = -5;
-		this.speedy = (this.y - rightPaddle.y) * 5 / rightPaddle.height;
+		this.speedy = (this.y - rightPaddle.y) * (this.speed - 2) / (rightPaddle.height / 2);
+		(this.x > rightPaddle.x) ? this.speedx = this.speed : this.speedx = - this.speed;
 	  }
     },
     display : function(){
@@ -154,7 +157,7 @@ function resetPositions() {
 
 	myBall.x = canvasWidth / 2;
 	myBall.y = canvasHeight / 2;
-	myBall.speedx = startDirection;
+	myBall.speedx = startDirection * ballSpeed;
 	myBall.speedy = 0;
 
 	leftPaddle.y = canvasHeight / 2;
@@ -166,6 +169,7 @@ function resetPositions() {
 }
 
 function updateGameArea() {
+	console.log(myBall.speedx + " " + myBall.speedy);
 	clearGameArea();
 	leftPaddle.speedy = 0;  
 	if (key == key_w) {leftPaddle.speedy = -1; }
@@ -207,8 +211,6 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <h1> Game Page </h1>
-
 	<!-- <div class="container py-5 h-100"> -->
     <!-- <div class="row d-flex justify-content-center align-items-center"> -->
     <!-- <div class="row align-items-center"> -->
@@ -217,20 +219,30 @@ onUnmounted(async () => {
 		<!-- </div> -->
 	<!-- </div> -->
 	<!-- </div> -->
-		
-	<div class="row align-items-center">
-		<canvas id="gameCanvas"></canvas>	
+	<div class="row" style="max-width: 100vw;">
+		<div class="col-2">
+			<p> P1 </p>
+		</div>
+		<div class="col-8" style="max-height: 90vh; max-width: 90vw">
+			<p> Game </p>
+			<canvas id="gameCanvas"></canvas>
+		</div>
+		<div class="col-2">
+			<p> P2 </p>
+		</div>
 	</div>
-	
 	<!-- <div class="container-fluid"> -->
 	<!-- <div class="row align-items-center">
 		<div class="col-2">1 of 3</div>
 		<div class="col-8"><canvas id="gameCanvas"></canvas></div>
 		<div class="col-2">3 of 3</div>
 	</div> -->
-	<!-- </div> -->
+	<!-- </div>-->
 </template>
 
 <style>
-
+#gameCanvas {
+	width: 90%;
+	height: 90%;
+}
 </style>
