@@ -11,7 +11,10 @@ import {
   
   @WebSocketGateway({
     cors: {
-      origin: '*',
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+//      allowedHeaders: ["my-custom-header"],
+//      credentials: true
     },
   })
   export class MatchGateway {

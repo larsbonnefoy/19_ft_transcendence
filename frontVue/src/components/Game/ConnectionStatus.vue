@@ -14,6 +14,10 @@ function connect(){
 function disconnect(){
     socket.disconnect();
 }
+
+function msg() {
+    socket.emit("events", "hello from client");
+}
 </script>
 
 
@@ -21,4 +25,5 @@ function disconnect(){
   <p>State: {{ connectionState }}</p>
   <button @click="connect()">Connect</button>
   <button @click="disconnect()">Disconnect</button>
+  <button @click="msg()">test?</button>
 </template>

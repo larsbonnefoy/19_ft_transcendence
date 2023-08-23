@@ -5,7 +5,7 @@ export const gameState = reactive({
     connected: false, 
 });
 
-const URL = "http://localhost:300"; //TODO set to env variable here
+const URL = "http://localhost:3000"; //TODO set to env variable here
 
 export const socket = io(URL);
 
