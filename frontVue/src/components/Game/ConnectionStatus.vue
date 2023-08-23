@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import {gameState, socket} from '../../socket'
-import {computed} from "vue"
+import { useUserStore } from '@/stores/user';
+import {gameState, socket} from '../../socket';
+import { computed } from "vue";
 
+const store = useUserStore();
+
+let user = store.getUserName;
 
 const connectionState = computed(() => {
   return gameState.connected;
@@ -16,7 +20,8 @@ function disconnect(){
 }
 
 function msg() {
-    socket.emit("events", "hello from client");
+    const res = socket.emit("events", user, (data) => console.log(data));
+    console.log(res);
 }
 </script>
 
@@ -26,4 +31,6 @@ function msg() {
   <button @click="connect()">Connect</button>
   <button @click="disconnect()">Disconnect</button>
   <button @click="msg()">test?</button>
+ <!--<button @click="msg()">Play</button> --> 
+
 </template>
