@@ -15,9 +15,10 @@ socket.on("connect", () => {
 });
 
 socket.on("disconnect", () => {
+    console.log("Disconnected from server");
     gameState.connected = false;
 });
 
 socket.on("events", (response) => {
-    console.log("here" + response);
+    console.log("here " + response);
 });

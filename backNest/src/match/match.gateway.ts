@@ -29,6 +29,7 @@ import {
         console.log("got message: " + data);
       //return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
       //res.json({"test": "salut"});
+      this.server.emit("events", data);
       return data;
     }
   
@@ -36,4 +37,16 @@ import {
     async identity(@MessageBody() data: number): Promise<number> {
       return data;
     }
+    
+    @SubscribeMessage('leftPaddle')
+    async computeLeftPaddle(@MessageBody() data: any) {
+        console.log("leftPaddle: " + data.pos);
+        if (data.pos > data.max) {
+            data.pos = data.max;
+        } else if (data.pos < data.min) {
+            data.pos = data.min;
+        }
+        this.server.emit("leftPaddle", data.pos);
+    }
+
   }
