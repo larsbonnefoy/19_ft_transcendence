@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Times
 @Entity()
 export class Chat
 {
-	@PrimaryColumn({type: "text", unique: true})
+	@PrimaryColumn({type: "text"})
 	id: string;
 	
 	@Column({ type: "text", default: null})
@@ -47,11 +47,11 @@ export class ChatMessage
 	@Column()
 	message: string;
 
-	// @ManyToOne(() => User, (user) => user.messages)
-	// user: Relation<User>;
+	@ManyToOne(() => User, (user) => user.messages)
+	user: Relation<User>;
 
 	@ManyToOne(() => Chat, (chat) => chat.messages)
-	chat: Chat;
+	chat: Relation<Chat>;
 }
 
 

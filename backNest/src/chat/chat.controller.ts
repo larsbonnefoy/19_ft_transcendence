@@ -1,25 +1,38 @@
-import { Body, Controller, Get, Param, Post, Request, Res } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, Res, UseGuards } from '@nestjs/common';
 import console from 'console';
 import { UserService } from '../user/user.service';
 import { Chat, ChatMessage } from './chat.entity';
 import { ChatService } from './chat.service';
 import { messageDto } from './messageDto.dto';
-import { roomDto } from './RoomDto.dto ';
+import { roomDto } from './roomDto.dto ';
 import * as bcrypt from 'bcrypt';
+import { AuthGuard } from '../guard/auth.guard';
+import { User } from '../user/user.entity';
 
 @Controller('chat')
 export class ChatController {
     constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
     
-
+	@UseGuards(AuthGuard)
     @Post('message')
-    async postMessage(@Request() req: Request, @Body() messageInfos: messageDto)
+    async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)
     {
         console.log("POSTMESSAGE");
         const message : ChatMessage = new ChatMessage;
         // message.chat = messageInfos.roomId;
+		// message.user = await this.userService.findOne("hdelmas");
         message.message = messageInfos.message;
-        this.chatService.addMessage(messageInfos.roomId, message)
+		message.user = await this.userService.findOne(req.user);
+        if (await this.chatService.addMessage(messageInfos.roomId, message))
+		{
+  		    await res.status(200).json({"status":"good"}).send();
+			return ;
+		}
+		else
+		{    
+            res.status(409).json({"error":"no chat with that id"}).send();
+            return ;
+        }
     }
 
     @Get('all')
@@ -27,15 +40,36 @@ export class ChatController {
     {
         console.log("ALL");
         // return await this.chatService.getMessages("test");
+		console.log(await this.chatService.getMessagesByUser("hdelmas"));
         return (await this.chatService.findAll());
     }
+
     @Get('room:roomId')
     async getMessages(@Param() params: any)
     {
         const roomId: string = params.roomId.slice(1);
-        console.log("getMessage" + roomId);
+		//TODO check for password and user 
+        console.log("getMessage " + roomId);
+		return (await this.chatService.getMessagesByRoom(roomId));
     }
-    
+   
+	@Post('allAdmins')
+    async getAdmins(@Body() roomInfos: roomDto)
+	{
+		console.log("allAdmins")
+		return (await this.chatService.getAdmins(roomInfos.id));
+	}
+
+	@UseGuards(AuthGuard)
+	@Post('addAdmin')
+	async addAdmin(@Body() body: string, @Request() req: any)
+	{
+		console.log("addAdmin");
+		const newAdmin: User = await this.userService.findOne(body['newAdmin']);
+		console.log(newAdmin)
+		this.chatService.addAdmin(body['id'], newAdmin);
+	}
+
     @Post('create')
     async createRoom(@Body() roomInfos: roomDto, @Request() req: Request)
     {

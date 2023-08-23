@@ -11,6 +11,12 @@ export class ChatService
 	constructor(
 		@InjectRepository(Chat)
 		private chatRepository: Repository<Chat>,
+
+		@InjectRepository(ChatMessage)
+		private chatMessageRepository: Repository<ChatMessage>,
+		
+		@InjectRepository(User)
+		private userRepository: Repository<User>,
 	) {}
 	
 	// Getter
@@ -20,7 +26,7 @@ export class ChatService
  	  }
 
   	findOne(roomId: string): Promise<Chat | null> {	
-   	 	return this.chatRepository.findOneBy({ id: roomId });
+   	 	return this.chatRepository.findOneBy({ id: roomId});
   	}
 
 	async getOwner(roomId: string) : Promise<User | null>
@@ -28,48 +34,34 @@ export class ChatService
 		return (await this.findOne(roomId)).owner
 	}
 	
-	async getAdmins(roomId: string) : Promise<User[] | null>
-	{
-	    const room = await this.findOne(roomId)
-		if ((room) != null)
-			return room.admins;
-		return null;
-	}
-
-
 	async getChatters(roomId: string) : Promise<User[] | null>
 	{
-	    const room = await this.findOne(roomId)
-		if ((room) != null)
-			return room.chatters;
-		return null;
+		return await this.userRepository.find({ relations: {chats: true},  where: { chats: {id: roomId}}})
 	}
 
+	async getBans(roomId: string) : Promise<User[] | null>
+	{
+		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}})
+	}
 
 	async getMutes(roomId: string) : Promise<User[] | null>
 	{
-	    const room = await this.findOne(roomId)
-		if ((room) != null)
-			return room.mutes;
-		return null;
+		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}})
 	}
 
-	
-	async getBans(roomId: string) : Promise<User[] | null>
+	async getAdmins(roomId: string) : Promise<User[] | null>
 	{
-	    const room = await this.findOne(roomId)
-		if ((room) != null)
-			return room.bans;
-		return null;
+		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}})
 	}
 
-	
-	async getMessages(roomId: string) : Promise<ChatMessage[] | null>
+	async getMessagesByRoom(roomId: string) : Promise<ChatMessage[] | null>
 	{
-	    const room = await this.findOne(roomId)
-		if ((room) != null)
-			return room.messages;
-		return null;
+		return await this.chatMessageRepository.find({ relations: {chat: true},  where: { chat: {id: roomId}}})
+	}
+	
+	async getMessagesByUser(userId: string) : Promise<ChatMessage[] | null>
+	{
+		return await this.chatMessageRepository.find({ relations: {user: true},  where: { user: {login42: userId}}})
 	}
 
 	// room management
@@ -90,6 +82,11 @@ export class ChatService
 		await this.chatRepository.update(roomId, {password: hash});
 	}
 
+	async removePassword(roomId: string, pass: string)
+	{
+		await this.chatRepository.update(roomId, {password: null});
+	}
+
 	async verifyPassword(roomId: string, pass: string)
 	{
 		return (await bcrypt.compare(pass, ((await this.chatRepository.findOneBy({ id: roomId})).password)))
@@ -103,72 +100,57 @@ export class ChatService
 
 	async addAdmin(roomId: string, newAdmin: User)
 	{
-		let admins : User[] = await this.getAdmins(roomId);
-		if (admins != null)
-		{
-			admins.push(newAdmin);
-			await this.chatRepository.update(roomId, {admins: admins})
-		}
-		// else throw ?
+		const admins: User[] = await this.getAdmins(roomId);
+		admins.push(newAdmin);
+		const chat : Chat = await this.findOne(roomId);
+		chat.admins= admins;
+		await this.chatRepository.save(chat);
 	}
 
 	
-	async addchatter(roomId: string, newchatter: User)
+	async addChatters(roomId: string, newChatter: User)
 	{
-		let chatters : User[] = await this.getChatters(roomId);
-		if (chatters != null)
-		{
-			chatters.push(newchatter);
-			await this.chatRepository.update(roomId, {chatters: chatters})
-		}
-		// else throw ?
+		const chatters: User[] = await this.getChatters(roomId);
+		chatters.push(newChatter);
+		const chat : Chat = await this.findOne(roomId);
+		chat.chatters= chatters;
+		await this.chatRepository.save(chat);
+
 	}
 
 	async addMute(roomId: string, newMute: User)
 	{
-		let mutes : User[] = await this.getMutes(roomId);
-		if (mutes != null)
-		{
-			mutes.push(newMute);
-			await this.chatRepository.update(roomId, {mutes: mutes})
-		}
-		// else throw ?
+		const mutes: User[] = await this.getMutes(roomId);
+		mutes.push(newMute);
+		const chat : Chat = await this.findOne(roomId);
+		chat.mutes= mutes;
+		await this.chatRepository.save(chat);
 	}
 
 
 	async addBan(roomId: string, newBan: User)
 	{
-		let bans : User[] = await this.getBans(roomId);
-		if (bans != null)
-		{
-			bans.push(newBan);
-			await this.chatRepository.update(roomId, {bans: bans})
-		}
-		// else throw ?
+		const bans: User[] = await this.getBans(roomId);
+		bans.push(newBan);
+		const chat : Chat = await this.findOne(roomId);
+		chat.bans= bans;
+		await this.chatRepository.save(chat);
 	}
-
 	// Message Management 
 
-	async addMessage(roomId: string, newMessage: ChatMessage)
+	async addMessage(roomId: string, newMessage: ChatMessage): Promise<boolean>
 	{
 		const chat: Chat = await this.findOne(roomId);
+		console.log(chat);
 		if (chat != null)
 		{
-
-			// const messages : ChatMessage[] = chat.messages;
-			console.log(chat.messages);
-			console.log(newMessage);
-			if (chat.messages)
-			{
-				chat.messages.push(newMessage);
-			}
-			else
-				chat.messages = [newMessage, newMessage];
-			console.log(newMessage);
-			console.log(chat.messages);	
-			const yo = chat.messages
-			// await this.chatRepository.update(roomId, {messages: yo})
+			const messages: ChatMessage[] = await this.getMessagesByRoom(roomId);
+			console.log(messages);
+			messages.push(newMessage);
+			chat.messages = messages;
 			await this.chatRepository.save(chat);
+			return true;
 		}
+		return false;
 	}
 }
