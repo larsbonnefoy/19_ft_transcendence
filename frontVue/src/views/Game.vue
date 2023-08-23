@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import GameHistory from '@/components/Matches/GameHistory.vue';
+import ConnectionStatus from '@/components/Game/ConnectionStatus.vue';
 import { useUserStore } from '@/stores/user';
 import { onMounted, onUnmounted, ref } from 'vue';
 const store = useUserStore();
@@ -116,7 +116,6 @@ let myBall = {
       }
 	  if (leftPaddle.ballCollision()) {
 		  this.speedy = (this.y - leftPaddle.y) * (this.speed - 2) / (leftPaddle.height / 2);
-		  console.log(this.speedy);
 		  (this.x > leftPaddle.x) ? this.speedx = this.speed : this.speedx = - this.speed;
 	} else if (rightPaddle.ballCollision()) {
 		this.speedy = (this.y - rightPaddle.y) * (this.speed - 2) / (rightPaddle.height / 2);
@@ -169,7 +168,6 @@ function resetPositions() {
 }
 
 function updateGameArea() {
-	console.log(myBall.speedx + " " + myBall.speedy);
 	clearGameArea();
 	leftPaddle.speedy = 0;  
 	if (key == key_w) {leftPaddle.speedy = -1; }
@@ -222,6 +220,7 @@ onUnmounted(async () => {
 	<div class="row" style="max-width: 100vw;">
 		<div class="col-2">
 			<p> P1 </p>
+			<ConnectionStatus></ConnectionStatus>
 		</div>
 		<div class="col-8" style="max-height: 90vh; max-width: 90vw">
 			<p> Game </p>
