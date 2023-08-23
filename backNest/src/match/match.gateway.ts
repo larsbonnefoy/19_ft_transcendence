@@ -29,6 +29,7 @@ import {
         console.log("got message: " + data);
       //return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
       //res.json({"test": "salut"});
+      this.server.emit('events', data);
       return data;
     }
   
