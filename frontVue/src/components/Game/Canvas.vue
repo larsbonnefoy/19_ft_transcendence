@@ -13,15 +13,23 @@ const key_d = 68;
 const key_e = 69;
 const key_s = 83;
 const key_w = 87;
+const key_up = 38;
+const key_down = 40;
 
 
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
+let roomName : string = "";
 
 
 function init() {
-    socket.emit('startGame');
+    socket.emit('joinGame', store.getUserName);
+    socket.on('joinGame', (response : string) => {
+        console.log(response + " got this form joingame")
+        roomName = response;
+    });
+
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
@@ -31,12 +39,14 @@ function init() {
 	
 	window.addEventListener('keydown', function (e: any) {
         key = e.keyCode;
+        // console.log(key);
     });
 	window.addEventListener('keyup', function (e: any) {
         key = 0;
     });
 
     socket.on('display', (response : any) => {
+        console.log("display update on room " + roomName);
         ctx.fillStyle = response.background;
         ctx.beginPath();
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -63,24 +73,30 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
     });
-
     setInterval(redrawAll, 20);
 }
 
 function redrawAll() {
     if (key == key_w) {
-        socket.emit("leftPaddle", -1);
+        socket.emit("leftPaddle", {dir: -1, roomName: roomName});
     }
     if (key == key_s) {
-        socket.emit("leftPaddle", 1);
+        socket.emit("leftPaddle", {dir: 1, roomName: roomName});
     }
     if (key == key_e) {
-        socket.emit("rightPaddle", -1);
+        socket.emit("rightPaddle", {dir: -1, roomName: roomName});
     }
     if (key == key_d) {
-        socket.emit("rightPaddle", 1);
+        socket.emit("rightPaddle", {dir: 1, roomName: roomName});
     }
-    socket.emit('display');
+    if (key === key_up) {
+        socket.emit("updatePaddle", {dir: -1, roomName: roomName, user: store.getUserName});
+    }
+    if (key === key_down) {
+        socket.emit("updatePaddle", {dir: 1, roomName: roomName, user: store.getUserName});
+    }
+    socket.emit('display', roomName);
+    // socket.emit('events', "test");
 }
 
 onMounted(async () => {

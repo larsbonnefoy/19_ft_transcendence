@@ -3,13 +3,23 @@ import ConnectionStatus from '@/components/Game/ConnectionStatus.vue';
 import Canvas from '@/components/Game/Canvas.vue';
 import Actions from '@/components/Game/Actions.vue'
 import LeaderBoard from '@/components/Game/LeaderBoard.vue';
-import {ref} from 'vue'
-
+import {ref} from 'vue';
+import { socket } from '../socket';
+import { useUserStore } from '@/stores/user';
 const inGame = ref(false);
+
+const store = useUserStore();
 
 function displayGame() {
 	inGame.value = !inGame.value
 }
+
+socket.on('endGame', () => {
+	console.log("game ended");
+	store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
+	inGame.value = false;
+});
+
 </script>
 
 <template>
