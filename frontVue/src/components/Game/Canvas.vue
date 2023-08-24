@@ -2,7 +2,9 @@
 import { useUserStore } from '@/stores/user';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
+
 const store = useUserStore();
+
 
 /* GAME */
 const canvasWidth = 800;
@@ -35,7 +37,6 @@ function init() {
     });
 
     socket.on('display', (response : any) => {
-        console.log(response.leftPaddle.y);
         ctx.fillStyle = response.background;
         ctx.beginPath();
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -96,12 +97,19 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <canvas id="gameCanvas"></canvas>
+    <div id="canvas-container">
+        <canvas id="gameCanvas" class="m-5"></canvas>
+    </div>
 </template>
 
 <style>
+#canvas-container {
+   width: 100%;
+   text-align:center;
+}
 #gameCanvas {
-	width: 90%;
+    display: inline;
+    width: 90%;
 	height: 90%;
 }
 </style>

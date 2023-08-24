@@ -33,6 +33,7 @@ list of .env content:
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
+		VITE_BACKEND="http://localhost:3000/" 
 
 -backNest/postgres/.env
 		#Postgres

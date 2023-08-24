@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import GameHistory from '@/components/Matches/GameHistory.vue';
+import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
 import AchievmentsList from '@/components/Achievements/AchievementsList.vue';
 const store = useUserStore();
 
 await store.setStatus("ingame");
+
 </script>
 
 <template>

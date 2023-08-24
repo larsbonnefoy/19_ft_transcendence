@@ -15,15 +15,15 @@ function displayGame() {
 <template>
 	<div v-if="inGame"> 
 		<div class="row" style="max-width: 100vw;">
-			<div class="col-2">
-				<p> P1 </p>
+			<div class="col-2 playerCard">
+				<h2> Player 1 </h2>
 				<button @click="displayGame()">Toggle Mode</button>
 			</div>
-			<div class="col-8" style="max-height: 90vh; max-width: 90vw">
+			<div class="col-8" style="max-height: 90vh; max-width: 90vw;">
 				<Canvas ></Canvas>
 			</div>
-			<div class="col-2">
-				<p> P2 </p>
+			<div class="col-2 playerCard">
+				<h2> Player 2 </h2>
 			</div>
 		</div>
 	</div>
@@ -39,3 +39,10 @@ function displayGame() {
 		</div>
 	</div>
 </template>
+
+<style>
+.playerCard {
+	text-align: center;
+	margin:auto;
+}
+</style>
