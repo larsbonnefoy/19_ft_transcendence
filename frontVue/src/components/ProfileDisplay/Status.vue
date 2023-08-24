@@ -5,8 +5,6 @@ const props = defineProps<{
 }>()
 
 let color: string;
-let statusImg: string;
-
 switch(props.status) {
     case"online":
         color = "circle-green"
@@ -20,7 +18,6 @@ switch(props.status) {
     default:
         color = "circle-grey"
 }
-
 </script>
 
 

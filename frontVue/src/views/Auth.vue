@@ -27,24 +27,19 @@ try
 		throw "getToken failed";
 
 	const jwtToken : string = (await response.json())['jwt_token'];
-	sessionStorage.setItem('jwt_token', jwtToken);
+	localStorage.setItem('jwt_token', jwtToken);
  
-	const res = await axios.post('http://localhost:3000/twofa/status/', {token: sessionStorage.getItem('jwt_token')});
+	const res = await axios.post('http://localhost:3000/twofa/status/', {token: localStorage.getItem('jwt_token')});
 	if (res.data == true) {
 		has2fa.value = true;
-		//If 2fa valid create real token, if note reroute 
-		//create real token here {sub:login42 , isAuth=True}
-
 	}
 	else {
-		//create real token here {sub:login42 , isAuth=True}
-
 		router.push('/home');
 	};
 }
 catch (error)
 {
-  console.log("yooo : "+ error);
+  console.log(error);
   router.push("/");
 }
 
@@ -61,12 +56,11 @@ function isDigit(e: any) {
 
 let submit = (async () => {
         try {
-            const data = await axios.post('http://localhost:3000/twofa/login/', {token: sessionStorage.getItem('jwt_token'), code: digits2fa.value});
+            const data = await axios.post('http://localhost:3000/twofa/login/', {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
             console.log(data.data.is_valid);
             console.log(data.data.jwt_token);
             if (data.data.is_valid) {
-				console.log("yoooo")
-				sessionStorage.setItem('jwt_token', data.data.jwt_token)	
+				localStorage.setItem('jwt_token', data.data.jwt_token)	
 				router.push("/home")
             }
             else {

@@ -394,7 +394,13 @@ export class UserController {
     const messages = await this.userService.findAll();
     res.json(messages);
   }
-  
+
+  @Get('getLeaderBoard')
+    async getLeaderBoard(@Res() res: any) {
+    const LeaderBoardInfo = await this.userService.getLeaderboard();
+    res.json(LeaderBoardInfo);
+  }
+
   @Get('add')
   async addUser(@Res() res: any, @Query() query: newUserDto) {
     console.log("got from query: %s as login42 and %s as username", query.login42, query.username);

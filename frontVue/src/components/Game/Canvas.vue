@@ -81,16 +81,12 @@ function redrawAll() {
     }
     socket.emit('display');
 }
-
 onMounted(async () => {
-    socket.connect();
-    await store.setStatus("ingame");
-    init();
+    await store.setStatus("ingame"); //set status to online when gameIsEnded (in socket.ts)
 })
 
 onUnmounted(async () => {
-    socket.disconnect();
-    await store.setStatus("online");
+    await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 })
 </script>
 

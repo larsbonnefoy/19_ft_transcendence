@@ -23,6 +23,14 @@ export interface UserInfo {
     achievements: number
 }
 
+
+export interface LeaderBoardUserInfo {
+    username: string
+    elo: number
+    win: number
+    loss: number
+    photo: string
+}
 export interface Achievement {
     name: string
     imageUrl: string

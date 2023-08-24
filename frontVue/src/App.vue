@@ -12,6 +12,7 @@ async function leavingApp() {
   }
   //set Status to offline
 }
+
 </script>
 
 <template>

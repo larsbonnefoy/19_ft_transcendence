@@ -126,8 +126,12 @@ export class UserService {
 		}
 	}
   
-
-
+  async getLeaderboard() {  
+    const users = await this.userRepository.find({
+      select: ['username', "elo", 'win', 'loss', 'photo'], 
+    });
+      return users;
+  }
   // getUsername(login42: string): string {
   //   const user = this.userRepository.findOneBy({ login42:login42 });
   //   if (user == null)
