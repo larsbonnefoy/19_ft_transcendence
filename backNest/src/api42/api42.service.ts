@@ -1,4 +1,4 @@
-import { Injectable, Req, Query, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Req, Query, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
@@ -9,6 +9,7 @@ export class Api42Service
 {
 	constructor(
 		private readonly httpService: HttpService,
+		@Inject(forwardRef(() => UserService))
 		private usersService: UserService,
 		private jwtService: JwtService
 		) {}
@@ -74,9 +75,9 @@ export class Api42Service
 		}
 	}
 
-	async createJWT(login42 : string) : Promise<any>
+	async createJWT(login42 : string, state: boolean) : Promise<any>
 	{
-		const payload = {sub : login42}
+		const payload = {sub : login42, auth: state}
 		return {
 			jwt_token: await this.jwtService.signAsync(payload),
 		};
@@ -93,8 +94,13 @@ export class Api42Service
 					secret: process.env.JWT_SECRET
 				}
 			);
+			console.log("hmm,?")
+			console.log(payload);
+		if (!payload['auth'] || payload['auth'] === false)
+			return false;
 		} 
-		catch {
+		catch (error) {
+			console.log(error);
 			return false;
 		}
 		return true;

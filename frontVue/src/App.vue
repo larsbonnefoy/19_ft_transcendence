@@ -1,5 +1,18 @@
 <script setup lang="ts">
 import HeaderBar from './components/HeaderBar/HeaderBar.vue'
+import { useUserStore } from './stores/user';
+
+window.addEventListener("beforeunload", leavingApp);
+
+const store = useUserStore();
+
+async function leavingApp() {
+  if (store.getUser != null) {
+    store.setStatus("offline");
+  }
+  //set Status to offline
+}
+
 </script>
 
 <template>

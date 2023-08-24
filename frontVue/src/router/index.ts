@@ -14,7 +14,7 @@ import { useUserStore } from '@/stores/user';
 
 
 async function validAccess(): Promise<boolean> {
-  let jwt_token = sessionStorage.getItem("jwt_token");
+  let jwt_token = localStorage.getItem("jwt_token");
   if (jwt_token) {
     try {
       const canAccess = await axios.post("http://localhost:3000/api42/isAuth", {token : jwt_token})
@@ -45,7 +45,6 @@ const router = createRouter({
           return '/';
         }
         else {
-          console.log("Before enter");
           const store = useUserStore();
           await store.fetchUser();
         }
@@ -87,6 +86,11 @@ const router = createRouter({
         const acces = await validAccess();
         if (!acces && to.name != '/') {
           return '/';
+        }
+        else {
+          const store = useUserStore();
+          //could only fetch friends list here with another function
+          await store.fetchUser();
         }
       }
     },

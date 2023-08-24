@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { Api42Service } from './api42.service';
 import { ConfigModule } from '@nestjs/config';
 import { Api42Controller } from './api42.controller';
@@ -10,7 +10,7 @@ import { jwtConstants } from './constant';
 
 @Module(
 		{  
-			imports: [Axios, HttpModule, ConfigModule.forRoot(), UserModule, 
+			imports: [Axios, HttpModule, ConfigModule.forRoot(), forwardRef(() => UserModule), 
 				JwtModule.register(
 				{
 					global: true,

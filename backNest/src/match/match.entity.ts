@@ -16,4 +16,10 @@ export class Match {
 
   @Column()
   score2: number;
+
+  @Column()
+  elo1: number;
+
+  @Column()
+  elo2: number;
 }

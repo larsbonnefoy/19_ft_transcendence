@@ -18,18 +18,10 @@ const displayLinks = computed(() => {
     return toDisplayWhere.includes(route.name);
 });
 
-//just remove auth token, not whole localstorage!!
-const logout = () => {
-    sessionStorage.clear();
+const logout = async () => {
+    await store.setStatus("offline");
     localStorage.clear();
-    //store.$reset();
 }
-
-/*
-const profile = () => {
-    router.push({path: `profile/${store.getUserName}`});
-}
-*/
 
 </script>
 

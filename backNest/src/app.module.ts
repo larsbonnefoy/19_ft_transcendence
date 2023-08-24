@@ -21,6 +21,7 @@ import { TwofaModule } from './twofa/twofa.module';
 import { ChatModule } from './chat/chat.module';
 import { ChatMessage } from './chat/chat.entity';
 import { Chat } from './chat/chat.entity';
+import { TwofaController } from './twofa/twofa.controller';
 
 
 @Module({
@@ -29,15 +30,15 @@ import { Chat } from './chat/chat.entity';
       type: 'postgres',
       host: 'localhost', // if running with docker, comment this and use line below
       // host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
-      port: 5432,
+      port: +process.env.POSTGRES_DB_PORT,
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
-      database: process.env.POSTGRES_DB_PREFIX + '_' + process.env.POSTGRES_DB_NAME,
-    entities: [User, Match/*, Chat, ChatMessage*/],
+      database: process.env.POSTGRES_DB,
+    entities: [User, Match, Chat, ChatMessage],
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User, Match]),
+    TypeOrmModule.forFeature([User, Match, Chat, ChatMessage]),
     UserModule,
     MatchModule,
     Axios,
@@ -49,7 +50,7 @@ import { Chat } from './chat/chat.entity';
       // rootPath: '/usr/src/app/frontVue',//join(__dirname, '/../', 'frontVue'), // New
     // }), // New
   ],
-  controllers: [Api42Controller, AppController],
+  controllers: [Api42Controller, AppController, TwofaController],
   providers: [AppService, Api42Service],
 })
 export class AppModule {

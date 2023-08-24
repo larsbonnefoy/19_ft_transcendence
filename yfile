@@ -1,3 +1,56 @@
+My todo:
+- photos
+- achievements
+			- 1 10 100 games played 							(id 0, 1, 2)
+			- INCOGNITO: changed username						(id 3)
+			- MAKEUP ARTIST: changed profile picture			(id 4)
+			- FLAWLESS: won a game without conceding any point	(id 5)
+			- YOU AND ME: made your first friend				(id 6)
+- id in user?
+- change username takes token
+- set friend requests in database? so that you can only be friends if request is accepted
+
+
+list of .env content:
+-backNest/.env
+		#Postgres
+		POSTGRES_USER=user
+		POSTGRES_PASSWORD=secret
+		POSTGRES_DB=db_nestjs
+		# POSTGRES_DB_HOST=postgres
+		# POSTGRES_DB_NAME_CHAT=chat
+		POSTGRES_DB_PORT=5432
+
+		#API 42
+		JWT_SECRET="" #random string used to encrypt
+		API_UID="" #go on intra stettings and get this
+		API_SECRET="" #go on intra stettings and get this
+
+		#ENCRIPTION FOR @FA SECRETS
+		ENC_KEY= 'random bytes'
+		ENC_SALT= 'random bytes'
+		ENC_ALG='aes-256-ctr'
+
+-frontVue/.env
+		VITE_API_UID="" #same as API_UID in backnest
+
+-backNest/postgres/.env
+		#Postgres
+		POSTGRES_USER=user
+		POSTGRES_PASSWORD=secret
+		POSTGRES_DB=db_nestjs
+		PG_DATA=/var/lib/postgresql/data
+
+
+
+
+
+my done:
+- elo modif like chess
+- status can be changed
+
+
+
 nest.js for backend
 				https://docs.nestjs.com/
 		# To create a controller using the CLI, simply execute the $ nest g controller [name] command.

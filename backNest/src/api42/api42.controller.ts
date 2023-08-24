@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Query, Body, Post} from '@nestjs/common';
+import { Controller, Get, Res, Query, Body, Post, forwardRef, Inject} from '@nestjs/common';
 import { Api42Service } from './api42.service';
 import { jwtDto } from './apiDto.dto';
 import { login42 } from './apiDto.dto';
@@ -7,7 +7,7 @@ import { UserService } from '../user/user.service';
 
 @Controller('api42')
 export class Api42Controller {
-	constructor(private api42Service: Api42Service, private userService : UserService){}
+	constructor(private api42Service: Api42Service, @Inject(forwardRef(() => UserService)) private userService : UserService){}
 
 	@Get('getToken')
 	async findAll(@Res({passthrough: true}) response, @Body() signInDto: Record<string, any>, @Query('code') query: string) 
@@ -19,28 +19,31 @@ export class Api42Controller {
 			// const access_token  : string = "badAccess";
 			const intraLogin : string = await this.api42Service.getLogin42(access_token);
 			const intraPhoto : string = await this.api42Service.getImage42(access_token);	 
-			const jwtToken : string = await this.api42Service.createJWT(intraLogin);
-
-			console.log(jwtToken)
+			let state : boolean = true;
+			const user = (await this.userService.findOne(intraLogin)); 
 		//create a User object 
-			if (!(await this.userService.findOne(intraLogin)))
+			if (!user)
 			{
 				console.log("creating a db entry");
-				const user : User  = new User
-				user.login42 = intraLogin;
-				user.username = await this.api42Service.setUserName(intraLogin);
-				user.photo = intraPhoto;
-				this.userService.createUser(user);
+				const newUser : User  = new User
+				newUser.login42 = intraLogin;
+				newUser.username = await this.api42Service.setUserName(intraLogin);
+				newUser.photo = intraPhoto;
+				this.userService.createUser(newUser);
 			}
 			else
 			{
+				if (user.has2fa === true)
+					state = false;
 				console.log("user already in the db");
 			}
+			const jwtToken : string = await this.api42Service.createJWT(intraLogin, state);
+			console.log(jwtToken)
 			return jwtToken;
 		}
 		catch (error)
 		{
-			response.status(500).send(error);
+			response.status(500).send(error);//YOOOOOO
 			console.error("api42/getToken error : " + error);
 			return ;
 		}	
@@ -75,7 +78,7 @@ export class Api42Controller {
 	@Get('admin')
 	async adminLog(@Query() query: login42) {
 		if (query.login42) {
-			const jwtToken : string = await this.api42Service.createJWT(query.login42);
+			const jwtToken : string = await this.api42Service.createJWT(query.login42, true);
 			return jwtToken;
 		}
 		else {
