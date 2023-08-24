@@ -7,6 +7,9 @@ import {ref} from 'vue'
 
 const inGame = ref(false);
 
+function displayGame() {
+	inGame.value = !inGame.value
+}
 </script>
 
 <template>
@@ -14,7 +17,7 @@ const inGame = ref(false);
 		<div class="row" style="max-width: 100vw;">
 			<div class="col-2">
 				<p> P1 </p>
-				<!-- <ConnectionStatus></ConnectionStatus> -->
+				<button @click="displayGame()">Toggle Mode</button>
 			</div>
 			<div class="col-8" style="max-height: 90vh; max-width: 90vw">
 				<Canvas ></Canvas>
@@ -25,12 +28,12 @@ const inGame = ref(false);
 		</div>
 	</div>
 	<div v-else>
+		<button @click="displayGame()">Toggle Mode</button>
 		<div class="row" style="max-width: 100vw;">
 			<div class="col-6"> 				
 				<LeaderBoard> </LeaderBoard>
  			</div>
 			<div class="col-6">
-				<ConnectionStatus> </ConnectionStatus>
 				<Actions> </Actions>
 			</div>
 		</div>

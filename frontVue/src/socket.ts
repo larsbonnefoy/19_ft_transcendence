@@ -14,7 +14,6 @@ socket.on("connect", async () => { //doesnt work as socket is init when app is l
     console.log(`Connected to server`);
     const store = useUserStore();
     //await store.setStatus("online");
-    console.log(store.getStatus);
     gameState.connected = true;
 });
 
