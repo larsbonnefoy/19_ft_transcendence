@@ -12,6 +12,7 @@ let userdata: UserInfo;
 async function getProfileData() {
   try {
     const res = await axios.get(`http://localhost:3000/user/one:lars`);
+    console.log("Data fetched: ",res.data);
     console.log(res.data);
     userdata = res.data;
   } catch (error: any) {
@@ -38,18 +39,31 @@ watch(() => userdata.username, getProfileData);
 </script>
 
 <template>
-  <div v-if="userdata">
-      <ProfileCard :user="userdata"> </ProfileCard>
+  <div class="profile-window" v-if="userdata">
+      <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
     <!-- Buttons -->
-    <div class="button-container">
+      <!-- <div class="button-container">
       <button @click="addFriend" class="user-button">Add as Friend</button>
       <button @click="startMatch" class="user-button">Start Match</button>
       <button @click="blockUser" class="user-button">Block</button>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <style scoped>
+.profile-window {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  align-items: center;
+  flex-direction: column;
+  height: 94.3vh;
+  /* width: 33%; */
+  /* background-color: #6c757d; */
+  padding: 0;  /* Remove padding */
+  margin: 0;  /* Remove margin */
+}
+
 
 .button-container {
   display: flex;

@@ -67,12 +67,11 @@ function handleOpenProfile(user: string) {
     height: 94.3vh; /* Corrected the height */
     padding-right: 2px; /* Reduced padding */
     overflow: hidden; /* Ensure overflow is hidden */
-    width: 42%;
-    border-left: 1px solid #dee2e6;
+    /* width: 42%; */
     border-right: 1px solid #a8abae; 
     display: flex;
     flex-direction: column;
-    background-color: #6c757d;
+    /* background-color: #6c757d; */
 }
 
 .chat-messages {

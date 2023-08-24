@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import ChannelList from './ChannelList.vue';
 import ChatWindow from './ChatWindow.vue';
 import ProfileWindow from './ProfileWindow.vue';
+import SocialsList from '@/components/Socials/SocialsList.vue';
 
 const selectedUser = ref(null);
 
@@ -25,12 +26,19 @@ onMounted(() => {
 <template>
   <div class="container-fluid">
     <div class="row">
-      <!-- Channels Column -->  
-      <ChannelList  />
-      <!-- Chat Window -->
-      <ChatWindow :currentChannel="selectedChannel" @open-profile="handleOpenProfile"/>
-      <!-- Profile Window -->
-      <ProfileWindow :user="selectedUser"/>
+      <div class="col-3">
+        <!-- Channels Column -->  
+        <ChannelList/>
+      </div>
+      <div class="col-6">
+        <!-- Chat Window -->
+        <ChatWindow :currentChannel="selectedChannel" @open-profile="handleOpenProfile"/>
+      </div>
+      <div class="col-3">
+        <!-- Profile Window -->
+        <ProfileWindow :user="selectedUser"/>
+        <!-- <SocialsList></SocialsList> -->
+      </div>
     </div>
   </div>
 </template>

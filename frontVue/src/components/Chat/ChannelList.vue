@@ -86,10 +86,10 @@ const toggleView = () => {
 
 .channel-list {
   height: 94.3vh;
-  width: 25%;
+  /* width: 25%; */
   border-right: 1px solid #a8abae; /* grey border */
   overflow: hidden;
-  background-color: #6c757d; /* black background */
+  /* background-color: #6c757d;  */
   margin: 0;  
   padding: 0;
 }
