@@ -1,44 +1,45 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from '@/stores/user';
-import type { UserInfo } from '../../types';
+import { type UserInfo } from '../../types';
 import axios from 'axios';
+import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 
 const store = useUserStore();
 
-const userData = ref<UserInfo | null>(null);
+let userdata: UserInfo;
 
-onMounted(async () => {
+async function getProfileData() {
   try {
-    const res = await axios.get(`http://localhost:3000/user/one:${"lyaiche"}`);
-    userData.value = res.data;
-  } catch (error) {
+    const res = await axios.get(`http://localhost:3000/user/one:lars`);
+    console.log(res.data);
+    userdata = res.data;
+  } catch (error: any) {
     console.error("Error fetching user data:", error);
   }
-});
+};
 
 function addFriend() {
-  console.log("Add as friend clicked for:", userData.value?.username);
+  console.log("Add as friend clicked for:", store.getUserName);
 }
 
 function startMatch() {
-  console.log("Start match clicked for:", userData.value?.username);
+  console.log("Start match clicked for:", store.getUserName);
 }
 
 function blockUser() {
-  console.log("Block clicked for:", userData.value?.username);
+  console.log("Block clicked for:", store.getUserName);
 }
+
+await getProfileData();
+
+watch(() => userdata.username, getProfileData);
+
 </script>
 
 <template>
-  <div class="user-profile" v-if="userData">
-    <h3>User Profile</h3>
-    <!-- User Image -->
-    <img :src="userData.photo" alt="User Image" class="user-image" />
-    <!-- User Name -->
-    <h4 class="user-name">{{ userData.username }}</h4>
-    <!-- User Login (Tag) -->
-    <span class="user-login">{{ userData.login42 }}</span>
+  <div v-if="userdata">
+      <ProfileCard :user="userdata"> </ProfileCard>
     <!-- Buttons -->
     <div class="button-container">
       <button @click="addFriend" class="user-button">Add as Friend</button>
@@ -48,53 +49,18 @@ function blockUser() {
   </div>
 </template>
 
-<style>
-.user-profile {
-  width: 33%;
-  padding: 20px;
-  border-left: 1px solid #dee2e6;
-  background-color: #6c757d;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 94.3vh;  
-}
-
-.user-image {
-  width: 500px;
-  height: 400px;
-  border-radius: 10%;
-  object-fit: cover;
-  margin-bottom: 15px;
-}
-
-h4 {
-  margin: 10px 0;
-}
-.user-name {
-  font-size: 2.2em;
-  margin-bottom: 5px;
-  color: #ffffff; /* White color for the username */
-}
-
-.user-login {
-  font-size: 0.9em;
-  margin-bottom: 5px;
-  color: #ffffff; /* White color for the user tag (subtitle) */
-}
-
+<style scoped>
 
 .button-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
+  width: 30%;  /* Adjust the width to match the image and text */
+  align-self: center;  /* Center the button container */
 }
 
 .user-button {
-  width: 100%;
+  width: 20%;
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
@@ -106,4 +72,5 @@ h4 {
 .user-button:hover {
   background-color: #0056b3;
 }
+
 </style>
