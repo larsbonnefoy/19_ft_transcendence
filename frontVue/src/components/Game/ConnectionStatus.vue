@@ -20,8 +20,9 @@ function disconnect(){
 }
 
 function msg() {
-    const res = socket.emit("events", user, (data) => console.log(data));
-    console.log(res);
+    // const res = socket.emit("events", user, (data) => console.log(data));
+    socket.emit("events", user);
+    // console.log(res);
 }
 </script>
 
