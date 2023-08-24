@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onUpdated } from 'vue';
-import ProfileButton from './ProfileButton.vue'; // Adjust the path based on your project structure
-
+import ProfileButton from './ProfileButton.vue';
 const props = defineProps({
   messages: Array
 });
@@ -44,7 +43,6 @@ function handleProfileClick(username: string) {
 
 .message {
   padding: 10px;
-  border-bottom: 1px solid #eee;
   margin-bottom: 5px;
 }
 
@@ -55,6 +53,7 @@ function handleProfileClick(username: string) {
 
 .message-content {
   background-color: #f2f3f5;
+  color: black;
   padding: 8px 12px;
   border-radius: 12px;
   display: inline-block;

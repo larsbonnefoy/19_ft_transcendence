@@ -17,7 +17,7 @@ async function navigateToHome() {
           login42: login.value
         }
       })
-      sessionStorage.setItem('jwt_token', response.data.jwt_token);
+      localStorage.setItem('jwt_token', response.data.jwt_token);
       router.push('/home');
     }
   }

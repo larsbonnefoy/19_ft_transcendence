@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
-                const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: sessionStorage.getItem('jwt_token')});
+                const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: localStorage.getItem('jwt_token')});
                 this.user = data.data;
                 console.log("fetched user")
                 console.log(data.data);
@@ -40,7 +40,7 @@ export const useUserStore = defineStore('user', {
             if (this.user) { 
                 if (value) {
                     try { 
-                        const data = await axios.post('http://localhost:3000/twofa/enable/', {token: sessionStorage.getItem('jwt_token')});
+                        const data = await axios.post('http://localhost:3000/twofa/enable/', {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
                         console.log(data);
                     }
@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
                 }
                 if (!value) {
                     try {
-                        const data = await axios.post('http://localhost:3000/twofa/disable/', {token: sessionStorage.getItem('jwt_token')});
+                        const data = await axios.post('http://localhost:3000/twofa/disable/', {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
                         console.log(data);
                     }
@@ -62,7 +62,7 @@ export const useUserStore = defineStore('user', {
         },
         async setName(newUsername:string) {
             if (this.user) {
-                    await axios.get(`http://localhost:3000/user/change_username:${newUsername}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
+                    await axios.get(`http://localhost:3000/user/change_username:${newUsername}`, { headers: {token: localStorage.getItem('jwt_token')} });
                     this.user.username = newUsername;
             }
         },
@@ -83,7 +83,7 @@ export const useUserStore = defineStore('user', {
                         statusValue = -1; //if written wrong, will endup making backend fail and throw error 
                 }
                 try { 
-                    await axios.get(`http://localhost:3000/user/setStatus:${statusValue}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
+                    await axios.get(`http://localhost:3000/user/setStatus:${statusValue}`, { headers: {token: localStorage.getItem('jwt_token')} });
                     this.user.status = newStatus;
                 }
                 catch (error) {
@@ -91,12 +91,12 @@ export const useUserStore = defineStore('user', {
             }
         },
         async addFriend(newFriend: string) {
-            await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
+            await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
         async acceptFriendRequest(newFriend: string) {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
-            const res = await axios.get(`http://localhost:3000/user/accept_request:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
+            const res = await axios.get(`http://localhost:3000/user/accept_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user != null) {
                 this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
             }
@@ -106,7 +106,7 @@ export const useUserStore = defineStore('user', {
             try {
                 const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
                 console.log(resLogin.data.login42);
-                const res = await axios.get(`http://localhost:3000/user/refuse_request:${newFriend}`, { headers: {token: sessionStorage.getItem('jwt_token')} });
+                const res = await axios.get(`http://localhost:3000/user/refuse_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} });
                 if (this.user) {
                     this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42)
                 }
@@ -117,7 +117,7 @@ export const useUserStore = defineStore('user', {
         },
         async removeFriend(FriendtoRemove: string) {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
-            const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: sessionStorage.getItem('jwt_token')} })
+            const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
                 this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
             }

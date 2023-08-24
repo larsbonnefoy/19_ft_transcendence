@@ -1,44 +1,41 @@
 <script setup lang="ts">
-import GameHistory from '@/components/Matches/GameHistory.vue';
-import { useUserStore } from '@/stores/user';
-import { onMounted, onUnmounted, ref } from 'vue';
-const store = useUserStore();
+import ConnectionStatus from '@/components/Game/ConnectionStatus.vue';
+import Canvas from '@/components/Game/Canvas.vue';
+import Actions from '@/components/Game/Actions.vue'
+import LeaderBoard from '@/components/Game/LeaderBoard.vue';
+import {ref} from 'vue'
 
-/* ATM ingame/online triggered when going to GAME menu */
-const gameCanvas = ref(null)
+const inGame = ref(false);
 
-
-
-
-/* GAME */
-const canvasWidth = 800
-const canvasHeight = 600
-let ctx: any = null;
-
-function init() {
-    const canvas = <HTMLCanvasElement>document.getElementById('c-game-canvas');
-    ctx = canvas.getContext('2d');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    canvas.style.backgroundColor = "#FFFFFF";
+function displayGame() {
+	inGame.value = !inGame.value
 }
-
-
-onMounted(async () => {
-    await store.setStatus("ingame");
-    init();
-})
-
-onUnmounted(async () => {
-    await store.setStatus("online");
-})
 </script>
 
 <template>
-    <h1> Game Page </h1>
-    <canvas id="c-game-canvas" ref="gameCanvas" :width="canvasWidth" :height="canvasHeight"></canvas>
-    <!-- <script src="game.js"></script>-->
+	<div v-if="inGame"> 
+		<div class="row" style="max-width: 100vw;">
+			<div class="col-2">
+				<p> P1 </p>
+				<button @click="displayGame()">Toggle Mode</button>
+			</div>
+			<div class="col-8" style="max-height: 90vh; max-width: 90vw">
+				<Canvas ></Canvas>
+			</div>
+			<div class="col-2">
+				<p> P2 </p>
+			</div>
+		</div>
+	</div>
+	<div v-else>
+		<button @click="displayGame()">Toggle Mode</button>
+		<div class="row" style="max-width: 100vw;">
+			<div class="col-6"> 				
+				<LeaderBoard> </LeaderBoard>
+ 			</div>
+			<div class="col-6">
+				<Actions> </Actions>
+			</div>
+		</div>
+	</div>
 </template>
-
-<style>
-</style>

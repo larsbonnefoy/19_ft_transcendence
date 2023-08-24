@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { ref, nextTick, defineEmits } from 'vue';
+import { ref, nextTick, defineEmits, defineProps } from 'vue';
 import MessageBox from './MessageBox.vue';
+
+const props = defineProps({
+  messages: Array,
+  user: Object 
+});
 
 const newMessage = ref("");
 const messages = ref([
@@ -33,15 +38,21 @@ const handleUpdate = () => {
     autoScroll();
 };
 
-function handleOpenProfile(username: string) {
-  emit('open-profile', username);
+function handleOpenProfile(user: string) {
+  emit('open-profile', user);
 }
 </script>
 
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
-    <MessageBox :messages="messages" class="chat-messages" @updated="autoScroll" @open-profile="handleOpenProfile" />
+    <MessageBox 
+      :messages="messages" 
+      :user="user"
+      class="chat-messages" 
+      @updated="autoScroll" 
+      @open-profile="handleOpenProfile" 
+    />
     <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
     <div class="chat-input-container">
       <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type a message..." />
@@ -53,18 +64,19 @@ function handleOpenProfile(username: string) {
 
 <style scoped>
 .chat-window {
-    height: 100vh;
-    width: 42%;
-    border-left: 1px solid #dee2e6;
-    padding: 1rem;
+    height: 94.3vh; /* Corrected the height */
+    padding-right: 2px; /* Reduced padding */
+    overflow: hidden; /* Ensure overflow is hidden */
+    /* width: 42%; */
+    border-right: 1px solid #a8abae; 
     display: flex;
     flex-direction: column;
+    /* background-color: #6c757d; */
 }
 
 .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem 0;
+  padding: 0.5rem 0; /* Adjusted padding */
+    margin-bottom: 0.5rem;
 }
 
 .scroll-to-bottom {
@@ -85,10 +97,11 @@ function handleOpenProfile(username: string) {
 /* Chat Input Container */
 .chat-input-container {
     padding: 0.5rem;
+    margin-bottom: 10px;
     display: flex;
     align-items: center; /* Vertically center the items */
     border-radius: 50px; /* Circular edges */
-    background-color: #f7f7f8; /* Slight grey background for contrast */
+    background-color: #505050;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     position: relative; /* To position the send button absolutely */
 }
@@ -96,7 +109,7 @@ function handleOpenProfile(username: string) {
 /* Chat Input (Text field) */
 .chat-input-container input {
     flex: 1;
-    padding: 0.5rem 1rem; /* Increased padding for comfort */
+    padding: 0.5rem; /* Increased padding for comfort */
     padding-right: 3rem; /* Space for the "Send" button */
     font-size: 1rem;
     border: none; /* Remove border */
@@ -107,8 +120,7 @@ function handleOpenProfile(username: string) {
     height: 100%; /* Take full height of the container */
     border-top-right-radius: 0; /* Make the top right edge square */
     border-bottom-right-radius: 0; /* Make the bottom right edge square */
-    border-right: 1px solid #dee2e6; /* Add a right border to visually separate the input from the button */
-
+    color: #ffffff;
 }
 
 .chat-input-container input::placeholder {
@@ -144,6 +156,8 @@ function handleOpenProfile(username: string) {
 .chat-input-container .send-button:active {
     transform: scale(0.97); 
 }
+
+
 
 </style>
   

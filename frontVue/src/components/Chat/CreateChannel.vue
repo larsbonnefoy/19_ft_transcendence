@@ -1,0 +1,272 @@
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const messageType = ref('private');
+const searchedUser = ref('');
+const groupType = ref('public');
+const userInput = ref('');
+const addedUsers = ref([]);
+const password = ref('');
+const errorMessage = ref('');
+
+const toggleMessageType = () => {
+  messageType.value = messageType.value === 'private' ? 'group' : 'private';
+};
+
+const emit = defineEmits(["close"]);
+
+const addUser = () => {
+  errorMessage.value = '';
+  if (messageType.value === 'private') {
+    searchedUser.value = userInput.value;
+    userInput.value = '';
+  } else {
+    if (!addedUsers.value.includes(userInput.value)) {
+      addedUsers.value.push(userInput.value);
+    }
+    userInput.value = '';
+  }
+};
+
+const clearUsers = () => {
+  if (messageType.value === 'private') {
+    searchedUser.value = '';
+  } else {
+    addedUsers.value = [];
+  }
+};
+
+const submit = () => {
+  if (messageType.value === 'private' && !searchedUser.value) {
+    errorMessage.value = 'You must add a user.';
+    return;
+  } 
+  if (messageType.value === 'group' && addedUsers.value.length === 0) {
+    errorMessage.value = 'You must add user(s).';
+    return;
+  }
+
+  if (messageType.value === 'private') {
+    console.log('Creating private chat with:', searchedUser.value);
+  } else {
+    console.log('Creating group chat. Type:', groupType.value);
+    console.log('Users:', addedUsers.value);
+    console.log('Password:', password.value);
+  }
+  emit('close');
+};
+
+const closeModal = () => {
+  emit('close');
+};
+</script>
+
+<template>
+  <div class="modal-background">
+    <div class="modal-content">
+      <button @click="closeModal" class="close-button">X</button>
+      <h2>Create New Channel</h2>
+      <button @click="toggleMessageType" class="switch-create-button">
+        {{ messageType === 'private' ? 'Switch to Group' : 'Switch to Private' }}
+      </button>
+  
+      <div v-if="messageType === 'private'">
+        <div class="input-container">
+          <input v-model="userInput" placeholder="Search for user" @keydown.enter="addUser"/>
+          <button @click="addUser" class="add-button">Add</button>
+        </div>
+        <button @click="clearUsers" class="switch-create-button">Clear</button>
+        <!-- Display chosen user for private chat -->
+        <div v-if="searchedUser">Chosen User: {{ searchedUser }}</div>
+        <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for private chat -->
+      </div>
+  
+      <div v-else>
+        <label class="option-label">
+          <input type="radio" v-model="groupType" value="public" /> Public
+        </label>
+        <label class="option-label">
+          <input type="radio" v-model="groupType" value="private" /> Private
+        </label>
+        <div class="input-container">
+          <input v-model="userInput" placeholder="Search for users" @keydown.enter="addUser"/>
+          <button @click="addUser" class="add-button">Add</button>
+        </div>
+        <button @click="clearUsers" class="switch-create-button">Clear</button>
+        <!-- Display number of added users -->
+        <div class="user-display" v-if="addedUsers.length > 0">
+          {{ addedUsers.length }} user(s) added
+          <ul class="user-list">
+            <li v-for="user in addedUsers.slice(0,10)" :key="user">{{ user }}</li>
+          </ul>
+        </div>
+        <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for group chat -->
+        <div class="input-container">
+          <input v-model="password" placeholder="Set a password (optional)" />
+        </div>
+      </div>
+  
+      <button @click="submit" class="switch-create-button">Create Channel</button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+/* Modal Background */
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 94.3vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #6c757d;
+  color: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.option-label {
+    margin-right: 20px; /* Adjust as per your preference */
+}
+.user-display {
+  position: relative;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.user-display:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-list {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #6c757d;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1;
+}
+
+.user-display:hover .user-list {
+  display: block;
+}
+button.switch-create-button {
+  background-color: #505050;
+  color: #a8a8a8;
+  transition: background-color 0.3s, transform 0.1s;
+}
+
+button.switch-create-button:hover {
+  background-color: #3d3d3d;
+}
+
+button.switch-create-button:active {
+  transform: scale(0.95);
+}
+
+.close-button, button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  color: rgb(188, 0, 0);
+  padding: 10px 20px;
+  border-radius: 15px;
+  margin: 10px 0;
+}
+
+button {
+  background-color: #ffffff;
+  color: #6c757d;
+  height: 3vh;
+  width: 50wh;
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.close-button:hover {
+  color: red;
+}
+
+/* Input Container */
+.input-container {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center; /* Vertically center the items */
+  border-radius: 25px; /* Circular edges */
+  background-color: #505050;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  position: relative; /* To position the add button absolutely */
+  margin: 10px 0; /* Margin for spacing */
+}
+
+/* Search Input (Text field) and Password Input */
+.input-container input {
+  flex: 1;
+  padding: 0.5rem; /* Increased padding for comfort */
+  padding-right: 3rem; /* Space for the "Add" button */
+  font-size: 1rem;
+  border: none; /* Remove border */
+  border-radius: 25px; /* Circular edges */
+  outline: none; /* Remove default focus outline */
+  background-color: transparent; /* Transparent background to blend with the container */
+  color: #ffffff;
+}
+
+.input-container input::placeholder {
+  color: #a8a8a8; /* Placeholder color */
+}
+
+/* Add Button */
+.input-container .add-button {
+  position: absolute;
+  right: 0; 
+  background-color: #007BFF; 
+  color: #ffffff; 
+  border: none;
+  padding: 0.5rem 1rem; 
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px; 
+  border-top-right-radius: 25px; 
+  border-bottom-right-radius: 25px; 
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s; 
+  outline: none; 
+  height: 100%;
+  width: 3vw;
+}
+
+.input-container .add-button:hover {
+  background-color: #0056b3;
+} 
+
+.input-container .add-button:active {
+  transform: scale(0.97); 
+}
+</style>

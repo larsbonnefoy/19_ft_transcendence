@@ -75,11 +75,20 @@ export class UserController {
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }
  
+  @UseGuards(AuthGuard)
+  @Get('me')
+  async getMyself(@Request() req: any, @Res() res: any) {
+    const user: User = await this.userService.findOne(req.user);
+    console.log("got myself from %s", user.username);
+    res.json(user);
+  }
+
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);
     console.log("got request for user with username %s", username);
-    const messages = await this.userService.findUsername(username);
+    let messages: User = await this.userService.findUsername(username);
+    // messages.twofaSecret = null;
     res.json(messages);
   }
   
@@ -385,7 +394,13 @@ export class UserController {
     const messages = await this.userService.findAll();
     res.json(messages);
   }
-  
+
+  @Get('getLeaderBoard')
+    async getLeaderBoard(@Res() res: any) {
+    const LeaderBoardInfo = await this.userService.getLeaderboard();
+    res.json(LeaderBoardInfo);
+  }
+
   @Get('add')
   async addUser(@Res() res: any, @Query() query: newUserDto) {
     console.log("got from query: %s as login42 and %s as username", query.login42, query.username);
