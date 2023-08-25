@@ -21,7 +21,8 @@ const key_s = 83;
 const key_w = 87;
 const key_up = 38;
 const key_down = 40;
-
+let player0Login = ref("Player1");
+let player1Login= ref("Player2");
 
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
@@ -51,7 +52,8 @@ function init() {
     });
 
     socket.on('display', (response : any) => {
-        console.log("display update on room " + roomName);
+        player0Login.value = response.player0;
+        player1Login.value = response.player1;
         ctx.fillStyle = backgroundColor;
         ctx.beginPath();
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -130,9 +132,19 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <div id="canvas-container">
-        <canvas id="gameCanvas" class="m-5"></canvas>
-    </div>
+    <div class="row" style="max-width: 100vw;">
+		<div class="col-2 playerCard">
+			<h2> {{ player0Login }} </h2>
+		</div>
+			<div class="col-8" style="max-height: 90vh; max-width: 90vw;">
+                <div id="canvas-container">
+                    <canvas id="gameCanvas" class="m-5"></canvas>
+                </div>
+			</div>
+        <div class="col-2 playerCard">
+            <h2> {{ player1Login }}</h2>
+        </div>
+	</div>
 </template>
 
 <style>
