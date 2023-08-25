@@ -19,8 +19,8 @@ let leftPaddleColor : number = 0;
 const store = useUserStore();
 
 function joinGame() {
-	displayGame.value = !displayGame.value
-	playGame.value = !playGame.value;
+	displayGame.value = true;
+	playGame.value = true;
 }
 
 function watchGame() {

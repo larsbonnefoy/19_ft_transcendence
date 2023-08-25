@@ -22,7 +22,7 @@ const key_w = 87;
 const key_up = 38;
 const key_down = 40;
 
-
+let intervalStop : number = -1;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
@@ -88,7 +88,7 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
     });
-    setInterval(redrawAll, 20);
+    intervalStop = setInterval(redrawAll, 20);
 }
 
 function redrawAll() {
@@ -110,7 +110,8 @@ function redrawAll() {
     if (key === key_down) {
         socket.emit("updatePaddle", {dir: 1, roomName: roomName, token: localStorage.getItem('jwt_token')});
     }
-    socket.emit('display', roomName);
+    if (roomName !== "")
+        socket.emit('display', roomName);
     // socket.emit('events', "test");
 }
 
@@ -124,6 +125,7 @@ onMounted(async () => {
 })
 
 onUnmounted(async () => {
+    clearInterval(intervalStop);
     socket.disconnect();
     // await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 })
