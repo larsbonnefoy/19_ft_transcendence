@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '../guard/auth.guard';
 import { User } from '../user/user.entity';
 
+//TODO SETPASSWORD
 @Controller('chat')
 export class ChatController {
     constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
@@ -41,14 +42,27 @@ export class ChatController {
         return (await this.chatService.findAll());
     }
 
+    @UseGuards(AuthGuard)
     @Get('room:roomId')
-    async getMessages(@Param() params: any)
+    async getMessages(@Request() req: any, @Param() params: any, @Res() res: any)
     {
+    
         const roomId: string = params.roomId.slice(1);
-		//TODO check for password and user 
-        //TODO ADD FILTER FOR BLOCKER USER
-        console.log("getMessage " + roomId);
-		return (await this.chatService.getMessagesByRoom(roomId));
+
+        //is user ban
+        if (this.chatService.isBan(roomId, req.user))
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+        }
+        //is user a chatter/owner/admin
+        else if (this.chatService.isAdmin(roomId, req.user) || this.chatService.isOwner(roomId, req.user) || this.chatService.isChatter(roomId, req.user))
+        {
+            console.log("getMessage " + roomId);
+        	await res.status(200).body(await this.chatService.getMessagesByRoom(roomId)).send();
+        }
+        else
+            await res.status(403).json({"error":"Forbidden"}).send();
+		return ;
     }
    
 	@Post('allAdmins')
