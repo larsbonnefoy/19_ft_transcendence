@@ -21,20 +21,10 @@ const store = useUserStore();
 function joinGame() {
 	displayGame.value = !displayGame.value
 	playGame.value = !playGame.value;
-	if (displayGame.value) {
-		localStorage.setItem('ballColor', colors[ballColor]);
-		localStorage.setItem('rightPaddleColor', colors[rightPaddleColor]);
-		localStorage.setItem('leftPaddleColor', colors[leftPaddleColor]);
-	}
 }
 
 function watchGame() {
 	displayGame.value = !displayGame.value
-	if (displayGame.value) {
-		localStorage.setItem('ballColor', colors[ballColor]);
-		localStorage.setItem('rightPaddleColor', colors[rightPaddleColor]);
-		localStorage.setItem('leftPaddleColor', colors[leftPaddleColor]);
-	}
 }
 
 function changeBallColor() {

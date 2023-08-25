@@ -58,18 +58,28 @@ function init() {
 
         ctx.beginPath();
         ctx.rect(response.leftPaddle.x - response.leftPaddle.width / 2, response.leftPaddle.y - response.leftPaddle.height / 2, response.leftPaddle.width, response.leftPaddle.height);
-        ctx.fillStyle = localStorage.getItem('leftPaddleColor');
+        let color : string | null = localStorage.getItem('leftPaddleColor');
+        if (color === undefined || color === null)
+            color = "white";
+        ctx.fillStyle = color;
         ctx.fill();
         ctx.closePath();
         
         ctx.beginPath();
         ctx.rect(response.rightPaddle.x - response.rightPaddle.width / 2, response.rightPaddle.y - response.rightPaddle.height / 2, response.rightPaddle.width, response.rightPaddle.height);
-        ctx.fillStyle = localStorage.getItem('rightPaddleColor');
+        color = localStorage.getItem('rightPaddleColor');
+        if (color === undefined || color === null)
+            color = "white";
+        ctx.fillStyle = color;
         ctx.fill();
         ctx.closePath();
 
         ctx.beginPath();
         ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
+        color = localStorage.getItem('ballColor');
+        if (color === undefined || color === null)
+            color = "white";
+        ctx.fillStyle = color;
         ctx.fillStyle = localStorage.getItem('ballColor');
         ctx.fill();
         ctx.closePath();

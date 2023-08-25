@@ -181,6 +181,7 @@ export class MatchGateway {
       roomName = "room" + roomIndex;
       console.log("checking " + roomName);
       if (game.state !== states.ENDED && game.player0 === login42 || game.player1 === login42) {
+        console.log(new Date().getTime() - game.lastTimeStamp);
         if (new Date().getTime() - game.lastTimeStamp > 10000) {
           console.log("Game stop because timer");
           game.score0 = 0;
