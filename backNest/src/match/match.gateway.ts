@@ -172,18 +172,30 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-    console.log("token in join game" + login42);
-    console.log(client.id);
+    // console.log("token in join game" + login42);
+    // console.log(client.id);
     let roomIndex: number = 0;
     let roomName: string = "";
+    for (let game of games) { // checking if player already in a game (he left previously)
+      roomName = "room" + roomIndex;
+      console.log("checking " + roomName);
+      if (game.state !== states.ENDED && game.player0 === login42 || game.player1 === login42) {
+        client.join(roomName);
+        this.server.to(roomName).emit("joinGame", roomName);
+        console.log(login42 + ": rejoins " + roomName)
+        return ;
+      }
+      ++roomIndex;
+    }
+    roomIndex = 0;
     for (let game of games) {
       roomName = "room" + roomIndex;
-      console.log(roomName);
+      console.log("checking " + roomName);
       if (game.state === states.STARTING) {
         if (game.player0 === "") {
           game.player0 = login42;
           client.join(roomName);
-          console.log(login42 + ": login42 join room " + roomIndex);
+          console.log(login42 + ": joins " + roomName);
           return ;
         } else if (game.player1 === "") {
           game.state = states.ONGOING;
@@ -191,24 +203,19 @@ export class MatchGateway {
           game.lastTimeStamp = new Date().getTime();
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomName);
-          console.log(login42 + ":login42second join room " + roomIndex);
+          console.log(login42 + ": second joins " + roomName);
           return ;
         }
-      } else if (game.player0 === login42 || game.player1 === login42) {
-        client.join(roomName);
-        this.server.to(roomName).emit("joinGame", roomName);
-        return ;
       }
       ++roomIndex;
     }
     roomName = "room" + roomIndex;
-    console.log(roomName);
     games.push(new Game())
     games[roomIndex].player0 = login42;
     games[roomIndex].roomName = roomName;
     client.join(roomName);
     this.server.to(roomName).emit("joinGame", roomName);
-    console.log("new game in array");
+    console.log("new game in " + roomName);
   }
   
   @SubscribeMessage('watchGame')

@@ -86,8 +86,8 @@ export class Api42Service
 	async isAuth(jwtToken : string) : Promise<boolean>
 	{
 		try {
-			console.error(jwtConstants);
-			console.error(process.env.JWT_SECRET);
+			// console.error(jwtConstants);
+			// console.error(process.env.JWT_SECRET);
 			const payload = await this.jwtService.verifyAsync(
 				jwtToken,
 				{
@@ -108,9 +108,9 @@ export class Api42Service
 	{
 		try {
 			const decoded : any = this.jwtService.decode(jwtToken);
-			console.log('decoded');
-			console.log(jwtToken);
-			console.log(decoded);
+			// console.log('decoded');
+			// console.log(jwtToken);
+			// console.log(decoded);
 			return (decoded['sub']);
 		}
 		catch

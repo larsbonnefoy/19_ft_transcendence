@@ -21,6 +21,7 @@ let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
 let roomName : string = "";
+let backgroundColor : string = "black";
 
 
 function init() {
@@ -47,25 +48,25 @@ function init() {
 
     socket.on('display', (response : any) => {
         console.log("display update on room " + roomName);
-        ctx.fillStyle = response.background;
+        ctx.fillStyle = backgroundColor;
         ctx.beginPath();
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         ctx.beginPath();
         ctx.rect(response.leftPaddle.x - response.leftPaddle.width / 2, response.leftPaddle.y - response.leftPaddle.height / 2, response.leftPaddle.width, response.leftPaddle.height);
-        ctx.fillStyle = response.leftPaddle.color;
+        ctx.fillStyle = localStorage.getItem('leftPaddleColor');
         ctx.fill();
         ctx.closePath();
         
         ctx.beginPath();
         ctx.rect(response.rightPaddle.x - response.rightPaddle.width / 2, response.rightPaddle.y - response.rightPaddle.height / 2, response.rightPaddle.width, response.rightPaddle.height);
-        ctx.fillStyle = response.rightPaddle.color;
+        ctx.fillStyle = localStorage.getItem('rightPaddleColor');
         ctx.fill();
         ctx.closePath();
 
         ctx.beginPath();
         ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
-        ctx.fillStyle = response.ball.color;
+        ctx.fillStyle = localStorage.getItem('ballColor');
         ctx.fill();
         ctx.closePath();
 
@@ -107,7 +108,7 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     socket.disconnect();
-    await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
+    // await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 })
 
 </script>

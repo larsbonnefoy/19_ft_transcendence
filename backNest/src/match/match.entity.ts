@@ -44,20 +44,17 @@ export class Game {
   public startDirection : number = 1;
   public score0 : number = 0;
   public score1 : number = 0;
-  public background : string = "black";
   public leftPaddle = {
     x : 2 * ballRadius,
     y : canvasHeight / 2,
     width : 2 * ballRadius,
     height : 8 * ballRadius,
-    color : "white"
   };
   public rightPaddle = {
     x : canvasWidth - 2 * ballRadius,
     y : canvasHeight / 2,
     width : 2 * ballRadius,
     height : 8 * ballRadius,
-    color : "white"
   };
   public ball = {
     x : canvasWidth / 2,
@@ -66,7 +63,6 @@ export class Game {
     speed : ballSpeed,
     speedx : ballSpeed,
     speedy : 0,
-    color : "white"
   };
 
   constructor () {
