@@ -43,27 +43,27 @@ export class ChatService
 
 	async getBans(roomId: string) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}})
+		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}});
 	}
 
 	async getMutes(roomId: string) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}})
+		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}});
 	}
 
 	async getAdmins(roomId: string) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}})
+		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}});
 	}
 
 	async getMessagesByRoom(roomId: string) : Promise<ChatMessage[] | null>
 	{
-		return await this.chatMessageRepository.find({ relations: {chat: true},  where: { chat: {id: roomId}}})
+		return await this.chatMessageRepository.find({ relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
 	}
 	
 	async getMessagesByUser(userId: string) : Promise<ChatMessage[] | null>
 	{
-		return await this.chatMessageRepository.find({ relations: {user: true},  where: { user: {login42: userId}}})
+		return await this.chatMessageRepository.find({ relations: {user: true, chat: true},  where: { user: {login42: userId}}})
 	}
 
 	// Checkers
@@ -98,6 +98,9 @@ export class ChatService
 	{
 		console.log("isChatter");
 		const chatters: User[] = await this.getChatters(roomId);
+		// console.log(chatters);
+		console.log(chatters.find(it => { return it.login42 === user.login42}))
+		console.log(!!chatters.find(it => { return it.login42 === user.login42}))
 		if (!chatters || !chatters.find(it => { return it.login42 === user.login42}))
 		{
 			console.log("false");

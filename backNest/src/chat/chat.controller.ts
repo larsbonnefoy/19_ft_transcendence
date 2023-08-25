@@ -50,15 +50,18 @@ export class ChatController {
         const roomId: string = params.roomId.slice(1);
 
         //is user ban
-        if (this.chatService.isBan(roomId, req.user))
+        if (await this.chatService.isBan(roomId, req.user))
         {
-            await res.status(403).json({"error":"Forbidden"}).send();
+            res.status(403).json({"error":"Forbidden"}).send();
         }
-        //is user a chatter/owner/admin
-        else if (this.chatService.isAdmin(roomId, req.user) || this.chatService.isOwner(roomId, req.user) || this.chatService.isChatter(roomId, req.user))
+        else if (await this.chatService.isAdmin(roomId, req.user) 
+            || await this.chatService.isOwner(roomId, req.user) 
+            || await this.chatService.isChatter(roomId, req.user))
         {
+        //is user a chatter/owner/admin
             console.log("getMessage " + roomId);
-        	await res.status(200).body(await this.chatService.getMessagesByRoom(roomId)).send();
+            // console.log((await this.chatService.getMessagesByRoom(roomId)));
+        	res.status(200).json(await this.chatService.getMessagesByRoom(roomId)).send();
         }
         else
             await res.status(403).json({"error":"Forbidden"}).send();
