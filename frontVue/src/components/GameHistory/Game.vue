@@ -52,10 +52,12 @@ await setUserOpponent();
 <template>
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
-        <div class="col-5 p-0"> <span class="eloDisplay mx-1">({{ user.elo}}) </span> {{ username }} : {{ user.score }} </div>
+        <div class="col-4 p-0"> <span class="eloDisplay mx-1">({{ user.elo}}) </span> {{ username }} </div>
+        <div class="col-1 scoreDisplay"> {{ user.score }} </div>
         <div v-if="gameWon" class="col-2 p-0 gameWon"> Won </div>
         <div v-else class="col-2 p-0 gameLost"> Lost </div>
-        <div class="col-5 p-0">   {{ opponent.score }} : {{ opponentUsername }} <span class="eloDisplay mx-1">({{ opponent.elo}}) </span></div>
+        <div class="col-1 scoreDisplay"> {{ opponent.score }} </div>
+        <div class="col-4 p-0"> {{ opponentUsername }} <span class="eloDisplay mx-1">({{ opponent.elo}}) </span></div>
         </div>
     </div>
 </template>
@@ -72,6 +74,11 @@ await setUserOpponent();
     font-weight: 400;
     color: grey;
 }
+.scoreDisplay {
+    font-size: medium;
+    font-weight: 400;
+}
+
 .gameWon {
     color: green;
 }

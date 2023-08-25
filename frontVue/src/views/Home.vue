@@ -5,7 +5,7 @@ import SocialsList from '@/components/Socials/SocialsList.vue';
 import AchievmentsList from '@/components/Achievements/AchievementsList.vue';
 const store = useUserStore();
 
-await store.setStatus("ingame");
+await store.setStatus("online");
 
 </script>
 

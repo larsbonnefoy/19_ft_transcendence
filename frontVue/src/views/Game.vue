@@ -10,6 +10,10 @@ import { useUserStore } from '@/stores/user';
 
 const displayGame = ref(false);
 const playGame = ref(false);
+const colors : Array<string> = ["white", "red", "green", "blue", "last"];
+let ballColor : number = 0;
+let rightPaddleColor : number = 0;
+let leftPaddleColor : number = 0;
 
 
 const store = useUserStore();
@@ -17,10 +21,41 @@ const store = useUserStore();
 function joinGame() {
 	displayGame.value = !displayGame.value
 	playGame.value = !playGame.value;
+	if (displayGame.value) {
+		localStorage.setItem('ballColor', colors[ballColor]);
+		localStorage.setItem('rightPaddleColor', colors[rightPaddleColor]);
+		localStorage.setItem('leftPaddleColor', colors[leftPaddleColor]);
+	}
 }
 
 function watchGame() {
 	displayGame.value = !displayGame.value
+	if (displayGame.value) {
+		localStorage.setItem('ballColor', colors[ballColor]);
+		localStorage.setItem('rightPaddleColor', colors[rightPaddleColor]);
+		localStorage.setItem('leftPaddleColor', colors[leftPaddleColor]);
+	}
+}
+
+function changeBallColor() {
+	++ballColor;
+	if (colors[ballColor] === "last")
+		ballColor = 0;
+	localStorage.setItem('ballColor', colors[ballColor]);
+}
+
+function changeRightPaddleColor() {
+	++rightPaddleColor;
+	if (colors[rightPaddleColor] === "last")
+		rightPaddleColor = 0;
+	localStorage.setItem('rightPaddleColor', colors[rightPaddleColor]);
+}
+
+function changeLeftPaddleColor() {
+	++leftPaddleColor;
+	if (colors[leftPaddleColor] === "last")
+		leftPaddleColor = 0;
+	localStorage.setItem('leftPaddleColor', colors[leftPaddleColor]);
 }
 
 socket.on('endGame', () => {
@@ -32,10 +67,6 @@ socket.on('endGame', () => {
 </script>
 
 <template>
-	<div> 
-	<p> displayGame {{ displayGame }} </p>
-	<p> playGame {{ playGame }} </p>
-	</div>
 	<div v-if="displayGame"> 
 		<div class="row" style="max-width: 100vw;">
 			<div class="col-2 playerCard">
@@ -47,6 +78,9 @@ socket.on('endGame', () => {
 			</div>
 			<div class="col-2 playerCard">
 				<h2> Player 2 </h2>
+				<button @click="changeBallColor()">Custom ball</button>
+				<button @click="changeLeftPaddleColor()">Custom left paddle</button>
+				<button @click="changeRightPaddleColor()">Custom right paddle</button>
 			</div>
 		</div>
 	</div>

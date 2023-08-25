@@ -108,9 +108,9 @@ export class Api42Service
 	{
 		try {
 			const decoded : any = this.jwtService.decode(jwtToken);
-			console.log('decoded');
-			console.log(jwtToken);
-			console.log(decoded);
+			// console.log('decoded');
+			// console.log(jwtToken);
+			// console.log(decoded);
 			return (decoded['sub']);
 		}
 		catch
