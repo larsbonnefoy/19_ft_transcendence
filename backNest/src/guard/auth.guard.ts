@@ -16,8 +16,6 @@ export class AuthGuard implements CanActivate {
 
     try 
     {
-        console.log("GUARD");
-        console.log(process.env.JWT_SECRET);
         const decoded = await this.jwtService.verifyAsync
         (
           token,
@@ -43,8 +41,6 @@ export class AuthGuard implements CanActivate {
 
   private extractTokenFromHeader(request: Request): string | null {
     const token : any  = request.headers['token'];
-    console.log("extract:  ")
-    console.log(token);
     if (token === null || token === undefined)
       return null;
     return token;

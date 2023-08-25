@@ -136,10 +136,6 @@ export class Game {
 
   resetGame() : void {
     this.state = states.ENDED;
-    this.player0 = "";
-    this.player1 = "";
-    this.score0 = 0;
-    this.score1 = 0;
   }
 
   updateGameArea = (newTimeStamp : number) : void => {

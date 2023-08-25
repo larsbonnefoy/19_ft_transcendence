@@ -94,8 +94,6 @@ export class Api42Service
 					secret: process.env.JWT_SECRET
 				}
 			);
-			console.log("hmm,?")
-			console.log(payload);
 		if (!payload['auth'] || payload['auth'] === false)
 			return false;
 		} 

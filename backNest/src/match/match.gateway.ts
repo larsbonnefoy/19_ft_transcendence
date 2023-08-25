@@ -98,10 +98,14 @@ export class MatchGateway {
         if (game.state === states.ENDED) {
           this.server.to(game.roomName).emit("endGame");
           if (save_state === states.ONGOING) {
+            console.log("updated games history");
             const nMatch: Match = new Match;
+            console.log("player0" + game.player0);
+            console.log("player1" + game.player1);
             const p1 = await this.userService.findUsername(game.player0);
             const p2 = await this.userService.findUsername(game.player1);
             if (p1 == null || p2 == null) {
+              console.log("return on player null");
               return ;
             }
             nMatch.player1 = p1.login42;
@@ -134,6 +138,10 @@ export class MatchGateway {
               console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
             }
             await this.matchService.createMatch(nMatch);
+            game.score0 = 0;
+            game.score1 = 0;
+            game.player0 = "";
+            game.player1 = "";
           }
         }
         else
