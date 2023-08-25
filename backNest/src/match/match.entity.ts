@@ -89,7 +89,8 @@ export class Game {
         //   this.ball.speedx *= -1;
         ++this.score0;
         if (this.score0 >= 10) {
-          this.resetGame();
+          this.state = states.ENDED;
+          return ;
         }
         this.resetPositions();
       } else if (this.ball.x < this.ball.radius) {
@@ -97,7 +98,8 @@ export class Game {
         //   this.ball.speedx *= -1;
         ++this.score1;
         if (this.score1 >= 10) {
-          this.resetGame();
+          this.state = states.ENDED;
+          return ;
         }
         this.resetPositions();
     }
@@ -125,13 +127,24 @@ export class Game {
     this.ball.y = canvasHeight / 2;
     this.ball.speedx = this.startDirection * ballSpeed;
     this.ball.speedy = 0;
-      
+
     this.leftPaddle.y = canvasHeight / 2;
     this.rightPaddle.y = canvasHeight / 2;
   }
 
   resetGame() : void {
-    this.state = states.ENDED;
+    this.score0 = 0;
+    this.score1 = 0;
+    this.startDirection = 1;
+    this.player0 = "";
+    this.player1 = "";
+    this.leftPaddle.y = canvasHeight / 2;
+    this.rightPaddle.y = canvasHeight / 2;
+    this.ball.x = canvasWidth / 2;
+    this.ball.y = canvasHeight / 2;
+    this.ball.speedx = ballSpeed;
+    this.ball.speedy = 0;
+    this.state = states.STARTING;
   }
 
   updateGameArea = (newTimeStamp : number) : void => {
@@ -145,6 +158,7 @@ export class Game {
         deltaTime -= 20;
       }
       this.updateBall(deltaTime);
+      // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
     }
   }

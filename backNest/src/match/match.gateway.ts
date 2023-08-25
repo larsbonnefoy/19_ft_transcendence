@@ -142,11 +142,7 @@ export class MatchGateway {
               console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
             }
             await this.matchService.createMatch(nMatch);
-            game.score0 = 0;
-            game.score1 = 0;
-            game.player0 = "";
-            game.player1 = "";
-            game.state = states.STARTING;
+            game.resetGame();
           }
         }
         else
@@ -181,18 +177,17 @@ export class MatchGateway {
       roomName = "room" + roomIndex;
       console.log("checking " + roomName);
       if (game.state !== states.ENDED && game.player0 === login42 || game.player1 === login42) {
-        console.log(new Date().getTime() - game.lastTimeStamp);
-        if (new Date().getTime() - game.lastTimeStamp > 10000) {
+        // console.log(new Date().getTime() - game.lastTimeStamp);
+        if (game.state === states.ONGOING && new Date().getTime() - game.lastTimeStamp > 10000) {
           console.log("Game stop because timer");
-          game.score0 = 0;
-          game.score1 = 0;
-          game.player0 = "";
-          game.player1 = "";
-          game.state = states.STARTING;
+          game.resetGame();
           break ;
         }
         client.join(roomName);
-        this.server.to(roomName).emit("joinGame", roomName);
+        if (game.state === states.ONGOING)
+          this.server.to(roomName).emit("joinGame", roomName);
+        else
+          this.server.to(roomName).emit("display", game);
         console.log(login42 + ": rejoins " + roomName)
         return ;
       }
@@ -206,6 +201,7 @@ export class MatchGateway {
         if (game.player0 === "") {
           game.player0 = login42;
           client.join(roomName);
+          this.server.to(game.roomName).emit("display", game);
           console.log(login42 + ": joins " + roomName);
           return ;
         } else if (game.player1 === "") {
@@ -225,7 +221,7 @@ export class MatchGateway {
     games[roomIndex].player0 = login42;
     games[roomIndex].roomName = roomName;
     client.join(roomName);
-    this.server.to(roomName).emit("joinGame", roomName);
+    this.server.to(games[roomIndex].roomName).emit("display", games[roomIndex]);
     console.log("new game in " + roomName);
   }
   
