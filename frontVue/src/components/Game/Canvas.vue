@@ -24,7 +24,7 @@ let roomName : string = "";
 
 
 function init() {
-    socket.emit('joinGame', store.getUserName);
+    socket.emit('joinGame', localStorage.getItem('jwt_token'));
     socket.on('joinGame', (response : string) => {
         console.log(response + " got this form joingame")
         roomName = response;
@@ -90,10 +90,10 @@ function redrawAll() {
         socket.emit("rightPaddle", {dir: 1, roomName: roomName});
     }
     if (key === key_up) {
-        socket.emit("updatePaddle", {dir: -1, roomName: roomName, user: store.getUserName});
+        socket.emit("updatePaddle", {dir: -1, roomName: roomName, token: localStorage.getItem('jwt_token')});
     }
     if (key === key_down) {
-        socket.emit("updatePaddle", {dir: 1, roomName: roomName, user: store.getUserName});
+        socket.emit("updatePaddle", {dir: 1, roomName: roomName, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomName);
     // socket.emit('events', "test");

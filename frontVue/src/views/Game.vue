@@ -30,7 +30,7 @@ socket.on('endGame', () => {
 				<button @click="displayGame()">Toggle Mode</button>
 			</div>
 			<div class="col-8" style="max-height: 90vh; max-width: 90vw;">
-				<Canvas ></Canvas>
+				<Canvas> </Canvas>
 			</div>
 			<div class="col-2 playerCard">
 				<h2> Player 2 </h2>

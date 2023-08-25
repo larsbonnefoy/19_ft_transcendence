@@ -29,6 +29,14 @@ socket.on("events", (response) => {
 });
 
 /*
+socket.on("invited") {
+    //diplay popup to join or refuse;
+    //if join -> go to room
+    //else
+    //send to inviter that refused
+}
+*/
+/*
 export function getSocketInfo(info: SocketInformation): SocketInformation {
     return (info? info : new SocketInformation)
 }

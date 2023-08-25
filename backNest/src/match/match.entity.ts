@@ -144,8 +144,12 @@ export class Game {
     let deltaTime : number = newTimeStamp - this.lastTimeStamp;
     // console.log(deltaTime + ", new is " + newTimeStamp + ", last is " + this.lastTimeStamp);
     if (deltaTime > 20) {
-      this.lastTimeStamp = newTimeStamp;
+      while (deltaTime > 20) {
+        this.updateBall(20);
+        deltaTime -= 20;
+      }
       this.updateBall(deltaTime);
+      this.lastTimeStamp = newTimeStamp;
     }
   }
 

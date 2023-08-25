@@ -6,25 +6,22 @@ import {
     WebSocketServer,
     WsResponse,
 } from '@nestjs/websockets';
-import { Res } from '@nestjs/common';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import {UseGuards, Request, Inject, forwardRef, Get, Res } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { Response } from 'express';
 import { Game, states } from './match.entity';
-import { RouterModule } from '@nestjs/core';
-import { promises } from 'dns';
-
+import { AuthGuard } from '../guard/auth.guard';
 import { UserService } from '../user/user.service';
 import { Match } from './match.entity';
 import { MatchService } from './match.service';
+import { Api42Service } from '../api42/api42.service';
 
 const canvasWidth : number = 800;
 const canvasHeight : number = 600;
 const ballRadius : number = 10;
 const ballSpeed : number = 10; //speed should be at least > 2
 
-let games : Array<Game> = new Array(0);
+export let games : Array<Game> = new Array(0);
 
 @WebSocketGateway({
   cors: {
@@ -35,7 +32,7 @@ let games : Array<Game> = new Array(0);
   },
 })
 export class MatchGateway {
-  constructor(private readonly userService: UserService, private readonly matchService: MatchService) {}
+  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService, private readonly matchService: MatchService) {}
 
   @WebSocketServer()
   server: Server;
@@ -75,13 +72,20 @@ export class MatchGateway {
   }
 
   @SubscribeMessage('updatePaddle')
-  async computePaddle(@MessageBody() data: {dir: number, roomName: string, user: string}) {
+  async computePaddle(@MessageBody() data: {dir: number, roomName: string, token: string}) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
     for (let game of games)
     {
       if (game.roomName === data.roomName) {
-        if (game.player0 === data.user)
+        if (game.player0 === login42)
           game.updateLeftPaddle(data.dir);
-        else if (game.player1 === data.user)
+        else if (game.player1 === login42)
           game.updateRightPaddle(data.dir);
       } 
     }
@@ -102,8 +106,8 @@ export class MatchGateway {
             const nMatch: Match = new Match;
             console.log("player0" + game.player0);
             console.log("player1" + game.player1);
-            const p1 = await this.userService.findUsername(game.player0);
-            const p2 = await this.userService.findUsername(game.player1);
+            const p1 = await this.userService.findOne(game.player0);
+            const p2 = await this.userService.findOne(game.player1);
             if (p1 == null || p2 == null) {
               console.log("return on player null");
               return ;
@@ -158,9 +162,17 @@ export class MatchGateway {
   //         setInterval(updateGameArea, 20);
   //     }
   // }
-
+  //@UseGuards(AuthGuard)
   @SubscribeMessage('joinGame')
-  async joinGame(@ConnectedSocket() client: any, @MessageBody() user: string) {
+  async joinGame(@ConnectedSocket() client: any, @MessageBody() token: string) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+    console.log("token in join game" + login42);
     console.log(client.id);
     let roomIndex: number = 0;
     let roomName: string = "";
@@ -169,20 +181,20 @@ export class MatchGateway {
       console.log(roomName);
       if (game.state === states.STARTING) {
         if (game.player0 === "") {
-          game.player0 = user;
+          game.player0 = login42;
           client.join(roomName);
-          console.log(user + ": user0 join room " + roomIndex);
+          console.log(login42 + ": login42 join room " + roomIndex);
           return ;
         } else if (game.player1 === "") {
           game.state = states.ONGOING;
-          game.player1 = user;
+          game.player1 = login42;
           game.lastTimeStamp = new Date().getTime();
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomName);
-          console.log(user + ":user1 join room " + roomIndex);
+          console.log(login42 + ":login42second join room " + roomIndex);
           return ;
         }
-      } else if (game.player0 === user || game.player1 === user) {
+      } else if (game.player0 === login42 || game.player1 === login42) {
         client.join(roomName);
         this.server.to(roomName).emit("joinGame", roomName);
         return ;
@@ -192,7 +204,7 @@ export class MatchGateway {
     roomName = "room" + roomIndex;
     console.log(roomName);
     games.push(new Game())
-    games[roomIndex].player0 = user;
+    games[roomIndex].player0 = login42;
     games[roomIndex].roomName = roomName;
     client.join(roomName);
     this.server.to(roomName).emit("joinGame", roomName);
@@ -200,13 +212,10 @@ export class MatchGateway {
   }
   
   @SubscribeMessage('watchGame')
-  async watchParty(@ConnectedSocket() client: any, @MessageBody() user: string) {
-    for (let game of games)
-    {
-      if (game.player0 === user || game.player1 === user) {
-        client.join(game.roomName);
-        this.server.to(game.roomName).emit(game.roomName);
-      }
+  async watchParty(@ConnectedSocket() client: any, @MessageBody() roomName: string) {
+    for (let game of games) {
+      if (game.roomName == roomName && game.state === states.ONGOING)
+        client.join(roomName);
     }
   }
 

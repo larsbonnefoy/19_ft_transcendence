@@ -8,6 +8,8 @@ import { User } from '../user/user.entity';
 import { UserService } from '../user/user.service';
 
 import { Match } from './match.entity';
+import { games } from './match.gateway';
+import { Game, states } from './match.entity';
 import { MatchService } from './match.service';
 import { newMatchDto } from './newMatchDto.dto';
 // import { response } from 'express';
@@ -109,4 +111,14 @@ export class MatchController {
     res.json({"Matchs":"deleted"});
   }
 
+  @Get('ongoingGames')
+  async getOngoingGames(@Res() res: Response) {
+    let response : Array<Game> = new Array(0);
+    for (let game of games) {
+      if (game.state === states.ONGOING) {
+        response.push(game);
+      }
+    }
+    res.json(response);
+  }
 }
