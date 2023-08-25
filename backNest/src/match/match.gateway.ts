@@ -6,7 +6,7 @@ import {
     WebSocketServer,
     WsResponse,
 } from '@nestjs/websockets';
-import {UseGuards, Request, Inject, forwardRef, Get, Res } from '@nestjs/common';
+import {UseGuards, Request, Inject, forwardRef, Get, Res, ConsoleLogger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { Response } from 'express';
 import { Game, states } from './match.entity';
@@ -216,6 +216,8 @@ export class MatchGateway {
     for (let game of games) {
       if (game.roomName == roomName && game.state === states.ONGOING)
         client.join(roomName);
+        console.log(client.id + " joined room " + roomName);
+        return ;
     }
   }
 

@@ -12,7 +12,6 @@ async function getLeaderBoard() {
         const res = await axios.get("http://localhost:3000/user/getLeaderBoard");
         users.value = res.data.slice().sort((a:LeaderBoardUserInfo, b:LeaderBoardUserInfo) => b.elo*1 - a.elo*1);
         LeaderBoardExists.value = true;
-        console.log(users.value);
     }
     catch(error) {
 

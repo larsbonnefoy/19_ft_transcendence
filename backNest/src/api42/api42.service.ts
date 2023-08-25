@@ -86,8 +86,8 @@ export class Api42Service
 	async isAuth(jwtToken : string) : Promise<boolean>
 	{
 		try {
-			console.error(jwtConstants);
-			console.error(process.env.JWT_SECRET);
+			//console.error(jwtConstants);
+			//console.error(process.env.JWT_SECRET);
 			const payload = await this.jwtService.verifyAsync(
 				jwtToken,
 				{

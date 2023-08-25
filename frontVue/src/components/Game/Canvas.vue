@@ -3,6 +3,12 @@ import { useUserStore } from '@/stores/user';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
 
+
+const props = defineProps<{
+    playGame : boolean
+}>()
+
+
 const store = useUserStore();
 
 
@@ -22,9 +28,7 @@ let ctx: any = null;
 let key: number = 0;
 let roomName : string = "";
 
-
 function init() {
-    socket.emit('joinGame', localStorage.getItem('jwt_token'));
     socket.on('joinGame', (response : string) => {
         console.log(response + " got this form joingame")
         roomName = response;
@@ -102,6 +106,9 @@ function redrawAll() {
 onMounted(async () => {
     socket.connect();
     await store.setStatus("ingame");
+    if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
+        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+    }
     init();
 })
 
@@ -109,7 +116,6 @@ onUnmounted(async () => {
     socket.disconnect();
     await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 })
-
 </script>
 
 <template>
