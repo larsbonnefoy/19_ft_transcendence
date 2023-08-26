@@ -14,60 +14,6 @@ import { User } from '../user/user.entity';
 export class ChatController {
     constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
     
-	@UseGuards(AuthGuard)
-    @Post('message')
-    async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)//TODO CHECK IF IS CHATTER NOT BAN NOR MUTED
-    {
-        console.log("POSTMESSAGE");
-        const message : ChatMessage = new ChatMessage;
-        
-        message.message = messageInfos.message;
-		message.user = await this.userService.findOne(req.user);
-        if (await this.chatService.addMessage(messageInfos.roomId, message))
-		{
-  		    await res.status(200).json({"status":"good"}).send();
-			return ;
-		}
-		else
-		{    
-            res.status(409).json({"error":"no chat with that id"}).send();
-            return ;
-        }
-    }
-
-    @Get('all')
-    async getAll()
-    {
-        console.log("ALL");
-        return (await this.chatService.findAll());
-    }
-
-    @UseGuards(AuthGuard)
-    @Get('room:roomId')
-    async getMessages(@Request() req: any, @Param() params: any, @Res() res: any)
-    {
-    
-        const roomId: string = params.roomId.slice(1);
-
-        //is user ban
-        if (await this.chatService.isBan(roomId, req.user))
-        {
-            res.status(403).json({"error":"Forbidden"}).send();
-        }
-        else if (await this.chatService.isAdmin(roomId, req.user) 
-            || await this.chatService.isOwner(roomId, req.user) 
-            || await this.chatService.isChatter(roomId, req.user))
-        {
-        //is user a chatter/owner/admin
-            console.log("getMessage " + roomId);
-            // console.log((await this.chatService.getMessagesByRoom(roomId)));
-        	res.status(200).json(await this.chatService.getMessagesByRoom(roomId)).send();
-        }
-        else
-            await res.status(403).json({"error":"Forbidden"}).send();
-		return ;
-    }
-   
 	@Post('allAdmins')
     async getAdmins(@Body() roomInfos: roomDto)
 	{
@@ -88,6 +34,78 @@ export class ChatController {
 		return (await this.chatService.getOwner(roomInfos.id));
 	}
 
+	@UseGuards(AuthGuard)
+    @Post('message')
+    async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)//TODO CHECK IF IS CHATTER NOT BAN NOR MUTED
+    {
+        console.log("POSTMESSAGE");
+		const roomId: string = messageInfos.roomId
+		const user : User = await this.userService.findOne(req.user);
+
+        const message : ChatMessage = new ChatMessage;
+        message.message = messageInfos.message;
+		message.user = user;
+		
+		if (!user)
+		{
+            res.status(409).json({"error": "unknown user"}).send();
+		}
+        else if (await this.chatService.isBan(roomId, user) || await this.chatService.isMute(roomId, user))
+        {
+            res.status(403).json({"error":"Forbidden"}).send();
+        }
+        else if (await this.chatService.isAdmin(roomId, user) 
+            || await this.chatService.isOwner(roomId, user) 
+            || await this.chatService.isChatter(roomId, user))
+        {
+        	if (await this.chatService.addMessage(messageInfos.roomId, message))
+  		    	await res.status(200).json({"status":"good"}).send();
+			else
+            	res.status(409).json({"error":"no chat with that id"}).send();
+        }
+        else
+            res.status(403).json({"error":"Forbidden"}).send();
+		return ;
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('all')
+    async getAll(@Request() req: any) 
+    {
+        console.log("ALL");
+        return (await this.chatService.findAll(req.user));
+    }
+
+    @UseGuards(AuthGuard)
+    @Get('room:roomId')
+    async getMessages(@Request() req: any, @Param() params: any, @Res() res: any)
+    {
+    
+        const roomId: string = params.roomId.slice(1);
+		const user : User = await this.userService.findOne(req.user);
+		if (!user)
+		{
+            res.status(409).json({"error": "unknown user"}).send();
+		}
+        //is user ban
+        else if (await this.chatService.isBan(roomId, user))
+        {
+            res.status(403).json({"error":"Forbidden"}).send();
+        }
+        else if (await this.chatService.isAdmin(roomId, user) 
+            || await this.chatService.isOwner(roomId, user) 
+            || await this.chatService.isChatter(roomId, user))
+        {
+        //is user a chatter/owner/admin
+            console.log("getMessage " + roomId);
+            // console.log((await this.chatService.getMessagesByRoom(roomId)));
+        	res.status(200).json(await this.chatService.getMessagesByRoom(roomId)).send();
+        }
+        else
+            await res.status(403).json({"error":"Forbidden"}).send();
+		return ;
+    }
+   
 //TODO CHECK TOKEN TO GET THE RIGHT USER AND CHECK IF UER IS OWNER IN DELETE
 	@UseGuards(AuthGuard)
     @Post('create')

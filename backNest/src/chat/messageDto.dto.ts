@@ -6,9 +6,5 @@ export class messageDto {
     roomId : string;
 
     @IsString()
-    @IsNotEmpty()
-    userId : string;
-
-    @IsString()
     message : string
 }

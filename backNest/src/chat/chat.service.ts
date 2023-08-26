@@ -21,13 +21,18 @@ export class ChatService
 	) {}
 	
 	// Getter
-   	findAll(): Promise<Chat[]>
+   	async findAll(login42: string): Promise<Chat[]>
    	{
-    	return this.chatRepository.find();
- 	  }
+    	// return this.chatRepository.find();
+		const tmp: Chat[] = [];
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true}, where: {owner: {login42: login42}}, select: {id: true, owner: {login42: true}}})
+			,(await this.chatRepository.find({ relations: { admins: true}, where: {admins: {login42: login42}}, select: { id: true, admins: {login42: true}}}))
+			,(await this.chatRepository.find({ relations: {chatters: true}, where: {chatters: {login42: login42}}, select : {id: true, chatters: {login42: true}}})));
+		return chats;
+ 	}
 
   	findOne(roomId: string): Promise<Chat | null> {	
-   	 	return this.chatRepository.findOneBy({ id: roomId});
+   	 	return this.chatRepository.findOneBy({id: roomId});
   	}
 
 	async getOwner(roomId: string) : Promise<User | null>
@@ -98,9 +103,6 @@ export class ChatService
 	{
 		console.log("isChatter");
 		const chatters: User[] = await this.getChatters(roomId);
-		// console.log(chatters);
-		console.log(chatters.find(it => { return it.login42 === user.login42}))
-		console.log(!!chatters.find(it => { return it.login42 === user.login42}))
 		if (!chatters || !chatters.find(it => { return it.login42 === user.login42}))
 		{
 			console.log("false");
