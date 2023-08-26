@@ -87,21 +87,21 @@ export class Game {
     if (this.ball.x > canvasWidth + this.ball.radius) {
         //   this.ball.x = 2 * (canvasWidth - this.ball.radius) - this.ball.x;
         //   this.ball.speedx *= -1;
+		this.resetPositions();
         ++this.score0;
         if (this.score0 >= 10) {
-          this.state = states.ENDED;
-          return ;
+			this.state = states.ENDED;
+			return ;
         }
-        this.resetPositions();
-      } else if (this.ball.x < -this.ball.radius) {
-        //   this.ball.x = 2 * this.ball.radius - this.ball.x;
+	} else if (this.ball.x < -this.ball.radius) {
+		//   this.ball.x = 2 * this.ball.radius - this.ball.x;
         //   this.ball.speedx *= -1;
+		this.resetPositions();
         ++this.score1;
         if (this.score1 >= 10) {
           this.state = states.ENDED;
           return ;
         }
-        this.resetPositions();
     }
     this.ball.y += this.ball.speedy * (deltaTime / 20);
     if (this.ball.y > canvasHeight - this.ball.radius) {

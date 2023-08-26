@@ -110,6 +110,8 @@ export const useUserStore = defineStore('user', {
 		async getAvatar(imgpath: string) : Promise<string> {
 			if (imgpath === "no photo yet")
 				return  "../../assets/placeholder_avatar.png";
+			else if (imgpath.slice(0, 5) === "https") //is still intra photo, which we don't store ourself since it's a url
+				return imgpath;
 			try {
 				const res = await fetch(`http://localhost:3000/user/avatar:${imgpath}`);
 				if (res.status === 200) {

@@ -23,7 +23,6 @@ export interface UserInfo {
     achievements: number
 }
 
-
 export interface LeaderBoardUserInfo {
     username: string
     elo: number
@@ -31,10 +30,12 @@ export interface LeaderBoardUserInfo {
     loss: number
     photo: string
 }
+
 export interface Achievement {
     name: string
     imageUrl: string
     description: string
     progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
+	current: number
     max: number
 }

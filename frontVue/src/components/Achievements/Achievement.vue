@@ -54,8 +54,8 @@ const displayProgress = computed(() => {
                     :class="barColor"
                     ></div>
                 </div>
-                <div class="row" style="justify-content: space-between;"> 
-                    <div class="col-4" style="text-align: left;"> 0 </div>
+                <div v-if="props.achievementProp.current !== -1" class="row" style="justify-content: space-between;"> 
+                    <div class="col-4" style="text-align: left;"> {{ props.achievementProp.current }} </div>
                     <div v-if="props.achievementProp.max != 1" class="col-4" style="text-align: center;"> {{ Math.ceil(props.achievProgress * 100) }}% </div>
                     <div class="col-4" style="text-align: right;"> {{ props.achievementProp.max }} </div>
                 </div>

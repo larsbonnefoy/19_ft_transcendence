@@ -19,11 +19,11 @@ await store.setStatus("online");
       </GameHistory>
     </div>
 
-    <div v-if="store.getUser != null" class="col-5">
+    <div v-if="store.getUser != null" class="col-4">
       <AchievmentsList :user-prop="store.getUser"> </AchievmentsList>
     </div>
 
-    <div class="col-3">
+    <div class="col-4">
       <SocialsList></SocialsList>
     </div>
   </div>
