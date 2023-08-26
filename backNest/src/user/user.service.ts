@@ -21,6 +21,10 @@ export class UserService {
   async change_username(login42: string, username: string) {
     await this.userRepository.update(login42, {username:username});
   }
+
+  async change_avatar(login42: string, avatar: string) {
+	await this.userRepository.update(login42, {photo: avatar});
+  }
   
   async add_pending(login42: string, current_pending_list: string[], friend: string) {
     current_pending_list.push(friend);

@@ -84,7 +84,7 @@ export class Game {
 
   updateBall(deltaTime : number) : void {
     this.ball.x += this.ball.speedx * (deltaTime / 20);
-    if (this.ball.x > canvasWidth - this.ball.radius) {
+    if (this.ball.x > canvasWidth + this.ball.radius) {
         //   this.ball.x = 2 * (canvasWidth - this.ball.radius) - this.ball.x;
         //   this.ball.speedx *= -1;
         ++this.score0;
@@ -93,7 +93,7 @@ export class Game {
           return ;
         }
         this.resetPositions();
-      } else if (this.ball.x < this.ball.radius) {
+      } else if (this.ball.x < -this.ball.radius) {
         //   this.ball.x = 2 * this.ball.radius - this.ball.x;
         //   this.ball.speedx *= -1;
         ++this.score1;

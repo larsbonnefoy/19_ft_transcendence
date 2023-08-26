@@ -3,11 +3,14 @@ import { type UserInfo } from '@/types';
 import AddPendingRemoveButton from '../ProfileDisplay/AddPendingRemoveButton.vue';
 import axios from 'axios';
 import Status from '../ProfileDisplay/Status.vue';
+import { useUserStore } from '@/stores/user';
+import { onUnmounted } from 'vue';
 
 const props = defineProps<{
     login42 : string
 }>()
 
+const store = useUserStore();
 let pendingUser: UserInfo;
 let pendingUserName : string = "";
 
@@ -15,11 +18,12 @@ async function getPending() {
     try {
         const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
         pendingUserName = resUsrName.data.username;
+		if (pendingUser)
+			URL.revokeObjectURL(pendingUser.photo);
         const resUsr = await axios.get(`http://localhost:3000/user/one:${pendingUserName}`)
         pendingUser = resUsr.data;
-        if (pendingUser.photo == "no photo yet") {
-            pendingUser.photo = "../../assets/placeholder_avatar_white.png"
-        }
+        if (pendingUser)
+			pendingUser.photo = await store.getAvatar(pendingUser.photo);
     }
     catch (error) {
         console.error(error);
@@ -28,6 +32,9 @@ async function getPending() {
 
 await getPending();
 
+onUnmounted(async () => {
+    URL.revokeObjectURL(pendingUser.photo);
+});
 </script>
 
 <template>

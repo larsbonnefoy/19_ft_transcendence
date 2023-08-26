@@ -24,8 +24,13 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
+				if (this.user) {
+					URL.revokeObjectURL(this.user.photo); //to release memory
+				}
                 const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: localStorage.getItem('jwt_token')});
                 this.user = data.data;
+				if (this.user)
+					this.user.photo = await this.getAvatar(this.user.photo);
                 console.log("fetched user")
                 console.log(data.data);
             }
@@ -90,6 +95,31 @@ export const useUserStore = defineStore('user', {
                 }
             }
         },
+		async setAvatar(image:any) {
+			const formData = new FormData();
+            formData.append('file', image);
+            const headers = { 'Content-Type': 'multipart/form-data', token: localStorage.getItem('jwt_token') };
+			try {
+				await axios.post('http://localhost:3000/user/avatar', formData, { headers });//.then((res) => {
+				// 	res.data.files; // binary representation of the file
+				// 	res.status; // HTTP status
+				// });
+			}
+			catch (error) {}
+		},
+		async getAvatar(imgpath: string) : Promise<string> {
+			if (imgpath === "no photo yet")
+				return  "../../assets/placeholder_avatar.png";
+			try {
+				const res = await fetch(`http://localhost:3000/user/avatar:${imgpath}`);
+				if (res.status === 200) {
+					const blob = await res.blob();
+					return (URL.createObjectURL(blob));
+				}
+			}
+			catch (error) {}
+			return "../../assets/placeholder_avatar.png";
+		},
         async addFriend(newFriend: string) {
             await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },

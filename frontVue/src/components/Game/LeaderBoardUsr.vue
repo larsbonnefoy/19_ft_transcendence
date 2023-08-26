@@ -9,12 +9,12 @@ const props = defineProps<{
 }>()
 
 const profilePicture = ref();
-if (props.user.photo == "no photo yet") {
-    profilePicture.value = "../../assets/placeholder_avatar_white.png"
-}
-else {
+// if (props.user.photo == "no photo yet") {
+//     profilePicture.value = "../../assets/placeholder_avatar_white.png"
+// }
+// else {
     profilePicture.value = props.user.photo;
-}
+// }
 
 let statusImage: string;
 switch(props.index) {

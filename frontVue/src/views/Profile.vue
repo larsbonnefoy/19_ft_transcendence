@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import AchievementsList from '@/components/Achievements/AchievementsList.vue';
@@ -18,6 +18,8 @@ async function getUserInfo() {
     if (route.params.username != store.getUserName) {
         //get sur un profile qui existe pas envoie NULL est pas une erreur, a corriger (ou a mediter)
         try {
+			if (user)
+				URL.revokeObjectURL(user.photo); //to release memory
             const res = await axios.get(`http://localhost:3000/user/one:${route.params.username}`);
             if (!res.data) {
                 foundUser.value = false;
@@ -28,11 +30,8 @@ async function getUserInfo() {
             else {
                 console.log(res.data);
                 user = res.data
-                if (user) {
-                    if (user.photo == "no photo yet") {
-                        user.photo = "../../assets/placeholder_avatar.png"
-                    }
-                }
+                if (user)
+					user.photo = await store.getAvatar(user.photo);
             }
         }
         catch (error: any) {
@@ -50,6 +49,9 @@ await getUserInfo();
 
 watch(() => route.params.username, getUserInfo);
 
+onUnmounted(async () => {
+    URL.revokeObjectURL(user.photo);
+});
 </script>
 
 <template>

@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { type UserInfo } from '@/types';
-import {ref} from 'vue'
+import {onUnmounted, ref} from 'vue'
 import axios from 'axios';
 import GameButton from '../ProfileDisplay/GameButton.vue';
 import MessageButton from '../ProfileDisplay/MessageButton.vue';
 import Status from '../ProfileDisplay/Status.vue';
+import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
     login42 : string
 }>()
 
+const store = useUserStore();
 let FriendUsername: string="";
 let friend: UserInfo;
 //get et Set status aussi
@@ -17,11 +19,12 @@ async function getFriend() {
     try {
         const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
         FriendUsername = resUsrName.data.username;
+		if (friend)
+			URL.revokeObjectURL(friend.photo); //to release memory
         const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`)
         friend = resUsr.data;
-        if (friend.photo == "no photo yet") {
-            friend.photo = "../../assets/placeholder_avatar_white.png"
-        }
+        if (friend)
+			friend.photo = await store.getAvatar(friend.photo);
     }
     catch (error) {
         console.error(error);
@@ -29,6 +32,10 @@ async function getFriend() {
 }
 
 await getFriend();
+
+onUnmounted(async () => {
+    URL.revokeObjectURL(friend.photo);
+});
 </script>
 
 <template>

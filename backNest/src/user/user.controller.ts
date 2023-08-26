@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject, UseGuards, Request, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
 import { Response } from 'express';
+import * as fs from 'fs';
 import { Api42Service } from '../api42/api42.service';
 import { AuthGuard } from '../guard/auth.guard';
 // import { IsInt, IsString } from 'class-validator';
@@ -8,6 +9,7 @@ import { AuthGuard } from '../guard/auth.guard';
 import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller("user")
 export class UserController {
@@ -127,7 +129,7 @@ export class UserController {
   async changeUsername(@Request() req: any, @Res() res: any, @Param() param: any) {
     const newUsername: string = param.new.slice(1);
     const sessionId : string = req.user;
-    console.log("trest : " + sessionId);
+    // console.log("trest : " + sessionId);
 
     console.log("changing username of %s to %s", sessionId, newUsername);
     const current_user = await this.userService.findOne(sessionId);
@@ -445,18 +447,32 @@ export class UserController {
     await this.userService.remove(username);
     res.json({"user":"deleted"});
   }
-}
 
-// @Get("connect")
-// async connect(@Res() res: any, @Query() query: connectUserDto) {
-//   console.log("trying connection: %s as username and %s as password", query.username, query.password);
-//   const user = await this.userService.findUserName(query.username);
-//   if (user == null) {
-// 	  res.json({"error":"user doesn't exists"});
-// 	  return ;
-//   } else if (user.password != query.password) {
-// 	  res.json({"error":"bad password"});
-// 	  return ;
-//   }
-//   res.json({"connection":"successful"});
-// }
+  @UseGuards(AuthGuard)
+  @Post('avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(@Request() req: any, @UploadedFile(
+	new ParseFilePipe({
+	  validators: [
+		new MaxFileSizeValidator({ maxSize: 500000 }),
+		new FileTypeValidator({ fileType: 'image/*' }),
+	  ],
+	}),) file : Express.Multer.File) {
+		console.log("uploading file on user %s: ", req.user);
+		console.log(file);
+		const user: User = await this.userService.findOne(req.user);
+		fs.unlink("uploads/" + user.photo, (err) => {
+			if (err) 
+				console.log(err);
+			else
+				console.log('%s was deleted', "uploads/" + user.photo);
+		});
+		await this.userService.change_avatar(req.user, file.filename);
+  }
+
+  @Get('avatar:imgpath')
+  seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
+	console.log("get for image %s", image.slice(1));
+	res.sendFile(image.slice(1), {root: 'uploads'});
+  }
+}

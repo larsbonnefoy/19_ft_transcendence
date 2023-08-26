@@ -1,5 +1,4 @@
 My todo:
-- photos
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)
@@ -7,8 +6,6 @@ My todo:
 			- FLAWLESS: won a game without conceding any point	(id 5)
 			- YOU AND ME: made your first friend				(id 6)
 - id in user?
-- change username takes token
-- set friend requests in database? so that you can only be friends if request is accepted
 
 
 list of .env content:
@@ -49,6 +46,9 @@ list of .env content:
 my done:
 - elo modif like chess
 - status can be changed
+- photos <==  https://stackoverflow.com/questions/37510801/convert-octet-stream-to-image
+- change username takes token
+- set friend requests in database? so that you can only be friends if request is accepted
 
 
 

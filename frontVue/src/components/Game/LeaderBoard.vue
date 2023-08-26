@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
 import LeaderBoardUsr from './LeaderBoardUsr.vue';
-import {type LeaderBoardUserInfo} from '@/types'
+import type LoginVue from '@/views/Login.vue';
+import {type LeaderBoardUserInfo} from '@/types';
 import axios from 'axios';
-import {ref} from 'vue'
+import {ref, onUnmounted} from 'vue';
 
+const store = useUserStore();
 const users = ref();
 const LeaderBoardExists = ref(false);
 /*TODO function that gets only elo, username & picture, to avoid a query on whole db */
@@ -11,6 +14,9 @@ async function getLeaderBoard() {
     try {
         const res = await axios.get("http://localhost:3000/user/getLeaderBoard");
         users.value = res.data.slice().sort((a:LeaderBoardUserInfo, b:LeaderBoardUserInfo) => b.elo*1 - a.elo*1);
+		for (let user of users.value) {
+			user.photo = await store.getAvatar(user.photo);
+		}
         LeaderBoardExists.value = true;
     }
     catch(error) {
@@ -19,6 +25,11 @@ async function getLeaderBoard() {
 }
 
 await getLeaderBoard();
+
+onUnmounted(async () => {
+	for (let user of users.value)
+		URL.revokeObjectURL(user.photo);
+});
 </script>
 
 <template>
