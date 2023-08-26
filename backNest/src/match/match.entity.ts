@@ -83,6 +83,8 @@ export class Game {
   }
 
   updateBall(deltaTime : number) : void {
+	if (this.state !== states.ONGOING)
+		return ;
     this.ball.x += this.ball.speedx * (deltaTime / 20);
     if (this.ball.x > canvasWidth + this.ball.radius) {
         //   this.ball.x = 2 * (canvasWidth - this.ball.radius) - this.ball.x;

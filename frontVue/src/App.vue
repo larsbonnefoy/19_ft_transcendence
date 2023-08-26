@@ -25,7 +25,7 @@ async function leavingApp() {
 </template>
 
 <style scoped>
-.bgColor {
+/* .bgColor {
   background-color: #051323;
-}
+} */
 </style>

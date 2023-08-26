@@ -40,11 +40,12 @@ onUnmounted(async () => {
 <template>
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
-            <div class="col-1 p-0 buttonStyle">
-                <Status :status="pendingUser.status"></Status>
-            </div>
-            <div class="col-5">
+            
+            <div class="col-6">
                 <div class="row"> 
+					<div class="col-1 p-0 buttonStyle">
+						<Status :status="pendingUser.status"></Status>
+					</div>
                     <div class="col-4"> 
                         <router-link 
                         :to="{
@@ -57,7 +58,7 @@ onUnmounted(async () => {
                         <img class="profileImg m-1" :src="pendingUser.photo">
                         </router-link>
                     </div>
-                    <div class="col-8">
+                    <div class="col-7">
                         <p class="m-0"> {{ pendingUser.username }} </p>
                         <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(pendingUser.elo) }} </p>
                     </div> 
