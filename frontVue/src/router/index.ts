@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue';
 import Home from '@/views/Home.vue';
 import Game from '@/views/Game.vue';
 import Chat from '@/views/Chat.vue';
+import Member from '@/views/Members.vue';
 import Auth from '@/views/Auth.vue';
 import Profile from '@/views/Profile.vue';
 import ShowUsers from '@/views/ShowUsers.vue';
@@ -73,7 +74,18 @@ const router = createRouter({
         }
       }
     },
-	  {
+	{
+		path: '/members',
+		name: 'members',
+		component: Member,
+		beforeEnter: async (to, from) => {
+			const acces = await validAccess();
+			if (!acces && to.name != '/') {
+			  return '/';
+			}
+		}
+	},
+	{
       path: '/auth',
       name: 'auth',
       component: Auth,

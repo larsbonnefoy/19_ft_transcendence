@@ -9,8 +9,8 @@ const router = useRouter();
 const store = useUserStore();
 
 
-const toDisplayNav = ['home', 'chat', 'game'];
-const toDisplayWhere = ['home', 'chat', 'game', 'profile'];
+const toDisplayNav = ['home', 'chat', 'game', 'members'];
+const toDisplayWhere = ['home', 'chat', 'game', 'members', 'profile'];
 
 const routesToDisplay = router.options.routes.filter( value => toDisplayNav.includes(value.name));
 
