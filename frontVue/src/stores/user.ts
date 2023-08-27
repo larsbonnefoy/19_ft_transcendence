@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
-import {type UserInfo} from '../types' 
+import {type UserInfo} from '../types'
+import { socket } from '../socket';
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -33,6 +34,7 @@ export const useUserStore = defineStore('user', {
 					this.user.photo = await this.getAvatar(this.user.photo);
                 console.log("fetched user")
                 console.log(data.data);
+				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
             }
             catch (error) {
             //   alert(error);

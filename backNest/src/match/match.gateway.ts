@@ -166,7 +166,7 @@ export class MatchGateway {
     for (let game of games) { // checking if player already in a game (he left previously)
       roomName = "room" + roomIndex;
       console.log("checking " + roomName);
-      if (game.state !== states.ENDED && game.player0 === login42 || game.player1 === login42) {
+      if (game.state !== states.ENDED && (game.player0 === login42 || game.player1 === login42)) {
         // console.log(new Date().getTime() - game.lastTimeStamp);
         if (game.state === states.ONGOING && new Date().getTime() - game.lastTimeStamp > 10000) {
           console.log("Game stop because timer");
@@ -176,7 +176,7 @@ export class MatchGateway {
         client.join(roomName);
         if (game.state === states.ONGOING)
           this.server.to(roomName).emit("joinGame", roomIndex);
-        else
+        else // not happening anymore
           this.server.to(roomName).emit("display", game);
         console.log(login42 + ": rejoins " + roomName)
         return ;
@@ -214,6 +214,24 @@ export class MatchGateway {
     this.server.to(roomName).emit("display", games[roomIndex]);
     console.log("new game in " + roomName);
   }
+
+  @SubscribeMessage('leaveRoom')
+  async leaveRoom(@MessageBody() token: string) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	for (let game of games) {
+	  if (game.state === states.STARTING && game.player0 === login42) {
+		game.resetGame();
+		console.log(login42 + " leaves " + game.roomName);
+		return ;
+	  }
+	}
+  }
   
   @SubscribeMessage('watchGame')
   async watchParty(@ConnectedSocket() client: any, @MessageBody() roomName: string) {
@@ -224,6 +242,31 @@ export class MatchGateway {
         return ;
 	  }
     }
+  }
+
+  @SubscribeMessage('sendNotification')
+  async sendNotification(@MessageBody() data: {target: string, token: string}) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+	this.server.to(data.target).emit("notification", login42);
+  }
+
+  // to allow notifications, we put users in individual rooms that others can join shortly to send them notifications
+  @SubscribeMessage('joinMyRoom')
+  async joinMyRoom(@ConnectedSocket() client: any, @MessageBody() token: string) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	client.join(login42);
   }
 
   handleConnection(client: Socket) {

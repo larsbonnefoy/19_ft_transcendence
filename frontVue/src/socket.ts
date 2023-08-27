@@ -12,20 +12,25 @@ export const socket = io(URL);
 
 socket.on("connect", async () => { //doesnt work as socket is init when app is launched not when user is connected
     console.log(`Connected to server`);
-    const store = useUserStore();
-    //await store.setStatus("online");
     gameState.connected = true;
+	// const store = useUserStore();
+	// (store.user) ? console.log("user connected") : console.log("user not connected");
 });
 
 socket.on("disconnect", async () => {
-    console.log("Disconnected from server");
-    const store = useUserStore();
+	console.log("Disconnected from server");
+	const store = useUserStore();
     await store.setStatus("offline");
     gameState.connected = false;
 });
 
 socket.on("events", (response) => {
     console.log("here " + response);
+});
+
+socket.on("notification", (response) => {
+	const store = useUserStore();
+	console.log(store.user?.username + " received notification: " + response);
 });
 
 /*

@@ -92,7 +92,8 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
     });
-    intervalStop = setInterval(redrawAll, 20);
+	if (props.playGame)
+		intervalStop = setInterval(redrawAll, 20);
 }
 
 function redrawAll() {
@@ -122,8 +123,8 @@ function redrawAll() {
 
 onMounted(async () => {
     socket.connect();
-    await store.setStatus("ingame");
     if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
+		await store.setStatus("ingame");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
     }
     init();
@@ -131,6 +132,8 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     clearInterval(intervalStop);
+	if (roomIndex === -1) // if user leaves before game starts, we abort matchmaking
+		socket.emit('leaveRoom', localStorage.getItem('jwt_token'));
     socket.disconnect();
     // await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 })
