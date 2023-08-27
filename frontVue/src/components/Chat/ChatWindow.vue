@@ -1,12 +1,21 @@
 <script setup lang="ts">
 import { ref, nextTick, defineEmits, defineProps } from 'vue';
 import MessageBox from './MessageBox.vue';
+import ChannelButton from './ChannelButton.vue';
+import axios from 'axios';
 
 const props = defineProps({
   messages: Array,
   user: Object 
 });
 
+const roomId = 'test'
+const messagesAxios: any = await axios.get('http://localhost:3000/chat/room:${roomId}', {
+			headers: 
+			{
+				'token':localStorage.getItem('jwt_token')
+			}
+		});
 const newMessage = ref("");
 const messages = ref([
   { id: Date.now() - 2, user: "Alice", content: "Hey there!", sender: 'other' },

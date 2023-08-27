@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import axios, { type AxiosResponse } from 'axios';
 import { ref } from 'vue';
 
 const messageType = ref('private');
@@ -7,6 +8,7 @@ const groupType = ref('public');
 const userInput = ref('');
 const addedUsers = ref([]);
 const password = ref('');
+const channelName = ref('');
 const errorMessage = ref('');
 
 const toggleMessageType = () => {
@@ -36,15 +38,15 @@ const clearUsers = () => {
   }
 };
 
-const submit = () => {
+const submit = async () => {
   if (messageType.value === 'private' && !searchedUser.value) {
     errorMessage.value = 'You must add a user.';
     return;
   } 
-  if (messageType.value === 'group' && addedUsers.value.length === 0) {
-    errorMessage.value = 'You must add user(s).';
-    return;
-  }
+//   if (messageType.value === 'group' && addedUsers.value.length === 0) {
+//     errorMessage.value = 'You must add user(s).';
+//     return;
+//   }
 
   if (messageType.value === 'private') {
     console.log('Creating private chat with:', searchedUser.value);
@@ -52,6 +54,19 @@ const submit = () => {
     console.log('Creating group chat. Type:', groupType.value);
     console.log('Users:', addedUsers.value);
     console.log('Password:', password.value);
+	try
+	{
+		const res = await axios.post('http://localhost:3000/chat/create/', {id: channelName.value}, {
+			headers: 
+			{
+				'token':localStorage.getItem('jwt_token')
+			}
+		})
+	}
+	catch (error: any)
+	{
+		alert (error.response.data.error)
+	}
   }
   emit('close');
 };
@@ -82,12 +97,15 @@ const closeModal = () => {
       </div>
   
       <div v-else>
-        <label class="option-label">
+        <!-- <label class="option-label">
           <input type="radio" v-model="groupType" value="public" /> Public
-        </label>
-        <label class="option-label">
+        </label> -->
+        <!-- <label class="option-label">
           <input type="radio" v-model="groupType" value="private" /> Private
-        </label>
+        </label> -->
+	    <div class="input-container">
+          <input v-model="channelName" placeholder="Channel name" />
+        </div>
         <div class="input-container">
           <input v-model="userInput" placeholder="Search for users" @keydown.enter="addUser"/>
           <button @click="addUser" class="add-button">Add</button>

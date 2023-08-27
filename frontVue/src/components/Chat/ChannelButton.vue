@@ -15,6 +15,7 @@ const { channel } = defineProps({
 // Methods
 const selectChannel = () => {
   console.log(`Selected: ${channel.name}`);
+
 };
 </script>
 

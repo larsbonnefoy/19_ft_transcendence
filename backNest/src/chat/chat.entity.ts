@@ -31,6 +31,9 @@ export class Chat
 	@ManyToMany(() => User, (user) => user.administered)
 	@JoinTable()
 	admins: Relation<User[]>;
+
+	@Column({type: "boolean", default: false})
+	isPrivate: string;
 }
 
 @Entity()
