@@ -1,6 +1,7 @@
 import {reactive} from 'vue';
 import { Socket, io } from "socket.io-client";
 import { useUserStore } from './stores/user';
+import { useToast } from "vue-toastification";
 
 export const gameState = reactive({
     connected: false, 
@@ -30,7 +31,21 @@ socket.on("events", (response) => {
 
 socket.on("notification", (response) => {
 	const store = useUserStore();
-	console.log(store.user?.username + " received notification: " + response);
+	// console.log(store.user?.username + " received notification: " + response);
+	const toast = useToast();
+	toast.warning(response, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+	});
 });
 
 /*

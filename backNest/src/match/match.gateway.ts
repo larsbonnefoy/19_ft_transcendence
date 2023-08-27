@@ -92,7 +92,7 @@ export class MatchGateway {
     let save_state : states = game.state;
     game.updateGameArea(new Date().getTime());
     if (game.state === states.ENDED) {
-      this.server.to(game.roomName).emit("endGame");
+      this.server.to(game.roomName).emit("endGame", roomIndex);
       if (save_state === states.ONGOING) {
         console.log("updated games history");
         const nMatch: Match = new Match;
@@ -216,23 +216,28 @@ export class MatchGateway {
   }
 
   @SubscribeMessage('leaveRoom')
-  async leaveRoom(@MessageBody() token: string) {
+  async leaveRoom(@ConnectedSocket() client: any, @MessageBody() data: {roomIndex: number, token: string}) {
     let login42: string = "";
     try {
-      login42 = this.api42Service.decodeJWT(token);
+      login42 = this.api42Service.decodeJWT(data.token);
     }
     catch (error) {
       return ;
     }
-	for (let game of games) {
-	  if (game.state === states.STARTING && game.player0 === login42) {
-		game.resetGame();
-		console.log(login42 + " leaves " + game.roomName);
-		return ;
-	  }
+	if (data.roomIndex === -1) { // if user leaves before game starts, we abort matchmaking
+		for (let game of games) {
+			if (game.state === states.STARTING && game.player0 === login42) {
+				game.resetGame();
+				console.log(login42 + " leaves " + game.roomName);
+				client.leave(game.roomName);
+				return ;
+			}
+		}
+	} else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
+		client.leave(games[data.roomIndex].roomName);  // client leaves room, but joins it again when he rejoins the game
 	}
   }
-  
+
   @SubscribeMessage('watchGame')
   async watchParty(@ConnectedSocket() client: any, @MessageBody() roomName: string) {
     for (let game of games) {

@@ -22,10 +22,11 @@ function watchGame() {
 	displayGame.value = !displayGame.value
 }
 
-socket.on('endGame', () => {
+socket.on('endGame', (roomIndex) => {
 	console.log("game ended");
 	store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
 	displayGame.value = false;
+	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
 });
 
 </script>
