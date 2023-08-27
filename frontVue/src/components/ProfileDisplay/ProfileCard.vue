@@ -35,7 +35,7 @@ Should set max lenght of username here
     <div class="row d-flex justify-content-center align-items-center">
         <div class="col m-5">
             <div class="card m-5" style="border-radius: 15px;">
-                <div class="card-body text-center"  style="min-height: 60vh; max-height: 70vh;"> <!-- White Profile card-->
+                <div class="card-body text-center"> <!-- White Profile card  style="min-height: 60vh; max-height: 70vh;"-->
                     <div v-if="!modProfile"> 
                         <h4> {{ user.username }}</h4>
 						<!-- <h4> {{ user.photo }} </h4> -->

@@ -41,8 +41,8 @@ async function navigateToHome() {
           <div class="card-body">
             <form>
               <div class="form-group">
-                <label for="username">Username</label>
-                <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter username">
+                <label for="username">Login 42</label>
+                <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter login 42">
               </div>
               <p v-if="wrongLogin" style="color: red;" class="small"> Wrong Username </p>
               <br>

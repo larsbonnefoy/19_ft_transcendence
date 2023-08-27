@@ -105,7 +105,7 @@ export const useUserStore = defineStore('user', {
 				// 	res.status; // HTTP status
 				// });
 			}
-			catch (error) {}
+			catch (error) {throw error}
 		},
 		async getAvatar(imgpath: string) : Promise<string> {
 			if (imgpath === "no photo yet")
