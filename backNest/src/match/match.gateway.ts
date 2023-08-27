@@ -52,27 +52,23 @@ export class MatchGateway {
   }
   
   @SubscribeMessage('leftPaddle')
-  async computeLeftPaddle(@MessageBody() data: {dir: number, roomName: string}) {
-    for (let game of games)
-    {
-      if (game.roomName === data.roomName) {
-        game.updateLeftPaddle(data.dir);
-      } 
-    }
+  async computeLeftPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+		return ;
+	games[data.roomIndex].updateLeftPaddle(data.dir);
   }
 
   @SubscribeMessage('rightPaddle')
-  async computeRightPaddle(@MessageBody() data: {dir: number, roomName: string}) {
-    for (let game of games)
-    {
-      if (game.roomName === data.roomName) {
-        game.updateRightPaddle(data.dir);
-      } 
-    }
+  async computeRightPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+		return ;
+    games[data.roomIndex].updateRightPaddle(data.dir);
   }
 
   @SubscribeMessage('updatePaddle')
-  async computePaddle(@MessageBody() data: {dir: number, roomName: string, token: string}) {
+  async computePaddle(@MessageBody() data: {dir: number, roomIndex: number, token: string}) {
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+		return ;
     let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(data.token);
@@ -80,76 +76,70 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-    for (let game of games)
-    {
-      if (game.roomName === data.roomName) {
-        if (game.player0 === login42)
-          game.updateLeftPaddle(data.dir);
-        else if (game.player1 === login42)
-          game.updateRightPaddle(data.dir);
-      } 
-    }
+	const game: Game = games[data.roomIndex];
+    if (game.player0 === login42)
+      game.updateLeftPaddle(data.dir);
+    else if (game.player1 === login42)
+      game.updateRightPaddle(data.dir);
   }
 
   @SubscribeMessage('display')
-  async display(@MessageBody() roomName: any) {
-    // console.log("display update from room " + roomName);
-    for (let game of games) {
-      if (game.roomName === roomName) {
-        // console.log("room found !");
-        let save_state : states = game.state;
-        game.updateGameArea(new Date().getTime());
-        if (game.state === states.ENDED) {
-          this.server.to(game.roomName).emit("endGame");
-          if (save_state === states.ONGOING) {
-            console.log("updated games history");
-            const nMatch: Match = new Match;
-            console.log("player0" + game.player0);
-            console.log("player1" + game.player1);
-            const p1 = await this.userService.findOne(game.player0);
-            const p2 = await this.userService.findOne(game.player1);
-            if (p1 == null || p2 == null) {
-              console.log("return on player null");
-              return ;
-            }
-            nMatch.player1 = p1.login42;
-            nMatch.player2 = p2.login42;
-            nMatch.score1 = game.score0;
-            nMatch.score2 = game.score1;
-            let expected_result:number = 1.0 / (1 + 10 ** ((p2.elo - p1.elo) / 400));
-            if (+game.score0 > +game.score1) {
-              await this.userService.addWin(p1.login42, +p1.win + 1);
-              await this.userService.addLoss(p2.login42, +p2.loss + 1);
-              let newelo1: number = +p1.elo + (1 - expected_result) * 16;
-              await this.userService.change_elo(p1.login42, newelo1);
-              let newelo2: number = +p2.elo - (1 - expected_result) * 16;
-              await this.userService.change_elo(p2.login42, newelo2);
-              nMatch.elo1 = Math.ceil(newelo1);
-              nMatch.elo2 = Math.ceil(newelo2);
-              console.log("player1 wins");
-              console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
-            }
-            else {
-              await this.userService.addWin(p2.login42, +p2.win + 1);
-              await this.userService.addLoss(p1.login42, +p1.loss + 1);
-              let newelo1: number = +p1.elo - expected_result * 16;
-              await this.userService.change_elo(p1.login42, +p1.elo - expected_result * 16);
-              let newelo2: number = +p2.elo + expected_result * 16;
-              await this.userService.change_elo(p2.login42, +p2.elo + expected_result * 16);
-              nMatch.elo1 = Math.ceil(newelo1);
-              nMatch.elo2 = Math.ceil(newelo2);
-              console.log("player2 wins");
-              console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
-            }
-            await this.matchService.createMatch(nMatch);
-            game.resetGame();
-          }
+  async display(@MessageBody() roomIndex: number) {
+	if (+roomIndex < 0 || +roomIndex >= games.length)
+		return ;
+    // console.log("display update from room " + roomIndex);
+	const game: Game = games[roomIndex];
+    let save_state : states = game.state;
+    game.updateGameArea(new Date().getTime());
+    if (game.state === states.ENDED) {
+      this.server.to(game.roomName).emit("endGame");
+      if (save_state === states.ONGOING) {
+        console.log("updated games history");
+        const nMatch: Match = new Match;
+        console.log("player0" + game.player0);
+        console.log("player1" + game.player1);
+        const p1 = await this.userService.findOne(game.player0);
+        const p2 = await this.userService.findOne(game.player1);
+        if (p1 == null || p2 == null) {
+          console.log("return on player null in display in match.gateway");
+		  game.resetGame();
+          return ;
         }
-        else
-          this.server.to(game.roomName).emit("display", game);
-        return ;
+        nMatch.player1 = p1.login42;
+        nMatch.player2 = p2.login42;
+        nMatch.score1 = game.score0;
+        nMatch.score2 = game.score1;
+        let expected_result:number = 1.0 / (1 + 10 ** ((p2.elo - p1.elo) / 400));
+        if (+game.score0 > +game.score1) {
+          await this.userService.addWin(p1.login42, +p1.win + 1);
+          await this.userService.addLoss(p2.login42, +p2.loss + 1);
+          let newelo1: number = +p1.elo + (1 - expected_result) * 16;
+          await this.userService.change_elo(p1.login42, newelo1);
+          let newelo2: number = +p2.elo - (1 - expected_result) * 16;
+          await this.userService.change_elo(p2.login42, newelo2);
+          nMatch.elo1 = Math.ceil(newelo1);
+          nMatch.elo2 = Math.ceil(newelo2);
+          console.log("player1 wins");
+          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
+        }
+        else {
+          await this.userService.addWin(p2.login42, +p2.win + 1);
+          await this.userService.addLoss(p1.login42, +p1.loss + 1);
+          let newelo1: number = +p1.elo - expected_result * 16;
+          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * 16);
+          let newelo2: number = +p2.elo + expected_result * 16;
+          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * 16);
+          nMatch.elo1 = Math.ceil(newelo1);
+          nMatch.elo2 = Math.ceil(newelo2);
+          console.log("player2 wins");
+          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
+        }
+        await this.matchService.createMatch(nMatch);
+        game.resetGame();
       }
     }
+    else
+      this.server.to(game.roomName).emit("display", game);
   }
 
   // @SubscribeMessage('startGame')
@@ -185,7 +175,7 @@ export class MatchGateway {
         }
         client.join(roomName);
         if (game.state === states.ONGOING)
-          this.server.to(roomName).emit("joinGame", roomName);
+          this.server.to(roomName).emit("joinGame", roomIndex);
         else
           this.server.to(roomName).emit("display", game);
         console.log(login42 + ": rejoins " + roomName)
@@ -209,7 +199,7 @@ export class MatchGateway {
           game.player1 = login42;
           game.lastTimeStamp = new Date().getTime();
           client.join(roomName);
-          this.server.to(roomName).emit("joinGame", roomName);
+          this.server.to(roomName).emit("joinGame", roomIndex);
           console.log(login42 + ": second joins " + roomName);
           return ;
         }
@@ -221,17 +211,18 @@ export class MatchGateway {
     games[roomIndex].player0 = login42;
     games[roomIndex].roomName = roomName;
     client.join(roomName);
-    this.server.to(games[roomIndex].roomName).emit("display", games[roomIndex]);
+    this.server.to(roomName).emit("display", games[roomIndex]);
     console.log("new game in " + roomName);
   }
   
   @SubscribeMessage('watchGame')
   async watchParty(@ConnectedSocket() client: any, @MessageBody() roomName: string) {
     for (let game of games) {
-      if (game.roomName == roomName && game.state === states.ONGOING)
+      if (game.roomName == roomName && game.state === states.ONGOING) {
         client.join(roomName);
         console.log(client.id + " joined room " + roomName);
         return ;
+	  }
     }
   }
 

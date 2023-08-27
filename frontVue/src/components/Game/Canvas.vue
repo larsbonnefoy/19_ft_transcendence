@@ -29,13 +29,13 @@ let intervalStop : number = -1;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
-let roomName : string = "";
+let roomIndex : number = -1;
 let backgroundColor : string = "black";
 
 function init() {
-    socket.on('joinGame', (response : string) => {
+    socket.on('joinGame', (response : number) => {
         console.log(response + " got this form joingame")
-        roomName = response;
+        roomIndex = response;
     });
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -96,26 +96,27 @@ function init() {
 }
 
 function redrawAll() {
+	if (roomIndex === -1)
+		return ;
     if (key == key_w) {
-        socket.emit("leftPaddle", {dir: -1, roomName: roomName});
+        socket.emit("leftPaddle", {dir: -1, roomIndex: roomIndex});
     }
     if (key == key_s) {
-        socket.emit("leftPaddle", {dir: 1, roomName: roomName});
+        socket.emit("leftPaddle", {dir: 1, roomIndex: roomIndex});
     }
     if (key == key_e) {
-        socket.emit("rightPaddle", {dir: -1, roomName: roomName});
+        socket.emit("rightPaddle", {dir: -1, roomIndex: roomIndex});
     }
     if (key == key_d) {
-        socket.emit("rightPaddle", {dir: 1, roomName: roomName});
+        socket.emit("rightPaddle", {dir: 1, roomIndex: roomIndex});
     }
     if (key === key_up) {
-        socket.emit("updatePaddle", {dir: -1, roomName: roomName, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: -1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     if (key === key_down) {
-        socket.emit("updatePaddle", {dir: 1, roomName: roomName, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: 1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
-    if (roomName !== "")
-        socket.emit('display', roomName);
+    socket.emit('display', roomIndex);
     // socket.emit('events', "test");
 }
 
