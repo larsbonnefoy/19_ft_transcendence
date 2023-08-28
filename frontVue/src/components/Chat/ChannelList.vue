@@ -38,9 +38,10 @@ const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
 };
 
-function handleSelected(name: string)
+async function handleSelected(name: string)
 {
   console.log("LESSGOOO" + name );
+  await emit('channel', name);
   emit('channel-selected', name);
 }
 </script>

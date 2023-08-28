@@ -3,7 +3,6 @@ import {ref, nextTick, defineEmits, defineProps, watch, FunctionDirective} from 
 import MessageBox from './MessageBox.vue';
 // import ChannelList from './.vue';
 import axios from 'axios';
-import ChannelButton from "@/components/Chat/ChannelButton.vue";
 
 const props = defineProps({
   messages: Array,
@@ -14,26 +13,30 @@ const props = defineProps({
   // props: ['selectedChannel'];
 
 
-const data : any = await axios.get('http://localhost:3000/chat/room:testroom', {
-			headers:
-			{
-				'token':localStorage.getItem('jwt_token')
-			}
-		});
-const newMessage = ref("");
-// const selectedChannel = ref(selectedChannel)
-const me = (await axios.get('http://localhost:3000/user/me/login42', {
+
+const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')
       }
-})).data;
-const messages = ref(Array.from({length: data.data.length }, (_, i) => ({
-  id: i+1,
-  user: data.data[i].user.username,
-  content : data.data[i].message,
-  sender: data.data[i].user.login42=== me
-})));
+});
+const newMessage = ref("");
+// const selectedChannel = ref(selectedChannel)
+// const me = (await axios.get('http://localhost:3000/user/me/login42', {
+//   headers:
+//       {
+//         'token':localStorage.getItem('jwt_token')
+//       }
+// })).data;
+// let messages = ref(Array.from({length: data.data.length }, (_, i) => ({
+//   id: i+1,
+//   user: data.data[i].user.username,
+//   content : data.data[i].message,
+//   sender: data.data[i].user.login42=== me
+// })));
+
+
+// let messages = ref(null);
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
@@ -46,7 +49,7 @@ const emit = defineEmits();
 
 const sendMessage = () => {
   if (newMessage.value.trim()) {
-    messages.value.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
+    props.messages.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     newMessage.value = "";
     nextTick(() => {
       autoScroll();
@@ -65,25 +68,40 @@ const handleUpdate = () => {
     autoScroll();
 };
 
-function gerMessage(roomId: string)
+function getMessage(roomId: string)
 {
 
 }
 function handleOpenProfile(user: string) {
   emit('open-profile', user);
 }
-function handleChannel() {
-  console.log("POOGG")
-}
-console.log("BOOOOP" + props.selectedChannel)
-watch(async () => await props.selectedChannel, handleChannel);
+// async function handleChannel() {
+//   console.log(` test: ${props.selectedChannel}`);
+//   const roomId : string | undefined= props.selectedChannel;
+//   const data : any = await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
+//     headers:
+//         {
+//           'token':localStorage.getItem('jwt_token')
+//         }
+//   });
+//   messages = ref(Array.from({length: data.data.length }, (_, i) => ({
+//     id: i+1,
+//     user: data.data[i].user.username,
+//     content : data.data[i].message,
+//     sender: data.data[i].user.login42 === me
+//   })));
+//   await nextTick();
+// }
+// console.log("BOOOOP" + props.selectedChannel)
+//
+// await watch(async () => await props.selectedChannel, handleChannel);
 </script>
 
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
     <MessageBox 
-      :messages="messages" 
+      :messages="props.messages"
       :user="user"
       class="chat-messages" 
       @updated="autoScroll" 
