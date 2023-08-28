@@ -10,6 +10,7 @@ const props = defineProps<{
 
 
 const store = useUserStore();
+let isPlayer: boolean = props.playGame;
 
 
 /* GAME */
@@ -36,6 +37,10 @@ function init() {
     socket.on('joinGame', (response : number) => {
         console.log(response + " got this form joingame")
         roomIndex = response;
+    });
+
+    socket.on('setAsPlayer', () => {
+        isPlayer = true;
     });
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -92,12 +97,11 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
     });
-	if (props.playGame)
-		intervalStop = setInterval(redrawAll, 20);
+	intervalStop = setInterval(redrawAll, 20);
 }
 
 function redrawAll() {
-	if (roomIndex === -1)
+	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key == key_w) {
         socket.emit("leftPaddle", {dir: -1, roomIndex: roomIndex});
@@ -126,6 +130,8 @@ onMounted(async () => {
     if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
 		await store.setStatus("ingame");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
+    } else {
+        
     }
     init();
 })

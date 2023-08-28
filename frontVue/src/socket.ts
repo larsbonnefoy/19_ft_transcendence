@@ -30,7 +30,8 @@ socket.on("events", (response) => {
 });
 
 socket.on("notification", (response) => {
-	const store = useUserStore();
+    console.log("notif time");
+	// const store = useUserStore();
 	// console.log(store.user?.username + " received notification: " + response);
 	const toast = useToast();
 	toast.warning(response, {
@@ -45,8 +46,29 @@ socket.on("notification", (response) => {
 		closeButton: "button",
 		icon: true,
 		rtl: false
-	});
+    });
+    socket.emit("confirmReception", {target: response, token: localStorage.getItem('jwt_token')});
 });
+
+//this function is used to confirm a user is online and received the notification you sent them
+socket.on("receipt", (response) => {
+    const toast = useToast();
+	toast.info(response, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+    
+
 
 /*
 socket.on("invited") {

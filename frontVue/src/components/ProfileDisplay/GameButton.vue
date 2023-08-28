@@ -10,7 +10,7 @@ const props = defineProps<{
 const router = useRouter();
 
 async function invGame() {
-   router.push("/game");
+//    router.push("/game");
    socket.emit("sendNotification", {target: props.profileLogin42, token: localStorage.getItem('jwt_token')});
 }
 </script>

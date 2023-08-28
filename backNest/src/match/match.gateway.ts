@@ -239,11 +239,23 @@ export class MatchGateway {
   }
 
   @SubscribeMessage('watchGame')
-  async watchParty(@ConnectedSocket() client: any, @MessageBody() roomName: string) {
+  async watchParty(@ConnectedSocket() client: any, @MessageBody() data: {roomName: string, token: string}) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
     for (let game of games) {
-      if (game.roomName == roomName && game.state === states.ONGOING) {
-        client.join(roomName);
-        console.log(client.id + " joined room " + roomName);
+      if (game.roomName == data.roomName && game.state === states.ONGOING) {
+        if (game.player0 === login42 || game.player1 === login42) {
+          this.joinGame(client, data.token);
+          this.server.to(login42).emit('setAsPlayer');
+          return ;
+        }
+        client.join(data.roomName);
+        console.log(client.id + " joined room " + data.roomName);
         return ;
 	  }
     }
@@ -251,14 +263,27 @@ export class MatchGateway {
 
   @SubscribeMessage('sendNotification')
   async sendNotification(@MessageBody() data: {target: string, token: string}) {
-	let login42: string = "";
+    let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(data.token);
     }
     catch (error) {
       return ;
     }
-	this.server.to(data.target).emit("notification", login42);
+    console.log(login42 + " sending notif to " + data.target);
+	  this.server.to(data.target).emit("notification", login42);
+  }
+
+  @SubscribeMessage('confirmReception')
+  async confirmReception(@MessageBody() data: {target: string, token: string}) {
+	  let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+	  this.server.to(data.target).emit("receipt", login42);
   }
 
   // to allow notifications, we put users in individual rooms that others can join shortly to send them notifications
@@ -272,6 +297,7 @@ export class MatchGateway {
       return ;
     }
 	client.join(login42);
+  // console.log(client.rooms);
   }
 
   handleConnection(client: Socket) {
