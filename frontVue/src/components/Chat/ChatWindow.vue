@@ -53,7 +53,6 @@ function handleOpenProfile(user: string) {
       @updated="autoScroll" 
       @open-profile="handleOpenProfile" 
     />
-    <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
     <div class="chat-input-container">
       <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type a message..." />
       <button @click="sendMessage" class="send-button">Send</button>
@@ -64,14 +63,12 @@ function handleOpenProfile(user: string) {
 
 <style scoped>
 .chat-window {
-    height: 94.3vh; /* Corrected the height */
+    height: 94vh;
     padding-right: 2px; /* Reduced padding */
-    overflow: hidden; /* Ensure overflow is hidden */
-    /* width: 42%; */
     border-right: 1px solid #a8abae; 
+    border-left: 1px solid #a8abae;
     display: flex;
     flex-direction: column;
-    /* background-color: #6c757d; */
 }
 
 .chat-messages {
@@ -96,8 +93,10 @@ function handleOpenProfile(user: string) {
 
 /* Chat Input Container */
 .chat-input-container {
-    padding: 0.5rem;
+    padding: 0.7rem;
     margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     align-items: center; /* Vertically center the items */
     border-radius: 50px; /* Circular edges */

@@ -45,7 +45,7 @@ const toggleView = () => {
 
 
 <template>
-  <div class="channel-list">
+  <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
       <h3 @click="toggleView">{{ currentView === 'private' ? 'Private Messages' : 'Channels' }}</h3>
@@ -85,13 +85,14 @@ const toggleView = () => {
 }
 
 .channel-list {
-  height: 94.3vh;
   /* width: 25%; */
-  border-right: 1px solid #a8abae; /* grey border */
+  height: 94h;
   overflow: hidden;
-  /* background-color: #6c757d;  */
+  background-color: #6c757d; 
   margin: 0;  
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 h3 {
@@ -111,7 +112,7 @@ h3:hover {
 }
 
 .channel-scroll {
-  max-height: 85vh;
+  max-height: 80vh;
   overflow-y: auto;
   margin: 0; 
   padding: 0;

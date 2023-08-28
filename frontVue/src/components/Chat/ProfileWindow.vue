@@ -11,7 +11,7 @@ let userdata: UserInfo;
 
 async function getProfileData() {
   try {
-    const res = await axios.get(`http://localhost:3000/user/one:lars`);
+    const res = await axios.get(`http://localhost:3000/user/one:lucas`);
     console.log("Data fetched: ",res.data);
     console.log(res.data);
     userdata = res.data;
@@ -52,12 +52,12 @@ watch(() => userdata.username, getProfileData);
 
 <style scoped>
 .profile-window {
+  height: 94vh;
   display: flex;
   justify-content: center;
   overflow: hidden;
   align-items: center;
   flex-direction: column;
-  height: 94.3vh;
   /* width: 33%; */
   /* background-color: #6c757d; */
   padding: 0;  /* Remove padding */
