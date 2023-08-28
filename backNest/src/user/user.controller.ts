@@ -62,6 +62,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('setStatus:status')
   async SetStatusFromLogin(@Request() req: any, @Res() res: Response, @Param() param: any) {
+    console.log("gotSetStatus");
     const status: number = +param.status.slice(1);
     if (status < 0 || status > 2) {
       res.status(409).json({"error":"status must be 0 1 2"});

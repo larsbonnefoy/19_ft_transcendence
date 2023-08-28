@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import HeaderBar from './components/HeaderBar/HeaderBar.vue'
 import { useUserStore } from './stores/user';
+import { onUnmounted } from 'vue';
+import axios from 'axios';
+import { socket } from './socket';
 
 window.addEventListener("beforeunload", leavingApp);
-
-const store = useUserStore();
-
 async function leavingApp() {
-  if (store.getUser != null) {
-    store.setStatus("offline");
+  /*
+  axios.get(`http://localhost:3000/user/get`);
+  try {
+    axios.get(`http://localhost:3000/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
   }
+  catch (error) {
+    console.log(error);
+  }
+  */
   //set Status to offline
 }
-
 </script>
 
 <template>

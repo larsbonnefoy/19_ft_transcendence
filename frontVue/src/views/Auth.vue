@@ -2,7 +2,10 @@
 import axios from "axios"
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
+import { useUserStore } from "@/stores/user";
+import { socket } from '../socket';
 
+const store = useUserStore();
 
 /* ON SETUP */
 const router = useRouter();
@@ -21,7 +24,6 @@ try
 		throw "node code in query";
 	code = urlParams.get('code');
 
-	//create tmp token here {sub:login42 , isAuth=False}
 	const response : Response = await fetch(`http://localhost:3000/api42/getToken?code=${code}`);
 	if (response.status != 200 && response.status != 201)
 		throw "getToken failed";
@@ -35,6 +37,7 @@ try
 	}
 	else {
 		router.push('/home');
+		await store.setStatus("online");
 	};
 }
 catch (error)
@@ -62,6 +65,7 @@ let submit = (async () => {
             if (data.data.is_valid) {
 				localStorage.setItem('jwt_token', data.data.jwt_token)	
 				router.push("/home")
+				await store.setStatus("online");
             }
             else {
 				success2fa.value = false;

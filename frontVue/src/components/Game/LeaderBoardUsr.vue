@@ -48,7 +48,7 @@ switch(props.index) {
                 </router-link>
             </div>
             <div class="col-1" style="margin: auto;" > 
-                <img v-if="statusImage.length != 0" class="profileImg" :src="statusImage">
+                <img v-if="statusImage.length != 0" class="statusImage" :src="statusImage">
             </div>
             <div class="col-3 textDisplay">
                 <p> {{ user.username }} </p>
@@ -57,7 +57,7 @@ switch(props.index) {
                 <p> elo : {{ Math.ceil(user.elo) }} </p>
             </div> 
             <div class="col-3 textDisplay">
-                <p> Games : {{ user.win}}w / {{ user.loss }}l</p>
+                <p><span style="color: green;">{{ user.win}}</span> - <span style="color: red;">{{ user.loss }}</span></p>
             </div> 
         </div>
     </div>
@@ -71,10 +71,16 @@ switch(props.index) {
     border-radius: 10%;
     display: block;
     text-align: center;
-    margin: auto;
-    margin-top: 1em;
+    margin: 1em;
 }
-
+.statusImage {
+    height: fit-content;
+    width: 3vw;
+    border-radius: 10%;
+    display: block;
+    text-align: center;
+    margin: auto;
+}
 .textDisplay {
     margin: auto;
     font-size: 1.1em;

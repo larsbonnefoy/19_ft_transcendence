@@ -122,9 +122,9 @@ function redrawAll() {
 }
 
 onMounted(async () => {
+    await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
-		await store.setStatus("ingame");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
     }
     init();
@@ -134,7 +134,7 @@ onUnmounted(async () => {
     clearInterval(intervalStop);
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     // socket.disconnect();
-    // await store.setStatus("online"); //set status to online when gameIsEnded (in socket.ts)
+    await store.setStatus("online");
 })
 </script>
 
@@ -154,7 +154,7 @@ onUnmounted(async () => {
 	</div>
 </template>
 
-<style>
+<style scoped>
 #canvas-container {
    width: 100%;
    text-align:center;

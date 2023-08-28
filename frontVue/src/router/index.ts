@@ -48,6 +48,7 @@ const router = createRouter({
         else {
           const store = useUserStore();
           await store.fetchUser();
+          await store.setStatus("online");
         }
       }
     },
@@ -61,6 +62,11 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+          await store.setStatus("online");
+        }
       }
     },
     {
@@ -71,6 +77,11 @@ const router = createRouter({
         const acces = await validAccess();
         if (!acces && to.name != '/') {
           return '/';
+        }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+          await store.setStatus("online");
         }
       }
     },
@@ -83,6 +94,11 @@ const router = createRouter({
 			if (!acces && to.name != '/') {
 			  return '/';
 			}
+      else {
+        const store = useUserStore();
+        await store.fetchUser();
+        await store.setStatus("online");
+      }
 		}
 	},
 	{
@@ -101,8 +117,8 @@ const router = createRouter({
         }
         else {
           const store = useUserStore();
-          //could only fetch friends list here with another function
           await store.fetchUser();
+          await store.setStatus("online");
         }
       }
     },

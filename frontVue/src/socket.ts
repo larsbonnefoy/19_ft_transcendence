@@ -2,10 +2,7 @@ import {reactive} from 'vue';
 import { Socket, io } from "socket.io-client";
 import { useUserStore } from './stores/user';
 import { useToast } from "vue-toastification";
-
-export const gameState = reactive({
-    connected: false, 
-});
+import axios from 'axios';
 
 const URL = "http://localhost:3000"; //TODO set to env variable here
 
@@ -13,16 +10,16 @@ export const socket = io(URL);
 
 socket.on("connect", async () => { //doesnt work as socket is init when app is launched not when user is connected
     console.log(`Connected to server`);
-    gameState.connected = true;
 	// const store = useUserStore();
 	// (store.user) ? console.log("user connected") : console.log("user not connected");
 });
 
 socket.on("disconnect", async () => {
-	console.log("Disconnected from server");
-	const store = useUserStore();
+    console.log("Disconnected from server????");
+    const store = useUserStore();
     await store.setStatus("offline");
-    gameState.connected = false;
+    //const res = await axios.get(`http://localhost:3000/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
+    //console.log("res disco here" + res);
 });
 
 socket.on("events", (response) => {
