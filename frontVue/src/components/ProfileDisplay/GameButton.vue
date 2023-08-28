@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useRouter} from 'vue-router';
+// import {useRouter} from 'vue-router';
 import { socket } from '../../socket';
 
 const props = defineProps<{
@@ -7,7 +7,7 @@ const props = defineProps<{
     profileLogin42: string
 }>()
 
-const router = useRouter();
+// const router = useRouter();
 
 async function invGame() {
 //    router.push("/game");

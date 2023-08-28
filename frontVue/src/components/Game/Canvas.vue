@@ -2,15 +2,15 @@
 import { useUserStore } from '@/stores/user';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
-
+import { GameType } from '../../types';
 
 const props = defineProps<{
-    playGame : boolean
+    playGame : GameType
 }>()
 
 
 const store = useUserStore();
-let isPlayer: boolean = props.playGame;
+let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
 
 
 /* GAME */
@@ -127,11 +127,13 @@ function redrawAll() {
 
 onMounted(async () => {
     // socket.connect(); //we don't connect and disconnect here
-    if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
+    if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
 		await store.setStatus("ingame");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
-    } else {
-        
+    } else if (props.playGame === GameType.CHALLENGER) {
+        await store.setStatus("ingame");
+        console.log("challenger in the place");
+        socket.emit('joinGame', localStorage.getItem('jwt_token'));
     }
     init();
 })

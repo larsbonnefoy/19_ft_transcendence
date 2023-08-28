@@ -15,6 +15,7 @@ import { UserService } from '../user/user.service';
 import { Match } from './match.entity';
 import { MatchService } from './match.service';
 import { Api42Service } from '../api42/api42.service';
+import { login42 } from 'src/api42/apiDto.dto';
 
 const canvasWidth : number = 800;
 const canvasHeight : number = 600;
@@ -247,6 +248,7 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
+    let roomIndex: number = 0;
     for (let game of games) {
       if (game.roomName == data.roomName && game.state === states.ONGOING) {
         if (game.player0 === login42 || game.player1 === login42) {
@@ -254,11 +256,36 @@ export class MatchGateway {
           this.server.to(login42).emit('setAsPlayer');
           return ;
         }
+        if (game.state === states.ONGOING && new Date().getTime() - game.lastTimeStamp > 10000) {
+          console.log("Game stop because timer");
+          game.resetGame();
+          client.join(data.roomName);
+          this.server.to(data.roomName).emit("endGame", roomIndex);
+          return ;
+        }
         client.join(data.roomName);
         console.log(client.id + " joined room " + data.roomName);
         return ;
-	  }
+	    }
+      ++roomIndex;
     }
+  }
+
+  @SubscribeMessage('isInGame')
+  async isInGame(@MessageBody() data: {origin: string, token: string}) : Promise<boolean> {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+    console.log("request check isInGame " + login42);
+    for (let game of games) {
+      if (game.player0 === login42 || game.player1 === login42)
+        return ;
+    }
+    this.server.to(login42).emit("notification", data.origin);
   }
 
   @SubscribeMessage('sendNotification')
@@ -270,12 +297,18 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
+    for (let game of games) {
+      if (game.player0 === login42 || game.player1 === login42) {
+        console.log("already in game, so can't send notification");
+        return ;
+      }
+    }
     console.log(login42 + " sending notif to " + data.target);
-	  this.server.to(data.target).emit("notification", login42);
+	  this.server.to(data.target).emit("challenge", login42);
   }
 
-  @SubscribeMessage('confirmReception')
-  async confirmReception(@MessageBody() data: {target: string, token: string}) {
+  @SubscribeMessage('acceptChallenge')
+  async acceptChallenge(@MessageBody() data: {target: string, token: string}) {
 	  let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(data.token);
@@ -283,7 +316,35 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-	  this.server.to(data.target).emit("receipt", login42);
+    for (let game of games) {
+      if (game.player0 === data.target || game.player1 === data.target)
+        return ;
+    }
+    let mustAppend: boolean = true;
+    let roomIndex: number = 0;
+    for (let game of games) {
+      if (game.state === states.STARTING && game.player0 === "") {
+        game.state = states.ONGOING;
+        game.player0 = data.target;
+        game.player1 = login42;
+        game.lastTimeStamp = new Date().getTime();
+        mustAppend = false;
+        console.log("challenge between " + data.target + " and " + login42 + " in " + game.roomName);
+        break ;
+      }
+      ++roomIndex;
+    }
+    if (mustAppend) {
+      const roomName: string = "room" + roomIndex;
+      games.push(new Game());
+      games[roomIndex].roomName = roomName;
+      games[roomIndex].state = states.ONGOING;
+      games[roomIndex].player0 = data.target;
+      games[roomIndex].player1 = login42;
+      games[roomIndex].lastTimeStamp = new Date().getTime();
+      console.log("new room for challenge between " + data.target + " and " + login42 + " in " + games[roomIndex].roomName);
+    }
+	  this.server.to(data.target).emit("challengeAccepted", login42);
   }
 
   // to allow notifications, we put users in individual rooms that others can join shortly to send them notifications

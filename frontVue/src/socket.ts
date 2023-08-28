@@ -2,6 +2,7 @@ import {reactive} from 'vue';
 import { Socket, io } from "socket.io-client";
 import { useUserStore } from './stores/user';
 import { useToast } from "vue-toastification";
+import { useRouter } from 'vue-router';
 
 export const gameState = reactive({
     connected: false, 
@@ -29,44 +30,63 @@ socket.on("events", (response) => {
     console.log("here " + response);
 });
 
-socket.on("notification", (response) => {
+// function closed() {
+//     console.log("toast closed");
+// };
+
+// socket.on('notification', (origin: string) => {
+//     function clicked() {
+//         console.log("toast clicked, send receipt notif to " + origin);
+//         socket.emit("acceptChallenge", {target: origin, token: localStorage.getItem('jwt_token')});
+//         const router = useRouter();
+//         router.push('/game');
+//         // router.push({ name: 'game', params: { challenge: 'challenge' } });
+//     };
+//     const toast = useToast();
+// 	toast.warning(origin, {
+// 		timeout: 5000,
+//         onClick: clicked,
+// 		closeOnClick: true,
+// 		pauseOnFocusLoss: true,
+// 		pauseOnHover: true,
+// 		draggable: false,
+// 		draggablePercent: 0.6,
+// 		showCloseButtonOnHover: false,
+// 		hideProgressBar: false,
+// 		closeButton: "button",
+// 		icon: true,
+// 		rtl: false
+//     });
+// });
+
+socket.on("challenge", (origin: string) => {
     console.log("notif time");
 	// const store = useUserStore();
-	// console.log(store.user?.username + " received notification: " + response);
-	const toast = useToast();
-	toast.warning(response, {
-		timeout: 5000,
-		closeOnClick: true,
-		pauseOnFocusLoss: true,
-		pauseOnHover: true,
-		draggable: false,
-		draggablePercent: 0.6,
-		showCloseButtonOnHover: false,
-		hideProgressBar: false,
-		closeButton: "button",
-		icon: true,
-		rtl: false
-    });
-    socket.emit("confirmReception", {target: response, token: localStorage.getItem('jwt_token')});
+	// console.log(store.user?.username + " received notification: " + origin);
+    socket.emit('isInGame', {origin: origin, token: localStorage.getItem('jwt_token')});
 });
 
-//this function is used to confirm a user is online and received the notification you sent them
-socket.on("receipt", (response) => {
-    const toast = useToast();
-	toast.info(response, {
-		timeout: 5000,
-		closeOnClick: true,
-		pauseOnFocusLoss: true,
-		pauseOnHover: true,
-		draggable: false,
-		draggablePercent: 0.6,
-		showCloseButtonOnHover: false,
-		hideProgressBar: false,
-		closeButton: "button",
-		icon: true,
-		rtl: false
-    });
-});
+// //this function is used to confirm a user is online and received the notification you sent them
+// socket.on("challengeAccepted", (origin: string) => {
+//     const toast = useToast();
+// 	toast.info(origin, {
+// 		timeout: 5000,
+// 		closeOnClick: true,
+// 		pauseOnFocusLoss: true,
+// 		pauseOnHover: true,
+// 		draggable: false,
+// 		draggablePercent: 0.6,
+// 		showCloseButtonOnHover: false,
+// 		hideProgressBar: false,
+// 		closeButton: "button",
+// 		icon: true,
+// 		rtl: false
+//     });
+
+//     const router = useRouter();
+//     router.push('/game');
+//     // router.push({ name: 'game', params: { challenge: 'challenge' } });
+// });
     
 
 
