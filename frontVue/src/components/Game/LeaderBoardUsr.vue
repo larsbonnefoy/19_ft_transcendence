@@ -27,6 +27,9 @@ switch(props.index) {
     case 2 :
         statusImage= "../../assets/TrophyLeaderBoard/bronze.png"
         break;
+    case 3 :
+        statusImage= "../../assets/TrophyLeaderBoard/trophy_broken.png"
+        break;
     default:
         statusImage = ""
 }

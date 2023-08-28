@@ -364,4 +364,9 @@ export class MatchGateway {
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }
+  
+  handleDisconnect(client: Socket) {
+    //disconnect user here
+    console.log(`Client disconnected: ${client.id}`);
+  }
 }
