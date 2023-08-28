@@ -39,3 +39,9 @@ export interface Achievement {
 	current: number
     max: number
 }
+
+export enum GameType {
+    PLAYER,
+    WATCHER,
+    CHALLENGER
+}

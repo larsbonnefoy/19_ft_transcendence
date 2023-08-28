@@ -20,7 +20,7 @@ async function getOngoingGames() {
 await getOngoingGames();
 
 function watchGame(roomName: string) {
-    socket.emit("watchGame", roomName);         //emit to backend to be appended to right roomm
+    socket.emit("watchGame",  {roomName: roomName, token: localStorage.getItem('jwt_token')});         //emit to backend to be appended to right roomm
     emit('watchGame');                       //emit to parent component to load game view
 }
 

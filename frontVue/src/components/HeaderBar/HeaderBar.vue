@@ -10,11 +10,12 @@ const store = useUserStore();
 
 
 const toDisplayNav = ['home', 'chat', 'game', 'members'];
-const toDisplayWhere = ['home', 'chat', 'game', 'members', 'profile'];
+const toDisplayWhere = ['home', 'chat', 'game', 'members', 'profile', 'challenge'];
 
 const routesToDisplay = router.options.routes.filter( value => toDisplayNav.includes(value.name));
 
 const displayLinks = computed(() => {
+    // console.log(route.name);
     return toDisplayWhere.includes(route.name);
 });
 

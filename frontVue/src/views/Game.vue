@@ -6,20 +6,30 @@ import LeaderBoard from '@/components/Game/LeaderBoard.vue';
 import {ref} from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
+import {useRoute} from 'vue-router';
+import { GameType } from '@/types';
 
+const route = useRoute();
 
 const displayGame = ref(false);
-const playGame = ref(false);
+const playGame = ref(GameType.PLAYER);
+
+// console.log(route.path);
+if (route.path === "/game/challenge") {
+	displayGame.value = true;
+	playGame.value = GameType.CHALLENGER;
+}
 
 const store = useUserStore();
 
 function joinGame() {
 	displayGame.value = true;
-	playGame.value = true;
+	playGame.value = GameType.PLAYER;
 }
 
 function watchGame() {
 	displayGame.value = !displayGame.value
+	playGame.value = GameType.WATCHER;
 }
 
 socket.on('endGame', (roomIndex) => {

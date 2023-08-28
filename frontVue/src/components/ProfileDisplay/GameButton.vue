@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useRouter} from 'vue-router';
+// import {useRouter} from 'vue-router';
 import { socket } from '../../socket';
 
 const props = defineProps<{
@@ -7,10 +7,10 @@ const props = defineProps<{
     profileLogin42: string
 }>()
 
-const router = useRouter();
+// const router = useRouter();
 
 async function invGame() {
-   router.push("/game");
+//    router.push("/game");
    socket.emit("sendNotification", {target: props.profileLogin42, token: localStorage.getItem('jwt_token')});
 }
 </script>

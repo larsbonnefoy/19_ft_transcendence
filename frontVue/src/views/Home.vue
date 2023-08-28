@@ -3,8 +3,6 @@ import { useUserStore } from '@/stores/user';
 import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
 import AchievmentsList from '@/components/Achievements/AchievementsList.vue';
-import { onUnmounted } from 'vue';
-import axios from 'axios';
 const store = useUserStore();
 
 </script>

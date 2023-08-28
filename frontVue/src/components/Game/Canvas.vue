@@ -2,14 +2,15 @@
 import { useUserStore } from '@/stores/user';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
-
+import { GameType } from '../../types';
 
 const props = defineProps<{
-    playGame : boolean
+    playGame : GameType
 }>()
 
 
 const store = useUserStore();
+let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
 
 
 /* GAME */
@@ -36,6 +37,10 @@ function init() {
     socket.on('joinGame', (response : number) => {
         console.log(response + " got this form joingame")
         roomIndex = response;
+    });
+
+    socket.on('setAsPlayer', () => {
+        isPlayer = true;
     });
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
@@ -92,12 +97,11 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
     });
-	if (props.playGame)
-		intervalStop = setInterval(redrawAll, 20);
+	intervalStop = setInterval(redrawAll, 20);
 }
 
 function redrawAll() {
-	if (roomIndex === -1)
+	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key == key_w) {
         socket.emit("leftPaddle", {dir: -1, roomIndex: roomIndex});
@@ -124,7 +128,12 @@ function redrawAll() {
 onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
-    if (props.playGame) {    //if he joins a game to play this function launches the game, to watch this function is not called
+    if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
+		await store.setStatus("ingame");
+        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+    } else if (props.playGame === GameType.CHALLENGER) {
+        await store.setStatus("ingame");
+        console.log("challenger in the place");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
     }
     init();
