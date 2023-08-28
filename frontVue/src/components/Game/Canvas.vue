@@ -11,6 +11,7 @@ const props = defineProps<{
 
 const store = useUserStore();
 let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
+const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
 
 /* GAME */
@@ -62,8 +63,42 @@ function init() {
         player0Login.value = response.player0;
         player1Login.value = response.player1;
         ctx.fillStyle = backgroundColor;
-        ctx.beginPath();
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        
+        let tmpBg: string | null = localStorage.getItem('backGround');
+        if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
+		ctx.beginPath();
+		ctx.fillStyle = tmpBg;
+    	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.closePath();
+        }
+        else {
+            let backGroundSelect : string = "";
+            let drawBg: boolean = true;
+            switch(tmpBg) {
+                case(backGrounds[1]):
+                    backGroundSelect = "backgroundImage1";
+                    break;
+                case(backGrounds[2]):
+                    backGroundSelect = "backgroundImage2";
+                    break;
+                case(backGrounds[3]):
+                    backGroundSelect = "backgroundImage3";
+                    break;
+                case(backGrounds[4]):
+                    backGroundSelect = "backgroundImage4";
+                    break;
+                default:
+                    ctx.beginPath();
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                    ctx.closePath();
+                    drawBg = false;
+            }
+            if (drawBg) { 
+                var img = document.getElementById(backGroundSelect);
+                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+            }
+        }
 
         ctx.beginPath();
         ctx.rect(response.leftPaddle.x - response.leftPaddle.width / 2, response.leftPaddle.y - response.leftPaddle.height / 2, response.leftPaddle.width, response.leftPaddle.height);
@@ -96,6 +131,7 @@ function init() {
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
+        
     });
 	intervalStop = setInterval(redrawAll, 20);
 }
@@ -148,6 +184,10 @@ onUnmounted(async () => {
 </script>
 
 <template>
+    <img id="backgroundImage1" src="../../../assets/Tennis1.jpg" hidden>
+	<img id="backgroundImage2" src="../../../assets/Tennis2.jpg" hidden>
+	<img id="backgroundImage3" src="../../../assets/FootBallField.jpg" hidden>
+    <img id="backgroundImage4" :src=store.getImg hidden>
     <div class="row" style="max-width: 100vw;">
 		<div class="col-2 playerCard">
 			<h2> {{ player0Login }} </h2>

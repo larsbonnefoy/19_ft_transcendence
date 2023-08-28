@@ -11,16 +11,9 @@ const store = useUserStore();
 const router = useRouter();
 
 async function leavingApp() {
-  /*
-  axios.get(`http://localhost:3000/user/get`);
-  try {
-    axios.get(`http://localhost:3000/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
+  if (store.getUser != null) {
+    store.setStatus("offline");
   }
-  catch (error) {
-    console.log(error);
-  }
-  */
-  //set Status to offline
 }
 
 socket.on('notification', (origin: string) => {

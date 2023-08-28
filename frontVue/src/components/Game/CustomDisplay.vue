@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
+const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
 
-const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField"];
+const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
 
 function setDefault() {
@@ -89,7 +91,8 @@ function drawBackGround() {
 		ctx.closePath();
 	}
 	else {
-		let backGroundSelect : string = ""
+		let backGroundSelect : string = "";
+		let drawBg:boolean = true;
 		switch(tmpBg) {
 			case(backGrounds[1]):
 				backGroundSelect = "backgroundImage1";
@@ -100,14 +103,20 @@ function drawBackGround() {
 			case(backGrounds[3]):
 				backGroundSelect = "backgroundImage3";
 				break;
+			case(backGrounds[4]):
+				backGroundSelect = "backgroundImage4";
+				break;
 			default:
 				ctx.beginPath();
 				ctx.fillStyle = "black";
+				drawBg = false;
 				ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 				ctx.closePath();
 		}
-		var img = document.getElementById(backGroundSelect);
-		ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+		if (drawBg){
+			var img = document.getElementById(backGroundSelect);
+			ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+		}
 	}
 	drawBall();
 	drawLeftPaddle();
@@ -140,6 +149,7 @@ onUnmounted(async () => {
 	<img id="backgroundImage1" src="../../../assets/Tennis1.jpg" hidden>
 	<img id="backgroundImage2" src="../../../assets/Tennis2.jpg" hidden>
 	<img id="backgroundImage3" src="../../../assets/FootBallField.jpg" hidden>
+	<img id="backgroundImage4" :src=store.getImg hidden>
 	<div class="card text-white bg-dark overflow-auto shadow-lg my-5">
 		<div class="card-body p-0 m-3">
 			<div class="row">

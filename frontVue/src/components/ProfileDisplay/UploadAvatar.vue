@@ -36,6 +36,7 @@ let submitFile = (async () => {
         // router.push({ name: 'profile', params: { username: store.getUserName } });
 		changeSuccess.value = true;
 		textDisplay.value = "Avatar changed !";
+		store.fetchUser();
         // console.log("submiting file");
     }
     catch (error:any) {
