@@ -1,10 +1,15 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import {ref, computed, defineEmits, defineProps} from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import axios from 'axios';
 
 
+const emit = defineEmits();
+
+const { channelName } = defineProps({
+  channelName: Object
+});
 const data: any = await axios.get('http://localhost:3000/chat/all', {headers: {
 	'token':localStorage.getItem('jwt_token')
 	}
@@ -33,7 +38,11 @@ const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
 };
 
-
+function handleSelected(name: string)
+{
+  console.log("LESSGOOO" + name );
+  emit('channel-selected', name);
+}
 </script>
 
 
@@ -61,8 +70,8 @@ const toggleView = () => {
       	<ChannelButton
         	v-for="channel in privateMessages"
        	 :key="channel.id"
-      	  :channel="channel"
-     	 />
+      	  :channel="channel" @channel-selected="channel.name =  'test'"
+     	 />yy
     	</div>
     </div>
     <div v-else>
@@ -71,7 +80,7 @@ const toggleView = () => {
       	<ChannelButton
         	v-for="channel in channels"
        	 :key="channel.id"
-      	  :channel="channel"
+          :channel="channel" @channel-selected=handleSelected($event)
      	 />
     	</div>
     </div>

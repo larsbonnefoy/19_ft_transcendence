@@ -83,6 +83,14 @@ export class UserController {
     res.json(user);
   }
 
+  @UseGuards(AuthGuard)
+  @Get('me/login42')
+  async getMyLogin(@Request() req: any) {
+    const user: User = await this.userService.findOne(req.user);
+    console.log("got myself from %s", user.username);
+   return user.login42;
+    // res.json(user.login42);
+  }
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);

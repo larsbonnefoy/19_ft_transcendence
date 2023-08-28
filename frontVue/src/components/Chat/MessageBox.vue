@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUpdated } from 'vue';
+import { ref, onUpdated , defineEmits} from 'vue';
 import ProfileButton from './ProfileButton.vue';
 const props = defineProps({
   messages: Array
@@ -17,15 +17,16 @@ onUpdated(() => {
 function handleProfileClick(username: string) {
   emit('open-profile', username);
 }
+// console.log(messages[3].sender);
 </script>
 
 <template>
   <div class="message-box" ref="messageBoxRef">
-    <div v-for="(message, index) in messages" :key="message.id" class="message" 
-         :class="{ 'sent-by-me': message.sender === 'me' }"
+    <div v-for="(message,  index) in messages" :key="message.id" class="message"
+         :class="{ 'sent-by-me': message.sender}"
          :ref="index === messages.length - 1 ? 'lastMessageRef' : null">
       <div class="message-user">
-        <ProfileButton :username="message.sender === 'me' ? 'You' : message.user" @open-profile="handleProfileClick"/>
+        <ProfileButton :username="message.sender   ? 'You' : message.user" @open-profile="handleProfileClick"/>
       </div>
       <div class="message-content">
         {{ message.content }}

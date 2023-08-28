@@ -1,34 +1,52 @@
 <script setup lang="ts">
-import { ref, nextTick, defineEmits, defineProps } from 'vue';
+import {ref, nextTick, defineEmits, defineProps, watch, FunctionDirective} from 'vue';
 import MessageBox from './MessageBox.vue';
-import ChannelButton from './ChannelButton.vue';
+// import ChannelList from './.vue';
 import axios from 'axios';
+import ChannelButton from "@/components/Chat/ChannelButton.vue";
 
 const props = defineProps({
   messages: Array,
-  user: Object 
+  user: Object,
+  selectedChannel: String
 });
 
-const roomId = 'test'
-const messagesAxios: any = await axios.get('http://localhost:3000/chat/room:${roomId}', {
-			headers: 
+  // props: ['selectedChannel'];
+
+
+const data : any = await axios.get('http://localhost:3000/chat/room:testroom', {
+			headers:
 			{
 				'token':localStorage.getItem('jwt_token')
 			}
 		});
 const newMessage = ref("");
-const messages = ref([
-  { id: Date.now() - 2, user: "Alice", content: "Hey there!", sender: 'other' },
-  { id: Date.now() - 1, user: "Bob", content: "How are you?", sender: 'other' }
-]);
+// const selectedChannel = ref(selectedChannel)
+const me = (await axios.get('http://localhost:3000/user/me/login42', {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
+const messages = ref(Array.from({length: data.data.length }, (_, i) => ({
+  id: i+1,
+  user: data.data[i].user.username,
+  content : data.data[i].message,
+  sender: data.data[i].user.login42=== me
+})));
+
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
-
+// const channel = ChannelButton.channel.name
+// if (channel)
+//        console.log("yo: " + channel);
+//        console.log("yo: " + ChannelButton.channel.test);
 const emit = defineEmits();
+
 
 const sendMessage = () => {
   if (newMessage.value.trim()) {
-    messages.value.push({ id: Date.now(), user: "You", content: newMessage.value, sender: 'me' });
+    messages.value.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     newMessage.value = "";
     nextTick(() => {
       autoScroll();
@@ -47,9 +65,18 @@ const handleUpdate = () => {
     autoScroll();
 };
 
+function gerMessage(roomId: string)
+{
+
+}
 function handleOpenProfile(user: string) {
   emit('open-profile', user);
 }
+function handleChannel() {
+  console.log("POOGG")
+}
+console.log("BOOOOP" + props.selectedChannel)
+watch(async () => await props.selectedChannel, handleChannel);
 </script>
 
 
@@ -60,14 +87,18 @@ function handleOpenProfile(user: string) {
       :user="user"
       class="chat-messages" 
       @updated="autoScroll" 
-      @open-profile="handleOpenProfile" 
+      @open-profile="handleOpenProfile"
     />
+    <div id="ChatWindow">{{selectedChannel}}</div>
     <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
     <div class="chat-input-container">
-      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type a message..." />
+      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="send message"/>
       <button @click="sendMessage" class="send-button">Send</button>
     </div>
     <div id="endOfChat" ref="endOfChatRef"></div>
+  </div>
+  <div class=channelHandler>
+
   </div>
 </template>
 

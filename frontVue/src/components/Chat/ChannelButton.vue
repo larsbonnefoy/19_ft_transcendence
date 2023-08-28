@@ -5,17 +5,17 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
+import { defineEmits, defineProps  } from 'vue';
+const emit = defineEmits();
 // Props
-const { channel } = defineProps({
+ const { channel } = defineProps({
   channel: Object
 });
 
 // Methods
 const selectChannel = () => {
   console.log(`Selected: ${channel.name}`);
-
+  emit('channel-selected',  channel.name);
 };
 </script>
 
