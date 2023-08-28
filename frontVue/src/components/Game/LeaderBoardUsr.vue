@@ -57,7 +57,7 @@ switch(props.index) {
                 <p> elo : {{ Math.ceil(user.elo) }} </p>
             </div> 
             <div class="col-3 textDisplay">
-                <p> WinRate : {{ Math.ceil((user.win/ (1*user.win + 1*user.loss)) * 100 ) }} %</p>
+                <p> Games : {{ user.win}}w / {{ user.loss }}l</p>
             </div> 
         </div>
     </div>
@@ -69,6 +69,10 @@ switch(props.index) {
     height: fit-content;
     width: 3vw;
     border-radius: 10%;
+    display: block;
+    text-align: center;
+    margin: auto;
+    margin-top: 1em;
 }
 
 .textDisplay {
