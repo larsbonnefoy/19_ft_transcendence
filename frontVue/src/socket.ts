@@ -26,6 +26,9 @@ socket.on("events", (response) => {
     console.log("here " + response);
 });
 
+socket.on("events", (response) => {
+    console.log("endGame " + response);
+});
 // function closed() {
 //     console.log("toast closed");
 // };
@@ -61,6 +64,7 @@ socket.on("challenge", (origin: string) => {
 	// console.log(store.user?.username + " received notification: " + origin);
     socket.emit('isInGame', {origin: origin, token: localStorage.getItem('jwt_token')});
 });
+
 
 // //this function is used to confirm a user is online and received the notification you sent them
 // socket.on("challengeAccepted", (origin: string) => {

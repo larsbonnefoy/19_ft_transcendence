@@ -3,6 +3,8 @@ import {toRef, ref, onMounted, reactive} from 'vue'
 import axios from 'axios';
 import {type match} from '../../types'
 import Game from './Game.vue';
+import { socket } from '../../socket';
+
 
 const props = defineProps<{
     usernameProp : string
@@ -26,6 +28,18 @@ async function getGames() {
     }
 }
 await getGames();
+
+/*
+socket.on('endGame', async () => {
+    console.log("endGame in Game History");
+    await getGames();
+    location.reload();
+});
+*/
+
+onMounted(async () => {
+    await getGames();
+})
 </script>
 
 <template>

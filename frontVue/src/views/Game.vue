@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import ConnectionStatus from '@/components/Game/ConnectionStatus.vue';
 import Canvas from '@/components/Game/Canvas.vue';
 import Actions from '@/components/Game/Actions.vue'
-import LeaderBoard from '@/components/Game/LeaderBoard.vue';
+import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import {ref} from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
@@ -53,11 +52,17 @@ socket.on('endGame', (roomIndex) => {
 		<Canvas :play-game="playGame" @close-canvas="closeCanvas()"> </Canvas> <!-- init game or watch game-->
 	</div>
 	<div v-else>
-		<!-- <button @click="joinGame()">Toggle Mode</button> -->
 		<div class="row" style="max-width: 100vw;">
+			<!-- 
 			<div class="col-6"> 				
 				<LeaderBoard> </LeaderBoard>
  			</div>
+			-->
+			<div v-if="store.getUserName != undefined" class="col-6">
+				<GameHistory
+					:username-prop="store.getUserName"> 
+				</GameHistory>
+    		</div>
 			<div class="col-6">
 				<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
 			</div>

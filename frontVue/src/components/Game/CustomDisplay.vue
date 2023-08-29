@@ -86,7 +86,7 @@ function drawBackGround() {
 	let tmpBg: string | null = localStorage.getItem('backGround');
 	if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
 		ctx.beginPath();
-		ctx.fillStyle = tmpBg;
+		ctx.fillStyle = "black";
     	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 		ctx.closePath();
 	}
@@ -154,7 +154,7 @@ onUnmounted(async () => {
 		<div class="card-body p-0 m-3">
 			<div class="row">
 				<div class="col-6">
-					<p class="textDisplay"> Change Ball Color </p>
+					<p class="textDisplay">Ball Color</p>
 				</div>
 				<div class="col-6">
 					<select class="form-control" id="sel1" style="width: 70%;">
@@ -168,7 +168,7 @@ onUnmounted(async () => {
 		<div class="card-body p-0 m-3">
 			<div class="row">
 				<div class="col-6">
-					<p class="textDisplay"> Change Left Paddle Color </p>
+					<p class="textDisplay">Left Paddle Color </p>
 				</div>
 				<div class="col-6">
 					<select class="form-control" id="sel2" style="width: 70%;">
@@ -182,7 +182,7 @@ onUnmounted(async () => {
 		<div class="card-body p-0 m-3">
 			<div class="row">
 				<div class="col-6">
-					<p class="textDisplay">Change Right Paddle Color </p>
+					<p class="textDisplay">Right Paddle Color</p>
 				</div>
 				<div class="col-6">
 					<select class="form-control" id="sel3" style="width: 70%;">
@@ -196,7 +196,7 @@ onUnmounted(async () => {
 		<div class="card-body p-0 m-3">
 			<div class="row">
 				<div class="col-6">
-					<p class="textDisplay">Change Field</p>
+					<p class="textDisplay">Field</p>
 				</div>
 				<div class="col-6">
 					<select class="form-control" id="sel3" style="width: 70%;">

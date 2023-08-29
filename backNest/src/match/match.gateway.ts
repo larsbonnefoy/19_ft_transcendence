@@ -103,7 +103,7 @@ export class MatchGateway {
         const p2 = await this.userService.findOne(game.player1);
         if (p1 == null || p2 == null) {
           console.log("return on player null in display in match.gateway");
-		  game.resetGame();
+		      game.resetGame();
           return ;
         }
         nMatch.player1 = p1.login42;

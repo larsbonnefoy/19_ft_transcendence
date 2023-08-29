@@ -35,6 +35,8 @@ let key: number = 0;
 let roomIndex : number = -1;
 let backgroundColor : string = "black";
 
+const diff = ref(0);
+
 function init() {
     socket.on('joinGame', (response : number) => {
         console.log(response + " got this form joingame")
@@ -62,6 +64,7 @@ function init() {
 
     socket.on('display', (response : any) => {
         player0Login.value = response.player0;
+        if (player0Login )
         player1Login.value = response.player1;
         ctx.fillStyle = backgroundColor;
         
@@ -134,8 +137,7 @@ function init() {
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
         
         if (response.state === 1) { // === states.ONGOING from backnest
-            const diff: number = new Date().getTime() - response.lastTimeStamp;
-            ctx.fillText("latence: " + diff, 10, 50);
+            diff.value = new Date().getTime() - response.lastTimeStamp;
         }
     });
 	intervalStop = setInterval(redrawAll, 20);
@@ -202,9 +204,14 @@ onUnmounted(async () => {
 			<h2> {{ player0Login }} </h2>
 		</div>
         <div class="col-8" style="max-height: 90vh; max-width: 90vw;">
-            <button type="button" class="btn btn-danger" @click="leaveRoom">Leave room</button>
+            <div class="text-center m-3">
+                <button type="button" class="btn btn-danger" @click="leaveRoom">Leave room</button>
+            </div>
             <div id="canvas-container">
                 <canvas id="gameCanvas" class="m-5"></canvas>
+            </div>
+            <div style="text-align: center;"> 
+                <p> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
             </div>
         </div>
         <div class="col-2 playerCard">

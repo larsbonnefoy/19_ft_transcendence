@@ -70,7 +70,7 @@ switch(props.index) {
 <style scoped>
 .profileImg {
     height: fit-content;
-    width: 3vw;
+    width: 2vw;
     border-radius: 10%;
     display: block;
     text-align: center;
@@ -78,7 +78,7 @@ switch(props.index) {
 }
 .statusImage {
     height: fit-content;
-    width: 3vw;
+    width: 2vw;
     border-radius: 10%;
     display: block;
     text-align: center;
