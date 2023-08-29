@@ -286,7 +286,7 @@ export class MatchGateway {
       if (game.roomName == data.roomName && game.state === states.ONGOING) {
         if (game.player0 === login42 || game.player1 === login42) {
           this.joinGame(client, data.token);
-          this.server.to(login42).emit('setAsPlayer');
+          // this.server.to(login42).emit('setAsPlayer');
           return ;
         }
         if (game.state === states.ONGOING && new Date().getTime() - game.lastTimeStamp > 10000) {
