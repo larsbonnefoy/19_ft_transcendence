@@ -18,15 +18,13 @@ async function getUserInfo() {
     if (route.params.username != store.getUserName) {
         //get sur un profile qui existe pas envoie NULL est pas une erreur, a corriger (ou a mediter)
         try {
-			if (user)
-				URL.revokeObjectURL(user.photo); //to release memory
+			if (user) {
+			    URL.revokeObjectURL(user.photo); //to release memory
+            }
             const res = await axios.get(`http://localhost:3000/user/one:${route.params.username}`);
             if (!res.data) {
                 foundUser.value = false;
             }
-            /*
-            Truc degeu pour display une image en attendant
-            */
             else {
                 console.log(res.data);
                 user = res.data

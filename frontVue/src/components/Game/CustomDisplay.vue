@@ -4,7 +4,6 @@ import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
-const ballValue = ref("black");
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
 function changeBallColor(event: any){
@@ -18,14 +17,6 @@ function setDefault() {
 	localStorage.setItem('leftPaddleColor', "white");
 	localStorage.setItem('backGround', "black");
 }
-
-/*
-function changeBallColor(color:string) {
-	console.log("changed Ball Color");
-	localStorage.setItem('ballColor', color);
-	drawBall();
-}
-*/
 
 function changeRightPaddleColor(event: any) {
 	localStorage.setItem('rightPaddleColor', event.target.value);
