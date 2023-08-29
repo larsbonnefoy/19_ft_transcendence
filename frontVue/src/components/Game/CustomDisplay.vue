@@ -4,9 +4,13 @@ import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
-
+const ballValue = ref("black");
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
+function changeBallColor(event: any){
+	localStorage.setItem('ballColor', event.target.value);
+	drawBall();
+}
 
 function setDefault() {
 	localStorage.setItem('ballColor', "white");
@@ -15,24 +19,26 @@ function setDefault() {
 	localStorage.setItem('backGround', "black");
 }
 
+/*
 function changeBallColor(color:string) {
+	console.log("changed Ball Color");
 	localStorage.setItem('ballColor', color);
 	drawBall();
 }
+*/
 
-function changeRightPaddleColor(color:string) {
-	localStorage.setItem('rightPaddleColor', color);
+function changeRightPaddleColor(event: any) {
+	localStorage.setItem('rightPaddleColor', event.target.value);
 	drawRightPaddle();
 }
 
-function changeLeftPaddleColor(color:string) {
-	localStorage.setItem('leftPaddleColor', color);
+function changeLeftPaddleColor(event: any) {
+	localStorage.setItem('leftPaddleColor', event.target.value);
 	drawLeftPaddle();
 }
 
-function changeBackGround(backGround: string){
-	console.log(backGround);
-	localStorage.setItem('backGround', backGround);
+function changeBackGround(event: any){
+	localStorage.setItem('backGround', event.target.value);
 	drawBackGround();
 }
 
@@ -143,6 +149,7 @@ onMounted(async () => {
 onUnmounted(async () => {
 	clearInterval(intervalStop);
 })
+
 </script>
 
 <template>
@@ -157,9 +164,9 @@ onUnmounted(async () => {
 					<p class="textDisplay">Ball Color</p>
 				</div>
 				<div class="col-6">
-					<select class="form-control" id="sel1" style="width: 70%;">
+					<select @change="changeBallColor($event)" class="form-control" id="sel1" style="width: 70%;">
 					<template v-for="color in colors">
-						<option @click="changeBallColor(color)">{{ color }}</option>
+						<option>{{ color }}</option>
 					</template>
 					</select>
 				</div>
@@ -171,9 +178,9 @@ onUnmounted(async () => {
 					<p class="textDisplay">Left Paddle Color </p>
 				</div>
 				<div class="col-6">
-					<select class="form-control" id="sel2" style="width: 70%;">
+					<select  @change="changeLeftPaddleColor($event)" class="form-control" id="sel2" style="width: 70%;">
 					<template v-for="color in colors">
-						<option @click="changeLeftPaddleColor(color)">{{ color }}</option>
+						<option>{{ color }}</option>
 					</template>
 					</select>
 				</div>
@@ -185,9 +192,9 @@ onUnmounted(async () => {
 					<p class="textDisplay">Right Paddle Color</p>
 				</div>
 				<div class="col-6">
-					<select class="form-control" id="sel3" style="width: 70%;">
+					<select  @change="changeRightPaddleColor($event)" class="form-control" id="sel3" style="width: 70%;">
 					<template v-for="color in colors">
-						<option @click="changeRightPaddleColor(color)">{{ color }}</option>
+						<option>{{ color }}</option>
 					</template>
 					</select>
 				</div>
@@ -199,9 +206,9 @@ onUnmounted(async () => {
 					<p class="textDisplay">Field</p>
 				</div>
 				<div class="col-6">
-					<select class="form-control" id="sel3" style="width: 70%;">
+					<select @change="changeBackGround($event)" class="form-control" id="sel3" style="width: 70%;">
 					<template v-for="bg in backGrounds">
-						<option @click="changeBackGround(bg)">{{ bg }}</option>
+						<option>{{ bg }}</option>
 					</template>
 					</select>
 				</div>

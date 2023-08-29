@@ -56,6 +56,9 @@ function playGame() {
                         <div v-if="!(store.getLogin42 === game.player0 || store.getLogin42 === game.player1)" class="col-2" style="margin: auto;">
                             <button class="btn btn-info" @click="watchGame(game.roomName)">Watch</button>
                         </div>
+                        <div v-else class="col-2" style="margin: auto">
+                          <button class="btn btn-outline-success" @click="playGame()">Rejoin Game</button>
+                        </div>
                     </div>
                 </div>
             </template>
