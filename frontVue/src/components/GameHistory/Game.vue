@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {type match} from '../../types'
-import { toRef, computed} from 'vue';
+import { toRef, computed, toRefs} from 'vue';
 import axios from 'axios';
 
 const props = defineProps<{
@@ -8,6 +8,9 @@ const props = defineProps<{
     loginProp: string
     usernameProp: string
 }>()
+
+
+const gameLocalRef = toRefs(props);
 
 interface player {
     login42: string
