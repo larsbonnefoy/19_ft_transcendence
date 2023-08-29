@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import axios, { type AxiosResponse } from 'axios';
-import { ref } from 'vue';import { useChatStore } from '@/stores/chat';
+import { ref } from 'vue';
+import { useChatStore } from '@/stores/chat';
 
 const chat = useChatStore();
 

@@ -3,7 +3,9 @@ import {ref, nextTick, defineEmits, defineProps, watch, FunctionDirective} from 
 import MessageBox from './MessageBox.vue';
 // import ChannelList from './.vue';
 import axios from 'axios';
+import { useChatStore } from '@/stores/chat';
 
+const chat = useChatStore();
 const props = defineProps({
   messages: Array,
   user: Object,
@@ -36,7 +38,7 @@ const newMessage = ref("");
 // })));
 
 
-// let messages = ref(null);
+let messages = chat.getChannels?.find(it => {return props.selectedChannel === it.id})?.messages;
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
@@ -49,7 +51,7 @@ const emit = defineEmits();
 
 const sendMessage = () => {
   if (newMessage.value.trim()) {
-    props.messages.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
+    messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     newMessage.value = "";
     nextTick(() => {
       autoScroll();
@@ -72,6 +74,7 @@ function getMessage(roomId: string)
 {
 
 }
+
 function handleOpenProfile(user: string) {
   emit('open-profile', user);
 }
@@ -101,7 +104,7 @@ function handleOpenProfile(user: string) {
 <template>
   <div class="chat-window" ref="chatContainerRef">
     <MessageBox 
-      :messages="props.messages"
+      :messages="messages"
       :user="user"
       class="chat-messages" 
       @updated="autoScroll" 

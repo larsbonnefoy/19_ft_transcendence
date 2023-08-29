@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, onMounted, defineEmits, nextTick, watch} from 'vue';
+import {ref, onMounted, nextTick, watch} from 'vue';
 import { useRoute } from 'vue-router'; 
 import ChannelList from './ChannelList.vue';
 import ChatWindow from './ChatWindow.vue';
@@ -44,33 +44,33 @@ async function handleSelectedChannel(event: string)
 
 }
 
-  async function handleChannel(event: string) {
-  console.log(` test: ${event}`);
-  const roomId : string | undefined= event
-  try
-  {
-   const data : any =  await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
-     headers:
-         {
-           'token':localStorage.getItem('jwt_token')
-         }
-   });
-   console.log(data)
-  //  messages.value = data.data;
-    if(data.status != 200)
-      throw "error";
-    messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
-     id: i+1,
-     user: data.data[i].user.username,
-     content : data.data[i].message,
-     sender: data.data[i].user.login42 === me
-   })));
-  }
-  catch (error)
-  {
-    messages.value = [];
-  }
-}
+//   async function handleChannel(event: string) {
+//   console.log(` test: ${event}`);
+//   const roomId : string | undefined= event
+//   try
+//   {
+//    const data : any =  await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
+//      headers:
+//          {
+//            'token':localStorage.getItem('jwt_token')
+//          }
+//    });
+//    console.log(data)
+//   //  messages.value = data.data;
+//     if(data.status != 200)
+//       throw "error";
+//     messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
+//      id: i+1,
+//      user: data.data[i].user.username,
+//      content : data.data[i].message,
+//      sender: data.data[i].user.login42 === me
+//    })));
+//   }
+//   catch (error)
+//   {
+//     messages.value = [];
+//   }
+// }
 // console.log("BOOOOP" + props.selectedChannel)
 
 // await watch(async () => await selectedChannel.value, handleChannel);
