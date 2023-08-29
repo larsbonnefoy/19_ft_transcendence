@@ -14,12 +14,12 @@ const props = defineProps({
 
 
 
-const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-});
+// const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
+//   headers:
+//       {
+//         'token':localStorage.getItem('jwt_token')
+//       }
+// });
 const newMessage = ref("");
 // const selectedChannel = ref(selectedChannel)
 // const me = (await axios.get('http://localhost:3000/user/me/login42', {

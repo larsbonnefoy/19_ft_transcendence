@@ -72,7 +72,7 @@ async function handleSelected(name: string)
         	v-for="channel in privateMessages"
        	 :key="channel.id"
       	  :channel="channel" @channel-selected="channel.name =  'test'"
-     	 />yy
+     	 />
     	</div>
     </div>
     <div v-else>

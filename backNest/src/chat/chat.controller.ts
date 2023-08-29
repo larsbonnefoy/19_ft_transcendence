@@ -85,12 +85,13 @@ export class ChatController {
 		const user : User = await this.userService.findOne(req.user);
 		if (!user)
 		{
-            res.status(409).json({"error": "unknown user"}).send();
+           await res.status(409).json({"error": "unknown user"}).send();
+            return;
 		}
-        //is user ban
         else if (await this.chatService.isBan(roomId, user))
         {
-            res.status(403).json({"error":"Forbidden"}).send();
+           await res.status(403).json({"error":"Forbidden"}).send();
+            return;
         }
         else if (await this.chatService.isAdmin(roomId, user) 
             || await this.chatService.isOwner(roomId, user) 
@@ -99,11 +100,16 @@ export class ChatController {
         //is user a chatter/owner/admin
             console.log("getMessage " + roomId);
             // console.log((await this.chatService.getMessagesByRoom(roomId)));
-        	res.status(200).json(await this.chatService.getMessagesByRoom(roomId)).send();
+            const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
+            if (messages)
+            	await res.status(200).json(messages).send();
+            else
+            	await res.status(200).json("").send();
+            return;
         }
         else
             await res.status(403).json({"error":"Forbidden"}).send();
-		return ;
+		return;
     }
    
 //TODO CHECK TOKEN TO GET THE RIGHT USER AND CHECK IF UER IS OWNER IN DELETE

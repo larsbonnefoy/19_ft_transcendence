@@ -15,9 +15,7 @@ function handleOpenProfile(event: string) {
 }
 
 const selectedChannel = ref("" );
-selectedChannel.value = "test";
 
-// let messages = ref(null);
 
 const me = (await axios.get('http://localhost:3000/user/me/login42', {
   headers:
@@ -25,17 +23,11 @@ const me = (await axios.get('http://localhost:3000/user/me/login42', {
         'token':localStorage.getItem('jwt_token')
       }
 })).data;
-const data1 : any = await axios.get(`http://localhost:3000/chat/room:${selectedChannel.value}`, {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-});
-let messages = ref(Array.from({length: data1.data.length }, (_, i) => ({
-    user: data1.data[i].user.username,
-    content : data1.data[i].message,
-    sender: data1.data[i].user.login42 === me
-})));
+
+let messages: any;
+
+
+
 const route = useRoute(); // Get current route object
 
 onMounted(() => {
@@ -47,34 +39,37 @@ async function handleSelectedChannel(event: string)
 {
   // await handleChannel(event);
   console.log('BOIII'+event);
-  console.log(messages.value)
+  // console.log(messages.value)
   selectedChannel.value = event;
 
 }
 
-// const roomId : string | undefined= selectedChannel.value
-// const data : any =  await axios.get(`http://localhost:3000/chat/room:testroom`, {
-//   headers:
-//       {
-//         'token':localStorage.getItem('jwt_token')
-//       }
-// });
   async function handleChannel(event: string) {
   console.log(` test: ${event}`);
-  const roomId : string | undefined= selectedChannel.value
-  const data : any =  await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
-    headers:
-        {
-          'token':localStorage.getItem('jwt_token')
-        }
-  });
-  messages.value = data.data;
-   messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
-    id: i+1,
-    user: data.data[i].user.username,
-    content : data.data[i].message,
-    sender: data.data[i].user.login42 === me
-  })));
+  const roomId : string | undefined= event
+  try
+  {
+   const data : any =  await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
+     headers:
+         {
+           'token':localStorage.getItem('jwt_token')
+         }
+   });
+   console.log(data)
+  //  messages.value = data.data;
+    if(data.status != 200)
+      throw "error";
+    // messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
+    //  id: i+1,
+    //  user: data.data[i].user.username,
+    //  content : data.data[i].message,
+    //  sender: data.data[i].user.login42 === me
+  //  })));
+  }
+  catch (error)
+  {
+    messages.value = [];
+  }
 }
 // console.log("BOOOOP" + props.selectedChannel)
 
