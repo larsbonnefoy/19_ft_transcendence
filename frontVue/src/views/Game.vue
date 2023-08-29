@@ -32,6 +32,13 @@ function watchGame() {
 	playGame.value = GameType.WATCHER;
 }
 
+function closeCanvas() {
+	console.log("canvas closed");
+	displayGame.value = false;
+	socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
+	store.setStatus("online");
+};
+
 socket.on('endGame', (roomIndex) => {
 	console.log("game ended");
 	displayGame.value = false;
@@ -43,7 +50,7 @@ socket.on('endGame', (roomIndex) => {
 
 <template>
 	<div v-if="displayGame"> 
-		<Canvas :play-game="playGame"> </Canvas> <!-- init game or watch game-->
+		<Canvas :play-game="playGame" @close-canvas="closeCanvas()"> </Canvas> <!-- init game or watch game-->
 	</div>
 	<div v-else>
 		<!-- <button @click="joinGame()">Toggle Mode</button> -->

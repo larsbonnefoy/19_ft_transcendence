@@ -239,6 +239,39 @@ export class MatchGateway {
 	}
   }
 
+  @SubscribeMessage('leaveRoomSearch')
+  async leaveRoomSearch(@ConnectedSocket() client: any, @MessageBody() token: string) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+    for (let game of games) {
+      if (game.player0 === login42 || game.player1 === login42) {
+        if (game.state === states.STARTING) {
+          game.resetGame();
+        }
+        console.log(login42 + " leaves " + game.roomName);
+        client.leave(game.roomName); // client leaves room, but joins it again when he rejoins the game
+        return ;
+      }
+    }
+	// if (data.roomIndex === -1) { // if user leaves before game starts, we abort matchmaking
+	// 	for (let game of games) {
+	// 		if (game.state === states.STARTING && game.player0 === login42) {
+	// 			game.resetGame();
+	// 			console.log(login42 + " leaves " + game.roomName);
+	// 			client.leave(game.roomName);
+	// 			return ;
+	// 		}
+	// 	}
+	// } else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
+	// 	client.leave(games[data.roomIndex].roomName);  // client leaves room, but joins it again when he rejoins the game
+	// }
+  }
+
   @SubscribeMessage('watchGame')
   async watchParty(@ConnectedSocket() client: any, @MessageBody() data: {roomName: string, token: string}) {
     let login42: string = "";

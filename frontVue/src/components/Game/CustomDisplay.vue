@@ -146,9 +146,9 @@ onUnmounted(async () => {
 </script>
 
 <template>
-	<img id="backgroundImage1" src="../../../assets/Tennis1.jpg" hidden>
-	<img id="backgroundImage2" src="../../../assets/Tennis2.jpg" hidden>
-	<img id="backgroundImage3" src="../../../assets/FootBallField.jpg" hidden>
+	<img id="backgroundImage1" src="../../../assets/GameBackGrounds/Tennis1.jpg" hidden>
+	<img id="backgroundImage2" src="../../../assets/GameBackGrounds/Tennis2.jpg" hidden>
+	<img id="backgroundImage3" src="../../../assets/GameBackGrounds/FootBallField.jpg" hidden>
 	<img id="backgroundImage4" :src=store.getImg hidden>
 	<div class="card text-white bg-dark overflow-auto shadow-lg my-5">
 		<div class="card-body p-0 m-3">

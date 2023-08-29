@@ -8,6 +8,7 @@ const props = defineProps<{
     playGame : GameType
 }>()
 
+const emit = defineEmits(['closeCanvas']);
 
 const store = useUserStore();
 let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
@@ -66,10 +67,10 @@ function init() {
         
         let tmpBg: string | null = localStorage.getItem('backGround');
         if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
-		ctx.beginPath();
-		ctx.fillStyle = tmpBg;
-    	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		ctx.closePath();
+            ctx.beginPath();
+            ctx.fillStyle = tmpBg;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.closePath();
         }
         else {
             let backGroundSelect : string = "";
@@ -132,6 +133,10 @@ function init() {
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
         
+        if (response.state === 1) { // === states.ONGOING from backnest
+            const diff: number = new Date().getTime() - response.lastTimeStamp;
+            ctx.fillText("latence: " + diff, 10, 50);
+        }
     });
 	intervalStop = setInterval(redrawAll, 20);
 }
@@ -161,6 +166,10 @@ function redrawAll() {
     // socket.emit('events', "test");
 }
 
+let leaveRoom = (async () => {
+    emit('closeCanvas');
+});
+
 onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
@@ -184,19 +193,20 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <img id="backgroundImage1" src="../../../assets/Tennis1.jpg" hidden>
-	<img id="backgroundImage2" src="../../../assets/Tennis2.jpg" hidden>
-	<img id="backgroundImage3" src="../../../assets/FootBallField.jpg" hidden>
+    <img id="backgroundImage1" src="../../../assets/GameBackGrounds/Tennis1.jpg" hidden>
+	<img id="backgroundImage2" src="../../../assets/GameBackGrounds/Tennis2.jpg" hidden>
+	<img id="backgroundImage3" src="../../../assets/GameBackGrounds/FootBallField.jpg" hidden>
     <img id="backgroundImage4" :src=store.getImg hidden>
     <div class="row" style="max-width: 100vw;">
 		<div class="col-2 playerCard">
 			<h2> {{ player0Login }} </h2>
 		</div>
-			<div class="col-8" style="max-height: 90vh; max-width: 90vw;">
-                <div id="canvas-container">
-                    <canvas id="gameCanvas" class="m-5"></canvas>
-                </div>
-			</div>
+        <div class="col-8" style="max-height: 90vh; max-width: 90vw;">
+            <button type="button" class="btn btn-danger" @click="leaveRoom">Leave room</button>
+            <div id="canvas-container">
+                <canvas id="gameCanvas" class="m-5"></canvas>
+            </div>
+        </div>
         <div class="col-2 playerCard">
             <h2> {{ player1Login }}</h2>
         </div>

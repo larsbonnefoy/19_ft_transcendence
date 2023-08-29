@@ -1,3 +1,12 @@
+TODOS:
+	- sql injections
+	- set status using socket io (what charlie boy talked about)
+	- chat?
+	- achievement flawless
+	- ingame powerup ?
+	- 
+
+
 My todo:
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
