@@ -37,11 +37,16 @@ let backgroundColor : string = "black";
 
 const diff = ref(0);
 
+function updateRoomIndex(response : number) {
+    console.log(response + " got this form joingame")
+    roomIndex = response;
+}
+
 function init() {
-    socket.on('joinGame', (response : number) => {
-        console.log(response + " got this form joingame")
-        roomIndex = response;
-    });
+    socket.on('joinGame', updateRoomIndex);//(response : number) => {
+        // console.log(response + " got this form joingame")
+        // roomIndex = response;
+    // });
 
     // socket.on('setAsPlayer', () => {
     //     console.log("becomes player");
@@ -49,6 +54,8 @@ function init() {
     // });
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
+    if (canvas === null || canvas === undefined)
+        return ;
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     canvas.style.backgroundColor = "#FFFFFF";
@@ -66,8 +73,8 @@ function init() {
     socket.on('display', (response : any) => {
         if (roomIndex === -1)
             roomIndex = response.roomName[response.roomName.length - 1];
-        if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
-            isPlayer = true;
+        // if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
+        //     isPlayer = true;
         player0Login.value = response.player0;
         if (player0Login )
         player1Login.value = response.player1;

@@ -34,7 +34,7 @@ function watchGame() {
 function closeCanvas() {
 	console.log("canvas closed");
 	displayGame.value = false;
-	socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
+	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
 	store.setStatus("online");
 };
 
