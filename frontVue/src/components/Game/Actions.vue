@@ -1,8 +1,11 @@
 <script setup lang="ts"> 
 import axios from 'axios'
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {socket} from '../../socket';
 import CustomDisplay from './CustomDisplay.vue';
+import { useUserStore } from '@/stores/user';
+
+const store = useUserStore();
 
 const emit = defineEmits(['watchGame', 'playGame']);
 
@@ -50,7 +53,7 @@ function playGame() {
                         <div class="col-1" style="margin: auto;"> {{ game.score0 }} </div>
                         <div class="col-3 p-0" style="margin: auto;"> {{ game.player1  }} </div>
                         <div class="col-1" style="margin: auto;"> {{ game.score1 }} </div>
-                        <div class="col-2" style="margin: auto;">
+                        <div v-if="!(store.getLogin42 === game.player0 || store.getLogin42 === game.player1)" class="col-2" style="margin: auto;">
                             <button class="btn btn-info" @click="watchGame(game.roomName)">Watch</button>
                         </div>
                     </div>
