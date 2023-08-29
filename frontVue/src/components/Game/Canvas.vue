@@ -41,9 +41,10 @@ function init() {
         roomIndex = response;
     });
 
-    socket.on('setAsPlayer', () => {
-        isPlayer = true;
-    });
+    // socket.on('setAsPlayer', () => {
+    //     console.log("becomes player");
+    //     isPlayer = true;
+    // });
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
     canvas.width = canvasWidth;
@@ -61,6 +62,10 @@ function init() {
     });
 
     socket.on('display', (response : any) => {
+        if (roomIndex === -1)
+            roomIndex = response.roomName[response.roomName.length - 1];
+        if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
+            isPlayer = true;
         player0Login.value = response.player0;
         player1Login.value = response.player1;
         ctx.fillStyle = backgroundColor;
@@ -97,7 +102,8 @@ function init() {
             }
             if (drawBg) { 
                 var img = document.getElementById(backGroundSelect);
-                ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
+                if (img)
+                    ctx.drawImage(img, 0, 0, canvasWidth, canvasHeight);
             }
         }
 
@@ -142,6 +148,7 @@ function init() {
 }
 
 function redrawAll() {
+    console.log("room " + roomIndex + ", player " + isPlayer);
 	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key == key_w) {
