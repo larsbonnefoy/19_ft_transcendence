@@ -11,8 +11,8 @@ async function navigateToHome() {
   try {
     if (login.value != "") {
       /* Check if user exists first*/
-      await axios.get(`http://localhost:3000/user/UserFromLog:${login.value}`)
-      const response : any = await axios.get('http://localhost:3000/api42/admin', { 
+      // await axios.get(`http://localhost:3000/user/UserFromLog:${login.value}`)
+      const response : any = await axios.get(`http://localhost:3000/api42/admin`, { 
         params: {
           login42: login.value
         }

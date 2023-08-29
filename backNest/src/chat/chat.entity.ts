@@ -33,7 +33,7 @@ export class Chat
 	admins: Relation<User[]>;
 
 	@Column({type: "boolean", default: false})
-	isPrivate: string;
+	isPrivate: boolean;
 }
 
 @Entity()

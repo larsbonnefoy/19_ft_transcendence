@@ -118,10 +118,12 @@ export class ChatController {
     async createRoom(@Body() roomInfos: roomDto, @Request() req: any, @Res() res: any)
     {
         console.log("CREATE");
+        console.log(roomInfos.isPrivate)
         const chat : Chat = new Chat;
         chat.messages =  [];
         chat.owner = await this.userService.findOne(req.user);
         chat.id = roomInfos.id;
+        chat.isPrivate = roomInfos.isPrivate;
         if (roomInfos.password)
 		{
             const hash = await bcrypt.hash(roomInfos.password, 10);
@@ -130,7 +132,7 @@ export class ChatController {
 		if (!(await this.chatService.findOne(roomInfos.id)))
 		{
         	this.chatService.createRoom(chat);
-        	await res.status(200).json({"status":"good"}).send();
+        	await res.status(200).json(chat).send();
 		
 		}
 		else

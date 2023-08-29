@@ -38,3 +38,28 @@ export interface Achievement {
     progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
     max: number
 }
+
+export interface Channel
+{
+    id: string
+    messages: Messages[]
+    chatters: string[]
+    admins: string[]
+    bans: string[]
+    mutes: string[]
+    owner: string
+    isPrivate: boolean 
+}
+
+export interface Messages
+{
+    id: number
+    time: Date
+    messages: string
+    userId: string
+    chat: Channel
+}
+
+export interface ChatInfo{
+    ChannelList : Channel[]
+}

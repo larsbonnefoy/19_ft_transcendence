@@ -3,21 +3,18 @@ import {ref, computed, defineEmits, defineProps} from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import axios from 'axios';
+import { useChatStore } from '@/stores/chat';
 
-
+const chat = useChatStore();
 const emit = defineEmits();
 
-const { channelName } = defineProps({
-  channelName: Object
-});
-const data: any = await axios.get('http://localhost:3000/chat/all', {headers: {
-	'token':localStorage.getItem('jwt_token')
-	}
-});
-const channels = ref(Array.from({length: data.data.length }, (_, i) => ({
-  id: i + 1,
-  name: data.data[i].id
-})));
+
+
+await chat.fetchChannels();
+console.log("FUNCTION ? "+ chat.getChannels);
+
+
+
 const searchTerm = ref('');
 const showSearchBar = ref(false);
 const showCreateChannel = ref(false);
@@ -26,13 +23,7 @@ const toggleSearchBar = () => {
   showSearchBar.value = !showSearchBar.value;
 };
 
-const numberOfPrivateMessages = 10;
-const privateMessages = ref(Array.from({ length: numberOfPrivateMessages }, (_, i) => ({
-  id: i + 1,
-  name: `Private Message ${i + 1}`
-})));
-
-const currentView = ref('channels');
+const currentView = ref('private');
 
 const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
@@ -68,21 +59,23 @@ async function handleSelected(name: string)
     <div v-if="currentView === 'private'">
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
-      	<ChannelButton
-        	v-for="channel in privateMessages"
-       	 :key="channel.id"
-      	  :channel="channel" @channel-selected="channel.name =  'test'"
-     	 />
+       <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="channel.isPrivate"
+       	          :key="channel.id"
+                  :channel="channel" @channel-selected=handleSelected($event)
+     	 /></template>
     	</div>
     </div>
     <div v-else>
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
-      	<ChannelButton
-        	v-for="channel in channels"
-       	 :key="channel.id"
-          :channel="channel" @channel-selected=handleSelected($event)
-     	 />
+        <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="!channel.isPrivate"
+       	          :key="channel.id"
+                  :channel="channel" @channel-selected=handleSelected($event)
+     	        />
+      </template>
+   
     	</div>
     </div>
 

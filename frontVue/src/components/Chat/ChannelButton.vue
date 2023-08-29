@@ -1,6 +1,6 @@
 <template>
   <button class="channel-button" @click="selectChannel">
-    {{ channel.name }}
+    {{ channel.id }}
   </button>
 </template>
 
@@ -14,8 +14,8 @@ const emit = defineEmits();
 
 // Methods
 const selectChannel = () => {
-  console.log(`Selected: ${channel.name}`);
-  emit('channel-selected',  channel.name);
+  console.log(`Selected: ${channel.id}`);
+  emit('channel-selected',  channel.id);
 };
 </script>
 

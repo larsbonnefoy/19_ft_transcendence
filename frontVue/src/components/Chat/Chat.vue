@@ -59,12 +59,12 @@ async function handleSelectedChannel(event: string)
   //  messages.value = data.data;
     if(data.status != 200)
       throw "error";
-    // messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
-    //  id: i+1,
-    //  user: data.data[i].user.username,
-    //  content : data.data[i].message,
-    //  sender: data.data[i].user.login42 === me
-  //  })));
+    messages =  ref(Array.from({length: data.data.length }, (_, i) => ({
+     id: i+1,
+     user: data.data[i].user.username,
+     content : data.data[i].message,
+     sender: data.data[i].user.login42 === me
+   })));
   }
   catch (error)
   {
@@ -82,8 +82,8 @@ async function handleSelectedChannel(event: string)
       <div class="col-3">
         <!-- Channels Column -->  
         <ChannelList
-            @channel-selected=" handleSelectedChannel($event)"
-            @channel=" handleChannel($event)"
+            @channel-selected=" handleSelectedChannel"
+            @channel=" handleChannel"
         />
       </div>
       <div class="col-6">
@@ -91,7 +91,6 @@ async function handleSelectedChannel(event: string)
         <ChatWindow
                                     :selectedChannel="selectedChannel"
                                     :messages="messages"
-                                    @open-profile="handleOpenProfile($event)"
         />
       </div>
       <div class="col-3">
