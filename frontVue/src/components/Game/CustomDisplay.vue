@@ -11,13 +11,6 @@ function changeBallColor(event: any){
 	drawBall();
 }
 
-function setDefault() {
-	localStorage.setItem('ballColor', "white");
-	localStorage.setItem('rightPaddleColor', "white");
-	localStorage.setItem('leftPaddleColor', "white");
-	localStorage.setItem('backGround', "black");
-}
-
 function changeRightPaddleColor(event: any) {
 	localStorage.setItem('rightPaddleColor', event.target.value);
 	drawRightPaddle();
@@ -33,6 +26,20 @@ function changeBackGround(event: any){
 	drawBackGround();
 }
 
+function resetSettings(event: any) {
+	localStorage.setItem('ballColor', "white");
+	localStorage.setItem('rightPaddleColor', "white");
+	localStorage.setItem('leftPaddleColor', "white");
+	localStorage.setItem('backGround', "black");
+	drawBackGround();
+	drawBall();
+	drawLeftPaddle();
+	drawRightPaddle();
+	document.getElementById("sel1").value = "white";
+	document.getElementById("sel2").value = "white";
+	document.getElementById("sel3").value = "white";
+	document.getElementById("sel4").value = "black";
+}
 
 
 const canvasWidth = 600;
@@ -51,7 +58,6 @@ function drawBall() {
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
-        ctx.fillStyle = localStorage.getItem('ballColor');
         ctx.fill();
         ctx.closePath();
 }
@@ -128,6 +134,19 @@ function init() {
 	ctx = canvas.getContext('2d');
 	ctx.font = "30px Arial";
 	ctx.fillStyle = backgroundColor;
+
+	for (let color of colors) {
+		if (color === localStorage.getItem('ballColor'))
+			document.getElementById("sel1").value = color;
+		if (color === localStorage.getItem('leftPaddleColor'))
+			document.getElementById("sel2").value = color;
+		if (color === localStorage.getItem('rightPaddleColor'))
+			document.getElementById("sel3").value = color;
+	}
+	for (let back of backGrounds) {
+		if (back === localStorage.getItem('backGround'))
+			document.getElementById("sel4").value = back;
+	}
 }
 
 //setDefault();
@@ -197,7 +216,7 @@ onUnmounted(async () => {
 					<p class="textDisplay">Field</p>
 				</div>
 				<div class="col-6">
-					<select @change="changeBackGround($event)" class="form-control" id="sel3" style="width: 70%;">
+					<select @change="changeBackGround($event)" class="form-control" id="sel4" style="width: 70%;">
 					<template v-for="bg in backGrounds">
 						<option>{{ bg }}</option>
 					</template>
@@ -205,6 +224,7 @@ onUnmounted(async () => {
 				</div>
 			</div>
 		</div>
+		<button class="btn btn-secondary" @click="resetSettings()">Default settings</button>
 	</div>
 	<div id="canvas-container">
 		<p> Field Preview </p>

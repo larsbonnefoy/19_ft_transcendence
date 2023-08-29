@@ -42,20 +42,20 @@ socket.on('notification', (origin: string) => {
 
 //this function is used to confirm a user is online and received the notification you sent them
 socket.on("challengeAccepted", (origin: string) => {
-    const toast = useToast();
-	toast.info(origin, {
-		timeout: 5000,
-		closeOnClick: true,
-		pauseOnFocusLoss: true,
-		pauseOnHover: true,
-		draggable: false,
-		draggablePercent: 0.6,
-		showCloseButtonOnHover: false,
-		hideProgressBar: false,
-		closeButton: "button",
-		icon: true,
-		rtl: false
-    });
+    // const toast = useToast();
+	// toast.info(origin, {
+	// 	timeout: 5000,
+	// 	closeOnClick: true,
+	// 	pauseOnFocusLoss: true,
+	// 	pauseOnHover: true,
+	// 	draggable: false,
+	// 	draggablePercent: 0.6,
+	// 	showCloseButtonOnHover: false,
+	// 	hideProgressBar: false,
+	// 	closeButton: "button",
+	// 	icon: true,
+	// 	rtl: false
+    // });
 
     router.push('/game/challenge');
     // router.push({ name: 'game', params: { challenge: 'challenge' } });

@@ -64,7 +64,16 @@ const logout = async () => {
                             </router-link>
                         </div>
                     </div>
-                <img class="mx-3" :src=store.getImg >
+                <router-link 
+               	:to="{
+        	       	name:'profile',
+                   	params: {
+                       	username: store.getUserName
+                   	}
+               	}"
+                >
+                    <img class="mx-3" :src=store.getImg >
+                </router-link>
             </template>
         </div>
     </nav>

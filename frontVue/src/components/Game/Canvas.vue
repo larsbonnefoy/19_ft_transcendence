@@ -93,7 +93,7 @@ function init() {
         let tmpBg: string | null = localStorage.getItem('backGround');
         if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
             ctx.beginPath();
-            ctx.fillStyle = tmpBg;
+            ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             ctx.closePath();
         }
@@ -167,7 +167,7 @@ function init() {
 }
 
 function redrawAll() {
-    console.log("room " + roomIndex + ", player " + isPlayer);
+    // console.log("room " + roomIndex + ", player " + isPlayer);
 	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key == key_w) {
@@ -211,7 +211,6 @@ onMounted(async () => {
 onUnmounted(async () => {
     clearInterval(intervalStop);
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-    // socket.disconnect();
     await store.setStatus("online");
 })
 </script>
