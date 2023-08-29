@@ -1,6 +1,5 @@
 TODOS:
 	- sql injections
-	- set status using socket io (what charlie boy talked about)
 	- chat?
 	- achievement flawless
 	- ingame powerup ?
@@ -58,6 +57,7 @@ my done:
 - photos <==  https://stackoverflow.com/questions/37510801/convert-octet-stream-to-image
 - change username takes token
 - set friend requests in database? so that you can only be friends if request is accepted
+- set status using socket io (what charlie boy talked about)
 
 
 

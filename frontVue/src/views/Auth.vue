@@ -37,7 +37,6 @@ try
 	}
 	else {
 		router.push('/home');
-		await store.setStatus("online");
 	};
 }
 catch (error)
@@ -65,7 +64,6 @@ let submit = (async () => {
             if (data.data.is_valid) {
 				localStorage.setItem('jwt_token', data.data.jwt_token)	
 				router.push("/home")
-				await store.setStatus("online");
             }
             else {
 				success2fa.value = false;

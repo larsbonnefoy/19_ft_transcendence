@@ -190,10 +190,8 @@ onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
-		await store.setStatus("ingame");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
     } else if (props.playGame === GameType.CHALLENGER) {
-        await store.setStatus("ingame");
         console.log("challenger in the place");
         socket.emit('joinGame', localStorage.getItem('jwt_token'));
     }

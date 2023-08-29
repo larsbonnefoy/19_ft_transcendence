@@ -48,7 +48,6 @@ const router = createRouter({
         else {
           const store = useUserStore();
           await store.fetchUser();
-          await store.setStatus("online");
         }
       }
     },
@@ -64,7 +63,6 @@ const router = createRouter({
         else {
           const store = useUserStore();
           await store.fetchUser();
-          await store.setStatus("online");
         }
       }
     },
@@ -94,7 +92,6 @@ const router = createRouter({
         else {
           const store = useUserStore();
           await store.fetchUser();
-          await store.setStatus("online");
         }
       }
     },
@@ -110,7 +107,6 @@ const router = createRouter({
       else {
         const store = useUserStore();
         await store.fetchUser();
-        await store.setStatus("online");
       }
 		}
 	},
@@ -131,7 +127,6 @@ const router = createRouter({
         else {
           const store = useUserStore();
           await store.fetchUser();
-          await store.setStatus("online");
         }
       }
     },

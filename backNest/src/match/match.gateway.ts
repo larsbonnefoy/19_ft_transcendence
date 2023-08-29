@@ -403,7 +403,15 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-	client.join(login42);
+    const current_id = await this.userService.getClientId(login42);
+    if (current_id !== client.id) {
+      await this.userService.setClientId(login42, client.id);
+      if (current_id !== "") {
+        this.server.to(login42).emit('doubleConnection');
+    }
+    client.join(login42);
+    await this.userService.set_status(login42, "online");
+  }
   // console.log(client.rooms);
   }
 
@@ -411,8 +419,16 @@ export class MatchGateway {
     console.log(`Client connected: ${client.id}`);
   }
   
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     //disconnect user here
     console.log(`Client disconnected: ${client.id}`);
+    const users = await this.userService.findAll();
+    for (let user of users) {
+      if (user.client_id === client.id) {
+        await this.userService.set_status(user.login42, "offline");
+        await this.userService.setClientId(user.login42, "");
+        return ;
+      }
+    }
   }
 }

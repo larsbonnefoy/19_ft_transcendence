@@ -20,7 +20,7 @@ const displayLinks = computed(() => {
 });
 
 const logout = async () => {
-    await store.setStatus("offline");
+    // await store.setStatus("offline");
     localStorage.clear();
 }
 

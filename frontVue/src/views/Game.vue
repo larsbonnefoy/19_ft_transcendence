@@ -35,14 +35,12 @@ function closeCanvas() {
 	console.log("canvas closed");
 	displayGame.value = false;
 	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
-	store.setStatus("online");
 };
 
 socket.on('endGame', (roomIndex) => {
 	console.log("game ended");
 	displayGame.value = false;
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-	store.setStatus("online");
 });
 
 </script>

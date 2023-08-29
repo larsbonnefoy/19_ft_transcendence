@@ -17,11 +17,11 @@ let friend: UserInfo;
 //get et Set status aussi
 async function getFriend() {
     try {
-        const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
+        const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`);
         FriendUsername = resUsrName.data.username;
 		if (friend)
 			URL.revokeObjectURL(friend.photo); //to release memory
-        const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`)
+        const resUsr = await axios.get(`http://localhost:3000/user/one:${FriendUsername}`);
         friend = resUsr.data;
         if (friend)
 			friend.photo = await store.getAvatar(friend.photo);

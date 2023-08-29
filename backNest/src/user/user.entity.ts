@@ -13,6 +13,9 @@ export class User {
   
   @Column({ type: "text", unique: true })
   username: string;
+
+  @Column({type: "text", default: ""})
+  client_id: string;
   
   @Column({type: 'numeric', default: 1000})
   elo: number;

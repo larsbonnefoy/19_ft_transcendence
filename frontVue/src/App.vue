@@ -11,9 +11,9 @@ const store = useUserStore();
 const router = useRouter();
 
 async function leavingApp() {
-  if (store.getUser != null) {
-    store.setStatus("offline");
-  }
+//   if (store.getUser != null) {
+//     store.setStatus("offline");
+//   }
 }
 
 socket.on('notification', (origin: string) => {

@@ -16,10 +16,17 @@ socket.on("connect", async () => { //doesnt work as socket is init when app is l
 
 socket.on("disconnect", async () => {
     console.log("Disconnected from server????");
-    const store = useUserStore();
-    await store.setStatus("offline");
+    // const store = useUserStore();
+    // await store.setStatus("offline");
     //const res = await axios.get(`http://localhost:3000/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
     //console.log("res disco here" + res);
+});
+
+socket.on("doubleConnection", async () => {
+    console.log("disconnecting socket because other connection detected");
+    socket.disconnect();
+    localStorage.clear();
+    location.reload();
 });
 
 socket.on("events", (response) => {

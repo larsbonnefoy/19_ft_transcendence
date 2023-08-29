@@ -86,6 +86,7 @@ export class UserService {
   }
 
   async set_status(login42: string, newstatus: string) {
+    console.log(login42 + " is now " + newstatus);
     await this.userRepository.update(login42, {status:newstatus});
   }
 
@@ -99,6 +100,17 @@ export class UserService {
 
   findUsername(str: string): Promise<User | null> {
     return this.userRepository.findOneBy({ username:str });
+  }
+
+  async getClientId(login42: string) : Promise<string> {
+    const user = await this.findOne(login42);
+    if (user)
+      return user.client_id;
+    return "";
+  }
+
+  async setClientId(login24: string, client_id: string) {
+    await this.userRepository.update(login24, {client_id: client_id});
   }
 
   //2fa userservives
