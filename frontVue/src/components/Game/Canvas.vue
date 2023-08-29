@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
 import { GameType } from '../../types';
+import GamePlayerCard from './GamePlayerCard.vue';
 
 const props = defineProps<{
     playGame : GameType
@@ -14,6 +15,14 @@ const store = useUserStore();
 let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
+
+const player0Connected = computed(() => {
+    return player0Login.value != "Player1"
+})
+
+const player1Connected = computed(() => {
+    return (player1Login.value != "Player2" && player1Login.value != "")
+})
 
 /* GAME */
 const canvasWidth = 800;
@@ -75,9 +84,10 @@ function init() {
             roomIndex = response.roomName[response.roomName.length - 1];
         // if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
         //     isPlayer = true;
-        player0Login.value = response.player0;
-        if (player0Login )
-        player1Login.value = response.player1;
+        if (player0Login.value === "Player1")
+            player0Login.value = response.player0;
+        if (player1Login.value === "Player2")
+            player1Login.value = response.player1;
         ctx.fillStyle = backgroundColor;
         
         let tmpBg: string | null = localStorage.getItem('backGround');
@@ -212,8 +222,10 @@ onUnmounted(async () => {
 	<img id="backgroundImage3" src="../../../assets/GameBackGrounds/FootBallField.jpg" hidden>
     <img id="backgroundImage4" :src=store.getImg hidden>
     <div class="row" style="max-width: 100vw;">
-		<div class="col-2 playerCard">
-			<h2> {{ player0Login }} </h2>
+		<div class="col-2"  style="display:grid; place-items: center;">
+            <template v-if="player0Connected">
+                <GamePlayerCard :login42="player0Login"> </GamePlayerCard>
+            </template>
 		</div>
         <div class="col-8" style="max-height: 90vh; max-width: 90vw;">
             <div class="text-center m-3">
@@ -226,8 +238,18 @@ onUnmounted(async () => {
                 <p> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
             </div>
         </div>
-        <div class="col-2 playerCard">
-            <h2> {{ player1Login }}</h2>
+        <div class="col-2" style="display:grid; place-items: center;">
+            <template v-if="player1Connected">
+                <GamePlayerCard :login42="player1Login"> </GamePlayerCard>
+            </template>
+            <template v-else> 
+                <div class="d-flex justify-content-center">
+                    <p class="m-1"> Searching Opponent </p>
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+            </template>
         </div>
 	</div>
 </template>

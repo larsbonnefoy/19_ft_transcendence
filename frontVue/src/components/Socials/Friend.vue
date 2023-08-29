@@ -39,7 +39,7 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <div class="card-body textDisplay p-0 m-3">
+    <div class="card-body p-0 m-3">
         <div class="row">
         
         	<div class="col-6">
