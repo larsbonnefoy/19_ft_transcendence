@@ -122,6 +122,9 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
           console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
+		  if (+game.score1 === 0 && !(p1.achievements & 1)) { //flawless victory for the first time
+			await this.userService.addAchievement(p1.login42, +p1.achievements + 1);
+		  }
         }
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
@@ -134,6 +137,9 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
           console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
+		  if (+game.score0 === 0 && !(p2.achievements & 1)) {
+			await this.userService.addAchievement(p2.login42, +p2.achievements + 1);
+		  }
         }
         await this.matchService.createMatch(nMatch);
         game.resetGame();

@@ -78,6 +78,11 @@ export class UserService {
     await this.userRepository.update(login42, {loss:loss});
   }
 
+  async addAchievement(login42: string, achievements: number) {
+	console.log("achievements of %s now at %d", login42, achievements);
+	await this.userRepository.update(login42, {achievements:achievements});
+  }
+
   async change_elo(login42: string, newelo: number) {
     if (newelo < 100)
       newelo = 100;
@@ -109,8 +114,8 @@ export class UserService {
     return "";
   }
 
-  async setClientId(login24: string, client_id: string) {
-    await this.userRepository.update(login24, {client_id: client_id});
+  async setClientId(login42: string, client_id: string) {
+    await this.userRepository.update(login42, {client_id: client_id});
   }
 
   //2fa userservives

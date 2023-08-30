@@ -80,7 +80,7 @@ const achievementList: Achievement[] = [
         name: "Flawless",
         imageUrl: "../../../assets/Achievements/flawless.png",
         description: "Win a game without conceding any points",
-        progress: () => { return 0},
+        progress: () => { return props.userProp.achievements & 1},
 		current: -1,
         max: 1,
     },
