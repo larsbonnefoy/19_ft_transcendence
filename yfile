@@ -31,7 +31,7 @@ list of .env content:
 		ENC_ALG='aes-256-ctr'
 
 		#NETWORK 
-		LOCAL_IP = "10.2.7.2"
+		LOCAL_IP = "10.2.7.2" --> or localhost
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
