@@ -29,7 +29,6 @@ const barColor = computed(() => {
 })
 
 
-
 const displayProgress = computed(() => { 
         return (props.achievProgress * 100)
 })
@@ -44,7 +43,7 @@ const displayProgress = computed(() => {
             </div>
             <div class="col-5 px-4">
                 <p class="m-0"> {{ props.achievementProp.name }} </p>
-                <p class="m-0"  style="color: grey; font-size: 0.8em">  {{ props.achievementProp.description }} </p>               
+                <p class="m-0"  style="color: grey;">  {{ props.achievementProp.description }} </p>               
             </div>
             <div class="col-6" style="margin: auto;"> 
                 <div class="progress" >

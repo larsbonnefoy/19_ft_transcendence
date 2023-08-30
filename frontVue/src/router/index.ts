@@ -131,6 +131,22 @@ const router = createRouter({
       }
     },
     {
+      path: '/profile',
+      name: 'persoProfile',
+      component: Profile,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+          return `/profile/${store.getUserName}`
+        }
+      }
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: Admin

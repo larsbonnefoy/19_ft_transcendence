@@ -51,11 +51,6 @@ socket.on('endGame', (roomIndex) => {
 	</div>
 	<div v-else>
 		<div class="row" style="max-width: 100vw;">
-			<!-- 
-			<div class="col-6"> 				
-				<LeaderBoard> </LeaderBoard>
- 			</div>
-			-->
 			<div v-if="store.getUserName != undefined" class="col-6">
 				<GameHistory
 					:username-prop="store.getUserName"> 

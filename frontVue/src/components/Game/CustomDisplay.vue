@@ -26,7 +26,7 @@ function changeBackGround(event: any){
 	drawBackGround();
 }
 
-function resetSettings(event: any) {
+function resetSettings() {
 	localStorage.setItem('ballColor', "white");
 	localStorage.setItem('rightPaddleColor', "white");
 	localStorage.setItem('leftPaddleColor', "white");

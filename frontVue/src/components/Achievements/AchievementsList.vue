@@ -100,7 +100,7 @@ const achievementList: Achievement[] = [
 
 <template>
     <h2 style="text-align: center; " class="m-5">Achievements </h2>
-    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 80vh;">
+    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in achievementList" :key="index">
            <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
         </template>
