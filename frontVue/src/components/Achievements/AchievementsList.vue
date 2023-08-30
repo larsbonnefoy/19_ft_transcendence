@@ -61,7 +61,7 @@ const achievementList: Achievement[] = [
         imageUrl: "../../../assets/Achievements/incognito.png",
         description: "Change username",
         progress: () => {
-			 return props.userProp.login42 !== props.userProp.username ? 1 : 0;
+			 return props.userProp.achievements & 1 ? 1 : 0;
 		},
         current: -1,
 		max: 1,
@@ -71,7 +71,7 @@ const achievementList: Achievement[] = [
         imageUrl: "../../../assets/Achievements/makeup.png",
         description: "Change Profile Pic",
         progress: () => {
-			return (props.userProp.photo === "../../assets/placeholder_avatar.png" || props.userProp.photo.slice(0, 5) === "https") ? 0 : 1;
+			return props.userProp.achievements & 2 ? 1 : 0;
 		},
 		current: -1,
         max: 1,
@@ -80,7 +80,9 @@ const achievementList: Achievement[] = [
         name: "Flawless",
         imageUrl: "../../../assets/Achievements/flawless.png",
         description: "Win a game without conceding any points",
-        progress: () => { return props.userProp.achievements & 1},
+        progress: () => {
+			return props.userProp.achievements & 4 ? 1 : 0;
+		},
 		current: -1,
         max: 1,
     },
@@ -89,7 +91,7 @@ const achievementList: Achievement[] = [
         imageUrl: "../../../assets/Achievements/handshake.png",
         description: "Make your first Friend",
         progress: () => {
-			return props.userProp.friends[0] === undefined ? 0 : 1;
+			return props.userProp.achievements & 8 ? 1 : 0;
 		},
 		current: -1,
         max: 1,

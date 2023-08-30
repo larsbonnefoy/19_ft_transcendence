@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const completed = computed(()=> {
+	// console.log("achieve progress of " + props.achievId + ": " + props.achievProgress);
     return (props.achievProgress == 1)
 })
 const barColor = computed(() => { 

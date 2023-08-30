@@ -155,6 +155,8 @@ export class UserController {
 		}
 	}
     await this.userService.change_username(current_user.login42, newUsername);
+	if (!(current_user.achievements & 1))
+		await this.userService.addAchievement(sessionId, +current_user.achievements + 1);
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }
 
@@ -248,6 +250,10 @@ export class UserController {
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+	if (!(user_1.achievements & 8))
+		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+	if (!(user_2.achievements & 8))
+		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
     res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
   }
   
@@ -476,6 +482,8 @@ export class UserController {
 				console.log('%s was deleted', "uploads/" + user.photo);
 		});
 		await this.userService.change_avatar(req.user, file.filename);
+		if (!(user.achievements & 2))
+			await this.userService.addAchievement(req.user, +user.achievements + 2);
   }
 
   @Get('avatar:imgpath')
