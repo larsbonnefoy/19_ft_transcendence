@@ -22,27 +22,28 @@ export const useChannelStore = defineStore('channel', {
        async setChannel(newChannel: Channel)
        {
             this.channel = newChannel;
+            console.log(">>>>>>" + this.channel.id)
             try
             {
-                const messages: any = await axios.get(`http://localhost:3000/chat/room`, 
+                const messages: any = await axios.post(`http://localhost:3000/chat/getMessages`, {id: this.channel?.id},
                  {
                     headers: 
                     {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
+                console.log("hmmm a" + messages.data)
                 this.channel.messages = messages.data;
-                console.log("setChannel: ")
-                console.log(messages[0])
-                return messages;
+                console.log("setChannel: " + this.channel.messages)
             }
             catch (error)
             {
-                return (error);
+                this.channel = null;
             }
-       } 
+       }, 
     }
 })
+
 export const useChatStore = defineStore('chat', {
     state: () => ({
         // for data that is not yet loaded
@@ -58,7 +59,7 @@ export const useChatStore = defineStore('chat', {
         async fetchChannels() {
             try
             {
-                const data: any = await axios.get('http://localhost:3000/chat/all', 
+                const data: any = await axios.get('http://localhost:3000/chat/all',
                 {
                     headers: 
                     {

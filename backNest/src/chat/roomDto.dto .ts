@@ -6,8 +6,8 @@ export class roomDto {
     @IsNotEmpty()
     id : string;
 
-    @IsBoolean()
-    isPrivate: boolean;
+    // @IsBoolean() 
+    isPrivate: boolean | null;
 
     password : string | null | undefined;
 

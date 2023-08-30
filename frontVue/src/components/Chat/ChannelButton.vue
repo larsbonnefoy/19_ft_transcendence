@@ -21,8 +21,9 @@ const emit = defineEmits();
 const selectChannel = async () => {
   console.log(`Selected: ${channel.id}`);
   const newChannel: Channel = chat.getChannels.find((it: Channel) => {return (it.id === channel.id)})  
-  console.log(newChannel);
+  console.log("new channel " + newChannel);
   await channelStore.setChannel(newChannel);
+  console.log(channelStore.id); 
   console.log("done");
   // emit('channel-selected',  channel.id);
 };

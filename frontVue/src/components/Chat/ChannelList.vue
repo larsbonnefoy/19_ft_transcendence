@@ -11,7 +11,7 @@ const emit = defineEmits();
 
 
 await chat.fetchChannels();
-console.log("FUNCTION ? "+ chat.getChannels);
+// console.log("FUNCTION ? "+ chat.getChannels);
 
 
 

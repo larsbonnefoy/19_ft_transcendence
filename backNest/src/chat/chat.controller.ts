@@ -77,11 +77,13 @@ export class ChatController {
     }
 
     @UseGuards(AuthGuard)
-    @Get('room:roomId')
-    async getMessages(@Request() req: any, @Param() params: any, @Res({ passthrough: true }) res: any)
+    @Post('getMessages')
+    async getMessages(@Request() req: any, @Body() body: roomDto, @Res({ passthrough: true }) res: any)
     {
-    
-        const roomId: string = params.roomId.slice(1);
+        console.log("GETEMESSAGE");
+        console.log(body)
+        const roomId: string = body.id;
+        console.log("getMessage: " + roomId);
 		const user : User = await this.userService.findOne(req.user);
 		if (!user)
 		{
@@ -98,11 +100,11 @@ export class ChatController {
             || await this.chatService.isChatter(roomId, user))
         {
         //is user a chatter/owner/admin
-            console.log("getMessage " + roomId);
+            // console.log("getMessage " + roomId);
             // console.log((await this.chatService.getMessagesByRoom(roomId)));
             const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            if (messages)
-            	 res.status(200).json(messages).send();
+            console.log("yoo: " + messages);
+            res.status(200).json(messages).send();
             return;
         }
         else
