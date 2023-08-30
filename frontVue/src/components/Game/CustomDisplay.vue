@@ -64,7 +64,7 @@ function drawBall() {
 
 function drawLeftPaddle() {
         ctx.beginPath();
-        ctx.rect(0, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight);
+        ctx.rect(paddleWidth / 2, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight);
         let color : string | null = localStorage.getItem('leftPaddleColor');
         if (color === undefined || color === null)
             color = "white";
@@ -75,7 +75,7 @@ function drawLeftPaddle() {
 
 function drawRightPaddle() {
         ctx.beginPath();
-        ctx.rect(canvasWidth - paddleWidth, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight);
+        ctx.rect(canvasWidth - 3 * paddleWidth / 2, canvasHeight / 2 - paddleHeight / 2, paddleWidth, paddleHeight);
         let color : string | null = localStorage.getItem('rightPaddleColor');
         if (color === undefined || color === null)
             color = "white";

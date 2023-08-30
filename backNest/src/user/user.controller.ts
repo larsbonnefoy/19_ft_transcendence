@@ -134,7 +134,7 @@ export class UserController {
 
     console.log("changing username of %s to %s", sessionId, newUsername);
     const current_user = await this.userService.findOne(sessionId);
-    if (current_user == null) {
+    if (current_user === null) {
       res.status(409).json({"error":`no user with ${sessionId} as login42`});
       return ;
     }
@@ -143,10 +143,17 @@ export class UserController {
       return ;
     }
     const check_base = await this.userService.findUsername(newUsername);
-    if (check_base != null) {
+    if (check_base !== null) {
       res.status(409).json({"error":`username ${newUsername} already taken`});
       return ;
     }
+	if (newUsername !== sessionId) {
+		const check_logins = await this.userService.findOne(newUsername);
+		if (check_logins !== null) {
+			res.status(409).json({"error":`username ${newUsername} is someone's login`});
+			return ;
+		}
+	}
     await this.userService.change_username(current_user.login42, newUsername);
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }

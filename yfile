@@ -3,7 +3,6 @@ TODOS:
 	- chat?
 	- achievement flawless
 	- ingame powerup ?
-	- 
 
 
 My todo:
@@ -13,6 +12,7 @@ My todo:
 			- MAKEUP ARTIST: changed profile picture			(id 4)
 			- FLAWLESS: won a game without conceding any point	(id 5)
 			- YOU AND ME: made your first friend				(id 6)
+			+ add achievements related to chat
 - id in user?
 
 
@@ -60,6 +60,7 @@ my done:
 - set status using socket io (what charlie boy talked about)
 
 
+ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 
 nest.js for backend
 				https://docs.nestjs.com/
