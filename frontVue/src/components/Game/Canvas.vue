@@ -86,8 +86,9 @@ function init() {
         //     isPlayer = true;
         if (player0Login.value === "Player1")
             player0Login.value = response.player0;
-        if (player1Login.value === "Player2")
+        if (player1Login.value === "Player2" || player1Login.value === "") {
             player1Login.value = response.player1;
+        }
         ctx.fillStyle = backgroundColor;
         
         let tmpBg: string | null = localStorage.getItem('backGround');
@@ -227,18 +228,14 @@ onUnmounted(async () => {
             </template>
 		</div>
         <div class="col-8" style="max-height: 90vh; max-width: 90vw;">
-            <div class="text-center m-2">
+            <div class="text-center m-4">
                 <button type="button" class="btn btn-danger" @click="leaveRoom">Leave room</button>
             </div>
             <div id="canvas-container">
-                <canvas id="gameCanvas" class="m-5"></canvas>
+                {{ player1Connected }}
+                {{ player1Login }}
+                <canvas id="gameCanvas"></canvas>
                 <p class="p-0 m-0" style="text-align: center;"> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
-                <i class="icon__signal-strength signal-3">
-                    <span class="bar-1"></span>
-                    <span class="bar-2"></span>
-                    <span class="bar-3"></span>
-                    <span class="bar-4"></span>
-                </i>
             </div>
         </div>
         <div class="col-2" style="display:grid; place-items: center;">
