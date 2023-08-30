@@ -1,4 +1,4 @@
-curl -X POST -H "token: $token" -d "roomId=testroom&userId=hdelmas&message=testmessage" localhost:3000/chat/message 
+curl -X POST -H "token: $token" -d "roomId=testroom&message=testmessage" localhost:3000/chat/message 
 curl -H "token: $token" localhost:3000/chat/all
 curl -X POST -H "token: $token" -d "id=testroom" localhost:3000/chat/create
 curl -X POST -H "token: $token" -d "id=testroom" localhost:3000/chat/delete

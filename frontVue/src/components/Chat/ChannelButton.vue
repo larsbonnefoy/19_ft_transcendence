@@ -5,17 +5,26 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, defineProps  } from 'vue';
+import { useChatStore, useChannelStore} from '@/stores/chat';
+import { Channel } from '@/types';
+
+const chat = useChatStore();
+const channelStore = useChannelStore();
 const emit = defineEmits();
+
 // Props
  const { channel } = defineProps({
   channel: Object
 });
 
 // Methods
-const selectChannel = () => {
+const selectChannel = async () => {
   console.log(`Selected: ${channel.id}`);
-  emit('channel-selected',  channel.id);
+  const newChannel: Channel = chat.getChannels.find((it: Channel) => {return (it.id === channel.id)})  
+  console.log(newChannel);
+  await channelStore.setChannel(newChannel);
+  console.log("done");
+  // emit('channel-selected',  channel.id);
 };
 </script>
 

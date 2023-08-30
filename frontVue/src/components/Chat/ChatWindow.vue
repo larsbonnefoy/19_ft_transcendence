@@ -103,14 +103,13 @@ function handleOpenProfile(user: string) {
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
+    <div id="ChatWindow">{{selectedChannel}}</div>
     <MessageBox 
-      :messages="messages"
       :user="user"
       class="chat-messages" 
       @updated="autoScroll" 
       @open-profile="handleOpenProfile"
     />
-    <div id="ChatWindow">{{selectedChannel}}</div>
     <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
     <div class="chat-input-container">
       <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="send message"/>

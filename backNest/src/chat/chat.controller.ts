@@ -78,19 +78,19 @@ export class ChatController {
 
     @UseGuards(AuthGuard)
     @Get('room:roomId')
-    async getMessages(@Request() req: any, @Param() params: any, @Res() res: any)
+    async getMessages(@Request() req: any, @Param() params: any, @Res({ passthrough: true }) res: any)
     {
     
         const roomId: string = params.roomId.slice(1);
 		const user : User = await this.userService.findOne(req.user);
 		if (!user)
 		{
-           await res.status(409).json({"error": "unknown user"}).send();
+            res.status(409).json({"error": "unknown user"}).send();
             return;
 		}
         else if (await this.chatService.isBan(roomId, user))
         {
-           await res.status(403).json({"error":"Forbidden"}).send();
+            res.status(403).json({"error":"Forbidden"}).send();
             return;
         }
         else if (await this.chatService.isAdmin(roomId, user) 
@@ -102,9 +102,7 @@ export class ChatController {
             // console.log((await this.chatService.getMessagesByRoom(roomId)));
             const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
             if (messages)
-            	await res.status(200).json(messages).send();
-            else
-            	await res.status(200).json("").send();
+            	 res.status(200).json(messages).send();
             return;
         }
         else

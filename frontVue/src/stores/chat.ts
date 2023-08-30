@@ -4,6 +4,45 @@ import {type ChatInfo, type Channel, type Messages} from '../types'
 import StatusVue from '@/components/ProfileDisplay/Status.vue'
 
 
+export const useChannelStore = defineStore('channel', {
+    state: () => ({
+        channel: null as Channel | null
+    }),
+    getter: {
+        getId: (state) => state.channel?.id,
+        getMessages: (state) => state.channel?.messages,
+        getChatters: (state) => state.channel?.chatters,
+        getAdmins: (state) => state.channel?.admins,
+        getBans: (state) => state.channel?.bans,
+        getMutes: (state) => state.channel?.mutes,
+        getOwner: (state) => state.channel?.owner,
+        getIsPrivate: (state) => state.channel?.isPrivate,
+    },
+    actions: {
+       async setChannel(newChannel: Channel)
+       {
+            this.channel = newChannel;
+            try
+            {
+                const messages: any = await axios.get(`http://localhost:3000/chat/room`, 
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                this.channel.messages = messages.data;
+                console.log("setChannel: ")
+                console.log(messages[0])
+                return messages;
+            }
+            catch (error)
+            {
+                return (error);
+            }
+       } 
+    }
+})
 export const useChatStore = defineStore('chat', {
     state: () => ({
         // for data that is not yet loaded
