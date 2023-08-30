@@ -33,6 +33,7 @@ const key_s = 83;
 const key_w = 87;
 const key_up = 38;
 const key_down = 40;
+const space = 32;
 let player0Login = ref("Player1");
 let player1Login= ref("Player2");
 let lastLatencyUpdate = new Date().getTime();
@@ -192,6 +193,10 @@ function redrawAll() {
     }
     if (key === key_down) {
         socket.emit("updatePaddle", {dir: 1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+    }
+    //TODO DELETE 
+    if (key === space ) {
+        socket.emit("win", {roomIndex: roomIndex});
     }
     socket.emit('display', roomIndex);
     // socket.emit('events', "test");

@@ -52,11 +52,19 @@ export class MatchGateway {
     return data;
   }
   
+  //TODO DELETE 
+  @SubscribeMessage('win')
+  async winGame(@MessageBody() data: {roomIndex: number}) {
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+		return ;
+	  games[data.roomIndex].score0 = 9;
+  }
+
   @SubscribeMessage('leftPaddle')
   async computeLeftPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
 	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
 		return ;
-	games[data.roomIndex].updateLeftPaddle(data.dir);
+	  games[data.roomIndex].updateLeftPaddle(data.dir);
   }
 
   @SubscribeMessage('rightPaddle')
