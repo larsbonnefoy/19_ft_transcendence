@@ -51,6 +51,17 @@ async function addFriend() {
     }
 }
 
+async function unsendFriendRequest() {
+    try {
+        await store.unsendFriendRequest(props.pendingUser.username);
+        sendOutReq.value = false;
+    }
+    catch (error){
+        location.reload();
+        console.log(error)
+    }
+}
+
 async function removeFriend() {
     try {
         await store.removeFriend(props.pendingUser.username);
@@ -91,7 +102,7 @@ async function declineFriendRequest() {
             <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
         </div>
         <div v-else-if="isPendingSend">
-            <button type="button" class="btn btn-outline-warning mx-3"> Pending </button> <!-- Instead of pending we can display unset -->
+            <button type="button" class="btn btn-outline-warning mx-3" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
         </div>
         <div v-else>
             <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>

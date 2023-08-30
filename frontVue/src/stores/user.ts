@@ -127,6 +127,9 @@ export const useUserStore = defineStore('user', {
         async addFriend(newFriend: string) {
             await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
+        async unsendFriendRequest(newFriend: string) {
+            await axios.get(`http://localhost:3000/user/remove_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+        },
         async acceptFriendRequest(newFriend: string) {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
