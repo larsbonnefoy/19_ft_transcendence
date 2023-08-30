@@ -1,18 +1,12 @@
 TODOS:
 	- sql injections
 	- chat?
-	- achievement flawless
 	- ingame powerup ?
-	- 
 
 
 My todo:
 - achievements
-			- 1 10 100 games played 							(id 0, 1, 2)
-			- INCOGNITO: changed username						(id 3)
-			- MAKEUP ARTIST: changed profile picture			(id 4)
-			- FLAWLESS: won a game without conceding any point	(id 5)
-			- YOU AND ME: made your first friend				(id 6)
+			+ add achievements related to chat
 - id in user?
 
 
@@ -58,8 +52,15 @@ my done:
 - change username takes token
 - set friend requests in database? so that you can only be friends if request is accepted
 - set status using socket io (what charlie boy talked about)
+- game + matchmaking + watchparty + challenge friend
+- achievements
+			- 1 10 100 games played 							(id 0, 1, 2)
+			- INCOGNITO: changed username						(id 3)  => & 1
+			- MAKEUP ARTIST: changed profile picture			(id 4)  => & 2
+			- FLAWLESS: won a game without conceding any point	(id 5)  => & 4
+			- YOU AND ME: made your first friend				(id 6)  => & 8
 
-
+ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 
 nest.js for backend
 				https://docs.nestjs.com/

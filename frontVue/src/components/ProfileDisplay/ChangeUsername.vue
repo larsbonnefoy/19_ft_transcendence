@@ -27,6 +27,7 @@ let submit = (async () => {
             router.push({ name: 'profile', params: { username: username.value } })//pt un pb avec le reload ici
             changeSuccess.value = true;
             textDisplay.value = "Username Changed!"
+			store.fetchUser();
         }
         catch (error:any) {
             changeSuccess.value = false;
