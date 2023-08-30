@@ -218,9 +218,19 @@ export class UserController {
     const friendusername: string = param.username.slice(1);
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
+    console.log("In accept_request %s accepts %s friend request", user_1.username, friendusername);
     if (user_1 == null || user_2 == null) {
       res.status(409).json({"error":`no user with such username`});
       return ;
+    }
+    /* if user_1 and user_2 have send requests to each other, one can accept, have to check for second one if already friends to avoid double friends */
+    /*  atm throws error and forces reload on client where error occured */
+    for (let friend of user_1.friends) {
+      if (friend == user_2.login42) {
+        res.status(409).json({"error":"c'est déjà ton pote boloss"});
+        await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
+        return ;
+      }
     }
     console.log("%s accepts %s friend request", user_1.username, friendusername);
     if (user_1.username == friendusername) {

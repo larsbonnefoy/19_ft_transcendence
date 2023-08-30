@@ -131,6 +131,7 @@ export const useUserStore = defineStore('user', {
             const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
             const res = await axios.get(`http://localhost:3000/user/accept_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            console.log(res);
             if (this.user != null) {
                 this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
             }

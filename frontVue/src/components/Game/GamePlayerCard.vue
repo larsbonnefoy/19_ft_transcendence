@@ -79,7 +79,7 @@ img {
 }
 
 .textDisplay {
-    font-size: 1.3em;
+    font-size: 1.5vw;
     text-align: center;
 }
 </style>
