@@ -16,7 +16,7 @@ const games = ref();
 const login = ref("");
 async function getGames() {
     try {
-        const resHistory = await axios.get(`http://localhost:3000/match/history:${username.value}`)
+        const resHistory = await axios.get(`http://localhost:3000/match/history:${username.value}`);
         succesReqHistory.value = true;
         games.value = resHistory.data;
 
@@ -27,7 +27,6 @@ async function getGames() {
         console.log(error.message);
     }
 }
-await getGames();
 
 /*
 socket.on('endGame', async () => {
@@ -43,7 +42,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5">Games </h2>
+    <h2 style="text-align: center; " class="m-5">Game history </h2>
     <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
         <template v-for="(game, index) in games.slice().reverse()" :key="index">
             <Game :game-prop="game" :login-prop="login" :username-prop="username"> </Game>

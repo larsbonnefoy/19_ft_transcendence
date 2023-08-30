@@ -2,7 +2,7 @@
 import Canvas from '@/components/Game/Canvas.vue';
 import Actions from '@/components/Game/Actions.vue'
 import GameHistory from '@/components/GameHistory/GameHistory.vue';
-import {ref} from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
 import {useRoute} from 'vue-router';
@@ -12,6 +12,7 @@ const route = useRoute();
 
 const displayGame = ref(false);
 const playGame = ref(GameType.PLAYER);
+let windowWidth = ref(window.innerWidth);
 
 // console.log(route.path);
 if (route.path === "/game/challenge") {
@@ -43,6 +44,18 @@ socket.on('endGame', (roomIndex) => {
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
 });
 
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
+
+onMounted(async () => {
+    window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(async () => {
+    window.removeEventListener('resize', handleResize);
+});
+
 </script>
 
 <template>
@@ -50,7 +63,7 @@ socket.on('endGame', (roomIndex) => {
 		<Canvas :play-game="playGame" @close-canvas="closeCanvas()"> </Canvas> <!-- init game or watch game-->
 	</div>
 	<div v-else>
-		<div class="row" style="max-width: 100vw;">
+		<div v-if="windowWidth > 800" class="row" style="max-width: 100vw;">
 			<div v-if="store.getUserName != undefined" class="col-6">
 				<GameHistory
 					:username-prop="store.getUserName"> 
@@ -58,6 +71,14 @@ socket.on('endGame', (roomIndex) => {
     		</div>
 			<div class="col-6">
 				<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
+			</div>
+		</div>
+		<div v-else class="row">
+			<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
+			<div v-if="store.getUserName != undefined">
+				<GameHistory
+					:username-prop="store.getUserName"> 
+				</GameHistory>
 			</div>
 		</div>
 	</div>

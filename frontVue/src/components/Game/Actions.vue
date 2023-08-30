@@ -69,7 +69,7 @@ function playGame() {
     </div>
 
     <!-- Custom visual elements-->
-    <div  style="max-width: 70%; max-height: 30vh; margin:auto;">
+    <div  style="max-width: 70%; margin:auto;">
         <CustomDisplay> </CustomDisplay>
     </div>
    

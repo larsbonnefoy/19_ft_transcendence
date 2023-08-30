@@ -24,7 +24,7 @@ export class MatchController {
     console.log("got request for Match history of player %s", username);
     const user = await this.userService.findUsername(username);
     if (user == null) {
-      res.status(409).json({"error":"no player with that username"});
+      res.status(404).json({"error":"no player with that username"});
       return ;
     }
     const messages = await this.matchService.findAll();
@@ -35,7 +35,7 @@ export class MatchController {
 		}
 	}
 	if (response.length == 0)
-    res.status(409).json({"No match history for player":username});
+    res.status(404).json({"No match history for player":username});
 	else
 		res.json(response);
   }
@@ -54,7 +54,7 @@ export class MatchController {
     const p1 = await this.userService.findUsername(query.player1);
     const p2 = await this.userService.findUsername(query.player2);
     if (p1 == null || p2 == null) {
-      res.status(409).json({"error":"username not found in database"});
+      res.status(404).json({"error":"username not found in database"});
       return ;
     }
     nMatch.player1 = p1.login42;
@@ -95,7 +95,7 @@ export class MatchController {
     console.log("match/del request with id %d", id);
     const check_base = await this.matchService.findOne(id);
     if (check_base == null) {
-      res.status(409).json({"Match":"doesn't exist"});
+      res.status(404).json({"Match":"doesn't exist"});
       return ;
     }
     await this.matchService.remove(id);
