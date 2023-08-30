@@ -7,7 +7,7 @@ const members:any = ref([]);
 
 onMounted(async () => {
     try {
-      const res = await axios.get("http://localhost:3000/user/get");
+      const res = await axios.get(`http://${import.meta.env.VITE_BACK}/user/get`);
       members.value = res.data;
       console.log(res.data);
     }

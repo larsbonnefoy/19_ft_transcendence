@@ -4,7 +4,7 @@ import { useUserStore } from './stores/user';
 import { useToast } from "vue-toastification";
 import axios from 'axios';
 
-const URL = "http://localhost:3000"; //TODO set to env variable here
+const URL = `http://${import.meta.env.VITE_BACK}`;
 
 export const socket = io(URL);
 

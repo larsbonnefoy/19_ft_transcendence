@@ -24,14 +24,14 @@ try
 		throw "node code in query";
 	code = urlParams.get('code');
 
-	const response : Response = await fetch(`http://localhost:3000/api42/getToken?code=${code}`);
+	const response : Response = await fetch(`http://${import.meta.env.VITE_BACK}/api42/getToken?code=${code}`);
 	if (response.status != 200 && response.status != 201)
 		throw "getToken failed";
 
 	const jwtToken : string = (await response.json())['jwt_token'];
 	localStorage.setItem('jwt_token', jwtToken);
  
-	const res = await axios.post('http://localhost:3000/twofa/status/', {token: localStorage.getItem('jwt_token')});
+	const res = await axios.post(`http://${import.meta.env.VITE_BACK}/twofa/status/`, {token: localStorage.getItem('jwt_token')});
 	if (res.data == true) {
 		has2fa.value = true;
 	}
@@ -58,7 +58,7 @@ function isDigit(e: any) {
 
 let submit = (async () => {
         try {
-            const data = await axios.post('http://localhost:3000/twofa/login/', {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
+            const data = await axios.post(`http://${import.meta.env.VITE_BACK}/twofa/login/`, {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
             console.log(data.data.is_valid);
             console.log(data.data.jwt_token);
             if (data.data.is_valid) {

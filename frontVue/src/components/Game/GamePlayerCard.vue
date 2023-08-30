@@ -18,9 +18,9 @@ let opponentUsername: string;
 async function getUserInfo() {
     if (props.login42 != store.getLogin42) {
         try {
-            const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
+            const resUsrName = await axios.get(`http://${import.meta.env.VITE_BACK}/user/UserFromLog:${props.login42}`)
             opponentUsername = resUsrName.data.username;
-            const res = await axios.get(`http://localhost:3000/user/one:${opponentUsername}`);
+            const res = await axios.get(`http://${import.meta.env.VITE_BACK}/user/one:${opponentUsername}`);
             if (!res.data) {
                 foundUser.value = false;
             }
