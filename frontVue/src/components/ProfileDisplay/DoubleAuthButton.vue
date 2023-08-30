@@ -30,7 +30,7 @@ function isDigit(e: any) {
 /* check if code is valid, if yes, enable 2fa*/
 let submit = (async () => {
         try {
-            const data = await axios.post('http://localhost:3000/twofa/verify/', {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
+            const data = await axios.post(`http://${import.meta.env.VITE_BACK}/twofa/verify/`, {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
             if (data.data == true) {
                 success2fa.value = true;
                 defaultState.value = true;
@@ -50,7 +50,7 @@ let submit = (async () => {
 async function toggle() {
     if (TwoFactor.value == false) {
         try {        
-            const data = await axios.post('http://localhost:3000/twofa/create/', {token: localStorage.getItem('jwt_token')});
+            const data = await axios.post(`http://${import.meta.env.VITE_BACK}/twofa/create/`, {token: localStorage.getItem('jwt_token')});
             QrCode.value = data.data;
         }
         catch (error) { 

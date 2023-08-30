@@ -16,11 +16,11 @@ let pendingUserName : string = "";
 
 async function getPending() {
     try {
-        const resUsrName = await axios.get(`http://localhost:3000/user/UserFromLog:${props.login42}`)
+        const resUsrName = await axios.get(`http://${import.meta.env.VITE_BACK}/user/UserFromLog:${props.login42}`)
         pendingUserName = resUsrName.data.username;
 		if (pendingUser)
 			URL.revokeObjectURL(pendingUser.photo);
-        const resUsr = await axios.get(`http://localhost:3000/user/one:${pendingUserName}`)
+        const resUsr = await axios.get(`http://${import.meta.env.VITE_BACK}/user/one:${pendingUserName}`)
         pendingUser = resUsr.data;
         if (pendingUser)
 			pendingUser.photo = await store.getAvatar(pendingUser.photo);

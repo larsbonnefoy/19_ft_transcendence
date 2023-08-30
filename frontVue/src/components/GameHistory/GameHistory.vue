@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import {toRef, ref, onMounted, reactive} from 'vue'
 import axios from 'axios';
-import {type match} from '../../types'
 import Game from './Game.vue';
-import { socket } from '../../socket';
 
 
 const props = defineProps<{
@@ -19,11 +17,11 @@ const login = ref("");
 async function getGames() {
     console.log("Get Games for user " + props.usernameProp)
     try {
-        const resHistory = await axios.get(`http://localhost:3000/match/history:${props.usernameProp}`)
+        const resHistory = await axios.get(`http://${import.meta.env.VITE_BACK}/match/history:${props.usernameProp}`)
         succesReqHistory.value = true;
         games.value = resHistory.data;
 
-        const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${props.usernameProp}`)
+        const resLogin = await axios.get(`http://${import.meta.env.VITE_BACK}/user/LogFromUser:${props.usernameProp}`)
         login.value = resLogin.data.login42;
     }
     catch (error : any) {

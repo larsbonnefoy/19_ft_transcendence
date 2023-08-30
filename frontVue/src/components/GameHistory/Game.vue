@@ -29,7 +29,7 @@ async function setUserOpponent() {
         opponent = { login42:props.gameProp.player1, score:props.gameProp.score1, elo:props.gameProp.elo1};
     }
     try {
-        let resUsername = await axios.get(`http://localhost:3000/user/UserFromLog:${opponent.login42}`)
+        let resUsername = await axios.get(`http://${import.meta.env.VITE_BACK}/user/UserFromLog:${opponent.login42}`)
         opponentUsername = resUsername.data.username;
     }
     catch (error) {

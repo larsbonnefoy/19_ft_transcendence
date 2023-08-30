@@ -30,9 +30,12 @@ list of .env content:
 		ENC_SALT= 'random bytes'
 		ENC_ALG='aes-256-ctr'
 
+		#NETWORK 
+		LOCAL_IP = "10.2.7.2"
+
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
-		VITE_BACKEND="http://localhost:3000/" 
+		VITE_BACK="local_ip:3000" or "localhost:3000" -> will only work locally
 
 -backNest/postgres/.env
 		#Postgres

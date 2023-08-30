@@ -4,7 +4,7 @@ import { useUserStore } from './stores/user';
 import { useToast } from "vue-toastification";
 import axios from 'axios';
 
-const URL = "http://localhost:3000"; //TODO set to env variable here
+const URL = `http://${import.meta.env.VITE_BACK}`;
 
 export const socket = io(URL);
 
@@ -18,7 +18,7 @@ socket.on("disconnect", async () => {
     console.log("Disconnected from server????");
     // const store = useUserStore();
     // await store.setStatus("offline");
-    //const res = await axios.get(`http://localhost:3000/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
+    //const res = await axios.get(`http://${import.meta.env.VITE_BACK}/user/setStatus:offline`, { headers: {token: localStorage.getItem('jwt_token')} });
     //console.log("res disco here" + res);
 });
 
