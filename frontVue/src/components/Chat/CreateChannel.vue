@@ -157,7 +157,7 @@ const closeModal = () => {
         </div>
         <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for group chat -->
         <div class="input-container">
-          <input v-model="password" placeholder="Set a password (optional)" />
+          <input v-model="password" type="password" placeholder="Set a password (optional)" />
         </div>
       </div>
   
