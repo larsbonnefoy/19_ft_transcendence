@@ -11,9 +11,13 @@ import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
+let userServiceForMethod: UserService;
+
 @Controller("user")
 export class UserController {
-  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService) {}
+  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService) {
+	userServiceForMethod = userService;
+  }
 
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
@@ -493,7 +497,37 @@ export class UserController {
 		});
 		await this.userService.change_avatar(req.user, file.filename);
 		if (!(user.achievements & 2))
-			await this.userService.addAchievement(req.user, +user.achievements + 2);
+		await this.userService.addAchievement(req.user, +user.achievements + 2);
+  }
+
+  async compareList(err: NodeJS.ErrnoException, files: string[]) {
+	if (err !== null) {
+		console.log(err);
+		return ;
+	}
+	const users = await userServiceForMethod.findAll();
+	for (let file of files) {
+		let isUsed = false;
+		for (let user of users) {
+			if (user.photo === file) {
+				isUsed = true;
+			}
+		}
+		if (!isUsed) {
+			fs.unlink("uploads/" + file, (err) => {
+				if (err) 
+					console.log(err);
+				else
+					console.log("found and destroyed unused file in uploads: " + file);
+			});
+		}
+	}
+  }
+
+  @Get('checkUnusedUploads')
+  delUnusedUploads() {
+	console.log("checking uploads to delete unused files");
+	fs.readdir('uploads', this.compareList);
   }
 
   @Get('avatar:imgpath')

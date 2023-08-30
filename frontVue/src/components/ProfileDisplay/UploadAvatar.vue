@@ -43,6 +43,7 @@ let submitFile = (async () => {
 		// console.log(error);
 		changeSuccess.value = false;
 		textDisplay.value = "Avatar update failed (check size)";
+		fetch(`http://localhost:3000/user/checkUnusedUploads`);
         // console.log("submit file failed");
     }
 	image = null;
