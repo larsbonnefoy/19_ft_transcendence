@@ -35,6 +35,7 @@ const key_up = 38;
 const key_down = 40;
 let player0Login = ref("Player1");
 let player1Login= ref("Player2");
+let lastLatencyUpdate = new Date().getTime();
 
 
 let intervalStop : number = -1;
@@ -161,7 +162,10 @@ function init() {
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
         
         if (response.state === 1) { // === states.ONGOING from backnest
-            diff.value = new Date().getTime() - response.lastTimeStamp;
+            if (new Date().getTime() - lastLatencyUpdate > 2000) {
+                diff.value = new Date().getTime() - response.lastTimeStamp;
+                lastLatencyUpdate = new Date().getTime();
+            }
         }
     });
 	intervalStop = setInterval(redrawAll, 20);
@@ -232,8 +236,6 @@ onUnmounted(async () => {
                 <button type="button" class="btn btn-danger" @click="leaveRoom">Leave room</button>
             </div>
             <div id="canvas-container">
-                {{ player1Connected }}
-                {{ player1Login }}
                 <canvas id="gameCanvas"></canvas>
                 <p class="p-0 m-0" style="text-align: center;"> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
             </div>
@@ -264,128 +266,5 @@ onUnmounted(async () => {
     width: 80%;
 	height: 80%;
 }
-*,*::before,*::after {box-sizing:border-box;}
 
-i {
-	margin: 60px;
-	border-radius: 4px;
-	//box-shadow: 0 0 0 2px black;
-}
-i:hover span {
-	animation-name: signal-intro;
-	animation-play-state: running;
-}
-
-/* above for pen only */
-$icon-width: auto;
-$icon-height: 35px;
-$icon-padding: 4px;
-$bar-width: 6px;
-$bar-spacing: 2px;
-$bar-radius: 2px;
-$bar-color: #00cc00;
-$bar-start-opacity: 0.2;
-$bars-show-all: true; // false shows little nubs
-$bar-start-height: 2px; // nub height
-$bars-use-grow-anim: true; // false uses fade anim
-
-.icon__signal-strength {
-	display: inline-flex;
-	align-items: flex-end;
-	justify-content: flex-end;
-	width: $icon-width;
-	height: $icon-height;
-	padding: $icon-padding;
-}
-.icon__signal-strength span {
-	display: inline-block;
-	width: $bar-width;
-	//height: $bar-start-height;
-	margin-left: $bar-spacing;
-	transform-origin: 100% 100%;
-	background-color: $bar-color;
-	border-radius: $bar-radius;
-	
-	animation-iteration-count: 1;
-	animation-timing-function: cubic-bezier(.17,.67,.42,1.3);
-	animation-fill-mode: both;
-	animation-play-state: paused;
-}
-
-.icon__signal-strength {
-	.bar-1 {
-		height: 25%;
-		animation-duration: 0.3s;
-		animation-delay:0.1s;
-	}
-	.bar-2 {
-		height: 50%;		
-		animation-duration: 0.25s;
-		animation-delay:0.2s;
-	}
-	.bar-3 {
-		height: 75%;		
-		animation-duration: 0.2s;
-		animation-delay:0.3s;
-	}
-	.bar-4 {
-		height: 100%;
-		animation-duration: 0.15s;
-		animation-delay:0.4s;
-	}
-}
-
-.signal-0 {
-	.bar-1,
-	.bar-2,
-	.bar-3,
-	.bar-4 {
-		opacity: $bar-start-opacity;
-		
-		@if $bars-show-all == false {
-			height: $bar-start-height;			
-		}
-	}
-}
-.signal-1 {
-	.bar-2,
-	.bar-3,
-	.bar-4 {
-		opacity: $bar-start-opacity;
-		
-		@if $bars-show-all == false {
-			height: $bar-start-height;			
-		}
-	}
-}
-.signal-2 {
-	.bar-3,
-	.bar-4 {
-		opacity: $bar-start-opacity;
-		
-		@if $bars-show-all == false {
-			height: $bar-start-height;			
-		}
-	}
-}
-.signal-3 {
-	.bar-4 {
-		opacity: $bar-start-opacity;
-		
-		@if $bars-show-all == false {
-			height: $bar-start-height;			
-		}
-	}
-}
-
-// -- component load animation
-@keyframes signal-intro {
-	from {
-		opacity: $bar-start-opacity;
-		
-		@if $bars-use-grow-anim {
-			height: $bar-start-height;			
-		}
-	}
-}
 </style>
