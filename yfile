@@ -8,7 +8,6 @@ My todo:
 - achievements
 			+ add achievements related to chat
 - id in user?
-- reactive screen everywhere
 - check cancel pending of lars
 - update achievements when changename, like for games of lars
 
@@ -60,6 +59,7 @@ my done:
 - set friend requests in database? so that you can only be friends if request is accepted
 - set status using socket io (what charlie boy talked about)
 - game + matchmaking + watchparty + challenge friend
+- reactive screen everywhere
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1

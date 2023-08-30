@@ -4,6 +4,7 @@ import {useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user';
 
 import HeaderLink from './HeaderLink.vue';
+import { socket } from '@/socket';
 const route = useRoute();
 const router = useRouter();
 const store = useUserStore();
@@ -22,6 +23,8 @@ const displayLinks = computed(() => {
 const logout = async () => {
     // await store.setStatus("offline");
     localStorage.clear();
+	socket.disconnect();
+	socket.connect();
 }
 
 </script>

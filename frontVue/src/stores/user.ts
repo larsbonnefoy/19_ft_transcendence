@@ -30,8 +30,10 @@ export const useUserStore = defineStore('user', {
 				}
                 const data = await axios.post(`http://${import.meta.env.VITE_BACK}/api42/getLoggedUser/`, {token: localStorage.getItem('jwt_token')});
                 this.user = data.data;
-				if (this.user)
+				if (this.user) {
 					this.user.photo = await this.getAvatar(this.user.photo);
+					this.user.status = "online"; //little trick to be online when you reload your own profile
+				}
 				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
             }
             catch (error) {
