@@ -55,7 +55,7 @@ export interface Messages
 {
     id: number
     time: Date
-    messages: string
+    message: string
     user: UserInfo
     chat: Channel
 }

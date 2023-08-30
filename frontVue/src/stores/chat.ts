@@ -8,7 +8,7 @@ export const useChannelStore = defineStore('channel', {
     state: () => ({
         channel: null as Channel | null
     }),
-    getter: {
+    getters: {
         getId: (state) => state.channel?.id,
         getMessages: (state) => state.channel?.messages,
         getChatters: (state) => state.channel?.chatters,

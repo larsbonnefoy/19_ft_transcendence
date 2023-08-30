@@ -29,13 +29,13 @@ function handleProfileClick(username: string) {
 
 <template>
   <div class="message-box" ref="messageBoxRef">
-    <div v-for="(message,  index) in channel?.getmMessages" :key="index" class="message"
+    <div v-for="(message,  index) in channel?.getMessages" :key="index" class="message"
          :class="{ 'sent-by-me': (message?.user.login42 === me)}">
       <div class="message-user">
-        <ProfileButton :username="message?.user   ? 'You' : message?.user" @open-profile="handleProfileClick"/>
+        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.login42" @open-profile="handleProfileClick"/>
       </div>
       <div class="message-content">
-        {{ message?.messages }}
+        {{ message.message }}
       </div>
     </div>
   </div>
