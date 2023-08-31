@@ -18,7 +18,7 @@ async function validAccess(): Promise<boolean> {
   let jwt_token = localStorage.getItem("jwt_token");
   if (jwt_token) {
     try {
-      const canAccess = await axios.post(`http://${import.meta.env.VITE_BACK}/api42/isAuth`, {token : jwt_token})
+      const canAccess = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/api42/isAuth`, {token : jwt_token})
       return canAccess.data;
     }
     catch {

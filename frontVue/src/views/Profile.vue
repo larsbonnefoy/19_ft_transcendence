@@ -21,7 +21,7 @@ async function getUserInfo() {
 			if (user) {
 			    URL.revokeObjectURL(user.photo); //to release memory
             }
-            const res = await axios.get(`http://${import.meta.env.VITE_BACK}/user/one:${route.params.username}`);
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/one:${route.params.username}`);
             if (!res.data) {
                 foundUser.value = false;
             }

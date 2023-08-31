@@ -17,11 +17,11 @@ const login = ref("");
 async function getGames() {
     console.log("Get Games for user " + props.usernameProp)
     try {
-        const resHistory = await axios.get(`http://${import.meta.env.VITE_BACK}/match/history:${props.usernameProp}`)
+        const resHistory = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/history:${props.usernameProp}`)
         succesReqHistory.value = true;
         games.value = resHistory.data;
 
-        const resLogin = await axios.get(`http://${import.meta.env.VITE_BACK}/user/LogFromUser:${props.usernameProp}`)
+        const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${props.usernameProp}`)
         login.value = resLogin.data.login42;
     }
     catch (error : any) {

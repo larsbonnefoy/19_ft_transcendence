@@ -11,8 +11,8 @@ async function navigateToHome() {
   try {
     if (login.value != "") {
       /* Check if user exists first*/
-      await axios.get(`http://${import.meta.env.VITE_BACK}/user/UserFromLog:${login.value}`)
-      const response : any = await axios.get(`http://${import.meta.env.VITE_BACK}/api42/admin`, { 
+      await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/UserFromLog:${login.value}`)
+      const response : any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/api42/admin`, { 
         params: {
           login42: login.value
         }

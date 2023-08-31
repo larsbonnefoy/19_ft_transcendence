@@ -12,7 +12,7 @@ const emit = defineEmits(['watchGame', 'playGame']);
 let liveGames: any = Array(0);
 async function getOngoingGames() {
     try {
-        const res = await axios.get(`http://${import.meta.env.VITE_BACK}/match/ongoingGames`);
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
         liveGames = res.data;
     }
     catch(error) {

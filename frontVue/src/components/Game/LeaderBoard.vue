@@ -12,7 +12,7 @@ const LeaderBoardExists = ref(false);
 /*TODO function that gets only elo, username & picture, to avoid a query on whole db */
 async function getLeaderBoard() {
     try {
-        const res = await axios.get(`http://${import.meta.env.VITE_BACK}/user/getLeaderBoard`);
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/getLeaderBoard`);
         users.value = res.data.slice().sort((a:LeaderBoardUserInfo, b:LeaderBoardUserInfo) => b.elo*1 - a.elo*1);
 		for (let user of users.value) {
 			user.photo = await store.getAvatar(user.photo);
