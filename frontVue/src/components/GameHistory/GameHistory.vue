@@ -17,11 +17,11 @@ const login = ref("");
 async function getGames() {
     console.log("Get Games for user " + props.usernameProp)
     try {
-        const resHistory = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/history:${props.usernameProp}`)
+        const resHistory = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/history:${props.usernameProp}`);
         succesReqHistory.value = true;
         games.value = resHistory.data;
 
-        const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${props.usernameProp}`)
+        const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${props.usernameProp}`);
         login.value = resLogin.data.login42;
     }
     catch (error : any) {
@@ -36,7 +36,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5">Games </h2>
+    <h2 style="text-align: center; " class="m-5">Game history </h2>
     <div v-if="login.length != 0"> <!-- display only if login has been fetch-->
         <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
             <template v-for="(game, index) in games.slice().reverse()" :key="index">

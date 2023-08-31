@@ -35,10 +35,10 @@ function resetSettings() {
 	drawBall();
 	drawLeftPaddle();
 	drawRightPaddle();
-	document.getElementById("sel1").value = "white";
-	document.getElementById("sel2").value = "white";
-	document.getElementById("sel3").value = "white";
-	document.getElementById("sel4").value = "black";
+	(<HTMLInputElement>document.getElementById("sel1")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel2")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel3")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel4")).value = "black";
 }
 
 
@@ -137,15 +137,15 @@ function init() {
 
 	for (let color of colors) {
 		if (color === localStorage.getItem('ballColor'))
-			document.getElementById("sel1").value = color;
+			(<HTMLInputElement>document.getElementById("sel1")).value = color;
 		if (color === localStorage.getItem('leftPaddleColor'))
-			document.getElementById("sel2").value = color;
+			(<HTMLInputElement>document.getElementById("sel2")).value = color;
 		if (color === localStorage.getItem('rightPaddleColor'))
-			document.getElementById("sel3").value = color;
+			(<HTMLInputElement>document.getElementById("sel3")).value = color;
 	}
 	for (let back of backGrounds) {
 		if (back === localStorage.getItem('backGround'))
-			document.getElementById("sel4").value = back;
+			(<HTMLInputElement>document.getElementById("sel4")).value = back;
 	}
 }
 

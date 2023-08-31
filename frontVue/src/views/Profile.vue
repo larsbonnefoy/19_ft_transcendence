@@ -13,6 +13,7 @@ const store = useUserStore();
 const route = useRoute();
 let user: UserInfo;
 const foundUser = ref(true);
+let windowWidth = ref(window.innerWidth);
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
@@ -47,15 +48,24 @@ await getUserInfo();
 
 watch(() => route.params.username, getUserInfo);
 
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
+
+onMounted(async () => {
+    window.addEventListener('resize', handleResize);
+});
+
 onUnmounted(async () => {
     URL.revokeObjectURL(user.photo);
+    window.removeEventListener('resize', handleResize);
 });
 </script>
 
 <template>
-<template v-if="foundUser" class="col-2">
+<template v-if="foundUser">
     <div class="container-fluid">
-        <div class="row">
+        <div v-if="windowWidth > 1400" class="row">
             <div class="col-4">
                 <GameHistory 
                     :username-prop="user.username"
@@ -68,6 +78,33 @@ onUnmounted(async () => {
             <div class="col-4 p-0">
                 <AchievementsList :user-prop="user"> </AchievementsList>
             </div>
+        </div>
+        <div v-else-if="windowWidth > 800" class="row">
+            <div class="col-6">
+                <GameHistory 
+                    :username-prop="user.username"
+                >
+                </GameHistory>
+				<AchievementsList :user-prop="user"> </AchievementsList>
+            </div>
+            <div class="col-6 p-0">
+                <ProfileCard :user="user"> </ProfileCard>
+            </div>
+        </div>
+        <div v-else class="row">
+			<div class="row">
+				<ProfileCard :user="user"> </ProfileCard>
+			</div>
+			<div class="row">
+				<div class="col-12"> <!-- seems stupid but it works -->
+					<GameHistory :username-prop="user.username"></GameHistory>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<AchievementsList :user-prop="user"> </AchievementsList>
+				</div>
+			</div>
         </div>
     </div>
 </template>

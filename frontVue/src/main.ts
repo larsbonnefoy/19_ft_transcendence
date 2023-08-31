@@ -6,7 +6,7 @@ import '../node_modules/bootstrap/dist/js/bootstrap.bundle'
 import '../node_modules/js-cookie'
 import piniaPluginPersistedState from "pinia-plugin-persistedstate"
 
-import Toast from "vue-toastification";
+import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 import router from '@/router/index'
@@ -18,7 +18,8 @@ app.use(pinia);
 app.use(Toast, {
 	transition: "Vue-Toastification__bounce",
 	maxToasts: 20,
-	newestOnTop: true
+	newestOnTop: true,
+	position: POSITION.BOTTOM_RIGHT
 });
 app.use(router);
 

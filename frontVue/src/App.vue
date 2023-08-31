@@ -16,15 +16,15 @@ async function leavingApp() {
 //   }
 }
 
-socket.on('notification', (origin: string) => {
+socket.on('notification', (origin: any) => {
     function clicked() {
-        console.log("toast clicked, send receipt notif to " + origin);
-        socket.emit("acceptChallenge", {target: origin, token: localStorage.getItem('jwt_token')});
+        console.log("toast clicked, send receipt notif to " + origin.login42);
+        socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
         router.push('/game/challenge');
         // router.push({ name: 'game', params: { challenge: 'challenge' } });
     };
     const toast = useToast();
-	toast.warning(origin, {
+	toast.warning(origin.username + " wants to play !\nClick to join game", {
 		timeout: 5000,
         onClick: clicked,
 		closeOnClick: true,
