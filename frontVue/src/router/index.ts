@@ -75,7 +75,7 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
-        console.log("to " + to.path);
+        // console.log("to " + to.path);
         if (to.path !== "/game/challenge")
           return 'game';
       }
