@@ -35,10 +35,10 @@ function resetSettings() {
 	drawBall();
 	drawLeftPaddle();
 	drawRightPaddle();
-	document.getElementById("sel1").value = "white";
-	document.getElementById("sel2").value = "white";
-	document.getElementById("sel3").value = "white";
-	document.getElementById("sel4").value = "black";
+	(<HTMLInputElement>document.getElementById("sel1")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel2")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel3")).value = "white";
+	(<HTMLInputElement>document.getElementById("sel4")).value = "black";
 }
 
 
