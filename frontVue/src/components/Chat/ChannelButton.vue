@@ -1,20 +1,31 @@
 <template>
   <button class="channel-button" @click="selectChannel">
-    {{ channel.name }}
+    {{ channel.id }}
   </button>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { useChatStore, useChannelStore} from '@/stores/chat';
+import { Channel } from '@/types';
+
+const chat = useChatStore();
+const channelStore = useChannelStore();
+const emit = defineEmits();
 
 // Props
-const { channel } = defineProps({
+ const { channel } = defineProps({
   channel: Object
 });
 
 // Methods
-const selectChannel = () => {
-  console.log(`Selected: ${channel.name}`);
+const selectChannel = async () => {
+  console.log(`Selected: ${channel.id}`);
+  const newChannel: Channel = chat.getChannels.find((it: Channel) => {return (it.id === channel.id)})  
+  console.log("new channel " + newChannel);
+  await channelStore.setChannel(newChannel);
+  console.log(channelStore.getMessages);
+  console.log("done");
+  // emit('channel-selected',  channel.id);
 };
 </script>
 

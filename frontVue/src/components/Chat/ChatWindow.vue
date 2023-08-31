@@ -1,20 +1,57 @@
 <script setup lang="ts">
-import { ref, nextTick, defineEmits } from 'vue';
+import {ref, nextTick, watch, FunctionDirective} from 'vue';
 import MessageBox from './MessageBox.vue';
+// import ChannelList from './.vue';
+import axios from 'axios';
+import { useChatStore } from '@/stores/chat';
 
+const chat = useChatStore();
+const props = defineProps({
+  messages: Array,
+  user: Object,
+  selectedChannel: String
+});
+
+  // props: ['selectedChannel'];
+
+
+
+// const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
+//   headers:
+//       {
+//         'token':localStorage.getItem('jwt_token')
+//       }
+// });
 const newMessage = ref("");
-const messages = ref([
-  { id: Date.now() - 2, user: "Alice", content: "Hey there!", sender: 'other' },
-  { id: Date.now() - 1, user: "Bob", content: "How are you?", sender: 'other' }
-]);
+// const selectedChannel = ref(selectedChannel)
+// const me = (await axios.get('http://localhost:3000/user/me/login42', {
+//   headers:
+//       {
+//         'token':localStorage.getItem('jwt_token')
+//       }
+// })).data;
+// let messages = ref(Array.from({length: data.data.length }, (_, i) => ({
+//   id: i+1,
+//   user: data.data[i].user.username,
+//   content : data.data[i].message,
+//   sender: data.data[i].user.login42=== me
+// })));
+
+
+let messages = chat.getChannels?.find(it => {return props.selectedChannel === it.id})?.messages;
+
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
-
+// const channel = ChannelButton.channel.name
+// if (channel)
+//        console.log("yo: " + channel);
+//        console.log("yo: " + ChannelButton.channel.test);
 const emit = defineEmits();
+
 
 const sendMessage = () => {
   if (newMessage.value.trim()) {
-    messages.value.push({ id: Date.now(), user: "You", content: newMessage.value, sender: 'me' });
+    messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     newMessage.value = "";
     nextTick(() => {
       autoScroll();
@@ -33,38 +70,70 @@ const handleUpdate = () => {
     autoScroll();
 };
 
-function handleOpenProfile(username: string) {
-  emit('open-profile', username);
+function getMessage(roomId: string)
+{
+
 }
+
+function handleOpenProfile(user: string) {
+  emit('open-profile', user);
+}
+// async function handleChannel() {
+//   console.log(` test: ${props.selectedChannel}`);
+//   const roomId : string | undefined= props.selectedChannel;
+//   const data : any = await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
+//     headers:
+//         {
+//           'token':localStorage.getItem('jwt_token')
+//         }
+//   });
+//   messages = ref(Array.from({length: data.data.length }, (_, i) => ({
+//     id: i+1,
+//     user: data.data[i].user.username,
+//     content : data.data[i].message,
+//     sender: data.data[i].user.login42 === me
+//   })));
+//   await nextTick();
+// }
+// console.log("BOOOOP" + props.selectedChannel)
+//
+// await watch(async () => await props.selectedChannel, handleChannel);
 </script>
 
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
-    <MessageBox :messages="messages" class="chat-messages" @updated="autoScroll" @open-profile="handleOpenProfile" />
-    <button @click="autoScroll" class="scroll-to-bottom">Scroll to Bottom</button>
+    <div id="ChatWindow">{{selectedChannel}}</div>
+    <MessageBox 
+      :user="user"
+      class="chat-messages" 
+      @updated="autoScroll" 
+      @open-profile="handleOpenProfile"
+    />
     <div class="chat-input-container">
-      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type a message..." />
+      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="send message"/>
       <button @click="sendMessage" class="send-button">Send</button>
     </div>
     <div id="endOfChat" ref="endOfChatRef"></div>
+  </div>
+  <div class=channelHandler>
+
   </div>
 </template>
 
 <style scoped>
 .chat-window {
-    height: 100vh;
-    width: 42%;
-    border-left: 1px solid #dee2e6;
-    padding: 1rem;
+    height: 94vh;
+    padding-right: 2px; /* Reduced padding */
+    border-right: 1px solid #a8abae; 
+    border-left: 1px solid #a8abae;
     display: flex;
     flex-direction: column;
 }
 
 .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem 0;
+  padding: 0.5rem 0; /* Adjusted padding */
+    margin-bottom: 0.5rem;
 }
 
 .scroll-to-bottom {
@@ -84,11 +153,14 @@ function handleOpenProfile(username: string) {
 
 /* Chat Input Container */
 .chat-input-container {
-    padding: 0.5rem;
+    padding: 0.7rem;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     align-items: center; /* Vertically center the items */
     border-radius: 50px; /* Circular edges */
-    background-color: #f7f7f8; /* Slight grey background for contrast */
+    background-color: #505050;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     position: relative; /* To position the send button absolutely */
 }
@@ -96,7 +168,7 @@ function handleOpenProfile(username: string) {
 /* Chat Input (Text field) */
 .chat-input-container input {
     flex: 1;
-    padding: 0.5rem 1rem; /* Increased padding for comfort */
+    padding: 0.5rem; /* Increased padding for comfort */
     padding-right: 3rem; /* Space for the "Send" button */
     font-size: 1rem;
     border: none; /* Remove border */
@@ -107,8 +179,7 @@ function handleOpenProfile(username: string) {
     height: 100%; /* Take full height of the container */
     border-top-right-radius: 0; /* Make the top right edge square */
     border-bottom-right-radius: 0; /* Make the bottom right edge square */
-    border-right: 1px solid #dee2e6; /* Add a right border to visually separate the input from the button */
-
+    color: #ffffff;
 }
 
 .chat-input-container input::placeholder {
@@ -144,6 +215,8 @@ function handleOpenProfile(username: string) {
 .chat-input-container .send-button:active {
     transform: scale(0.97); 
 }
+
+
 
 </style>
   

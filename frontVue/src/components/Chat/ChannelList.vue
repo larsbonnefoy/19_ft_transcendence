@@ -1,51 +1,50 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import {ref, computed} from 'vue';
 import ChannelButton from './ChannelButton.vue';
+import CreateChannel from './CreateChannel.vue';
+import axios from 'axios';
+import { useChatStore } from '@/stores/chat';
 
-const numberOfChannels = 30;
-const channels = ref(Array.from({ length: numberOfChannels }, (_, i) => ({
-  id: i + 1,
-  name: `Channel ${i + 1}`
-})));
+const chat = useChatStore();
+const emit = defineEmits();
+
+
+
+await chat.fetchChannels();
+// console.log("FUNCTION ? "+ chat.getChannels);
+
+
 
 const searchTerm = ref('');
 const showSearchBar = ref(false);
+const showCreateChannel = ref(false);
 
 const toggleSearchBar = () => {
   showSearchBar.value = !showSearchBar.value;
 };
-
-const filteredChannels = computed(() => {
-  const source = currentView.value === 'private' ? privateMessages.value : channels.value;
-  
-  return source.filter(channel => 
-  channel.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-  );
-});
-
-const createChannel = () => {
-  alert('Create new channel functionality goes here.');
-};
-const numberOfPrivateMessages = 10;
-const privateMessages = ref(Array.from({ length: numberOfPrivateMessages }, (_, i) => ({
-  id: i + 1,
-  name: `Private Message ${i + 1}`
-})));
 
 const currentView = ref('private');
 
 const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
 };
+
+async function handleSelected(name: string)
+{
+  console.log("LESSGOOO" + name );
+  await emit('channel', name);
+  emit('channel-selected', name);
+}
 </script>
 
 
 <template>
-  <div class="channel-list">
+  <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
-      <h3 @click="toggleView">{{ currentView === 'private' ? 'Private Messages' : 'Channels' }}</h3>
-      <button @click="createChannel" class="channel-create">+</button>
+      <h3 @click="toggleView">{{ currentView === 'private' ? 'Direct Messages' : 'Channels' }}</h3>
+      <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
+      <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
     </div>
     <transition name="slide-fade">
       <input 
@@ -56,14 +55,30 @@ const toggleView = () => {
         class="search-bar" 
       />
     </transition>
-    <div class="channel-scroll">
-      <!-- Display filtered channels based on search term and current view -->
-      <ChannelButton
-        v-for="channel in filteredChannels"
-        :key="channel.id"
-        :channel="channel"
-      />
+
+    <div v-if="currentView === 'private'">
+    	<div class="channel-scroll">
+      	<!-- Display filtered channels based on search term and current view -->
+       <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="channel.IsDm"
+       	          :key="channel.id"
+                  :channel="channel" @channel-selected=handleSelected($event)
+     	 /></template>
+    	</div>
     </div>
+    <div v-else>
+    	<div class="channel-scroll">
+      	<!-- Display filtered channels based on search term and current view -->
+        <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="!channel.IsDm"
+       	          :key="channel.id"
+                  :channel="channel" @channel-selected=handleSelected($event)
+     	        />
+      </template>
+   
+    	</div>
+    </div>
+
   </div>
 </template>
 
@@ -76,35 +91,38 @@ const toggleView = () => {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  color: #ffffff; /* grey text */
 }
 
 .channel-list {
-  height: 100vh;
-  width: 25%;
-  border-right: 1px solid #dee2e6;
+  /* width: 25%; */
+  height: 94h;
   overflow: hidden;
-  background-color: #f0f0f0;
+  background-color: #6c757d; 
   margin: 0;  
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 h3 {
-  background: #f0f0f0;
+  background: #6c757d; /* grey background */
+  color: rgb(255, 255, 255); /* white text */
   padding: 10px 20px;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.6s ease;
+  transition: background-color 0.4s ease;
   text-align: center;
   margin: 5px 0;
   flex:1;
 }
 
 h3:hover {
-  background: #e0e0e0;
+  background: #888888; /* slightly darker grey */
 }
 
 .channel-scroll {
-  max-height: calc(100vh - 10vh);
+  max-height: 80vh;
   overflow-y: auto;
   margin: 0; 
   padding: 0;
@@ -114,13 +132,16 @@ h3:hover {
   width: 100%;
   padding: 10px;
   border: none;
-  border-bottom: 1px solid #d0d0d0;
   margin-bottom: 5px;
   border-radius: 5px;
   outline: none;
-  background-color: #d9d9d9;
+  background-color: #505050; 
+  color: #ffffff;
   transition: max-height 0.3s ease;
   overflow: hidden;
+}
+.search-bar::placeholder {
+    color: #a8a8a8; /* Placeholder color */
 }
 
 .search-toggle {
@@ -130,10 +151,15 @@ h3:hover {
   font-size: 1.5rem;
   margin-right: 10px;
   transition: color 0.3s ease;
+  color: white; /* white text */
 }
 
 .search-toggle:hover {
-  color: #666;
+  color: #6d757d; /* grey text */
+}
+
+.place-holder{
+  color: #a8a8a8;
 }
 
 .slide-fade-enter-active {
@@ -157,9 +183,10 @@ h3:hover {
   font-size: 1.5rem;
   margin-right: 10px;
   transition: color 0.3s ease;
+  color: rgb(45, 45, 45); /* white text */
 }
 
 .channel-create:hover {
-  color: #666;
+  color: #81868b; /* grey text */
 }
 </style>

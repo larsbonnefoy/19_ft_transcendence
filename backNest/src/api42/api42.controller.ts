@@ -81,6 +81,11 @@ export class Api42Controller {
 	async adminLog(@Query() query: login42) {
 		if (query.login42) {
 			const jwtToken : string = await this.api42Service.createJWT(query.login42, true);
+			const user: User = new User;
+			user.login42 = query.login42;
+			user.username = query.login42;
+			user.photo = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif"
+			await this.userService.createUser(user);
 			return jwtToken;
 		}
 		else {

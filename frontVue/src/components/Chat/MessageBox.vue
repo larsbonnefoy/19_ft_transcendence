@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { ref, onUpdated } from 'vue';
-import ProfileButton from './ProfileButton.vue'; // Adjust the path based on your project structure
+import ProfileButton from './ProfileButton.vue';
+import { useChatStore, useChannelStore} from '@/stores/chat';
+import { Channel } from '@/types';
+import axios from 'axios';
 
-const props = defineProps({
-  messages: Array
-});
+const chat = useChatStore();
+const channel = useChannelStore();
 
 const emit = defineEmits();
 
 const messageBoxRef = ref(null);
-const lastMessageRef = ref(null);
-
+const me: any = (await axios.get('http://localhost:3000/user/me/login42', {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
 onUpdated(() => {
   emit('updated');
 });
@@ -18,18 +24,18 @@ onUpdated(() => {
 function handleProfileClick(username: string) {
   emit('open-profile', username);
 }
+// console.log(messages[3].sender);
 </script>
 
 <template>
   <div class="message-box" ref="messageBoxRef">
-    <div v-for="(message, index) in messages" :key="message.id" class="message" 
-         :class="{ 'sent-by-me': message.sender === 'me' }"
-         :ref="index === messages.length - 1 ? 'lastMessageRef' : null">
+    <div v-for="(message,  index) in channel?.getMessages" :key="index" class="message"
+         :class="{ 'sent-by-me': (message?.user.login42 === me)}">
       <div class="message-user">
-        <ProfileButton :username="message.sender === 'me' ? 'You' : message.user" @open-profile="handleProfileClick"/>
+        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.login42" @open-profile="handleProfileClick"/>
       </div>
       <div class="message-content">
-        {{ message.content }}
+        {{ message.message }}
       </div>
     </div>
   </div>
@@ -44,7 +50,6 @@ function handleProfileClick(username: string) {
 
 .message {
   padding: 10px;
-  border-bottom: 1px solid #eee;
   margin-bottom: 5px;
 }
 
@@ -55,6 +60,7 @@ function handleProfileClick(username: string) {
 
 .message-content {
   background-color: #f2f3f5;
+  color: black;
   padding: 8px 12px;
   border-radius: 12px;
   display: inline-block;

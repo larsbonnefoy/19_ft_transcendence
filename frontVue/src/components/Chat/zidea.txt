@@ -1,0 +1,10 @@
+changer le fond avec plusieurs images predefinie ou permettre de les charger avec un lien ou generer en fonction du pseudo du gars
+
+
+PALETTE DE COULEUR
+
+background : #6c757d
+background-searchbar : #505050
+text: #ffffff
+text-searchbar(ex: "type a message..."): #a8a8a8
+couleur pour bouton : ???????????????????????/

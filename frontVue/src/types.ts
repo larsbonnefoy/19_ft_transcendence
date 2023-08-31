@@ -40,6 +40,31 @@ export interface Achievement {
     max: number
 }
 
+export interface Channel
+{
+    id: string
+    messages: Messages[]
+    chatters: string[]
+    admins: string[]
+    bans: string[]
+    mutes: string[]
+    owner: string
+    IsDm: boolean 
+}
+
+export interface Messages
+{
+    id: number
+    time: Date
+    message: string
+    user: UserInfo
+    chat: Channel
+}
+
+export interface ChatInfo{
+    ChannelList : Channel[]
+}
+
 export enum GameType {
     PLAYER,
     WATCHER,

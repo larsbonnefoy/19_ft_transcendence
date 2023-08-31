@@ -81,7 +81,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/chat',
+      path: '/chat/:chatNames',
       name: 'chat',
       component: Chat,
       beforeEnter: async (to, from) => {
