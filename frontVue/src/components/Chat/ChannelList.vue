@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, computed, defineEmits, defineProps} from 'vue';
+import {ref, computed} from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import axios from 'axios';
@@ -42,7 +42,7 @@ async function handleSelected(name: string)
   <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
-      <h3 @click="toggleView">{{ currentView === 'private' ? 'Private Messages' : 'Channels' }}</h3>
+      <h3 @click="toggleView">{{ currentView === 'private' ? 'Direct Messages' : 'Channels' }}</h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
       <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
     </div>
@@ -60,7 +60,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
        <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="channel.isPrivate"
+             	<ChannelButton v-if="channel.IsDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	 /></template>
@@ -70,7 +70,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="!channel.isPrivate"
+             	<ChannelButton v-if="!channel.IsDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	        />

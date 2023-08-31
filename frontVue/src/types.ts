@@ -48,7 +48,7 @@ export interface Channel
     bans: string[]
     mutes: string[]
     owner: string
-    isPrivate: boolean 
+    IsDm: boolean 
 }
 
 export interface Messages

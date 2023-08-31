@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, nextTick, defineEmits, defineProps, watch, FunctionDirective} from 'vue';
+import {ref, nextTick, watch, FunctionDirective} from 'vue';
 import MessageBox from './MessageBox.vue';
 // import ChannelList from './.vue';
 import axios from 'axios';

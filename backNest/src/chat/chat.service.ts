@@ -25,9 +25,9 @@ export class ChatService
    	{
     	// return this.chatRepository.find();
 		const tmp: Chat[] = [];
-		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true}, where: {owner: {login42: login42}}, select: {id: true, owner: {login42: true}, isPrivate: true}})
-			,(await this.chatRepository.find({ relations: { admins: true}, where: {admins: {login42: login42}}, select: { id: true, admins: {login42: true}, isPrivate: true}}))
-			,(await this.chatRepository.find({ relations: {chatters: true}, where: {chatters: {login42: login42}}, select : {id: true, chatters: {login42: true}, isPrivate: true}})));
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true}, where: {owner: {login42: login42}}, select: {id: true, owner: {login42: true}, isDm: true}})
+			,(await this.chatRepository.find({ relations: { admins: true}, where: {admins: {login42: login42}}, select: { id: true, admins: {login42: true}, isDm: true}}))
+			,(await this.chatRepository.find({ relations: {chatters: true}, where: {chatters: {login42: login42}}, select : {id: true, chatters: {login42: true}, isDm: true}})));
 		return chats;
  	}
 
@@ -184,7 +184,7 @@ export class ChatService
 		const chatters: User[] = await this.getChatters(roomId);
 		chatters.push(newChatter);
 		const chat : Chat = await this.findOne(roomId);
-		chat.chatters= chatters;
+		chat.chatters = chatters;
 		await this.chatRepository.save(chat);
 
 	}

@@ -34,6 +34,9 @@ export class Chat
 
 	@Column({type: "boolean", default: false})
 	isPrivate: boolean;
+
+	@Column({type: "boolean", default: false})
+	isDm: boolean;
 }
 
 @Entity()

@@ -6,9 +6,12 @@ export class roomDto {
     @IsNotEmpty()
     id : string;
 
-    // @IsBoolean() 
+    isDm: boolean | null;
+
     isPrivate: boolean | null;
 
     password : string | null | undefined;
+
+    usernames: string[] | null;
 
 }

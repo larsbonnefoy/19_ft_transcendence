@@ -16,7 +16,7 @@ export const useChannelStore = defineStore('channel', {
         getBans: (state) => state.channel?.bans,
         getMutes: (state) => state.channel?.mutes,
         getOwner: (state) => state.channel?.owner,
-        getIsPrivate: (state) => state.channel?.isPrivate,
+        getIsDm: (state) => state.channel?.IsDm,
     },
     actions: {
        async setChannel(newChannel: Channel)
@@ -68,7 +68,7 @@ export const useChatStore = defineStore('chat', {
                 });
                 this.chat = []
                 this.chat.ChannelList = data.data; 
-                console.log(data.data[0].isPrivate)
+                console.log(data.data[0].IsDm)
             }
             catch (error)
             {
@@ -77,12 +77,12 @@ export const useChatStore = defineStore('chat', {
             }
         },
 
-        async addChannel(id: string, pass: string, status: boolean)
+        async addChannel(id: string, pass: string, isDm: boolean, isPrivate: boolean, usernames: string[])
         {
             console.log("addChannel " + id + " " + pass + " " + status);
             try
 	        {
-	        	const res = await axios.post('http://localhost:3000/chat/create/', {id: id, password: pass, isPrivate: status}, 
+	        	const res = await axios.post('http://localhost:3000/chat/create/', {id: id, password: pass, isDm: isDm, isPrivate: isPrivate, usernames: usernames}, 
                 {
 			        headers:
 			        {

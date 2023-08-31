@@ -118,11 +118,12 @@ export class ChatController {
     async createRoom(@Body() roomInfos: roomDto, @Request() req: any, @Res() res: any)
     {
         console.log("CREATE");
-        console.log(roomInfos.isPrivate)
+        console.log(roomInfos.isDm)
         const chat : Chat = new Chat;
         chat.messages =  [];
         chat.owner = await this.userService.findOne(req.user);
         chat.id = roomInfos.id;
+        chat.isDm = roomInfos.isDm;
         chat.isPrivate = roomInfos.isPrivate;
         if (roomInfos.password)
 		{
@@ -131,9 +132,21 @@ export class ChatController {
         }
 		if (!(await this.chatService.findOne(roomInfos.id)))
 		{
-        	this.chatService.createRoom(chat);
+        	await this.chatService.createRoom(chat);
+            for(const username of roomInfos.usernames)
+            {
+                console.log(username);
+                try
+                {
+		            const newChatter: User = await this.userService.findUsername(username);
+                    this.chatService.addChatter(chat.id, newChatter);
+                }
+                catch
+                {
+
+                }
+            }
         	await res.status(200).json(chat).send();
-		
 		}
 		else
         {
