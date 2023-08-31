@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
+import { socket } from '@/socket';
 
 const chat = useChatStore();
 const emit = defineEmits();
@@ -35,6 +36,8 @@ async function handleSelected(name: string)
   await emit('channel', name);
   emit('channel-selected', name);
 }
+
+
 </script>
 
 

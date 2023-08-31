@@ -222,6 +222,8 @@ onUnmounted(async () => {
     clearInterval(intervalStop);
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     await store.setStatus("online");
+    socket.off('joinGame');
+    socket.off('display');
 })
 </script>
 
