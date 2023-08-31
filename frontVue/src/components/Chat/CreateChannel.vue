@@ -8,7 +8,7 @@ const chat = useChatStore();
 const messageType = ref('Direct Messages');
 const groupType = ref('public');
 const userInput = ref('');
-const addedUsers = ref([]);
+const addedUsers = ref(['']);
 const password = ref('');
 const channelName = ref('');
 const errorMessage = ref('');
@@ -133,7 +133,9 @@ const closeModal = () => {
         </div>
         <button @click="clearUsers" class="switch-create-button">Clear</button>
         <!-- Display chosen user for private chat -->
-        <div v-if="searchedUser">Chosen User: {{ searchedUser }}</div>
+        <div class="user-display" v-if="addedUsers.length > 0">
+          {{ addedUsers[0] }}
+        </div>
         <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for private chat -->
       </div>
   

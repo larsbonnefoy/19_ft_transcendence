@@ -23,7 +23,6 @@ export const useChannelStore = defineStore('channel', {
        async setChannel(newChannel: Channel)
        {
             this.channel = newChannel;
-            console.log(">>>>>>" + this.channel.id)
             try
             {
                 const messages: any = await axios.post(`http://localhost:3000/chat/getMessages`, {id: this.channel?.id},
@@ -33,7 +32,6 @@ export const useChannelStore = defineStore('channel', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                console.log("hmmm a" + messages.data)
                 this.channel.messages = messages.data;
                 console.log("setChannel: " + this.channel.messages)
             }
@@ -45,7 +43,6 @@ export const useChannelStore = defineStore('channel', {
 
        async refreshMessages()
        {
-             console.log(">>>>>>" + this.channel.id)
             try
             {
                 const messages: any = await axios.post(`http://localhost:3000/chat/getMessages`, {id: this.channel?.id},
@@ -55,7 +52,8 @@ export const useChannelStore = defineStore('channel', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                this.channel.messages = messages.data;
+                if(this.channel !== null)
+                    this.channel.messages = messages.data;
             }
             catch (error)
             {
@@ -109,19 +107,20 @@ export const useChatStore = defineStore('chat', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                // this.chat = []
-                this.chat.ChannelList = data.data; 
-                console.log(data.data[0].IsDm)
+                this.chat = {ChannelList: []};
+                if (this.chat !== null)
+                    this.chat.ChannelList = data.data; 
+                console.log(data.data[0].isDm)
             }
             catch (error)
             {
                 console.log("Error: FetchChannels: " + error)
                 // this.chat = Array<Channel>;
-                this.chat?.ChannelList = [];
+                this.chat = null;
             }
         },
 
-        async addChannel(id: string, pass: string, isDm: boolean, isPrivate: boolean, usernames: string[])
+        async addChannel(id: string, pass: string | null, isDm: boolean, isPrivate: boolean, usernames: string[])
         {
             console.log("addChannel " + id + " " + pass + " " + status);
             try

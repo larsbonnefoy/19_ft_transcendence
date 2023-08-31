@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { useChatStore, useChannelStore} from '@/stores/chat';
-import { Channel } from '@/types';
+import { type Channel } from '@/types';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -19,12 +19,18 @@ const emit = defineEmits();
 
 // Methods
 const selectChannel = async () => {
-  console.log(`Selected: ${channel.id}`);
-  const newChannel: Channel = chat.getChannels.find((it: Channel) => {return (it.id === channel.id)})  
-  console.log("new channel " + newChannel);
-  await channelStore.setChannel(newChannel);
-  console.log(channelStore.getMessages);
-  console.log("done");
+  if (channel && chat)
+  {
+    console.log(`Selected: ${channel.id}`);
+    const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel.id)})  
+    if (newChannel)
+    {
+      console.log("new channel " + newChannel);
+      await channelStore.setChannel(newChannel);
+    }
+    console.log(channelStore.getMessages);
+    console.log("done");
+  }
   // emit('channel-selected',  channel.id);
 };
 </script>

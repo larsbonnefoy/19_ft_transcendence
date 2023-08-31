@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { ref, onUpdated } from 'vue';
 import ProfileButton from './ProfileButton.vue';
-import { useChatStore, useChannelStore} from '@/stores/chat';
-import { Channel } from '@/types';
+import { useChannelStore} from '@/stores/chat';
 import axios from 'axios';
 
-const chat = useChatStore();
 const channel = useChannelStore();
 
 const emit = defineEmits();

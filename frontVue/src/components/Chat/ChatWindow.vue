@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, nextTick, watch, FunctionDirective, onMounted, onUnmounted} from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
 import MessageBox from './MessageBox.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
@@ -39,7 +39,7 @@ const me = (await axios.get('http://localhost:3000/user/me/login42', {
 let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
 
 const chatContainerRef = ref(null);
-const endOfChatRef = ref(null);
+const endOfChatRef = ref<null | HTMLDivElement>(null);
 // const channel = ChannelButton.channel.name
 // if (channel)
 //        console.log("yo: " + channel);
@@ -48,10 +48,13 @@ const emit = defineEmits();
 
 function getDmChatter()
 {
-      console.log("getDm: " + channel.getChatters[0].login42 + " " + me + " "  +  channel.getOwner.login42) 
-      if (channel.getChatters[0].login42 === me)
-        return channel.getOwner.login42;
-      return (channel.getChatters[0].login42)
+      if(channel.getChatters)
+      {
+        console.log("getDm: " + channel.getChatters[0]?.login42 + " " + me + " "  +  channel.getOwner?.login42) 
+      if (channel.getChatters[0]?.login42 === me)
+          return channel.getOwner?.login42;
+        return (channel.getChatters[0]?.login42)
+      }
 }
 
 const sendMessage = async () => {
