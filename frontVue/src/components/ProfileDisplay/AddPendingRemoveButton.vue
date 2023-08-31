@@ -5,17 +5,30 @@ import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 const err = ref(false);
+const sendOutReq = ref(false);
 
 const props = defineProps<{
     pendingUser: UserInfo
 }>()
 
-const isPendingRecv = ref(store.getPending?.includes(props.pendingUser.login42));
+//const isPendingRecv = ref(store.getPending?.includes(props.pendingUser.login42));
+const isPendingRecv = computed(() => {
+    return (store.getPending?.includes(props.pendingUser.login42));
+})
 
-const isPendingSend = ref();
+/* Pb c'est que l'autre user n'est pas mis a jour donc on a pas ses infos */
+/* => le button add ne change pas quand une request est send */
+const isPendingSend = computed(() => {
+    if (store.getLogin42) {
+        return (props.pendingUser.pending.includes(store.getLogin42) || sendOutReq.value);
+    }
+})
+
+/*
 if (store.getLogin42 != undefined) {
     isPendingSend.value = props.pendingUser.pending.includes(store.getLogin42);
 }
+*/
 
 //pt devoir switch ca dans le button direct
 const isFriend = computed(() => {
@@ -30,7 +43,18 @@ const isFriend = computed(() => {
 async function addFriend() {
     try {
         await store.addFriend(props.pendingUser.username);
-        isPendingSend.value = true;
+        sendOutReq.value = true;
+    }
+    catch (error){
+        location.reload();
+        console.log(error)
+    }
+}
+
+async function unsendFriendRequest() {
+    try {
+        await store.unsendFriendRequest(props.pendingUser.username);
+        sendOutReq.value = false;
     }
     catch (error){
         location.reload();
@@ -51,9 +75,10 @@ async function removeFriend() {
 async function confirmRequest() {
     try {
         await store.acceptFriendRequest(props.pendingUser.username);
-        isPendingRecv.value = false;
+        //isPendingRecv.value = false;
     }
     catch (error) {
+        /* If already friends, forces reload of page, could just append to list */
         location.reload();
         console.log(error);
     }
@@ -62,7 +87,7 @@ async function confirmRequest() {
 async function declineFriendRequest() {
     try {
         await store.declineFriendRequest(props.pendingUser.username);
-        isPendingRecv.value = false;
+        //isPendingRecv.value = false;
     }
     catch (error) {
         location.reload();
@@ -77,7 +102,7 @@ async function declineFriendRequest() {
             <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
         </div>
         <div v-else-if="isPendingSend">
-            <button type="button" class="btn btn-outline-warning mx-3"> Pending </button>
+            <button type="button" class="btn btn-outline-warning mx-3" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
         </div>
         <div v-else>
             <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>

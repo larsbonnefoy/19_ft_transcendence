@@ -18,7 +18,7 @@ export class Api42Controller {
 			const access_token  : string = await this.api42Service.getToken(query);
 			// const access_token  : string = "badAccess";
 			const intraLogin : string = await this.api42Service.getLogin42(access_token);
-			const intraPhoto : string = await this.api42Service.getImage42(access_token);	 
+			const intraPhoto : string = await this.api42Service.getImage42(access_token);
 			let state : boolean = true;
 			const user = (await this.userService.findOne(intraLogin)); 
 		//create a User object 
@@ -35,6 +35,8 @@ export class Api42Controller {
 			{
 				if (user.has2fa === true)
 					state = false;
+				if (user.photo === "no photo yet") // user created with a script
+					user.photo = intraPhoto;
 				console.log("user already in the db");
 			}
 			const jwtToken : string = await this.api42Service.createJWT(intraLogin, state);

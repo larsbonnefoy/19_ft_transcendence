@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
-import {type UserInfo} from '../types' 
+import {type UserInfo} from '../types'
+import { socket } from '../socket';
 
 export const useUserStore = defineStore('user', {
     state: () => ({
@@ -24,10 +25,16 @@ export const useUserStore = defineStore('user', {
     actions: {
         async fetchUser() {
           try {
-                const data = await axios.post('http://localhost:3000/api42/getLoggedUser/', {token: localStorage.getItem('jwt_token')});
+				if (this.user) {
+					URL.revokeObjectURL(this.user.photo); //to release memory
+				}
+                const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/api42/getLoggedUser/`, {token: localStorage.getItem('jwt_token')});
                 this.user = data.data;
-                console.log("fetched user")
-                console.log(data.data);
+				if (this.user) {
+					this.user.photo = await this.getAvatar(this.user.photo);
+					this.user.status = "online"; //little trick to be online when you reload your own profile
+				}
+				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
             }
             catch (error) {
             //   alert(error);
@@ -40,7 +47,7 @@ export const useUserStore = defineStore('user', {
             if (this.user) { 
                 if (value) {
                     try { 
-                        const data = await axios.post('http://localhost:3000/twofa/enable/', {token: localStorage.getItem('jwt_token')});
+                        const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/enable/`, {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
                         console.log(data);
                     }
@@ -50,7 +57,7 @@ export const useUserStore = defineStore('user', {
                 }
                 if (!value) {
                     try {
-                        const data = await axios.post('http://localhost:3000/twofa/disable/', {token: localStorage.getItem('jwt_token')});
+                        const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/disable/`, {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
                         console.log(data);
                     }
@@ -62,7 +69,7 @@ export const useUserStore = defineStore('user', {
         },
         async setName(newUsername:string) {
             if (this.user) {
-                    await axios.get(`http://localhost:3000/user/change_username:${newUsername}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                    await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/change_username:${newUsername}`, { headers: {token: localStorage.getItem('jwt_token')} });
                     this.user.username = newUsername;
             }
         },
@@ -83,20 +90,51 @@ export const useUserStore = defineStore('user', {
                         statusValue = -1; //if written wrong, will endup making backend fail and throw error 
                 }
                 try { 
-                    await axios.get(`http://localhost:3000/user/setStatus:${statusValue}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                    await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/setStatus:${statusValue}`, { headers: {token: localStorage.getItem('jwt_token')} });
                     this.user.status = newStatus;
                 }
                 catch (error) {
                 }
             }
         },
+		async setAvatar(image:any) {
+			const formData = new FormData();
+            formData.append('file', image);
+            const headers = { 'Content-Type': 'multipart/form-data', token: localStorage.getItem('jwt_token') };
+			try {
+				await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/avatar`, formData, { headers });//.then((res) => {
+				// 	res.data.files; // binary representation of the file
+				// 	res.status; // HTTP status
+				// });
+			}
+			catch (error) {throw error}
+		},
+		async getAvatar(imgpath: string) : Promise<string> {
+			if (imgpath === "no photo yet")
+				return  "../../assets/placeholder_avatar.png";
+			else if (imgpath.slice(0, 5) === "https") //is still intra photo, which we don't store ourself since it's a url
+				return imgpath;
+			try {
+				const res = await fetch(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/avatar:${imgpath}`);
+				if (res.status === 200) {
+					const blob = await res.blob();
+					return (URL.createObjectURL(blob));
+				}
+			}
+			catch (error) {}
+			return "../../assets/placeholder_avatar.png";
+		},
         async addFriend(newFriend: string) {
-            await axios.get(`http://localhost:3000/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+        },
+        async unsendFriendRequest(newFriend: string) {
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/remove_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
         async acceptFriendRequest(newFriend: string) {
-            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
+            const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${newFriend}`)
             console.log(resLogin.data.login42);
-            const res = await axios.get(`http://localhost:3000/user/accept_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/accept_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            console.log(res);
             if (this.user != null) {
                 this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
             }
@@ -104,9 +142,9 @@ export const useUserStore = defineStore('user', {
         },
         async declineFriendRequest(newFriend: string) {
             try {
-                const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${newFriend}`)
+                const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${newFriend}`)
                 console.log(resLogin.data.login42);
-                const res = await axios.get(`http://localhost:3000/user/refuse_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/refuse_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} });
                 if (this.user) {
                     this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42)
                 }
@@ -116,8 +154,8 @@ export const useUserStore = defineStore('user', {
             }
         },
         async removeFriend(FriendtoRemove: string) {
-            const resLogin = await axios.get(`http://localhost:3000/user/LogFromUser:${FriendtoRemove}`)
-            const res = await axios.get(`http://localhost:3000/user/unset_friend:${FriendtoRemove}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${FriendtoRemove}`)
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemove}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
                 this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
             }

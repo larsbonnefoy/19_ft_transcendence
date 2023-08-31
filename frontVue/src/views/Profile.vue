@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, onUnmounted } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
-import GameHistory from '@/components/Matches/GameHistory.vue';
+import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import AchievementsList from '@/components/Achievements/AchievementsList.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
@@ -13,26 +13,24 @@ const store = useUserStore();
 const route = useRoute();
 let user: UserInfo;
 const foundUser = ref(true);
+let windowWidth = ref(window.innerWidth);
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
         //get sur un profile qui existe pas envoie NULL est pas une erreur, a corriger (ou a mediter)
         try {
-            const res = await axios.get(`http://localhost:3000/user/one:${route.params.username}`);
+			if (user) {
+			    URL.revokeObjectURL(user.photo); //to release memory
+            }
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/one:${route.params.username}`);
             if (!res.data) {
                 foundUser.value = false;
             }
-            /*
-            Truc degeu pour display une image en attendant
-            */
             else {
                 console.log(res.data);
                 user = res.data
-                if (user) {
-                    if (user.photo == "no photo yet") {
-                        user.photo = "../../assets/placeholder_avatar.png"
-                    }
-                }
+                if (user)
+					user.photo = await store.getAvatar(user.photo);
             }
         }
         catch (error: any) {
@@ -50,12 +48,24 @@ await getUserInfo();
 
 watch(() => route.params.username, getUserInfo);
 
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
+
+onMounted(async () => {
+    window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(async () => {
+    URL.revokeObjectURL(user.photo);
+    window.removeEventListener('resize', handleResize);
+});
 </script>
 
 <template>
-<template v-if="foundUser" class="col-2">
+<template v-if="foundUser">
     <div class="container-fluid">
-        <div class="row">
+        <div v-if="windowWidth > 1400" class="row">
             <div class="col-4">
                 <GameHistory 
                     :username-prop="user.username"
@@ -68,6 +78,33 @@ watch(() => route.params.username, getUserInfo);
             <div class="col-4 p-0">
                 <AchievementsList :user-prop="user"> </AchievementsList>
             </div>
+        </div>
+        <div v-else-if="windowWidth > 800" class="row">
+            <div class="col-6">
+                <GameHistory 
+                    :username-prop="user.username"
+                >
+                </GameHistory>
+				<AchievementsList :user-prop="user"> </AchievementsList>
+            </div>
+            <div class="col-6 p-0">
+                <ProfileCard :user="user"> </ProfileCard>
+            </div>
+        </div>
+        <div v-else class="row">
+			<div class="row">
+				<ProfileCard :user="user"> </ProfileCard>
+			</div>
+			<div class="row">
+				<div class="col-12"> <!-- seems stupid but it works -->
+					<GameHistory :username-prop="user.username"></GameHistory>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-12">
+					<AchievementsList :user-prop="user"> </AchievementsList>
+				</div>
+			</div>
         </div>
     </div>
 </template>

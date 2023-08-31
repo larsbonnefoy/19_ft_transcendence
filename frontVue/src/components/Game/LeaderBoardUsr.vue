@@ -9,12 +9,12 @@ const props = defineProps<{
 }>()
 
 const profilePicture = ref();
-if (props.user.photo == "no photo yet") {
-    profilePicture.value = "../../assets/placeholder_avatar_white.png"
-}
-else {
+// if (props.user.photo == "no photo yet") {
+//     profilePicture.value = "../../assets/placeholder_avatar_white.png"
+// }
+// else {
     profilePicture.value = props.user.photo;
-}
+// }
 
 let statusImage: string;
 switch(props.index) {
@@ -26,6 +26,9 @@ switch(props.index) {
         break;
     case 2 :
         statusImage= "../../assets/TrophyLeaderBoard/bronze.png"
+        break;
+    case 3 :
+        statusImage= "../../assets/TrophyLeaderBoard/trophy_broken.png"
         break;
     default:
         statusImage = ""
@@ -48,7 +51,7 @@ switch(props.index) {
                 </router-link>
             </div>
             <div class="col-1" style="margin: auto;" > 
-                <img v-if="statusImage.length != 0" class="profileImg" :src="statusImage">
+                <img v-if="statusImage.length != 0" class="statusImage" :src="statusImage">
             </div>
             <div class="col-3 textDisplay">
                 <p> {{ user.username }} </p>
@@ -57,7 +60,7 @@ switch(props.index) {
                 <p> elo : {{ Math.ceil(user.elo) }} </p>
             </div> 
             <div class="col-3 textDisplay">
-                <p> WinRate : {{ Math.ceil((user.win/ (1*user.win + 1*user.loss)) * 100 ) }} %</p>
+                <p><span style="color: green;">{{ user.win}}</span> - <span style="color: red;">{{ user.loss }}</span></p>
             </div> 
         </div>
     </div>
@@ -67,10 +70,20 @@ switch(props.index) {
 <style scoped>
 .profileImg {
     height: fit-content;
-    width: 3vw;
+    width: 2vw;
     border-radius: 10%;
+    display: block;
+    text-align: center;
+    margin: 1em;
 }
-
+.statusImage {
+    height: fit-content;
+    width: 2vw;
+    border-radius: 10%;
+    display: block;
+    text-align: center;
+    margin: auto;
+}
 .textDisplay {
     margin: auto;
     font-size: 1.1em;

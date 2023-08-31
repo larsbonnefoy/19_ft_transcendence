@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, ParseIntPipe, ParseUUIDPipe, Res, forwardRef, Inject, UseGuards, Request, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
 import { Response } from 'express';
+import * as fs from 'fs';
 import { Api42Service } from '../api42/api42.service';
 import { AuthGuard } from '../guard/auth.guard';
 // import { IsInt, IsString } from 'class-validator';
@@ -8,17 +9,22 @@ import { AuthGuard } from '../guard/auth.guard';
 import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+let userServiceForMethod: UserService;
 
 @Controller("user")
 export class UserController {
-  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService) {}
+  constructor(@Inject(forwardRef(() => Api42Service)) private  api42Service: Api42Service, private readonly userService: UserService) {
+	userServiceForMethod = userService;
+  }
 
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
     const username: string = params.username.slice(1);
     const user = await this.userService.findUsername(username);
     if (user == null) {
-      res.status(409).json({"error":"no user with that username"});
+      res.status(404).json({"error":"no user with that username"});
       return ;
     }
     res.json({"login42":user.login42});
@@ -29,7 +35,7 @@ export class UserController {
     const login42: string = params.login42.slice(1);
     const user = await this.userService.findOne(login42);
     if (user == null) {
-      res.status(409).json({"error":"no user with that login"});
+      res.status(404).json({"error":"no user with that login"});
       return ;
     }
     res.json({"username":user.username});
@@ -40,7 +46,7 @@ export class UserController {
     const login42: string = params.login42.slice(1);
     const user = await this.userService.findOne(login42);
     if (user == null) {
-      res.status(409).json({"error":"no user with that login"});
+      res.status(404).json({"error":"no user with that login"});
       return ;
     }
     res.json({"elo":user.elo});
@@ -51,7 +57,7 @@ export class UserController {
     const login42: string = params.login42.slice(1);
     const user = await this.userService.findOne(login42);
     if (user == null) {
-      res.status(409).json({"error":"no user with that login"});
+      res.status(404).json({"error":"no user with that login"});
       return ;
     }
     res.json({"status":user.status});
@@ -60,6 +66,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('setStatus:status')
   async SetStatusFromLogin(@Request() req: any, @Res() res: Response, @Param() param: any) {
+    // console.log("gotSetStatus");
     const status: number = +param.status.slice(1);
     if (status < 0 || status > 2) {
       res.status(409).json({"error":"status must be 0 1 2"});
@@ -67,10 +74,10 @@ export class UserController {
     }
     const user = await this.userService.findOne(req.user);
     if (user == null) {
-      res.status(409).json({"error":"no user with that login"});
+      res.status(404).json({"error":"no user with that login"});
       return ;
     }
-    console.log("%s is now %s", req.user, UserStatus[status]);
+    console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }
@@ -106,7 +113,7 @@ export class UserController {
     console.log("increment win field for user with username %s", username);
     const current_user = await this.userService.findUsername(username);
     if (current_user == null) {
-      res.status(409).json({"error":`no user with ${username} as username`});
+      res.status(404).json({"error":`no user with ${username} as username`});
       return ;
     }
     let wins:number = current_user.win;
@@ -121,7 +128,7 @@ export class UserController {
     console.log("increment loss field for user with username %s", username);
     const current_user = await this.userService.findUsername(username);
     if (current_user == null) {
-      res.status(409).json({"error":`no user with ${username} as username`});
+      res.status(404).json({"error":`no user with ${username} as username`});
       return ;
     }
     let loss:number = current_user.loss;
@@ -135,12 +142,12 @@ export class UserController {
   async changeUsername(@Request() req: any, @Res() res: any, @Param() param: any) {
     const newUsername: string = param.new.slice(1);
     const sessionId : string = req.user;
-    console.log("trest : " + sessionId);
+    // console.log("trest : " + sessionId);
 
     console.log("changing username of %s to %s", sessionId, newUsername);
     const current_user = await this.userService.findOne(sessionId);
-    if (current_user == null) {
-      res.status(409).json({"error":`no user with ${sessionId} as login42`});
+    if (current_user === null) {
+      res.status(404).json({"error":`no user with ${sessionId} as login42`});
       return ;
     }
     if (current_user.username == newUsername) {
@@ -148,11 +155,20 @@ export class UserController {
       return ;
     }
     const check_base = await this.userService.findUsername(newUsername);
-    if (check_base != null) {
+    if (check_base !== null) {
       res.status(409).json({"error":`username ${newUsername} already taken`});
       return ;
     }
+	if (newUsername !== sessionId) {
+		const check_logins = await this.userService.findOne(newUsername);
+		if (check_logins !== null) {
+			res.status(409).json({"error":`username ${newUsername} is someone's login`});
+			return ;
+		}
+	}
     await this.userService.change_username(current_user.login42, newUsername);
+	if (!(current_user.achievements & 1))
+		await this.userService.addAchievement(sessionId, +current_user.achievements + 1);
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }
 
@@ -163,7 +179,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("%s sends friend request to %s", user_1.username, friendusername);
@@ -194,7 +210,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("%s removes friend request towards %s", user_1.username, friendusername);
@@ -210,7 +226,7 @@ export class UserController {
       }
     }
     if (notpending) {
-      res.status(409).json({"error":"can't remove request if no request in first place"});
+      res.status(404).json({"error":"can't remove request if no request in first place"});
       return ;
     }
     await this.userService.remove_pending(user_2.login42, user_2.pending, user_1.login42);
@@ -223,9 +239,19 @@ export class UserController {
     const friendusername: string = param.username.slice(1);
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
+    console.log("In accept_request %s accepts %s friend request", user_1.username, friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
+    }
+    /* if user_1 and user_2 have send requests to each other, one can accept, have to check for second one if already friends to avoid double friends */
+    /*  atm throws error and forces reload on client where error occured */
+    for (let friend of user_1.friends) {
+      if (friend == user_2.login42) {
+        res.status(409).json({"error":"c'est déjà ton pote boloss"});
+        await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
+        return ;
+      }
     }
     console.log("%s accepts %s friend request", user_1.username, friendusername);
     if (user_1.username == friendusername) {
@@ -240,12 +266,16 @@ export class UserController {
       }
     }
     if (notpending) {
-      res.status(409).json({"error":"can't accept request if no request in first place"});
+      res.status(404).json({"error":"can't accept request if no request in first place"});
       return ;
     }
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+	if (!(user_1.achievements & 8))
+		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+	if (!(user_2.achievements & 8))
+		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
     res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
   }
   
@@ -256,7 +286,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("%s refuses %s friend request", user_1.username, friendusername);
@@ -272,7 +302,7 @@ export class UserController {
       }
     }
     if (notpending) {
-      res.status(409).json({"error":"can't refuse request if no request in first place"});
+      res.status(404).json({"error":"can't refuse request if no request in first place"});
       return ;
     }
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
@@ -286,7 +316,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("%s blocks %s", user_1.username, friendusername);
@@ -302,7 +332,7 @@ export class UserController {
       }
     }
     if (alreadyblocked) {
-      res.status(409).json({"error":"can't block if blocked in first place"});
+      res.status(404).json({"error":"can't block if blocked in first place"});
       return ;
     }
     await this.userService.block_user(user_1.login42, user_1.blocked_users, user_2.login42);
@@ -316,7 +346,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("%s unblocks %s", user_1.username, friendusername);
@@ -332,7 +362,7 @@ export class UserController {
       }
     }
     if (notpending) {
-      res.status(409).json({"error":"can't unblock if not blocked in first place"});
+      res.status(404).json({"error":"can't unblock if not blocked in first place"});
       return ;
     }
     await this.userService.unblock_user(user_1.login42, user_1.blocked_users, user_2.login42);
@@ -346,7 +376,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("setting friendship between %s and %s", user_1.username, friendusername);
@@ -372,7 +402,7 @@ export class UserController {
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findUsername(friendusername);
     if (user_1 == null || user_2 == null) {
-      res.status(409).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such username`});
       return ;
     }
     console.log("unsetting friendship between %s and %s", user_1.username, friendusername);
@@ -388,7 +418,7 @@ export class UserController {
       }
     }
     if (notfriends) {
-      res.status(409).json({"error":"can't unset friend if not friends in first place"});
+      res.status(404).json({"error":"can't unset friend if not friends in first place"});
       return ;
     }
     await this.userService.remove_friend(user_1.login42, user_1.friends, user_2.login42);
@@ -439,7 +469,7 @@ export class UserController {
     console.log("got del request with username %s", username);
     const current_user = await this.userService.findUsername(username);
     if (current_user == null) {
-      res.status(409).json({"user":"doesn't exist"});
+      res.status(404).json({"user":"doesn't exist"});
       return ;
     }
     for (let friend of current_user.friends) {
@@ -453,18 +483,64 @@ export class UserController {
     await this.userService.remove(username);
     res.json({"user":"deleted"});
   }
-}
 
-// @Get("connect")
-// async connect(@Res() res: any, @Query() query: connectUserDto) {
-//   console.log("trying connection: %s as username and %s as password", query.username, query.password);
-//   const user = await this.userService.findUserName(query.username);
-//   if (user == null) {
-// 	  res.json({"error":"user doesn't exists"});
-// 	  return ;
-//   } else if (user.password != query.password) {
-// 	  res.json({"error":"bad password"});
-// 	  return ;
-//   }
-//   res.json({"connection":"successful"});
-// }
+  @UseGuards(AuthGuard)
+  @Post('avatar')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(@Request() req: any, @UploadedFile(
+	new ParseFilePipe({
+	  validators: [
+		new MaxFileSizeValidator({ maxSize: 500000 }),
+		new FileTypeValidator({ fileType: 'image/*' }),
+	  ],
+	}),) file : Express.Multer.File) {
+		console.log("uploading file on user %s: ", req.user);
+		console.log(file);
+		const user: User = await this.userService.findOne(req.user);
+		fs.unlink("uploads/" + user.photo, (err) => {
+			if (err) 
+				console.log(err);
+			else
+				console.log('%s was deleted', "uploads/" + user.photo);
+		});
+		await this.userService.change_avatar(req.user, file.filename);
+		if (!(user.achievements & 2))
+		await this.userService.addAchievement(req.user, +user.achievements + 2);
+  }
+
+  async compareList(err: NodeJS.ErrnoException, files: string[]) {
+	if (err !== null) {
+		console.log(err);
+		return ;
+	}
+	const users = await userServiceForMethod.findAll();
+	for (let file of files) {
+		let isUsed = false;
+		for (let user of users) {
+			if (user.photo === file) {
+				isUsed = true;
+			}
+		}
+		if (!isUsed) {
+			fs.unlink("uploads/" + file, (err) => {
+				if (err) 
+					console.log(err);
+				else
+					console.log("found and destroyed unused file in uploads: " + file);
+			});
+		}
+	}
+  }
+
+  @Get('checkUnusedUploads')
+  delUnusedUploads() {
+	console.log("checking uploads to delete unused files");
+	fs.readdir('uploads', this.compareList);
+  }
+
+  @Get('avatar:imgpath')
+  seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
+	console.log("get for image %s", image.slice(1));
+	res.sendFile(image.slice(1), {root: 'uploads'});
+  }
+}
