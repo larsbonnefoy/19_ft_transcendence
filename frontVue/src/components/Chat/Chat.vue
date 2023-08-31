@@ -17,7 +17,7 @@ function handleOpenProfile(event: string) {
 const selectedChannel = ref("" );
 
 
-const me = (await axios.get('http://localhost:3000/user/me/login42', {
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')

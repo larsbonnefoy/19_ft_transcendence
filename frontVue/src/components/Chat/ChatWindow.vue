@@ -19,7 +19,7 @@ const props = defineProps({
 
 
 
-// const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
+// const data : any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/room:${props.selectedChannel}`, {
 //   headers:
 //       {
 //         'token':localStorage.getItem('jwt_token')
@@ -27,14 +27,12 @@ const props = defineProps({
 // });
 const newMessage = ref("");
 // const selectedChannel = ref(selectedChannel)
-const me = (await axios.get('http://localhost:3000/user/me/login42', {
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')
       }
 })).data;
-
-
 
 let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
 

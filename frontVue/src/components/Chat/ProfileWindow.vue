@@ -11,7 +11,7 @@ let userdata: UserInfo;
 
 async function getProfileData() {
   try {
-    const res = await axios.get(`http://localhost:3000/user/me`, {
+    const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me`, {
       headers:
           {
             'token':localStorage.getItem('jwt_token')

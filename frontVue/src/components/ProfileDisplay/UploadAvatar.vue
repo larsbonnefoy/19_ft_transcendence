@@ -43,7 +43,7 @@ let submitFile = (async () => {
 		// console.log(error);
 		changeSuccess.value = false;
 		textDisplay.value = "Avatar update failed (check size)";
-		fetch(`http://localhost:3000/user/checkUnusedUploads`);
+		fetch(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/checkUnusedUploads`);
         // console.log("submit file failed");
     }
 	image = null;
