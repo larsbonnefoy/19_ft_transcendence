@@ -59,7 +59,7 @@ export class ChatController {
             || await this.chatService.isChatter(roomId, user))
         {
         	if (await this.chatService.addMessage(messageInfos.roomId, message))
-  		    	await res.status(200).json({"status":"good"}).send();
+  		    	await res.status(200).json(message).send();
 			else
             	res.status(409).json({"error":"no chat with that id"}).send();
         }
@@ -125,6 +125,10 @@ export class ChatController {
         chat.id = roomInfos.id;
         chat.isDm = roomInfos.isDm;
         chat.isPrivate = roomInfos.isPrivate;
+        // if (roomInfos.isDm)
+        // {
+        //     roomInfos.usernames.push(chat.owner.login42);
+        // }
         if (roomInfos.password)
 		{
             const hash = await bcrypt.hash(roomInfos.password, 10);
