@@ -21,6 +21,10 @@ export class UserService {
   async change_username(login42: string, username: string) {
     await this.userRepository.update(login42, {username:username});
   }
+
+  async change_avatar(login42: string, avatar: string) {
+	await this.userRepository.update(login42, {photo: avatar});
+  }
   
   async add_pending(login42: string, current_pending_list: string[], friend: string) {
     current_pending_list.push(friend);
@@ -74,6 +78,11 @@ export class UserService {
     await this.userRepository.update(login42, {loss:loss});
   }
 
+  async addAchievement(login42: string, achievements: number) {
+	console.log("achievements of %s now at %d", login42, achievements);
+	await this.userRepository.update(login42, {achievements:achievements});
+  }
+
   async change_elo(login42: string, newelo: number) {
     if (newelo < 100)
       newelo = 100;
@@ -82,6 +91,7 @@ export class UserService {
   }
 
   async set_status(login42: string, newstatus: string) {
+    console.log(login42 + " is now " + newstatus);
     await this.userRepository.update(login42, {status:newstatus});
   }
 
@@ -95,6 +105,17 @@ export class UserService {
 
   findUsername(str: string): Promise<User | null> {
     return this.userRepository.findOneBy({ username:str });
+  }
+
+  async getClientId(login42: string) : Promise<string> {
+    const user = await this.findOne(login42);
+    if (user)
+      return user.client_id;
+    return "";
+  }
+
+  async setClientId(login42: string, client_id: string) {
+    await this.userRepository.update(login42, {client_id: client_id});
   }
 
   //2fa userservives

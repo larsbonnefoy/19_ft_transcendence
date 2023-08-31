@@ -15,7 +15,7 @@ import { jwtConstants } from './constant';
 				{
 					global: true,
 					secret: process.env.JWT_SECRET,
-					signOptions: { expiresIn: '2h' },
+					signOptions: { expiresIn: '7d' },
 				}
 				)
 			],

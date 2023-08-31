@@ -11,7 +11,11 @@ let userdata: UserInfo;
 
 async function getProfileData() {
   try {
-    const res = await axios.get(`http://localhost:3000/user/one:lucas`);
+    const res = await axios.get(`http://localhost:3000/user/me`, {
+      headers:
+          {
+            'token':localStorage.getItem('jwt_token')
+          }});
     console.log("Data fetched: ",res.data);
     console.log(res.data);
     userdata = res.data;
@@ -34,7 +38,7 @@ function blockUser() {
 
 await getProfileData();
 
-watch(() => userdata.username, getProfileData);
+watch(async () => await userdata.username, getProfileData);
 
 </script>
 

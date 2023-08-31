@@ -52,8 +52,8 @@ switch(props.status) {
     margin: auto;
 }
 
-.statusImg{
+/* .statusImg{
     height: 15px;
     width: auto;
-}
+} */
 </style>

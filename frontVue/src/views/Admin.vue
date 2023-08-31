@@ -11,8 +11,8 @@ async function navigateToHome() {
   try {
     if (login.value != "") {
       /* Check if user exists first*/
-      await axios.get(`http://localhost:3000/user/UserFromLog:${login.value}`)
-      const response : any = await axios.get('http://localhost:3000/api42/admin', { 
+      // await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/UserFromLog:${login.value}`)
+      const response : any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/api42/admin`, { 
         params: {
           login42: login.value
         }
@@ -41,8 +41,8 @@ async function navigateToHome() {
           <div class="card-body">
             <form>
               <div class="form-group">
-                <label for="username">Username</label>
-                <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter username">
+                <label for="username">Login 42</label>
+                <input v-model="login" type="text" class="form-control" id="username" placeholder="Enter login 42">
               </div>
               <p v-if="wrongLogin" style="color: red;" class="small"> Wrong Username </p>
               <br>

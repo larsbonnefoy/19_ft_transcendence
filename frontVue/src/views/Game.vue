@@ -1,41 +1,92 @@
 <script setup lang="ts">
-import ConnectionStatus from '@/components/Game/ConnectionStatus.vue';
 import Canvas from '@/components/Game/Canvas.vue';
 import Actions from '@/components/Game/Actions.vue'
-import LeaderBoard from '@/components/Game/LeaderBoard.vue';
-import {ref} from 'vue'
+import GameHistory from '@/components/GameHistory/GameHistory.vue';
+import { onMounted, onUnmounted, ref } from 'vue';
+import { socket } from '../socket';
+import { useUserStore } from '@/stores/user';
+import {useRoute} from 'vue-router';
+import { GameType } from '@/types';
 
-const inGame = ref(false);
+const route = useRoute();
 
-function displayGame() {
-	inGame.value = !inGame.value
+const displayGame = ref(false);
+const playGame = ref(GameType.PLAYER);
+let windowWidth = ref(window.innerWidth);
+
+// console.log(route.path);
+if (route.path === "/game/challenge") {
+	displayGame.value = true;
+	playGame.value = GameType.CHALLENGER;
 }
+
+const store = useUserStore();
+
+function joinGame() {
+	displayGame.value = true;
+	playGame.value = GameType.PLAYER;
+}
+
+function watchGame() {
+	displayGame.value = !displayGame.value
+	playGame.value = GameType.WATCHER;
+}
+
+function closeCanvas() {
+	console.log("canvas closed");
+	displayGame.value = false;
+	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
+};
+
+socket.on('endGame', (roomIndex) => {
+	console.log("game ended");
+	displayGame.value = false;
+	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+});
+
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
+
+onMounted(async () => {
+    window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(async () => {
+    window.removeEventListener('resize', handleResize);
+});
+
 </script>
 
 <template>
-	<div v-if="inGame"> 
-		<div class="row" style="max-width: 100vw;">
-			<div class="col-2">
-				<p> P1 </p>
-				<button @click="displayGame()">Toggle Mode</button>
-			</div>
-			<div class="col-8" style="max-height: 90vh; max-width: 90vw">
-				<Canvas ></Canvas>
-			</div>
-			<div class="col-2">
-				<p> P2 </p>
-			</div>
-		</div>
+	<div v-if="displayGame"> 
+		<Canvas :play-game="playGame" @close-canvas="closeCanvas()"> </Canvas> <!-- init game or watch game-->
 	</div>
 	<div v-else>
-		<button @click="displayGame()">Toggle Mode</button>
-		<div class="row" style="max-width: 100vw;">
-			<div class="col-6"> 				
-				<LeaderBoard> </LeaderBoard>
- 			</div>
+		<div v-if="windowWidth > 800" class="row" style="max-width: 100vw;">
+			<div v-if="store.getUserName != undefined" class="col-6">
+				<GameHistory
+					:username-prop="store.getUserName"> 
+				</GameHistory>
+    		</div>
 			<div class="col-6">
-				<Actions> </Actions>
+				<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
+			</div>
+		</div>
+		<div v-else class="row">
+			<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
+			<div v-if="store.getUserName != undefined">
+				<GameHistory
+					:username-prop="store.getUserName"> 
+				</GameHistory>
 			</div>
 		</div>
 	</div>
 </template>
+
+<style>
+.playerCard {
+	text-align: center;
+	margin:auto;
+}
+</style>

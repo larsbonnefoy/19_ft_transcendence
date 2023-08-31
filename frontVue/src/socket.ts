@@ -1,29 +1,33 @@
-import {reactive} from 'vue';
 import { io } from "socket.io-client";
-import { useUserStore } from './stores/user';
-export const gameState = reactive({
-    connected: false, 
-});
 
-
-const URL = "http://localhost:3000"; //TODO set to env variable here
+const URL = `http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}`;
 
 export const socket = io(URL);
 
-socket.on("connect", async () => { //doesnt work as socket is init when app is launched not when user is connected
+socket.on("connect", async () => {
     console.log(`Connected to server`);
-    const store = useUserStore();
-    //await store.setStatus("online");
-    gameState.connected = true;
 });
 
 socket.on("disconnect", async () => {
     console.log("Disconnected from server");
-    const store = useUserStore();
-    await store.setStatus("offline");
-    gameState.connected = false;
+});
+
+socket.on("doubleConnection", async () => {
+    console.log("disconnecting socket because other connection detected");
+    socket.disconnect();
+    localStorage.clear();
+    location.reload();
 });
 
 socket.on("events", (response) => {
     console.log("here " + response);
+});
+
+socket.on("events", (response) => {
+    console.log("endGame " + response);
+});
+
+socket.on("challenge", (origin: string) => {
+    console.log("notif time");
+    socket.emit('isInGame', {origin: origin, token: localStorage.getItem('jwt_token')});
 });
