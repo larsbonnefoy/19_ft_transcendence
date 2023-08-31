@@ -11,14 +11,14 @@ import axios from 'axios';
 
 const route = useRoute();
 const store = useUserStore();
-const displayGame = ref(isInGame());
+const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
 let windowWidth = ref(window.innerWidth);
 
 let liveGames: any = Array(0);
 const dataLoaded = ref(false);
 
-async function isInGame():Promise<boolean> {
+async function isInGame() {
     try {
         const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
         liveGames = res.data;
