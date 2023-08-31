@@ -60,7 +60,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
        <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="channel.IsDm"
+             	<ChannelButton v-if="channel.isDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	 /></template>
@@ -70,7 +70,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="!channel.IsDm"
+             	<ChannelButton v-if="!channel.isDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	        />
