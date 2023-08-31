@@ -124,40 +124,35 @@ export const useUserStore = defineStore('user', {
 			catch (error) {}
 			return "../../assets/placeholder_avatar.png";
 		},
-        async addFriend(newFriend: string) {
-            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+        async addFriend(newFriendLogin: string) {
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
-        async unsendFriendRequest(newFriend: string) {
-            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/remove_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
+        async unsendFriendRequest(newFriendLogin: string) {
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/remove_request:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
-        async acceptFriendRequest(newFriend: string) {
-            const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${newFriend}`)
-            console.log(resLogin.data.login42);
-            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/accept_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} })
-            console.log(res);
+        async acceptFriendRequest(newFriendLogin: string) {
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/accept_request:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user != null) {
-                this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42);
+                this.user.pending = this.user?.pending.filter(name => name !== newFriendLogin);
             }
-            this.user?.friends.push(resLogin.data.login42);
+            this.user?.friends.push(newFriendLogin);
         },
-        async declineFriendRequest(newFriend: string) {
+        async declineFriendRequest(newFriendLogin: string) {
             try {
-                const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${newFriend}`)
-                console.log(resLogin.data.login42);
-                const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/refuse_request:${newFriend}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/refuse_request:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} });
                 if (this.user) {
-                    this.user.pending = this.user?.pending.filter(name => name !== resLogin.data.login42)
+                    this.user.pending = this.user?.pending.filter(name => name !== newFriendLogin)
                 }
             }
             catch (error) {
                 console.log(error);
             }
         },
-        async removeFriend(FriendtoRemove: string) {
-            const resLogin = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${FriendtoRemove}`)
-            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemove}`, { headers: {token: localStorage.getItem('jwt_token')} })
+        async removeFriend(FriendtoRemoveLogin: string) {
+            console.log(FriendtoRemoveLogin);
+            axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
-                this.user.friends = this.user?.friends.filter(name => name !== resLogin.data.login42)
+                this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }
         },
       },

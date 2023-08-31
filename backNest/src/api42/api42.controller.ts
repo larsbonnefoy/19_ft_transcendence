@@ -84,7 +84,7 @@ export class Api42Controller {
 			const user: User = new User;
 			user.login42 = query.login42;
 			user.username = query.login42;
-			user.photo = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif"
+			//user.photo = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif"
 			await this.userService.createUser(user);
 			return jwtToken;
 		}

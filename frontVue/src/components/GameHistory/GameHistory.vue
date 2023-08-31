@@ -25,7 +25,7 @@ async function getGames() {
         login.value = resLogin.data.login42;
     }
     catch (error : any) {
-        console.log(error.message);
+        console.log(error.message + ": No games played by this user");
     }
     isLoaded.value = true;
 }

@@ -4,26 +4,29 @@ import {computed, ref} from 'vue'
 import {socket} from '../../socket';
 import CustomDisplay from './CustomDisplay.vue';
 import { useUserStore } from '@/stores/user';
+import LiveGame from './LiveGame.vue'
 
 const store = useUserStore();
 
 const emit = defineEmits(['watchGame', 'playGame']);
+const dataLoaded = ref(false);
 
 let liveGames: any = Array(0);
 async function getOngoingGames() {
     try {
         const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
         liveGames = res.data;
+        dataLoaded.value = true;
     }
-    catch(error) {
-
+    catch(error:any) {
+        console.log(error.message + ": Pb loading ongoing games")
     }
 }
 
 await getOngoingGames();
 
-function watchGame(roomName: string) {
-    socket.emit("watchGame",  {roomName: roomName, token: localStorage.getItem('jwt_token')});         //emit to backend to be appended to right roomm
+
+function watchGame() {
     emit('watchGame');                       //emit to parent component to load game view
 }
 
@@ -38,29 +41,10 @@ function playGame() {
         <button class="btn btn-success" @click="playGame()">Play Game</button>
     </div>
     <!-- Watch Current Games -->
-    <div class="card text-white bg-dark overflow-auto shadow-lg" style="max-width: 70%; margin:auto;">
+    <div v-if="dataLoaded" class="card text-white bg-dark overflow-auto shadow-lg" style="max-width: 70%; margin:auto;">
         <div v-if="liveGames.length != 0" >
             <template v-for="(game, index) in liveGames" :key="index">
-                <div class="card-body p-0 m-3" style="text-align: center; margin: auto;">
-                    <div class="row">
-                        <div class="col-1" style="margin: auto;">
-                        <svg height="50" width="50" class="blinking">
-                            <circle cx="25" cy="25" r="5" fill="red" />
-                            Sorry, your browser does not support inline SVG.  
-                        </svg>
-                        </div>
-                        <div class="col-4 p-0 " style="margin: auto;"> {{ game.player0  }} </div>
-                        <div class="col-1" style="margin: auto;"> {{ game.score0 }} </div>
-                        <div class="col-3 p-0" style="margin: auto;"> {{ game.player1  }} </div>
-                        <div class="col-1" style="margin: auto;"> {{ game.score1 }} </div>
-                        <div v-if="!(store.getLogin42 === game.player0 || store.getLogin42 === game.player1)" class="col-2" style="margin: auto;">
-                            <button class="btn btn-info" @click="watchGame(game.roomName)">Watch</button>
-                        </div>
-                        <div v-else class="col-2" style="margin: auto">
-                          <button class="btn btn-outline-success" @click="playGame()">Rejoin Game</button>
-                        </div>
-                    </div>
-                </div>
+              <LiveGame @watch-game="watchGame()" @play-game="playGame()" :player0="game.player0" :player1="game.player1" :score0="game.score0" :score1="game.score1" :room-name="game.roomName"> </LiveGame>
             </template>
         </div>
         <div v-else class="m-3" style="text-align: center;">
