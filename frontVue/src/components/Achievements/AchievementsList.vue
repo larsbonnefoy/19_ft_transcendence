@@ -29,21 +29,38 @@ const achievementList: Achievement[] = [
         description: "Play one game.",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
-            return val < 1 ? val : 1;
+            return val; /* Return only val in order to overflow 1 and not to be displayed in list */
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
         max: 1,
     },
     {
-        name: "Pro player",
-        imageUrl: "../../../assets/Achievements/5games.png",
-        description: "Play 50 Games",
+        name: "Lifeguard",
+        imageUrl: "../../../assets/Achievements/19.svg",
+        description: "Play 19 Games",
         progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 50
-            return val < 1 ? val : 1;
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
+            if (val <= 1) {
+                return 2;
+            }
+            return val / 19;
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
-        max: 50,
+        max: 19,
+    },
+    {
+        name: "Jar level",
+        imageUrl: "../../../assets/Achievements/42_logo.svg",
+        description: "Play 42 Games",
+        progress: () => {
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
+            if (val <= 19) {
+                return 2;
+            }
+            return val / 42 < 1 ? val / 42 : 1;
+        },
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 42,
     },    
     {
         name: "Master",
@@ -96,6 +113,26 @@ const achievementList: Achievement[] = [
 		current: -1,
         max: 1,
     },
+    {
+        name: "Retro Gamer",
+        imageUrl: "../../../assets/Achievements/retro.png",
+        description: "Enter God Mode",
+        progress: () => {
+			return props.userProp.achievements & 16 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
+    },
+    {
+        name: "Shielded",
+        imageUrl: "../../../assets/Achievements/shield.png",
+        description: "Activate Double Authentification",
+        progress: () => {
+			return props.userProp.achievements & 32 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
+    },
 ]
 
 </script>
@@ -104,7 +141,9 @@ const achievementList: Achievement[] = [
     <h2 style="text-align: center; " class="m-5">Achievements </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in achievementList" :key="index">
-           <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+            <div v-if="achievement.progress() <= 1">
+                <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+            </div>
         </template>
     </div>
 </template>

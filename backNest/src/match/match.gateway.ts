@@ -68,6 +68,13 @@ export class MatchGateway {
       game.score0 = 9;
     else if (game.player1 === login42)
       game.score1 = 9;
+    const user = await this.userService.findOne(login42);
+    if (user === null) {
+      return ;
+    }
+    if (!(+user.achievements & 16)) {
+      this.userService.addAchievement(login42, +user.achievements + 16);
+    }
   }
 
   // @SubscribeMessage('leftPaddle')

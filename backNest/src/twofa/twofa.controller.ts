@@ -54,7 +54,7 @@ export class TwofaController {
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
 			console.log(twofaJSON);
-			await this.userService.enable2fa(login42); //TODO CYPHER SECRET
+			await this.userService.enable2fa(login42);
 			console.log("user : ");
 			console.log(this.userService.findOne(login42));
 		}

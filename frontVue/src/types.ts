@@ -35,7 +35,7 @@ export interface Achievement {
     name: string
     imageUrl: string
     description: string
-    progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
+    progress(): number
 	current: number
     max: number
 }

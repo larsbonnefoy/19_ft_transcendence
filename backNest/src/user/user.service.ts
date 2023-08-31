@@ -127,6 +127,13 @@ export class UserService {
   async enable2fa(login42: string)
   {
 	  await this.userRepository.update(login42, {has2fa:true});
+    const user = await this.findOne(login42);
+    if (user === null) {
+      return ;
+    }
+    if (!(+user.achievements & 32)) {
+      this.addAchievement(login42, +user.achievements + 32);
+    }
   }
 
   async disable2fa(login42: string)
