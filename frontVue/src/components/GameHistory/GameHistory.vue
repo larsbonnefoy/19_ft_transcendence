@@ -16,7 +16,6 @@ const login = ref("");
 const isLoaded = ref(false);
 
 async function getGames() {
-    console.log("Get Games for user " + props.usernameProp)
     try {
         const resHistory = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/history:${props.usernameProp}`);
         games.value = resHistory.data;
