@@ -27,7 +27,7 @@ export class Api42Service
 					client_id: process.env.API_UID,
 					client_secret: process.env.API_SECRET,
 					code: query,
-					redirect_uri: 'http://localhost:5173/auth'
+					redirect_uri: `http://${process.env.LOCAL_IP}:5173/auth`,
 	  			}, {
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
