@@ -1,16 +1,12 @@
 <script setup lang="ts">
 import { useRouter} from 'vue-router'
-// import { process } from '@types/node'
 
 const router = useRouter();
 
 const navigateToHome = () => {
       router.push('/home');
 };
-/*
-    check if valid token first, then redir to home
-    ca fait un double check du token vu qu'il est recheck au moment du load de home
-*/
+
 const loginWith42 = () => {
   window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${import.meta.env.VITE_API_UID}&redirect_uri=http%3A%2F%2F${import.meta.env.VITE_LOCAL_IP}%3A5173%2Fauth&response_type=code`;
 }
@@ -29,7 +25,7 @@ const loginWith42 = () => {
           <div class="card-body">
             <form>
               <div class="d-flex justify-content-between">
-              <button @click="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
+              <button @click.prevent="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
               <button @click.prevent="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
               </div>
             </form>
