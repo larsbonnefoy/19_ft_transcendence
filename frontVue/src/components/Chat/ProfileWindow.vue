@@ -11,15 +11,11 @@ let userdata: UserInfo;
 
 async function getProfileData() {
   try {
-<<<<<<< HEAD
     const res = await axios.get(`http://localhost:3000/user/me`, {
       headers:
           {
             'token':localStorage.getItem('jwt_token')
           }});
-=======
-    const res = await axios.get(`http://localhost:3000/user/one:lucas`);
->>>>>>> lucasv2
     console.log("Data fetched: ",res.data);
     console.log(res.data);
     userdata = res.data;
