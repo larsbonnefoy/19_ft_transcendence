@@ -88,7 +88,7 @@ Should set max lenght of username here
 </div>
 </template>
 
-<style scoped>
+<style>
 .ProfilePic {
     height: fit-content;
     width: 15vw;
