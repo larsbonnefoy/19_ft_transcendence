@@ -363,8 +363,13 @@ export class MatchGateway {
         return ;
       }
     }
+    const user = await this.userService.findOne(login42);
+    if (user == null) {
+      console.log("can't find user with login " + login42);
+      return ;
+    }
     console.log(login42 + " sending notif to " + data.target);
-	  this.server.to(data.target).emit("challenge", login42);
+	  this.server.to(data.target).emit("challenge", {login42:login42, username:user.username});
   }
 
   @SubscribeMessage('acceptChallenge')
