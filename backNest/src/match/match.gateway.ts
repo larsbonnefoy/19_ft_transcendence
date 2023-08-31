@@ -52,27 +52,37 @@ export class MatchGateway {
     return data;
   }
   
-  //TODO DELETE 
   @SubscribeMessage('win')
-  async winGame(@MessageBody() data: {roomIndex: number}) {
-	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-		return ;
-	  games[data.roomIndex].score0 = 9;
+  async winGame(@MessageBody() data: {roomIndex: number, token: string}) {
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+	  if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+		  return ;
+    let game: Game = games[data.roomIndex];
+    if (game.player0 === login42)
+      game.score0 = 9;
+    else if (game.player1 === login42)
+      game.score1 = 9;
   }
 
-  @SubscribeMessage('leftPaddle')
-  async computeLeftPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
-	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-		return ;
-	  games[data.roomIndex].updateLeftPaddle(data.dir);
-  }
+  // @SubscribeMessage('leftPaddle')
+  // async computeLeftPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
+	// if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	// 	return ;
+	//   games[data.roomIndex].updateLeftPaddle(data.dir);
+  // }
 
-  @SubscribeMessage('rightPaddle')
-  async computeRightPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
-	if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-		return ;
-    games[data.roomIndex].updateRightPaddle(data.dir);
-  }
+  // @SubscribeMessage('rightPaddle')
+  // async computeRightPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
+	// if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	// 	return ;
+  //   games[data.roomIndex].updateRightPaddle(data.dir);
+  // }
 
   @SubscribeMessage('updatePaddle')
   async computePaddle(@MessageBody() data: {dir: number, roomIndex: number, token: string}) {
@@ -345,7 +355,7 @@ export class MatchGateway {
       if (game.player0 === login42 || game.player1 === login42)
         return ;
     }
-    this.server.to(login42).emit("notification", data.origin);
+    this.server.to(login42).emit("gameNotification", data.origin);
   }
 
   @SubscribeMessage('sendNotification')

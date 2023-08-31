@@ -54,6 +54,7 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
+	socket.off('endGame');
 });
 
 </script>
