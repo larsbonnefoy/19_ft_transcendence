@@ -12,7 +12,7 @@ const props = defineProps<{
 //probablement devoir faire comme dans profile pr profile card
 /*
 async function getUserInfo(): Promise<UserInfo> {
-    const res = await axios.get(`http://localhost:3000/user/one:${props.usernameProp}`);
+    const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/one:${props.usernameProp}`);
     console.log("User Info for achievment");
     console.log(res.data);
     const user: UserInfo = res.data;
@@ -28,20 +28,22 @@ const achievementList: Achievement[] = [
         imageUrl: "../../../assets/Achievements/1game.png",
         description: "Play one game.",
         progress: () => {
-            const val = (props.userProp.win*1 + props.userProp.loss*1) / 1
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
             return val < 1 ? val : 1;
         },
-        max: 1
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 1,
     },
     {
         name: "Pro player",
         imageUrl: "../../../assets/Achievements/5games.png",
         description: "Play 50 Games",
         progress: () => {
-            const val = (props.userProp.win*1 + props.userProp.loss*1) / 50
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 50
             return val < 1 ? val : 1;
         },
-        max: 50
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 50,
     },    
     {
         name: "Master",
@@ -51,35 +53,48 @@ const achievementList: Achievement[] = [
             const val = (props.userProp.win * 1) / 100
             return val < 1 ? val : 1;
         },
-        max: 100    
+		current: props.userProp.win * 1,
+        max: 100,  
     },
     {
         name: "Incognito",
         imageUrl: "../../../assets/Achievements/incognito.png",
         description: "Change username",
-        progress: () => { return 0},
-        max: 1
+        progress: () => {
+			 return props.userProp.achievements & 1 ? 1 : 0;
+		},
+        current: -1,
+		max: 1,
     },
     {
         name: "Make up Artist",
         imageUrl: "../../../assets/Achievements/makeup.png",
         description: "Change Profile Pic",
-        progress: () => { return 0},
-        max: 1
+        progress: () => {
+			return props.userProp.achievements & 2 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
     },
     {
         name: "Flawless",
         imageUrl: "../../../assets/Achievements/flawless.png",
         description: "Win a game without conceding any points",
-        progress: () => { return 0},
-        max: 1
+        progress: () => {
+			return props.userProp.achievements & 4 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
     },
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",
         description: "Make your first Friend",
-        progress: () => { return 0},
-        max: 1
+        progress: () => {
+			return props.userProp.achievements & 8 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
     },
 ]
 
@@ -87,7 +102,7 @@ const achievementList: Achievement[] = [
 
 <template>
     <h2 style="text-align: center; " class="m-5">Achievements </h2>
-    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 80vh;">
+    <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in achievementList" :key="index">
            <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
         </template>

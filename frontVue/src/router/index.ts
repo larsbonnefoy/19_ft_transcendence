@@ -4,6 +4,7 @@ import Login from '@/views/Login.vue';
 import Home from '@/views/Home.vue';
 import Game from '@/views/Game.vue';
 import Chat from '@/views/Chat.vue';
+import Member from '@/views/Members.vue';
 import Auth from '@/views/Auth.vue';
 import Profile from '@/views/Profile.vue';
 import ShowUsers from '@/views/ShowUsers.vue';
@@ -17,7 +18,7 @@ async function validAccess(): Promise<boolean> {
   let jwt_token = localStorage.getItem("jwt_token");
   if (jwt_token) {
     try {
-      const canAccess = await axios.post("http://localhost:3000/api42/isAuth", {token : jwt_token})
+      const canAccess = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/api42/isAuth`, {token : jwt_token})
       return canAccess.data;
     }
     catch {
@@ -50,7 +51,6 @@ const router = createRouter({
         }
       }
     },
-
     {
       path: '/game',
       name: 'game',
@@ -60,6 +60,24 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+        }
+      }
+    },
+    {
+      path: '/game/:challenge',
+      name: 'challenge',
+      component: Game,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+        console.log("to " + to.path);
+        if (to.path !== "/game/challenge")
+          return 'game';
       }
     },
     {
@@ -71,9 +89,28 @@ const router = createRouter({
         if (!acces && to.name != '/') {
           return '/';
         }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+        }
       }
     },
-	  {
+	{
+		path: '/members',
+		name: 'members',
+		component: Member,
+		beforeEnter: async (to, from) => {
+			const acces = await validAccess();
+			if (!acces && to.name != '/') {
+			  return '/';
+			}
+      else {
+        const store = useUserStore();
+        await store.fetchUser();
+      }
+		}
+	},
+	{
       path: '/auth',
       name: 'auth',
       component: Auth,
@@ -89,8 +126,23 @@ const router = createRouter({
         }
         else {
           const store = useUserStore();
-          //could only fetch friends list here with another function
           await store.fetchUser();
+        }
+      }
+    },
+    {
+      path: '/profile',
+      name: 'persoProfile',
+      component: Profile,
+      beforeEnter: async (to, from) => {
+        const acces = await validAccess();
+        if (!acces && to.name != '/') {
+          return '/';
+        }
+        else {
+          const store = useUserStore();
+          await store.fetchUser();
+          return `/profile/${store.getUserName}`
         }
       }
     },

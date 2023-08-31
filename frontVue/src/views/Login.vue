@@ -12,7 +12,7 @@ const navigateToHome = () => {
     ca fait un double check du token vu qu'il est recheck au moment du load de home
 */
 const loginWith42 = () => {
-  window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${import.meta.env.VITE_API_UID}&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fauth&response_type=code`;
+  window.location.href = `https://api.intra.42.fr/oauth/authorize?client_id=${import.meta.env.VITE_API_UID}&redirect_uri=http%3A%2F%2F${import.meta.env.VITE_LOCAL_IP}%3A5173%2Fauth&response_type=code`;
 }
 
 </script>

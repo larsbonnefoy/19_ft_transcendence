@@ -4,23 +4,27 @@ import {useRoute, useRouter} from 'vue-router'
 import { useUserStore } from '@/stores/user';
 
 import HeaderLink from './HeaderLink.vue';
+import { socket } from '@/socket';
 const route = useRoute();
 const router = useRouter();
 const store = useUserStore();
 
 
-const toDisplayNav = ['home', 'chat', 'game'];
-const toDisplayWhere = ['home', 'chat', 'game', 'profile'];
+const toDisplayNav = ['home', 'chat', 'game', 'members'];
+const toDisplayWhere = ['home', 'chat', 'game', 'members', 'profile', 'challenge'];
 
-const routesToDisplay = router.options.routes.filter( value => toDisplayNav.includes(value.name));
+const routesToDisplay = router.options.routes.filter( value => toDisplayNav.includes(<string>value.name));
 
 const displayLinks = computed(() => {
-    return toDisplayWhere.includes(route.name);
+    // console.log(route.name);
+    return toDisplayWhere.includes(<string>route.name);
 });
 
 const logout = async () => {
-    await store.setStatus("offline");
+    // await store.setStatus("offline");
     localStorage.clear();
+	socket.disconnect();
+	socket.connect();
 }
 
 </script>
@@ -63,7 +67,16 @@ const logout = async () => {
                             </router-link>
                         </div>
                     </div>
-                <img class="mx-3" :src=store.getImg >
+                <router-link 
+               	:to="{
+        	       	name:'profile',
+                   	params: {
+                       	username: store.getUserName
+                   	}
+               	}"
+                >
+                    <img class="mx-3" :src=store.getImg >
+                </router-link>
             </template>
         </div>
     </nav>

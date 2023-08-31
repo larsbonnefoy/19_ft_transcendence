@@ -1,14 +1,16 @@
+TODOS:
+	- sql injections
+	- chat?
+	- ingame powerup ?
+
+
 My todo:
-- photos
 - achievements
-			- 1 10 100 games played 							(id 0, 1, 2)
-			- INCOGNITO: changed username						(id 3)
-			- MAKEUP ARTIST: changed profile picture			(id 4)
-			- FLAWLESS: won a game without conceding any point	(id 5)
-			- YOU AND ME: made your first friend				(id 6)
+			+ add achievements related to chat
 - id in user?
-- change username takes token
-- set friend requests in database? so that you can only be friends if request is accepted
+- check cancel pending of lars
+- update achievements when changename, like for games of lars
+
 
 
 list of .env content:
@@ -31,8 +33,13 @@ list of .env content:
 		ENC_SALT= 'random bytes'
 		ENC_ALG='aes-256-ctr'
 
+		#NETWORK 
+		LOCAL_IP = "10.2.7.2" #--> or localhost
+
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
+		VITE_LOCAL_IP = "10.2.7.2" #--> or localhost
+		VITE_BACKEND_PORT = "3000"
 
 -backNest/postgres/.env
 		#Postgres
@@ -48,8 +55,20 @@ list of .env content:
 my done:
 - elo modif like chess
 - status can be changed
+- photos <==  https://stackoverflow.com/questions/37510801/convert-octet-stream-to-image
+- change username takes token
+- set friend requests in database? so that you can only be friends if request is accepted
+- set status using socket io (what charlie boy talked about)
+- game + matchmaking + watchparty + challenge friend
+- reactive screen everywhere
+- achievements
+			- 1 10 100 games played 							(id 0, 1, 2)
+			- INCOGNITO: changed username						(id 3)  => & 1
+			- MAKEUP ARTIST: changed profile picture			(id 4)  => & 2
+			- FLAWLESS: won a game without conceding any point	(id 5)  => & 4
+			- YOU AND ME: made your first friend				(id 6)  => & 8
 
-
+ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 
 nest.js for backend
 				https://docs.nestjs.com/

@@ -27,7 +27,7 @@ export class Api42Service
 					client_id: process.env.API_UID,
 					client_secret: process.env.API_SECRET,
 					code: query,
-					redirect_uri: 'http://localhost:5173/auth'
+					redirect_uri: `http://${process.env.LOCAL_IP}:5173/auth`,
 	  			}, {
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
@@ -86,16 +86,14 @@ export class Api42Service
 	async isAuth(jwtToken : string) : Promise<boolean>
 	{
 		try {
-			console.error(jwtConstants);
-			console.error(process.env.JWT_SECRET);
+			//console.error(jwtConstants);
+			//console.error(process.env.JWT_SECRET);
 			const payload = await this.jwtService.verifyAsync(
 				jwtToken,
 				{
 					secret: process.env.JWT_SECRET
 				}
 			);
-			console.log("hmm,?")
-			console.log(payload);
 		if (!payload['auth'] || payload['auth'] === false)
 			return false;
 		} 
@@ -110,9 +108,9 @@ export class Api42Service
 	{
 		try {
 			const decoded : any = this.jwtService.decode(jwtToken);
-			console.log('decoded');
-			console.log(jwtToken);
-			console.log(decoded);
+			// console.log('decoded');
+			// console.log(jwtToken);
+			// console.log(decoded);
 			return (decoded['sub']);
 		}
 		catch
