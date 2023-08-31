@@ -109,14 +109,15 @@ export const useChatStore = defineStore('chat', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                this.chat = []
+                // this.chat = []
                 this.chat.ChannelList = data.data; 
                 console.log(data.data[0].IsDm)
             }
             catch (error)
             {
                 console.log("Error: FetchChannels: " + error)
-                this.chat = [];
+                // this.chat = Array<Channel>;
+                this.chat?.ChannelList = [];
             }
         },
 
@@ -133,7 +134,7 @@ export const useChatStore = defineStore('chat', {
 			        }
 		        })
                 const newChannel : Channel = res.data;
-                this.chat.ChannelList.push(newChannel);
+                this.chat?.ChannelList.push(newChannel);
                 return res;
         	}
             catch (error: any)

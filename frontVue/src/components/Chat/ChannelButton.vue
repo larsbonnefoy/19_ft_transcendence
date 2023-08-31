@@ -1,6 +1,6 @@
 <template>
   <button class="channel-button" @click="selectChannel">
-    {{ channel.id }}
+    {{ channel?.id }}
   </button>
 </template>
 
