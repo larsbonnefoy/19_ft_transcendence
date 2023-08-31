@@ -7,10 +7,11 @@ import ProfileWindow from './ProfileWindow.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
 import axios from "axios";
 
-const selectedUser = ref("");
+const selectedUser = ref<string>("");
 const emits = defineEmits();
-function handleOpenProfile(event: string) {
-  selectedUser.value = event;
+
+function handleSelectedProfile(user: string) {
+  selectedUser.value = user;
   console.log('Current selected user:', selectedUser.value);
 }
 
@@ -43,7 +44,6 @@ async function handleSelectedChannel(event: string)
   selectedChannel.value = event;
 
 }
-
 </script>
 
 <template>
@@ -60,12 +60,12 @@ async function handleSelectedChannel(event: string)
         <ChatWindow
                 :selectedChannel="selectedChannel"
                 :messages="messages"
+                @open-profile="handleSelectedProfile"
         />
       </div>
       <div class="col-3">
         <!-- Profile Window -->
         <ProfileWindow :user="selectedUser"/>
-        <!-- <SocialsList></SocialsList> -->
       </div>
     </div>
   </div>

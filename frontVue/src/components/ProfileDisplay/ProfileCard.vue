@@ -9,10 +9,13 @@ import DoubleAuthButton from './DoubleAuthButton.vue';
 import ChangeUsername from './ChangeUsername.vue';
 import UploadAvatar from './UploadAvatar.vue'
 import Status from './Status.vue';
+
 const props = defineProps<{
     user : UserInfo
 }>()
 
+console.log("profilecard")
+console.log(props.user.value);
 const store = useUserStore();
 
 const activeUser = computed(() => {

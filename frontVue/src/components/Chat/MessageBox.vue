@@ -1,4 +1,4 @@
-<script setup lang="ts">
+.<script setup lang="ts">
 import { ref, onUpdated } from 'vue';
 import ProfileButton from './ProfileButton.vue';
 import { useChatStore, useChannelStore} from '@/stores/chat';
@@ -32,7 +32,7 @@ function handleProfileClick(username: string) {
     <div v-for="(message,  index) in channel?.getMessages" :key="index" class="message"
          :class="{ 'sent-by-me': (message?.user.login42 === me)}">
       <div class="message-user">
-        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.login42" @open-profile="handleProfileClick"/>
+        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.username" @open-profile="handleProfileClick"/>
       </div>
       <div class="message-content">
         {{ message.message }} 
