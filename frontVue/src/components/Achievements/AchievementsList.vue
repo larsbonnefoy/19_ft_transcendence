@@ -22,6 +22,48 @@ async function getUserInfo(): Promise<UserInfo> {
 
 //await getUserInfo();
 
+const gameProgressAchievements: Achievement[] = [
+{
+        name: "Getting Started",
+        imageUrl: "../../../assets/Achievements/1game.png",
+        description: "Play one game.",
+        progress: () => {
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
+            return val; /* Return only val in order to overflow 1 and not to be displayed in list */
+        },
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 1,
+    },
+    {
+        name: "Lifeguard",
+        imageUrl: "../../../assets/Achievements/19.svg",
+        description: "Play 19 Games",
+        progress: () => {
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
+            if (val <= 1) {
+                return 2;
+            }
+            return val / 19;
+        },
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 19,
+    },
+    {
+        name: "Welcome to the Jar",
+        imageUrl: "../../../assets/Achievements/42_logo.svg",
+        description: "Play 42 Games",
+        progress: () => {
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
+            if (val <= 19) {
+                return 2;
+            }
+            return val / 42 < 1 ? val / 42 : 1;
+        },
+		current: props.userProp.win * 1 + props.userProp.loss * 1,
+        max: 42,
+    },   
+]
+
 const achievementList: Achievement[] = [
     {
         name: "Getting Started",
@@ -49,7 +91,7 @@ const achievementList: Achievement[] = [
         max: 19,
     },
     {
-        name: "Jar level",
+        name: "Welcome to the Jar",
         imageUrl: "../../../assets/Achievements/42_logo.svg",
         description: "Play 42 Games",
         progress: () => {

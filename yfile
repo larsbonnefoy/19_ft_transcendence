@@ -1,10 +1,11 @@
 TODOS:
 	- sql injections
 	- chat?
-	- ingame powerup ?
 	- If in game when /game -> load canvas
 	- If game challenge accepte in /game -> load canvas
 	- change addFriend/remove/unset... endpoint to use login42 and not username;
+	- Change achiev images to white
+	- sensi palettes + obstacles
 
 
 My todo:
