@@ -34,7 +34,9 @@ export const useUserStore = defineStore('user', {
 					this.user.photo = await this.getAvatar(this.user.photo);
 					this.user.status = "online"; //little trick to be online when you reload your own profile
 				}
+                console.log("yo");
 				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
+                console.log("yo");
             }
             catch (error) {
             //   alert(error);

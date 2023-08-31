@@ -16,7 +16,8 @@ export const useChannelStore = defineStore('channel', {
         getBans: (state) => state.channel?.bans,
         getMutes: (state) => state.channel?.mutes,
         getOwner: (state) => state.channel?.owner,
-        getIsDm: (state) => state.channel?.IsDm,
+        getIsDm: (state) => state.channel?.isDm,
+        getIsPrivate: (state) => state.channel?.isPrivate,
     },
     actions: {
        async setChannel(newChannel: Channel)
@@ -40,7 +41,49 @@ export const useChannelStore = defineStore('channel', {
             {
                 this.channel = null;
             }
-       }, 
+       },
+
+       async refreshMessages()
+       {
+             console.log(">>>>>>" + this.channel.id)
+            try
+            {
+                const messages: any = await axios.post(`http://localhost:3000/chat/getMessages`, {id: this.channel?.id},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                this.channel.messages = messages.data;
+            }
+            catch (error)
+            {
+            }
+       },
+
+       async addMessage(newMessageString: string)
+       {
+        try
+        {
+          const data: any = await axios.post(`http://localhost:3000/chat/message`, {roomId: this.channel?.id, message: newMessageString},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+            console.log(data);
+            const newMessage : Messages = data.data;
+            console.log("addMessage")
+            console.log(newMessage)
+            await this.channel?.messages.push(newMessage);
+        }
+        catch
+        {
+
+        }
+       },
     }
 })
 
@@ -101,5 +144,4 @@ export const useChatStore = defineStore('chat', {
         },
       },
       
-     persist: true,
   })

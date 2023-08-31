@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
+import { socket } from '@/socket';
 
 const chat = useChatStore();
 const emit = defineEmits();
@@ -35,6 +36,8 @@ async function handleSelected(name: string)
   await emit('channel', name);
   emit('channel-selected', name);
 }
+
+
 </script>
 
 
@@ -60,7 +63,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
        <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="channel.IsDm"
+             	<ChannelButton v-if="channel.isDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	 /></template>
@@ -70,7 +73,7 @@ async function handleSelected(name: string)
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="!channel.IsDm"
+             	<ChannelButton v-if="!channel.isDm"
        	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	        />

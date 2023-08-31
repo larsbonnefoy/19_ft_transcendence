@@ -35,7 +35,7 @@ function handleProfileClick(username: string) {
         <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.login42" @open-profile="handleProfileClick"/>
       </div>
       <div class="message-content">
-        {{ message.message }}
+        {{ message.message }} 
       </div>
     </div>
   </div>

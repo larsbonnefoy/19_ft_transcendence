@@ -414,7 +414,7 @@ export class MatchGateway {
 
   // to allow notifications, we put users in individual rooms that others can join shortly to send them notifications
   @SubscribeMessage('joinMyRoom')
-  async joinMyRoom(@ConnectedSocket() client: any, @MessageBody() token: string) {
+  async joinMyRoom(@ConnectedSocket() client: Socket, @MessageBody() token: string) {
 	let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(token);
@@ -428,6 +428,7 @@ export class MatchGateway {
       if (current_id !== "") {
         this.server.to(login42).emit('doubleConnection');
     }
+    client.leave(login42);
     client.join(login42);
     await this.userService.set_status(login42, "online");
   }

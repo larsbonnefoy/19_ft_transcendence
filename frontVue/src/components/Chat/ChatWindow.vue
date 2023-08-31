@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import {ref, nextTick, watch, FunctionDirective} from 'vue';
+import {ref, nextTick, watch, FunctionDirective, onMounted, onUnmounted} from 'vue';
 import MessageBox from './MessageBox.vue';
-// import ChannelList from './.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
+import { useChannelStore } from '@/stores/chat';
+import { socket } from '@/socket';
+import ChannelList from './ChannelList.vue';
 
 const chat = useChatStore();
+const channel = useChannelStore();
 const props = defineProps({
   messages: Array,
   user: Object,
@@ -24,21 +27,16 @@ const props = defineProps({
 // });
 const newMessage = ref("");
 // const selectedChannel = ref(selectedChannel)
-// const me = (await axios.get('http://localhost:3000/user/me/login42', {
-//   headers:
-//       {
-//         'token':localStorage.getItem('jwt_token')
-//       }
-// })).data;
-// let messages = ref(Array.from({length: data.data.length }, (_, i) => ({
-//   id: i+1,
-//   user: data.data[i].user.username,
-//   content : data.data[i].message,
-//   sender: data.data[i].user.login42=== me
-// })));
+const me = (await axios.get('http://localhost:3000/user/me/login42', {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
 
 
-let messages = chat.getChannels?.find(it => {return props.selectedChannel === it.id})?.messages;
+
+let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref(null);
@@ -48,15 +46,32 @@ const endOfChatRef = ref(null);
 //        console.log("yo: " + ChannelButton.channel.test);
 const emit = defineEmits();
 
+function getDmChatter()
+{
+      console.log("getDm: " + channel.getChatters[0].login42 + " " + me + " "  +  channel.getOwner.login42) 
+      if (channel.getChatters[0].login42 === me)
+        return channel.getOwner.login42;
+      return (channel.getChatters[0].login42)
+}
 
-const sendMessage = () => {
-  if (newMessage.value.trim()) {
-    messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
-    newMessage.value = "";
-    nextTick(() => {
-      autoScroll();
-    });
+const sendMessage = async () => {
+  console.log(channel.getIsDm);
+  if (channel.getIsDm && newMessage.value.trim())
+  {
+    const chatter = getDmChatter(); 
+
+    console.log("Send Dm to :" + chatter)
+    // console.log(message)
+    await channel.addMessage(newMessage.value);
+    socket.emit("sendPrivate",{target: chatter, message: newMessage.value, token: localStorage.getItem('jwt_token')});
   }
+  // if (newMessage.value.trim()) {
+    // messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
+    // nextTick(() => {
+      // autoScroll();
+    // });
+  // }
+  newMessage.value = "";
 };
 
 const autoScroll = () => {
@@ -70,36 +85,24 @@ const handleUpdate = () => {
     autoScroll();
 };
 
-function getMessage(roomId: string)
-{
 
-}
 
 function handleOpenProfile(user: string) {
   emit('open-profile', user);
 }
-// async function handleChannel() {
-//   console.log(` test: ${props.selectedChannel}`);
-//   const roomId : string | undefined= props.selectedChannel;
-//   const data : any = await axios.get(`http://localhost:3000/chat/room:${roomId}`, {
-//     headers:
-//         {
-//           'token':localStorage.getItem('jwt_token')
-//         }
-//   });
-//   messages = ref(Array.from({length: data.data.length }, (_, i) => ({
-//     id: i+1,
-//     user: data.data[i].user.username,
-//     content : data.data[i].message,
-//     sender: data.data[i].user.login42 === me
-//   })));
-//   await nextTick();
-// }
-// console.log("BOOOOP" + props.selectedChannel)
-//
-// await watch(async () => await props.selectedChannel, handleChannel);
-</script>
 
+onMounted(async () => {
+  socket.on("privateMessage", (data : any) => {
+    console.log("response: "+ data.login + " " + data.message);
+    channel.refreshMessages();
+  });
+})
+
+onUnmounted(async () => {
+  socket.off("privateMessage");
+});
+
+</script>
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
