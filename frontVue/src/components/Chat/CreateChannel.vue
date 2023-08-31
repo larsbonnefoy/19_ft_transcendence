@@ -160,11 +160,11 @@ const closeModal = () => {
         </div>
     <div class="row" style="margin: auto;"> 
         <div class="col-6 m-0">
-         <input type="radio" class="btn-check" name="options-outlined" id="success-outlined" autocomplete="off" :checked="!isPrivate" @click="setPrivate">
+         <input type="radio" class="btn-check" name="select-private" id="select-public" autocomplete="off" :checked="!isPrivate" @click="setPrivate">
             <label class="btn btn-outline-success" for="success-outlined">Public</label>
         </div>
         <div class="col-6 m-0"> 
-          <input type="radio" class="btn-check" name="options-outlined" id="danger-outlined" autocomplete="off" :checked="isPrivate" @click="setPrivate">
+          <input type="radio" class="btn-check" name="select-private" id="select-private" autocomplete="off" :checked="isPrivate" @click="setPrivate">
             <label class="btn btn-outline-danger" for="danger-outlined">Private</label>
         </div>
       </div>
