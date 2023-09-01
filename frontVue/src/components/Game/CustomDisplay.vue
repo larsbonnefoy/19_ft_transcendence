@@ -73,7 +73,7 @@ function resetSettings() {
 	localStorage.setItem('rightPaddleColor', "white");
 	localStorage.setItem('leftPaddleColor', "white");
 	localStorage.setItem('backGround', "black");
-	selectMode(2);
+	selectMode(3);
 	drawBackGround();
 	drawBall();
 	drawLeftPaddle();

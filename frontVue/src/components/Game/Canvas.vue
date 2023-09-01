@@ -225,8 +225,10 @@ function init() {
                 lastLatencyUpdate = new Date().getTime();
             }
         }
+        console.log(response.gMode);
     });
 	intervalStop = setInterval(redrawAll, 20);
+
 }
 
 function redrawAll() {

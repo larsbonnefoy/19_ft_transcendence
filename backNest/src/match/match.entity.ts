@@ -160,7 +160,7 @@ export class Game {
     } else if (this.ballCollisionObstacle(this.rightPaddle)) {
         this.ball.speedy = (this.ball.y - this.rightPaddle.y) * (this.ball.speed - 2) / (this.rightPaddle.height / 2);
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
-    } else if (+this.gMode === game_mode.OBSTACLES) {
+    } else if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.RANDOM) {
       if (this.ballCollisionObstacle(this.obstacle0)) {
         this.bounceObstacle(this.obstacle0);
       } else if (this.ballCollisionObstacle(this.obstacle1)) {
@@ -255,10 +255,9 @@ export class Game {
         deltaTime -= 20;
       }
       this.updateBall(deltaTime);
-      if (+this.gMode === game_mode.OBSTACLES) {
-        this.updateObstacle(this.obstacle0, deltaTime);
-        this.updateObstacle(this.obstacle1, deltaTime);
-      }
+      this.updateObstacle(this.obstacle0, deltaTime);
+      this.updateObstacle(this.obstacle1, deltaTime);
+    
       // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
     }
