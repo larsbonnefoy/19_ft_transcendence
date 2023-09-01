@@ -186,6 +186,7 @@ export class MatchGateway {
           }
           game.player1 = login42;
           game.lastTimeStamp = new Date().getTime();
+          game.timeOut = 3000;
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomIndex);
           console.log(login42 + ": second joins " + roomName);
@@ -365,6 +366,7 @@ export class MatchGateway {
       games[roomIndex].player1 = login42;
       games[roomIndex].gMode = game_mode.OBSTACLES;
       games[roomIndex].lastTimeStamp = new Date().getTime();
+      games[roomIndex].timeOut = 3000;
       console.log("new room for challenge between " + data.target + " and " + login42 + " in " + games[roomIndex].roomName);
     }
 	  this.server.to(data.target).emit("challengeAccepted", login42);

@@ -218,6 +218,8 @@ function init() {
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
+        if (+response.timeOut >= 0)
+            ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
         if (response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
@@ -225,7 +227,7 @@ function init() {
                 lastLatencyUpdate = new Date().getTime();
             }
         }
-        console.log(response.gMode);
+        console.log(response.timeOut / 1000);
     });
 	intervalStop = setInterval(redrawAll, 20);
 
