@@ -25,19 +25,18 @@ const player1Connected = computed(() => {
 })
 
 /* GAME */
-const canvasWidth = 800;
-const canvasHeight = 600;
-const key_d = 68;
-const key_e = 69;
-const key_s = 83;
-const key_w = 87;
-const key_up = 38;
-const key_down = 40;
-const space = 32;
+const canvasWidth: number = 800;
+const canvasHeight: number = 600;
+const key_a: number = 65;
+const key_b: number = 66;
+const key_left: number = 37;
+const key_up: number = 38;
+const key_right: number = 39;
+const key_down: number = 40;
 let player0Login = ref("Player1");
 let player1Login= ref("Player2");
 let lastLatencyUpdate = new Date().getTime();
-
+let lucasSheat: string = "";
 
 let intervalStop : number = -1;
 let canvas: HTMLCanvasElement | any = null;
@@ -48,21 +47,62 @@ let backgroundColor : string = "black";
 
 const diff = ref(0);
 
+function keyDown(event: any) {
+    key = event.keyCode;
+}
+
+function keyUp(event: any) {
+    key = 0;
+    if (roomIndex === -1 || !isPlayer)
+        return ;
+    switch (event.keyCode) {
+        case (key_up):
+            if (lucasSheat === "u")
+                lucasSheat += 'u';
+            else
+                lucasSheat = "u";
+            break ;
+        case (key_down):
+            if (lucasSheat === "uu" || lucasSheat === "uud")
+                lucasSheat += 'd';
+            else
+                lucasSheat = "";
+            break ;
+        case (key_left):
+            if (lucasSheat === "uudd" || lucasSheat === "uuddlr")
+                lucasSheat += 'l';
+            else
+                lucasSheat = "";
+            break ;
+        case (key_right):
+            if (lucasSheat === "uuddl" || lucasSheat === "uuddlrl")
+                lucasSheat += 'r';
+            else
+                lucasSheat = "";
+            break ;
+        case (key_a):
+            if (lucasSheat === "uuddlrlr")
+                lucasSheat += 'a';
+            else
+                lucasSheat = "";
+            break ;
+        case (key_b):
+            if (lucasSheat === "uuddlrlra")
+                socket.emit("win", {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+            lucasSheat = "";
+            break ;
+        default:
+            lucasSheat = "";
+    }
+}
+
 function updateRoomIndex(response : number) {
     console.log(response + " got this form joingame")
     roomIndex = response;
 }
 
 function init() {
-    socket.on('joinGame', updateRoomIndex);//(response : number) => {
-        // console.log(response + " got this form joingame")
-        // roomIndex = response;
-    // });
-
-    // socket.on('setAsPlayer', () => {
-    //     console.log("becomes player");
-    //     isPlayer = true;
-    // });
+    socket.on('joinGame', updateRoomIndex);
 
     canvas = document.getElementById('gameCanvas') as HTMLCanvasElement;
     if (canvas === null || canvas === undefined)
@@ -73,13 +113,8 @@ function init() {
 	ctx = canvas.getContext('2d');
 	ctx.font = "30px Arial";
 	
-	window.addEventListener('keydown', function (e: any) {
-        key = e.keyCode;
-        // console.log(key);
-    });
-	window.addEventListener('keyup', function (e: any) {
-        key = 0;
-    });
+	window.addEventListener('keydown', keyDown);
+	window.addEventListener('keyup', keyUp);
 
     socket.on('display', (response : any) => {
         if (roomIndex === -1)
@@ -176,30 +211,13 @@ function redrawAll() {
     // console.log("room " + roomIndex + ", player " + isPlayer);
 	if (roomIndex === -1 || !isPlayer)
 		return ;
-    if (key == key_w) {
-        socket.emit("leftPaddle", {dir: -1, roomIndex: roomIndex});
-    }
-    if (key == key_s) {
-        socket.emit("leftPaddle", {dir: 1, roomIndex: roomIndex});
-    }
-    if (key == key_e) {
-        socket.emit("rightPaddle", {dir: -1, roomIndex: roomIndex});
-    }
-    if (key == key_d) {
-        socket.emit("rightPaddle", {dir: 1, roomIndex: roomIndex});
-    }
     if (key === key_up) {
         socket.emit("updatePaddle", {dir: -1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     if (key === key_down) {
         socket.emit("updatePaddle", {dir: 1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
-    //TODO DELETE 
-    if (key === space ) {
-        socket.emit("win", {roomIndex: roomIndex});
-    }
     socket.emit('display', roomIndex);
-    // socket.emit('events', "test");
 }
 
 let leaveRoom = (async () => {
@@ -220,6 +238,10 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     clearInterval(intervalStop);
+    removeEventListener('keydown', keyDown);
+    removeEventListener('keyup', keyUp);
+    socket.off('joinGame');
+    socket.off('display');
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     await store.setStatus("online");
     socket.off('joinGame');

@@ -10,12 +10,10 @@ const props = defineProps<{
 
 const store = useUserStore();
 
-
-
 onMounted(async () => {
-	// console.log(props.member.photo);
 	props.member.photo = await store.getAvatar(props.member.photo);
 });
+
 onUnmounted(async () => {
     URL.revokeObjectURL(props.member.photo);
 });

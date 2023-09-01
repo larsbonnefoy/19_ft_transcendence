@@ -1,17 +1,15 @@
 .<script setup lang="ts">
 import { ref, onUpdated } from 'vue';
 import ProfileButton from './ProfileButton.vue';
-import { useChatStore, useChannelStore} from '@/stores/chat';
-import { Channel } from '@/types';
+import { useChannelStore} from '@/stores/chat';
 import axios from 'axios';
 
-const chat = useChatStore();
 const channel = useChannelStore();
 
-const emit = defineEmits();
+const emit = defineEmits(["open-profile"]);
 
 const messageBoxRef = ref(null);
-const me: any = (await axios.get('http://localhost:3000/user/me/login42', {
+const me: any = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')
@@ -21,8 +19,8 @@ onUpdated(() => {
   emit('updated');
 });
 
-function handleProfileClick(username: string) {
-  emit('open-profile', username);
+function handleProfileClick(login: string) {
+  emit('open-profile', login);
 }
 // console.log(messages[3].sender);
 </script>
@@ -32,7 +30,10 @@ function handleProfileClick(username: string) {
     <div v-for="(message,  index) in channel?.getMessages" :key="index" class="message"
          :class="{ 'sent-by-me': (message?.user.login42 === me)}">
       <div class="message-user">
-        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.username" @open-profile="handleProfileClick"/>
+        <ProfileButton 
+          :username="message?.user.login42 === me   ? 'You' : message?.user.username" @open-profile="handleProfileClick"
+          :login="message?.user.login42"
+          />
       </div>
       <div class="message-content">
         {{ message.message }} 

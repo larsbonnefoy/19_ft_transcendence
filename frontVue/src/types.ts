@@ -44,11 +44,11 @@ export interface Channel
 {
     id: string
     messages: Messages[]
-    chatters: string[]
-    admins: string[]
-    bans: string[]
-    mutes: string[]
-    owner: string
+    chatters: UserInfo[]
+    admins: UserInfo[]
+    bans: UserInfo[]
+    mutes: UserInfo[]
+    owner: UserInfo
     isDm: boolean 
     isPrivate: boolean
 }

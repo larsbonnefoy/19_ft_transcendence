@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, nextTick, watch, FunctionDirective, onMounted, onUnmounted} from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
 import MessageBox from './MessageBox.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
@@ -10,7 +10,7 @@ import ChannelList from './ChannelList.vue';
 const chat = useChatStore();
 const channel = useChannelStore();
 const props = defineProps({
-  messages: Array,
+  // messages: Array,
   user: Object,
   selectedChannel: String
 });
@@ -19,7 +19,7 @@ const props = defineProps({
 
 
 
-// const data : any = await axios.get(`http://localhost:3000/chat/room:${props.selectedChannel}`, {
+// const data : any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/room:${props.selectedChannel}`, {
 //   headers:
 //       {
 //         'token':localStorage.getItem('jwt_token')
@@ -27,7 +27,7 @@ const props = defineProps({
 // });
 const newMessage = ref("");
 // const selectedChannel = ref(selectedChannel)
-const me = (await axios.get('http://localhost:3000/user/me/login42', {
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')
@@ -35,23 +35,23 @@ const me = (await axios.get('http://localhost:3000/user/me/login42', {
 })).data;
 
 
-
-let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
-
 const chatContainerRef = ref(null);
-const endOfChatRef = ref(null);
+const endOfChatRef = ref<null | HTMLDivElement>(null);
 // const channel = ChannelButton.channel.name
 // if (channel)
 //        console.log("yo: " + channel);
 //        console.log("yo: " + ChannelButton.channel.test);
-const emit = defineEmits();
+const emit = defineEmits(["open-profile"]);
 
 function getDmChatter()
 {
-      console.log("getDm: " + channel.getChatters[0].login42 + " " + me + " "  +  channel.getOwner.login42) 
-      if (channel.getChatters[0].login42 === me)
-        return channel.getOwner.login42;
-      return (channel.getChatters[0].login42)
+      if(channel.getChatters)
+      {
+        console.log("getDm: " + channel.getChatters[0]?.login42 + " " + me + " "  +  channel.getOwner?.login42) 
+      if (channel.getChatters[0]?.login42 === me)
+          return channel.getOwner?.login42;
+        return (channel.getChatters[0]?.login42)
+      }
 }
 
 const sendMessage = async () => {
@@ -88,6 +88,7 @@ const handleUpdate = () => {
 
 
 function handleOpenProfile(user: string) {
+  console.log("chatWindow : "+ user)
   emit('open-profile', user);
 }
 

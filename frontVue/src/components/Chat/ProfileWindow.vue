@@ -19,7 +19,7 @@ async function getProfileData(user: string) {
   try {
     console.log('Current selected user:a', user);
 
-    const res = await axios.get(`http://localhost:3000/user/one:${user}`, {
+    const res = await axios.get(`http://localhost:3000/user/findone:${user}`, {
       headers:
           {
             'token':localStorage.getItem('jwt_token')

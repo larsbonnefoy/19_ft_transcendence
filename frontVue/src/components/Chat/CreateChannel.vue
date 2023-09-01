@@ -8,7 +8,7 @@ const chat = useChatStore();
 const messageType = ref('Direct Messages');
 const groupType = ref('public');
 const userInput = ref('');
-const addedUsers = ref([]);
+const addedUsers = ref(['']);
 const password = ref('');
 const channelName = ref('');
 const errorMessage = ref('');
@@ -28,7 +28,7 @@ const addUser = async () => {
     addedUsers.value = [userInput.value];
     try 
     {
-      await axios.get(`http://localhost:3000/user/LogFromUser:${userInput.value}`);
+      await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
     }
     catch
     {
@@ -42,7 +42,7 @@ const addUser = async () => {
     if (!addedUsers.value.includes(userInput.value)) {
       try 
       {
-        await axios.get(`http://localhost:3000/user/LogFromUser:${userInput.value}`);
+        await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
       }
       catch
       {
@@ -133,7 +133,9 @@ const closeModal = () => {
         </div>
         <button @click="clearUsers" class="switch-create-button">Clear</button>
         <!-- Display chosen user for private chat -->
-        <div v-if="searchedUser">Chosen User: {{ searchedUser }}</div>
+        <div class="user-display" v-if="addedUsers.length > 0">
+          {{ addedUsers[0] }}
+        </div>
         <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for private chat -->
       </div>
   

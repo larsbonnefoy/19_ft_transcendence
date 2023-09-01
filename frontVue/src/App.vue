@@ -4,10 +4,11 @@ import { useUserStore } from './stores/user';
 import { useToast } from "vue-toastification";
 import { useRouter } from 'vue-router';
 import { socket } from './socket';
+import { onUnmounted } from 'vue';
 
 window.addEventListener("beforeunload", leavingApp);
 
-const store = useUserStore();
+// const store = useUserStore();
 const router = useRouter();
 
 async function leavingApp() {
@@ -16,7 +17,7 @@ async function leavingApp() {
 //   }
 }
 
-socket.on('notification', (origin: any) => {
+socket.on('gameNotification', (origin: any) => {
     function clicked() {
         console.log("toast clicked, send receipt notif to " + origin.login42);
         socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
@@ -61,6 +62,10 @@ socket.on("challengeAccepted", (origin: string) => {
     // router.push({ name: 'game', params: { challenge: 'challenge' } });
 });
 
+onUnmounted(async () => {
+	socket.off('notification');
+	socket.off('challengeAccepted');
+});
 </script>
 
 <template>

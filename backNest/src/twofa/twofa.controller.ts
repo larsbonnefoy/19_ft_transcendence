@@ -18,27 +18,16 @@ export class TwofaController {
 	{
 		try
 		{
-			console.log("create2fa")
-			console.log(jwtDto.token);
+			//console.log("create2fa");
 			const login42 = this.api42Service.decodeJWT(jwtDto.token);
-			console.log("login43")
-			console.log(login42);
-			// console.log(await this.userService.findOne(login42));	
 			const twofaJSON = await this.twofaService.generate2fa(await this.userService.findOne(login42));
-			console.log('lesgo ?');
-			
+
 			const iv = randomBytes(16);
 			const key = (await promisify(scrypt)(process.env.ENC_KEY, process.env.ENC_SALT, 32)) as Buffer;
 			const cipher = createCipheriv(process.env.ENC_ALG, key, iv);
-			console.log('lesgo ?');
 			const secret = Buffer.concat([iv, cipher.update(twofaJSON['secret']), cipher.final()]);
-			console.log("y" + secret);
-			console.log("twofa : " + twofaJSON['secret']);
-			
-
 
 			await this.userService.update2faSecret(login42, secret); //TODO CYPHER SECRET
-			console.log(twofaJSON);
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
 			// console.log('hmmm : '+ qrUrl);
 			// this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET

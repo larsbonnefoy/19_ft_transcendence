@@ -42,7 +42,7 @@ const isFriend = computed(() => {
 
 async function addFriend() {
     try {
-        await store.addFriend(props.pendingUser.username);
+        await store.addFriend(props.pendingUser.login42);
         sendOutReq.value = true;
     }
     catch (error){
@@ -53,7 +53,7 @@ async function addFriend() {
 
 async function unsendFriendRequest() {
     try {
-        await store.unsendFriendRequest(props.pendingUser.username);
+        await store.unsendFriendRequest(props.pendingUser.login42);
         sendOutReq.value = false;
     }
     catch (error){
@@ -64,18 +64,18 @@ async function unsendFriendRequest() {
 
 async function removeFriend() {
     try {
-        await store.removeFriend(props.pendingUser.username);
+        await store.removeFriend(props.pendingUser.login42);
+        console.log("here??")        
     }
-    catch (error) {
+    catch (error: any) {
         location.reload();
-        console.log(error);
+        console.log(error.message);
     }
 }
 
 async function confirmRequest() {
     try {
-        await store.acceptFriendRequest(props.pendingUser.username);
-        //isPendingRecv.value = false;
+        await store.acceptFriendRequest(props.pendingUser.login42);
     }
     catch (error) {
         /* If already friends, forces reload of page, could just append to list */
@@ -86,7 +86,7 @@ async function confirmRequest() {
 
 async function declineFriendRequest() {
     try {
-        await store.declineFriendRequest(props.pendingUser.username);
+        await store.declineFriendRequest(props.pendingUser.login42);
         //isPendingRecv.value = false;
     }
     catch (error) {
