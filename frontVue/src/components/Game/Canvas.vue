@@ -287,7 +287,7 @@ onUnmounted(async () => {
             </div>
             <div id="canvas-container">
                 <canvas id="gameCanvas"></canvas>
-                <p class="p-0 m-0" style="text-align: center;"> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
+                <p class="p-0 m-0" style="text-align: center;"> Latency: {{ Math.abs(diff) }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
             </div>
         </div>
         <div class="col-2" style="display:grid; place-items: center;">

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import AchievementDisplay from './Achievement.vue';
-import axios from 'axios';
 import { type Achievement, type UserInfo } from '@/types';
-import { useUserStore } from '@/stores/user';
+import { ref } from 'vue';
 
 const props = defineProps<{
     userProp: UserInfo
 }>()
 
+const displayAll = ref(false);
 
 //probablement devoir faire comme dans profile pr profile card
 /*
@@ -22,6 +22,11 @@ async function getUserInfo(): Promise<UserInfo> {
 
 //await getUserInfo();
 
+function toggleAchDisplay() {
+    displayAll.value = !displayAll.value
+}
+
+/* In normal mode: display only first value that is not =1 or last value if array */
 const gameProgressAchievements: Achievement[] = [
 {
         name: "Getting Started",
@@ -29,7 +34,7 @@ const gameProgressAchievements: Achievement[] = [
         description: "Play one game.",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
-            return val; /* Return only val in order to overflow 1 and not to be displayed in list */
+            return val < 1 ? val : 1; /* Return only val in order to overflow 1 and not to be displayed in list */
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
         max: 1,
@@ -58,43 +63,7 @@ const gameProgressAchievements: Achievement[] = [
     },   
 ]
 
-const achievementList: Achievement[] = [
-    {
-        name: "Getting Started",
-        imageUrl: "../../../assets/Achievements/1game.png",
-        description: "Play one game.",
-        progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
-            return val; /* Return only val in order to overflow 1 and not to be displayed in list */
-        },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
-        max: 1,
-    },
-    {
-        name: "Lifeguard",
-        imageUrl: "../../../assets/Achievements/19.svg",
-        description: "Play 19 Games",
-        progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
-            return val / 19;
-        },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
-        max: 19,
-    },
-    {
-        name: "Welcome to the Jar",
-        imageUrl: "../../../assets/Achievements/42_logo.svg",
-        description: "Play 42 Games",
-        progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
-            if (val <= 19) {
-                return 2;
-            }
-            return val / 42 < 1 ? val / 42 : 1;
-        },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
-        max: 42,
-    },    
+const achievementList: Achievement[] = [   
     {
         name: "Master",
         imageUrl: "../../../assets/Achievements/100games.png",
@@ -174,14 +143,18 @@ const achievementList: Achievement[] = [
     <h2 style="text-align: center; " class="m-5">Achievements </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in gameProgressAchievements" :key="index">
-            <div>
-                <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+            <div v-if="displayAll">
+                <AchievementDisplay @toggle-ach-display="toggleAchDisplay" :extendable=true :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
             </div>
+            <div v-else>
+                <template v-if="achievement.progress() < 1">
+                    <AchievementDisplay @toggle-ach-display="toggleAchDisplay" :extendable=true :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+                </template>
+            </div>
+
         </template>
         <template v-for="(achievement, index) in achievementList" :key="index">
-            <div v-if="achievement.progress() <= 1">
-                <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
-            </div>
+                <AchievementDisplay :extendable=false :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
         </template>
     </div>
 </template>

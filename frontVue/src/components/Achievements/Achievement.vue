@@ -7,10 +7,18 @@ const props = defineProps<{
     achievId : number
     achievementProp : Achievement
     achievProgress: number
+    extendable: boolean
 }>()
 
+const emit = defineEmits(['toggleAchDisplay']);
+
+let toggleAchiev = (async () => {
+    if (props.extendable) {
+        emit('toggleAchDisplay');
+    }
+});
+
 const completed = computed(()=> {
-	// console.log("achieve progress of " + props.achievId + ": " + props.achievProgress);
     return (props.achievProgress == 1)
 })
 const barColor = computed(() => { 
@@ -35,12 +43,16 @@ const displayProgress = computed(() => {
 })
 </script>
 
-
 <template>
     <div class="card-body textDisplay p-0 m-3" :class="[completed ? 'AchievCompleted' : 'AchievUncompleted']">
         <div class="row">
-            <div class="col-1"> 
-                <img :src="props.achievementProp.imageUrl">
+            <div class="col-1">
+                <template v-if="props.extendable"> 
+                    <img :src="props.achievementProp.imageUrl"  @click="toggleAchiev">
+                </template>
+                <template v-else> 
+                    <img :src="props.achievementProp.imageUrl">
+                </template>
             </div>
             <div class="col-5 px-4">
                 <p class="m-0"> {{ props.achievementProp.name }} </p>
