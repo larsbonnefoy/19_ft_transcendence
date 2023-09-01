@@ -39,11 +39,8 @@ const gameProgressAchievements: Achievement[] = [
         imageUrl: "../../../assets/Achievements/19.svg",
         description: "Play 19 Games",
         progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
-            if (val <= 1) {
-                return 2;
-            }
-            return val / 19;
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 19;
+            return val < 1 ? val : 1;
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
         max: 19,
@@ -53,11 +50,8 @@ const gameProgressAchievements: Achievement[] = [
         imageUrl: "../../../assets/Achievements/42_logo.svg",
         description: "Play 42 Games",
         progress: () => {
-            const val = (props.userProp.win * 1 + props.userProp.loss * 1);
-            if (val <= 19) {
-                return 2;
-            }
-            return val / 42 < 1 ? val / 42 : 1;
+            const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 42;
+            return val < 1 ? val : 1;
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
         max: 42,
@@ -82,9 +76,6 @@ const achievementList: Achievement[] = [
         description: "Play 19 Games",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1);
-            if (val <= 1) {
-                return 2;
-            }
             return val / 19;
         },
 		current: props.userProp.win * 1 + props.userProp.loss * 1,
@@ -182,6 +173,11 @@ const achievementList: Achievement[] = [
 <template>
     <h2 style="text-align: center; " class="m-5">Achievements </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
+        <template v-for="(achievement, index) in gameProgressAchievements" :key="index">
+            <div>
+                <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
+            </div>
+        </template>
         <template v-for="(achievement, index) in achievementList" :key="index">
             <div v-if="achievement.progress() <= 1">
                 <AchievementDisplay :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
