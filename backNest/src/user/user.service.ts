@@ -73,6 +73,8 @@ export class UserService {
   async addWin(login42: string, win: number) {
     console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
+	if (+win === 100)
+		this.achievementGateway.server.to(login42).emit('achievement', "Master");
   }
   
   async addLoss(login42: string, loss: number) {

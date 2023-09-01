@@ -94,7 +94,37 @@ export class MatchGateway {
 		      game.resetGame();
           return ;
         }
-        nMatch.player1 = p1.login42;
+		let games_played : number = +p1.win + (+p1.loss) + 1;
+		let message : string = "";
+		switch (games_played) {
+			case (1):
+				message = "Getting Started";
+				break ;
+			case (19):
+				message = "Lifeguard";
+				break ;
+			case (42):
+				message = "Welcome to the Jar";
+				break ;
+		}
+		if (message !== "")
+			this.server.to(p1.login42).emit('achievement', message);
+		games_played = +p2.win + (+p2.loss) + 1;
+		message = "";
+		switch (games_played) {
+			case (1):
+				message = "Getting Started";
+				break ;
+			case (19):
+				message = "Lifeguard";
+				break ;
+			case (42):
+				message = "Welcome to the Jar";
+				break ;
+		}
+		if (message !== "")
+			this.server.to(p2.login42).emit('achievement', message);
+		nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;
         nMatch.score2 = game.score1;

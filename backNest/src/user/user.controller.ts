@@ -77,7 +77,7 @@ export class UserController {
       res.status(404).json({"error":"no user with that login"});
       return ;
     }
-    console.info("%s is now %s", req.user, UserStatus[status]);
+    // console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }

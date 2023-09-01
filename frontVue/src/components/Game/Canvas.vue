@@ -227,7 +227,6 @@ function init() {
                 lastLatencyUpdate = new Date().getTime();
             }
         }
-        console.log(response.timeOut / 1000);
     });
 	intervalStop = setInterval(redrawAll, 20);
 

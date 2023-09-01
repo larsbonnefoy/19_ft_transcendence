@@ -22,9 +22,9 @@ async function isInGame() {
     try {
         const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
         liveGames = res.data;
-		console.log(liveGames.length);
+		// console.log(liveGames.length);
 		if (liveGames.length != 0 ) {
-			console.log(liveGames);
+			// console.log(liveGames);
 			for (let games of liveGames) {
 				if (games.player0 == store.getUserName || games.player1 == store.getUserName) {
 					return true;
@@ -56,7 +56,7 @@ function watchGame() {
 }
 
 function closeCanvas() {
-	console.log("canvas closed");
+	// console.log("canvas closed");
 	displayGame.value = false;
 	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
 };
