@@ -9,12 +9,7 @@ import { socket } from '@/socket';
 const chat = useChatStore();
 const emit = defineEmits();
 
-
-
 await chat.fetchChannels();
-// console.log("FUNCTION ? "+ chat.getChannels);
-
-
 
 const searchTerm = ref('');
 const showSearchBar = ref(false);
@@ -27,25 +22,34 @@ const toggleSearchBar = () => {
 const currentView = ref('private');
 
 const toggleView = () => {
-  currentView.value = currentView.value === 'private' ? 'channels' : 'private';
+  if (currentView.value === 'private') {
+    currentView.value = 'channels';
+  } else if (currentView.value === 'channels') {
+    currentView.value = 'public-group';
+  } else {
+    currentView.value = 'private';
+  }
 };
 
-async function handleSelected(name: string)
-{
+async function handleSelected(name: string) {
   console.log("LESSGOOO" + name );
   await emit('channel', name);
   emit('channel-selected', name);
 }
 
-
 </script>
-
 
 <template>
   <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
-      <h3 @click="toggleView">{{ currentView === 'private' ? 'Direct Messages' : 'Channels' }}</h3>
+      <h3 @click="toggleView">
+        {{
+          currentView === 'private' ? 'Private Messages' : 
+          currentView === 'channels' ? 'Public Groups' : 
+          'Private Groups'
+        }}
+      </h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
       <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
     </div>
@@ -61,27 +65,37 @@ async function handleSelected(name: string)
 
     <div v-if="currentView === 'private'">
     	<div class="channel-scroll">
-      	<!-- Display filtered channels based on search term and current view -->
-       <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="channel.isDm"
-       	          :key="channel.id"
-                  :channel="channel" @channel-selected=handleSelected($event)
-     	 /></template>
+          <template v-for="channel in chat.getChannels">
+            <ChannelButton v-if="channel.isDm"
+              :key="channel.id"
+              :channel="channel" 
+              @channel-selected=handleSelected($event)
+            />
+          </template>
+    	</div>
+    </div>
+    <div v-else-if="currentView === 'channels'">
+    	<div class="channel-scroll">
+          <template v-for="channel in chat.getChannels">
+            <ChannelButton v-if="!channel.isDm && !channel.isPublicGroup"
+              :key="channel.id"
+              :channel="channel" 
+              @channel-selected=handleSelected($event)
+            />
+          </template>
     	</div>
     </div>
     <div v-else>
     	<div class="channel-scroll">
-      	<!-- Display filtered channels based on search term and current view -->
-        <template v-for="channel in chat.getChannels">
-             	<ChannelButton v-if="!channel.isDm"
-       	          :key="channel.id"
-                  :channel="channel" @channel-selected=handleSelected($event)
-     	        />
-      </template>
-   
+          <template v-for="channel in chat.getChannels">
+            <ChannelButton v-if="channel.isPublicGroup"
+              :key="channel.id"
+              :channel="channel" 
+              @channel-selected=handleSelected($event)
+            />
+          </template>
     	</div>
     </div>
-
   </div>
 </template>
 
