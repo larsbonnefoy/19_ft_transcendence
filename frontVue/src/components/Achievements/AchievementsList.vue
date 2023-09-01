@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AchievementDisplay from './Achievement.vue';
 import { type Achievement, type UserInfo } from '@/types';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const props = defineProps<{
     userProp: UserInfo
@@ -13,7 +13,17 @@ function toggleAchDisplay() {
     displayAll.value = !displayAll.value
 }
 
-/* In normal mode: display only first value that is not =1 or last value if array */
+const progressAchToDisplay = computed(() => {
+    let i:number = 0;
+    for (let ach of gameProgressAchievements) {
+        if (ach.progress() != 1 || i == gameProgressAchievements.length)
+            return (i);
+        i++;
+    }
+    return (i);
+})
+
+/* In normal mode: display only first value that is not = 1 or last value if all = 1 */
 const gameProgressAchievements: Achievement[] = [
 {
         name: "Getting Started",
@@ -134,7 +144,7 @@ const achievementList: Achievement[] = [
                 <AchievementDisplay @toggle-ach-display="toggleAchDisplay" :extendable=true :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
             </div>
             <div v-else>
-                <template v-if="achievement.progress() < 1">
+                <template v-if="index == progressAchToDisplay">
                     <AchievementDisplay @toggle-ach-display="toggleAchDisplay" :extendable=true :achiev-id="index" :achievement-prop="achievement" :achiev-progress="achievement.progress()"> </AchievementDisplay>
                 </template>
             </div>

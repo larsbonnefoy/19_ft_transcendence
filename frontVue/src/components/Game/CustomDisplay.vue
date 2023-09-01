@@ -36,6 +36,7 @@ function retrieveModeFromStorage():number {
 	}
 }
 
+
 function retrieveSensiFromStorage():number {
 	let valuefromStorage = localStorage.getItem('paddle_sensitivity');
 	if (valuefromStorage == null) {
@@ -195,8 +196,6 @@ function init() {
 //setDefault();
 
 onMounted(async () => {
-	retrieveSensiFromStorage();
-	retrieveModeFromStorage();
     init();
 	intervalStop = setInterval(drawBackGround, 100);
 })
@@ -287,16 +286,14 @@ onUnmounted(async () => {
 				<div class="col-6">
 					<p class="textDisplay"> Game Mode </p>
 				</div>
-				<div class="col-6" style="text-align: center;">
-					<div class="row">
-						<div class="d-flex justify-content-center">
-							<template v-for="(mode, index) in gameModes" :key="index">
-								<div class="col-3 m-0">
-									<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
-									<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
-								</div>
-							</template>
-						</div>
+				<div class="col-6  justify-content-start" style="text-align: center;">
+					<div class="row text-center">
+						<template v-for="(mode, index) in gameModes" :key="index">
+							<div class="col-3 m-0">
+								<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
+								<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
+							</div>
+						</template>
 					</div>
 				</div>
 			</div>

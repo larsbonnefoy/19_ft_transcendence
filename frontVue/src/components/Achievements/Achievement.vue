@@ -48,7 +48,7 @@ const displayProgress = computed(() => {
         <div class="row">
             <div class="col-1">
                 <template v-if="props.extendable"> 
-                    <img :src="props.achievementProp.imageUrl"  @click="toggleAchiev">
+                    <img class="HoverAch" :src="props.achievementProp.imageUrl"  @click="toggleAchiev">
                 </template>
                 <template v-else> 
                     <img :src="props.achievementProp.imageUrl">
@@ -77,6 +77,10 @@ const displayProgress = computed(() => {
 </template>
 
 <style scoped>
+.HoverAch:hover {
+    opacity: 1;
+}
+
 img {
     width: 50px;
     height: 50px;
