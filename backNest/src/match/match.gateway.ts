@@ -102,14 +102,14 @@ export class MatchGateway {
         if (+game.score0 > +game.score1) {
           await this.userService.addWin(p1.login42, +p1.win + 1);
           await this.userService.addLoss(p2.login42, +p2.loss + 1);
-          let newelo1: number = +p1.elo + (1 - expected_result) * (16 * (game.gMode + 1));
+          let newelo1: number = +p1.elo + (1 - expected_result) * (16 * (+game.gMode + 1));
           await this.userService.change_elo(p1.login42, newelo1);
-          let newelo2: number = +p2.elo - (1 - expected_result) * (16 * (game.gMode + 1));
+          let newelo2: number = +p2.elo - (1 - expected_result) * (16 * (+game.gMode + 1));
           await this.userService.change_elo(p2.login42, newelo2);
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
-          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 * (game.gMode + 1)));
+          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 * (+game.gMode + 1)));
 		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
 			await this.userService.addAchievement(p1.login42, +p1.achievements + 4);
 		  }
@@ -117,14 +117,14 @@ export class MatchGateway {
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
           await this.userService.addLoss(p1.login42, +p1.loss + 1);
-          let newelo1: number = +p1.elo - expected_result * (16 * (game.gMode + 1));
-          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * (16 * (game.gMode + 1)));
-          let newelo2: number = +p2.elo + expected_result * (16 * (game.gMode + 1));
-          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 * (game.gMode + 1)));
+          let newelo1: number = +p1.elo - expected_result * (16 * (+game.gMode + 1));
+          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * (16 * (+game.gMode + 1)));
+          let newelo2: number = +p2.elo + expected_result * (16 * (+game.gMode + 1));
+          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 * (+game.gMode + 1)));
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
-          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 * (game.gMode + 1)));
+          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 * (+game.gMode + 1)));
 		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
 			await this.userService.addAchievement(p2.login42, +p2.achievements + 4);
 		  }

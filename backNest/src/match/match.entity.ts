@@ -74,13 +74,13 @@ export class Game {
   public obstacle0 = {
     x : canvasWidth / 2,
     y : canvasHeight / 4,
-    width : 6 * ballRadius,
+    width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
   public obstacle1 = {
     x : canvasWidth / 2,
     y : 3 * canvasHeight / 4,
-    width : 6 * ballRadius,
+    width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
 

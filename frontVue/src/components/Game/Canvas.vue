@@ -4,6 +4,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
 import { GameType } from '../../types';
 import GamePlayerCard from './GamePlayerCard.vue';
+import _default from 'pinia-plugin-persistedstate';
 
 const props = defineProps<{
     playGame : GameType
@@ -37,6 +38,7 @@ let player0Login = ref("Player1");
 let player1Login= ref("Player2");
 let lastLatencyUpdate = new Date().getTime();
 let lucasSheat: string = "";
+let sensi: number = 1;
 
 let intervalStop : number = -1;
 let canvas: HTMLCanvasElement | any = null;
@@ -48,6 +50,16 @@ const diff = ref(0);
 
 function keyDown(event: any) {
     key = event.keyCode;
+}
+
+function getSensi() {
+    const sensiStorage = localStorage.getItem("paddle_sensitivity");
+    if (sensiStorage == null || +sensiStorage < 0.8 || +sensiStorage > 1.2) {
+        sensi = 1;
+    }
+    else {
+        sensi = +sensiStorage;
+    }
 }
 
 function keyUp(event: any) {
@@ -206,7 +218,6 @@ function init() {
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
-        ctx.fillText(response.gMode, 50, 50);
         
         if (response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
@@ -223,10 +234,10 @@ function redrawAll() {
 	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key === key_up) {
-        socket.emit("updatePaddle", {dir: -1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     if (key === key_down) {
-        socket.emit("updatePaddle", {dir: 1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomIndex);
 }
@@ -244,6 +255,7 @@ onMounted(async () => {
         console.log("challenger in the place");
         socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     }
+    getSensi();
     init();
 })
 
