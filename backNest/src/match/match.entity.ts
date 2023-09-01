@@ -54,6 +54,7 @@ export class Game {
   public player0 : string = "";
   public player1 : string = "";
   private startDirection : number = 1;
+  public timeOut : number = -1;
   public score0 : number = 0;
   public score1 : number = 0;
   public leftPaddle = {
@@ -124,7 +125,7 @@ export class Game {
   }
 
   updateBall(deltaTime : number) : void {
-	if (this.state !== states.ONGOING)
+	if (this.state !== states.ONGOING || +this.timeOut >= 0)
 		return ;
     this.ball.x += this.ball.speedx * (deltaTime / 20);
     if (this.ball.x > canvasWidth + this.ball.radius) {
@@ -208,6 +209,7 @@ export class Game {
 
   resetPositions() : void {
     this.startDirection *= -1;
+    this.timeOut = 3000;
     
     this.ball.x = canvasWidth / 2;
     this.ball.y = canvasHeight / 2;
@@ -222,6 +224,7 @@ export class Game {
     this.score0 = 0;
     this.score1 = 0;
     this.startDirection = 1;
+    this.timeOut = -1;
     this.gMode = game_mode.DEFAULT;
     this.obstacle0.x = canvasWidth / 2;
     this.obstacle0.y = canvasHeight / 4;
@@ -253,10 +256,12 @@ export class Game {
         this.updateObstacle(this.obstacle0, 20);
         this.updateObstacle(this.obstacle1, 20);
         deltaTime -= 20;
+        this.timeOut -= 20;
       }
       this.updateBall(deltaTime);
       this.updateObstacle(this.obstacle0, deltaTime);
       this.updateObstacle(this.obstacle1, deltaTime);
+      this.timeOut -= deltaTime;
     
       // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
