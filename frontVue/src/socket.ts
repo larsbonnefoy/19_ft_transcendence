@@ -19,14 +19,6 @@ socket.on("doubleConnection", async () => {
     location.reload();
 });
 
-socket.on("events", (response) => {
-    console.log("here " + response);
-});
-
-socket.on("events", (response) => {
-    console.log("endGame " + response);
-});
-
 socket.on("challenge", (origin: string) => {
     console.log("notif time");
     socket.emit('isInGame', {origin: origin, token: localStorage.getItem('jwt_token')});

@@ -43,7 +43,6 @@ let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
 let roomIndex : number = -1;
-let backgroundColor : string = "black";
 
 const diff = ref(0);
 
@@ -97,7 +96,7 @@ function keyUp(event: any) {
 }
 
 function updateRoomIndex(response : number) {
-    console.log(response + " got this form joingame")
+    console.log("joingame in room " + response);
     roomIndex = response;
 }
 
@@ -126,7 +125,6 @@ function init() {
         if (player1Login.value === "Player2" || player1Login.value === "") {
             player1Login.value = response.player1;
         }
-        ctx.fillStyle = backgroundColor;
         
         let tmpBg: string | null = localStorage.getItem('backGround');
         if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
@@ -183,19 +181,32 @@ function init() {
         ctx.fill();
         ctx.closePath();
 
-        ctx.beginPath();
-        ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
-        color = localStorage.getItem('ballColor');
+        color = localStorage.getItem('ballColor'); //we use ballColor for obstacles too
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
-        ctx.fillStyle = localStorage.getItem('ballColor');
+
+        if (+response.gMode === 1) {
+            ctx.beginPath();
+            ctx.rect(response.obstacle0.x - response.obstacle0.width / 2, response.obstacle0.y - response.obstacle0.height / 2, response.obstacle0.width, response.obstacle0.height);
+            ctx.fill();
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.rect(response.obstacle1.x - response.obstacle1.width / 2, response.obstacle1.y - response.obstacle1.height / 2, response.obstacle1.width, response.obstacle1.height);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        ctx.beginPath();
+        ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
 
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
+        ctx.fillText(response.gMode, 50, 50);
         
         if (response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
@@ -228,10 +239,10 @@ onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
-        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     } else if (props.playGame === GameType.CHALLENGER) {
         console.log("challenger in the place");
-        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     }
     init();
 })
@@ -240,8 +251,6 @@ onUnmounted(async () => {
     clearInterval(intervalStop);
     removeEventListener('keydown', keyDown);
     removeEventListener('keyup', keyUp);
-    socket.off('joinGame');
-    socket.off('display');
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     await store.setStatus("online");
     socket.off('joinGame');
