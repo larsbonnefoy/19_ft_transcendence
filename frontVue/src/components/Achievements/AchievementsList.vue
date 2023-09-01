@@ -16,7 +16,7 @@ function toggleAchDisplay() {
 const progressAchToDisplay = computed(() => {
     let i:number = 0;
     for (let ach of gameProgressAchievements) {
-        if (ach.progress() != 1 || i == gameProgressAchievements.length)
+        if (ach.progress() != 1 || i == gameProgressAchievements.length - 1)
             return (i);
         i++;
     }
@@ -39,7 +39,7 @@ const gameProgressAchievements: Achievement[] = [
     {
         name: "Lifeguard",
         imageUrl: "../../../assets/Achievements/19.svg",
-        description: "Play 19 Games",
+        description: "Play 19 games",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 19;
             return val < 1 ? val : 1;
@@ -50,7 +50,7 @@ const gameProgressAchievements: Achievement[] = [
     {
         name: "Welcome to the Jar",
         imageUrl: "../../../assets/Achievements/42_logo.svg",
-        description: "Play 42 Games",
+        description: "Play 42 games",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 42;
             return val < 1 ? val : 1;
@@ -64,7 +64,7 @@ const achievementList: Achievement[] = [
     {
         name: "Master",
         imageUrl: "../../../assets/Achievements/100games.png",
-        description: "Win 100 Games",
+        description: "Win 100 games",
         progress: () => {
             const val = (props.userProp.win * 1) / 100
             return val < 1 ? val : 1;
@@ -85,7 +85,7 @@ const achievementList: Achievement[] = [
     {
         name: "Make up Artist",
         imageUrl: "../../../assets/Achievements/makeup.png",
-        description: "Change Profile Pic",
+        description: "Change profile picture",
         progress: () => {
 			return props.userProp.achievements & 2 ? 1 : 0;
 		},
@@ -105,7 +105,7 @@ const achievementList: Achievement[] = [
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",
-        description: "Make your first Friend",
+        description: "Make your first friend",
         progress: () => {
 			return props.userProp.achievements & 8 ? 1 : 0;
 		},
@@ -125,7 +125,7 @@ const achievementList: Achievement[] = [
     {
         name: "Shielded",
         imageUrl: "../../../assets/Achievements/shield.png",
-        description: "Activate Double Authentification",
+        description: "Activate double authentification",
         progress: () => {
 			return props.userProp.achievements & 32 ? 1 : 0;
 		},

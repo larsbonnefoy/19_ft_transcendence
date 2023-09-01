@@ -101,7 +101,7 @@ export class UserController {
   @Get('one:username')
   async getOneUser(@Res() res: any, @Param() params: any) {
     const username: string = params.username.slice(1);
-    console.log("got request for user with username %s", username);
+    //console.log("got request for user with username %s", username);
     let messages: User = await this.userService.findUsername(username);
     // messages.twofaSecret = null;
     res.json(messages);
@@ -440,7 +440,7 @@ export class UserController {
   
   @Get('get')
     async getUser(@Res() res: any) {
-      console.log("got get request");
+      //console.log("got get request");
     const messages = await this.userService.findAll();
     res.json(messages);
   }
