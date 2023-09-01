@@ -1,16 +1,9 @@
-<template>
-  <button class="channel-button" @click="selectChannel">
-    {{ channel?.id }}
-  </button>
-</template>
-
 <script setup lang="ts">
 import { useChatStore, useChannelStore} from '@/stores/chat';
 import { type Channel } from '@/types';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
-const emit = defineEmits();
 
 // Props
  const { channel } = defineProps({
@@ -25,15 +18,21 @@ const selectChannel = async () => {
     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel.id)})  
     if (newChannel)
     {
-      console.log("new channel " + newChannel);
+      console.log(newChannel);
       await channelStore.setChannel(newChannel);
     }
-    console.log(channelStore.getMessages);
+    // console.log(channelStore.getMessages);
     console.log("done");
   }
   // emit('channel-selected',  channel.id);
 };
 </script>
+
+<template>
+  <button class="channel-button" @click="selectChannel">
+    {{ channel?.name }}
+  </button>
+</template>
 
 
 <style scoped>

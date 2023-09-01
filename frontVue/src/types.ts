@@ -42,7 +42,8 @@ export interface Achievement {
 
 export interface Channel
 {
-    id: string
+    id: number
+    name: string
     messages: Messages[]
     chatters: UserInfo[]
     admins: UserInfo[]

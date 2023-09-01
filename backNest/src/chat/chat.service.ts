@@ -4,7 +4,6 @@ import { Chat, ChatMessage } from './chat.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
-import { timeStamp } from 'console';
 
 @Injectable()
 export class ChatService 
@@ -21,49 +20,53 @@ export class ChatService
 	) {}
 	
 	// Getter
+	async all(): Promise<Chat[]>
+	{
+		return this.chatRepository.find();
+	}
    	async findAll(login42: string): Promise<Chat[]>
    	{
     	// return this.chatRepository.find();
 		const tmp: Chat[] = [];
-		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, owner: {login42: true}, isDm: true, chatters: {login42: true}, admins: {login42: true}}})
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, admins: {login42: true}, isDm: true, chatters: {login42: true}, owner: {login42: true}}}))
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, chatters: {login42: true}, isDm: true, owner: {login42: true}, admins: {login42: true}}})));
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true}, isDm: true, chatters: {login42: true}, admins: {login42: true}}})
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true}, isDm: true, chatters: {login42: true}, owner: {login42: true}}}))
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true}, isDm: true, owner: {login42: true}, admins: {login42: true}}})));
 		return chats;
  	}
 
-  	findOne(roomId: string): Promise<Chat | null> {	
+  	findOne(roomId: number): Promise<Chat | null> {	
    	 	return this.chatRepository.findOneBy({id: roomId});
   	}
 
-	async getOwner(roomId: string) : Promise<User | null>
+	async getOwner(roomId: number) : Promise<User | null>
 	{
 		const owner: User | null = await this.userRepository.findOne({ relations: {owned: true},  where: { owned: {id: roomId}}})	
 		return owner; 
 	}
 	
-	async getChatters(roomId: string) : Promise<User[] | null>
+	async getChatters(roomId: number) : Promise<User[] | null>
 	{
 		return await this.userRepository.find({ relations: {chats: true},  where: { chats: {id: roomId}}})
 	}
 
-	async getBans(roomId: string) : Promise<User[] | null>
+	async getBans(roomId: number) : Promise<User[] | null>
 	{
 		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}});
 	}
 
-	async getMutes(roomId: string) : Promise<User[] | null>
+	async getMutes(roomId: number) : Promise<User[] | null>
 	{
 		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}});
 	}
 
-	async getAdmins(roomId: string) : Promise<User[] | null>
+	async getAdmins(roomId: number) : Promise<User[] | null>
 	{
 		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}});
 	}
 
-	async getMessagesByRoom(roomId: string) : Promise<ChatMessage[] | null>
+	async getMessagesByRoom(roomId: number) : Promise<ChatMessage[] | null>
 	{
-		return await this.chatMessageRepository.find({ relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
+		return await this.chatMessageRepository.find({ relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true, name: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
 	}
 	
 	async getMessagesByUser(userId: string) : Promise<ChatMessage[] | null>
@@ -73,7 +76,7 @@ export class ChatService
 
 	// Checkers
 
-	async	isOwner(roomId: string, user: User) : Promise<boolean>
+	async	isOwner(roomId: number, user: User) : Promise<boolean>
 	{
 		console.log("isOwner");
 		const owner: User | null = await this.getOwner(roomId);
@@ -87,7 +90,7 @@ export class ChatService
 		return (true);
 	}
 
-	async isAdmin(roomId: string, user: User) : Promise<boolean>
+	async isAdmin(roomId: number, user: User) : Promise<boolean>
 	{
 		console.log("isAdmin");
 		const admins: User[] = await this.getAdmins(roomId);
@@ -99,7 +102,7 @@ export class ChatService
 		return true;
 	}
 
-	async isChatter(roomId: string, user: User) : Promise<boolean>
+	async isChatter(roomId: number, user: User) : Promise<boolean>
 	{
 		console.log("isChatter");
 		const chatters: User[] = await this.getChatters(roomId);
@@ -111,7 +114,7 @@ export class ChatService
 		return true;
 	}
 
-	async isMute(roomId: string, user: User) : Promise<boolean>
+	async isMute(roomId: number, user: User) : Promise<boolean>
 	{
 		console.log("isMute");
 		const mutes: User[] = await this.getMutes(roomId);
@@ -123,7 +126,7 @@ export class ChatService
 		return true;
 	}
 
-	async isBan(roomId: string, user: User) : Promise<boolean>
+	async isBan(roomId: number, user: User) : Promise<boolean>
 	{
 		console.log("isBan");
 		const bans: User[] = await this.getBans(roomId);
@@ -141,35 +144,35 @@ export class ChatService
 		return await this.chatRepository.save(chat);
 	}
 
-	async deleteRoom(id: string)
+	async deleteRoom(id: number)
 	{
 		 await this.chatRepository.delete(id);
 		 return ;
 	}
 
-	async setPassword(roomId: string, pass: string)
+	async setPassword(roomId: number, pass: string)
 	{
 		const hash = await bcrypt.hash(pass, 10);
 		await this.chatRepository.update(roomId, {password: hash});
 	}
 
-	async removePassword(roomId: string)
+	async removePassword(roomId: number)
 	{
 		await this.chatRepository.update(roomId, {password: null});
 	}
 
-	async verifyPassword(roomId: string, pass: string)
+	async verifyPassword(roomId: number, pass: string)
 	{
 		return (await bcrypt.compare(pass, ((await this.chatRepository.findOneBy({ id: roomId})).password)))
 	}
 
 	// User management
-	async setOwner(roomId: string, user: User)
+	async setOwner(roomId: number, user: User)
 	{
 		await this.chatRepository.update(roomId, {owner: user})
 	}
 
-	async addAdmin(roomId: string, newAdmin: User)
+	async addAdmin(roomId: number, newAdmin: User)
 	{
 		const admins: User[] = await this.getAdmins(roomId);
 		admins.push(newAdmin);
@@ -179,7 +182,7 @@ export class ChatService
 	}
 
 	
-	async addChatter(roomId: string, newChatter: User)
+	async addChatter(roomId: number, newChatter: User)
 	{
 		const chatters: User[] = await this.getChatters(roomId);
 		chatters.push(newChatter);
@@ -189,7 +192,7 @@ export class ChatService
 
 	}
 
-	async addMute(roomId: string, newMute: User)
+	async addMute(roomId: number, newMute: User)
 	{
 		const mutes: User[] = await this.getMutes(roomId);
 		mutes.push(newMute);
@@ -199,7 +202,7 @@ export class ChatService
 	}
 
 
-	async addBan(roomId: string, newBan: User)
+	async addBan(roomId: number, newBan: User)
 	{
 		const bans: User[] = await this.getBans(roomId);
 		bans.push(newBan);
@@ -208,7 +211,7 @@ export class ChatService
 		await this.chatRepository.save(chat);
 	}
 
-	async removeAdmin(roomId : string, adminId: string)
+	async removeAdmin(roomId : number, adminId: string)
 	{
 		const admins = await this.getAdmins(roomId);
 		const index: number = admins.findIndex(it => { return it.login42 === adminId})
@@ -224,7 +227,7 @@ export class ChatService
 		}
 	}
 
-	async removeChatter(roomId : string, chatterId: string)
+	async removeChatter(roomId : number, chatterId: string)
 	{
 		const chatters = await this.getChatters(roomId);
 		const index: number = chatters.findIndex(it => { return it.login42 === chatterId})
@@ -240,7 +243,7 @@ export class ChatService
 		}
 	}
 
-	async removeBan(roomId : string, banId: string)
+	async removeBan(roomId : number, banId: string)
 	{
 		const bans = await this.getBans(roomId);
 		const index: number = bans.findIndex(it => { return it.login42 === banId})
@@ -256,7 +259,7 @@ export class ChatService
 		}
 	}
 
-	async removeMute(roomId : string, muteId: string)
+	async removeMute(roomId : number, muteId: string)
 	{
 		const mutes = await this.getMutes(roomId);
 		const index: number = mutes.findIndex(it => { return it.login42 === muteId})
@@ -274,7 +277,7 @@ export class ChatService
 
 	// Message Management 
 
-	async addMessage(roomId: string, newMessage: ChatMessage): Promise<boolean>
+	async addMessage(roomId: number, newMessage: ChatMessage): Promise<boolean>
 	{
 		const chat: Chat = await this.findOne(roomId);
 		console.log(chat);

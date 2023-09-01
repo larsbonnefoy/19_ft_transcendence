@@ -7,7 +7,7 @@ import { useChatStore } from '@/stores/chat';
 import { socket } from '@/socket';
 
 const chat = useChatStore();
-const emit = defineEmits();
+const emit = defineEmits(["channel-selected"]);
 
 
 
@@ -30,11 +30,10 @@ const toggleView = () => {
   currentView.value = currentView.value === 'private' ? 'channels' : 'private';
 };
 
-async function handleSelected(name: string)
+async function handleSelected(id: number)
 {
-  console.log("LESSGOOO" + name );
-  await emit('channel', name);
-  emit('channel-selected', name);
+  console.log("LESSGOOO" + id );
+  emit('channel-selected', id);
 }
 
 
@@ -74,7 +73,6 @@ async function handleSelected(name: string)
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
              	<ChannelButton v-if="!channel.isDm"
-       	          :key="channel.id"
                   :channel="channel" @channel-selected=handleSelected($event)
      	        />
       </template>

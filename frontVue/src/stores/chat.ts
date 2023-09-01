@@ -10,6 +10,7 @@ export const useChannelStore = defineStore('channel', {
     }),
     getters: {
         getId: (state) => state.channel?.id,
+        getName: (state) => state.channel?.name,
         getMessages: (state) => state.channel?.messages,
         getChatters: (state) => state.channel?.chatters,
         getAdmins: (state) => state.channel?.admins,
@@ -23,6 +24,7 @@ export const useChannelStore = defineStore('channel', {
        async setChannel(newChannel: Channel)
        {
             this.channel = newChannel;
+            console.log("set : " + this.channel?.id)
             try
             {
                 const messages: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getMessages`, {id: this.channel?.id},
@@ -43,6 +45,7 @@ export const useChannelStore = defineStore('channel', {
 
        async refreshMessages()
        {
+            console.log("refresf : " + this.channel?.id)
             try
             {
                 const messages: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getMessages`, {id: this.channel?.id},
@@ -64,6 +67,7 @@ export const useChannelStore = defineStore('channel', {
        {
         try
         {
+          console.log(this.channel?.id)
           const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/message`, {roomId: this.channel?.id, message: newMessageString},
                  {
                     headers: 
@@ -110,7 +114,7 @@ export const useChatStore = defineStore('chat', {
                 this.chat = {ChannelList: []};
                 if (this.chat !== null)
                     this.chat.ChannelList = data.data; 
-                console.log(data.data[0].isDm)
+                console.log("hmmmmm " + data.data[0].id)
             }
             catch (error)
             {
@@ -120,12 +124,12 @@ export const useChatStore = defineStore('chat', {
             }
         },
 
-        async addChannel(id: string, pass: string | null, isDm: boolean, isPrivate: boolean, usernames: string[])
+        async addChannel(name: string, pass: string | null, isDm: boolean, isPrivate: boolean, usernames: string[])
         {
-            console.log("addChannel " + id + " " + pass + " " + status);
+            console.log("addChannel " + name + " " + pass + " " + isDm + " " + isPrivate);
             try
 	        {
-	        	const res = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, {id: id, password: pass, isDm: isDm, isPrivate: isPrivate, usernames: usernames}, 
+	        	const res = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, {name: name, password: pass, isDm: isDm, isPrivate: isPrivate, usernames: usernames}, 
                 {
 			        headers:
 			        {

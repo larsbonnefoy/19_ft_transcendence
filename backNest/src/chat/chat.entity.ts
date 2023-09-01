@@ -4,8 +4,11 @@ import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany, Times
 @Entity()
 export class Chat
 {
-	@PrimaryColumn({type: "text"})
-	id: string;
+	@PrimaryGeneratedColumn('increment')
+    id: number
+
+	@Column({type: "text"})
+	name: string;
 	
 	@Column({ type: "text", default: null})
 	password: string | null

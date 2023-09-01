@@ -39,7 +39,7 @@ export class ChatController {
     async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)//TODO CHECK IF IS CHATTER NOT BAN NOR MUTED
     {
         console.log("POSTMESSAGE");
-		const roomId: string = messageInfos.roomId
+		const roomId: number = messageInfos.roomId
 		const user : User = await this.userService.findOne(req.user);
 
         const message : ChatMessage = new ChatMessage;
@@ -82,7 +82,7 @@ export class ChatController {
     {
         console.log("GETEMESSAGE");
         console.log(body)
-        const roomId: string = body.id;
+        const roomId: number = body.id;
         console.log("getMessage: " + roomId);
 		const user : User = await this.userService.findOne(req.user);
 		if (!user)
@@ -99,9 +99,6 @@ export class ChatController {
             || await this.chatService.isOwner(roomId, user) 
             || await this.chatService.isChatter(roomId, user))
         {
-        //is user a chatter/owner/admin
-            // console.log("getMessage " + roomId);
-            // console.log((await this.chatService.getMessagesByRoom(roomId)));
             const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
             console.log("yoo: " + messages);
             res.status(200).json(messages).send();
@@ -112,7 +109,6 @@ export class ChatController {
 		return;
     }
    
-//TODO CHECK TOKEN TO GET THE RIGHT USER AND CHECK IF UER IS OWNER IN DELETE
 	@UseGuards(AuthGuard)
     @Post('create')
     async createRoom(@Body() roomInfos: roomDto, @Request() req: any, @Res() res: any)
@@ -122,20 +118,16 @@ export class ChatController {
         const chat : Chat = new Chat;
         chat.messages =  [];
         chat.owner = await this.userService.findOne(req.user);
-        chat.id = roomInfos.id;
+        chat.name = roomInfos.name;
         chat.isDm = roomInfos.isDm;
         chat.isPrivate = roomInfos.isPrivate;
-        // if (roomInfos.isDm)
-        // {
-        //     roomInfos.usernames.push(chat.owner.login42);
-        // }
         if (roomInfos.password)
 		{
             const hash = await bcrypt.hash(roomInfos.password, 10);
             chat.password = hash;
         }
-		if (!(await this.chatService.findOne(roomInfos.id)))
-		{
+		// if (!(await this.chatService.findOne(roomInfos.name)))
+		// {
         	await this.chatService.createRoom(chat);
             for(const username of roomInfos.usernames)
             {
@@ -151,11 +143,11 @@ export class ChatController {
                 }
             }
         	await res.status(200).json(chat).send();
-		}
-		else
-        {
-            await res.status(409).json({"error":"chat id already taken"}).send();
-        }
+		// }
+		// else
+        // {
+            // await res.status(409).json({"error":"chat id already taken"}).send();
+        // }
             return;
     }
 
@@ -196,7 +188,7 @@ export class ChatController {
 	async addAdmin(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             await res.status(409).json({"error":"no chat room with that id"}).send();
@@ -238,7 +230,7 @@ export class ChatController {
     async delAdmin(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -265,7 +257,7 @@ export class ChatController {
 	async addBan(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -303,7 +295,7 @@ export class ChatController {
     async delBan(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -329,7 +321,7 @@ export class ChatController {
 	async addMute(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -368,7 +360,7 @@ export class ChatController {
     async delMute(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -396,7 +388,7 @@ export class ChatController {
 	async addChatter(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -439,7 +431,7 @@ export class ChatController {
     async delChatter(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
-        const roomId: string = body['id'];
+        const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -460,4 +452,14 @@ export class ChatController {
         await res.status(200).json({"status":"good"}).send();
         return;
 	}
+
+  @Get('delAll')
+  async delAll(@Res() res: any) {
+    const chats = await this.chatService.all();
+    for (let chat of chats) {
+      await this.chatService.deleteRoom(chat.id);
+    }
+    res.json({"all chats":"deleted"});
+  }
+  
 }
