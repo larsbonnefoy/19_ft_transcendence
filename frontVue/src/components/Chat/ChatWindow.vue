@@ -34,7 +34,6 @@ const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.me
       }
 })).data;
 
-let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref<null | HTMLDivElement>(null);
@@ -42,7 +41,7 @@ const endOfChatRef = ref<null | HTMLDivElement>(null);
 // if (channel)
 //        console.log("yo: " + channel);
 //        console.log("yo: " + ChannelButton.channel.test);
-const emit = defineEmits();
+const emit = defineEmits(["open-profile"]);
 
 function getDmChatter()
 {

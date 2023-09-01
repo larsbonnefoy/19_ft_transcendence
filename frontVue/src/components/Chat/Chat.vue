@@ -5,38 +5,16 @@ import ChannelList from './ChannelList.vue';
 import ChatWindow from './ChatWindow.vue';
 import ProfileWindow from './ProfileWindow.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
-import axios from "axios";
-import { type UserInfo } from '@/types';
 
 const selectedUser = ref("");
-const emits = defineEmits();
+const selectedChannel = ref("" );
 
+const emit = defineEmits(["open-profile"]);
 function handleSelectedProfile(user: string) {
   selectedUser.value = user
   console.log("chat : "+ selectedUser.value)
   console.log(selectedUser.value)
-  // console.log('Current selected user:', selectedUser.value);
 }
-
-const selectedChannel = ref("" );
-
-const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-})).data;
-
-let messages: any;
-
-
-
-const route = useRoute(); // Get current route object
-
-onMounted(() => {
-  const chatName = route.params.chatName; 
-  console.log("Captured chat name from URL:", chatName);
-});
 
 async function handleSelectedChannel(event: string)
 {
@@ -46,6 +24,16 @@ async function handleSelectedChannel(event: string)
   selectedChannel.value = event;
 
 }
+
+
+const route = useRoute(); // Get current route object
+
+onMounted(() => {
+  const chatName = route.params.chatName; 
+  console.log("Captured chat name from URL:", chatName);
+});
+
+
 </script>
 
 <template>
@@ -58,10 +46,8 @@ async function handleSelectedChannel(event: string)
         />
       </div>
       <div class="col-6">
-        <!-- Chat Window -->
         <ChatWindow
                 :selectedChannel="selectedChannel"
-                :messages="messages"
                 @open-profile="handleSelectedProfile"
         />
       </div>
