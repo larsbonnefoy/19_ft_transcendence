@@ -6,19 +6,27 @@ import axios from 'axios';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 
 const store = useUserStore();
+const props = defineProps({
+  user: String
+});
+const selectedUser = ref(props.user);
 
-let userdata: UserInfo;
+let userdata= ref<UserInfo>();
+let dataLoaded = ref(false)
 
-async function getProfileData() {
+
+async function getProfileData(user: string) {
   try {
-    const res = await axios.get(`http://localhost:3000/user/me`, {
+    console.log('Current selected user:a', user);
+
+    const res = await axios.get(`http://localhost:3000/user/one:${user}`, {
       headers:
           {
             'token':localStorage.getItem('jwt_token')
           }});
-    console.log("Data fetched: ",res.data);
-    console.log(res.data);
-    userdata = res.data;
+    userdata.value = res.data;
+    // console.log(userdata.value)
+    dataLoaded.value = true;
   } catch (error: any) {
     console.error("Error fetching user data:", error);
   }
@@ -36,14 +44,19 @@ function blockUser() {
   console.log("Block clicked for:", store.getUserName);
 }
 
-await getProfileData();
+// await getProfileData();
 
-watch(async () => await userdata.username, getProfileData);
+watch(() => props.user, async (newVal: any) => {
+  dataLoaded.value = false;
+  if (newVal) {
+    await getProfileData(newVal);
+  }
+});
 
 </script>
 
 <template>
-  <div class="profile-window" v-if="userdata">
+  <div class="profile-window" v-if="dataLoaded">
       <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
     <!-- Buttons -->
       <!-- <div class="button-container">

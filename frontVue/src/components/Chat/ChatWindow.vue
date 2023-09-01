@@ -219,7 +219,7 @@ onUnmounted(async () => {
 } 
 
 .chat-input-container .send-button:active {
-    transform: scale(0.97); 
+    transform: scale(0.94); 
 }
 
 

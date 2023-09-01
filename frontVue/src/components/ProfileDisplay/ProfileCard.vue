@@ -9,10 +9,13 @@ import DoubleAuthButton from './DoubleAuthButton.vue';
 import ChangeUsername from './ChangeUsername.vue';
 import UploadAvatar from './UploadAvatar.vue'
 import Status from './Status.vue';
+
 const props = defineProps<{
     user : UserInfo
 }>()
 
+console.log("profilecard")
+console.log(props.user.value);
 const store = useUserStore();
 
 const activeUser = computed(() => {
@@ -90,7 +93,7 @@ Should set max lenght of username here
 </div>
 </template>
 
-<style scoped>
+<style>
 .ProfilePic {
     height: fit-content;
     width: 15vw;
