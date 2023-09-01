@@ -33,7 +33,7 @@ const gameProgressAchievements: Achievement[] = [
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
             return val < 1 ? val : 1; /* Return only val in order to overflow 1 and not to be displayed in list */
         },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
+		current: (props.userProp.win * 1 + props.userProp.loss * 1 === 0) ? 0 : -1,
         max: 1,
     },
     {
@@ -44,7 +44,7 @@ const gameProgressAchievements: Achievement[] = [
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 19;
             return val < 1 ? val : 1;
         },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
+		current: (props.userProp.win * 1 + props.userProp.loss * 1 < 19) ? +props.userProp.win + (+props.userProp.loss) : -1,
         max: 19,
     },
     {
