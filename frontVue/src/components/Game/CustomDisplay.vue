@@ -1,10 +1,44 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useUserStore } from '@/stores/user';
 
 const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
+const gameModes: Array<string> = ["Normal", "Hard", "Both"];
+const sliderValue = ref(50);
+const activeMode = ref(retrieveModeFromStorage()); //recup valeur dans local storage if no exist set to 0;
+
+const sliderModifier = computed(() => {
+	const retval:number = 1 + (((sliderValue.value/100) - 0.5) * 0.4)
+	localStorage.setItem('game_mode', "" + retval);
+	return (retval)
+})
+
+watch(sliderValue, () => {
+	const retval: number = 1 + (((sliderValue.value/100) - 0.5) * 0.4)
+	console.log(retval);
+	localStorage.setItem("paddle_sensitivity", "" + retval);
+})
+
+function selectMode(modeIndex: number) {
+	activeMode.value = modeIndex;
+	localStorage.setItem('game_mode', "" + modeIndex);
+}
+
+function retrieveModeFromStorage():number {
+	let currentMode : string | null = localStorage.getItem('game_mode');
+	switch(currentMode) {
+		case ("0"):
+			return 0;
+		case ("1"):
+			return 1;
+		case ("2"):
+			return 2;
+		default:
+			return 2;
+	}
+}
 
 function changeBallColor(event: any){
 	localStorage.setItem('ballColor', event.target.value);
@@ -31,6 +65,7 @@ function resetSettings() {
 	localStorage.setItem('rightPaddleColor', "white");
 	localStorage.setItem('leftPaddleColor', "white");
 	localStorage.setItem('backGround', "black");
+	localStorage.setItem('game_mode', "" + 0);
 	drawBackGround();
 	drawBall();
 	drawLeftPaddle();
@@ -39,6 +74,7 @@ function resetSettings() {
 	(<HTMLInputElement>document.getElementById("sel2")).value = "white";
 	(<HTMLInputElement>document.getElementById("sel3")).value = "white";
 	(<HTMLInputElement>document.getElementById("sel4")).value = "black";
+	sliderValue.value = 50;
 }
 
 
@@ -174,7 +210,7 @@ onUnmounted(async () => {
 					<p class="textDisplay">Ball Color</p>
 				</div>
 				<div class="col-6">
-					<select @change="changeBallColor($event)" class="form-control" id="sel1" style="width: 70%;">
+					<select @change="changeBallColor($event)" class="form-control selectCenter" id="sel1" style="width: 70%;">
 					<template v-for="color in colors">
 						<option>{{ color }}</option>
 					</template>
@@ -188,7 +224,7 @@ onUnmounted(async () => {
 					<p class="textDisplay">Left Paddle Color </p>
 				</div>
 				<div class="col-6">
-					<select  @change="changeLeftPaddleColor($event)" class="form-control" id="sel2" style="width: 70%;">
+					<select  @change="changeLeftPaddleColor($event)" class="form-control selectCenter" id="sel2" style="width: 70%;">
 					<template v-for="color in colors">
 						<option>{{ color }}</option>
 					</template>
@@ -202,7 +238,7 @@ onUnmounted(async () => {
 					<p class="textDisplay">Right Paddle Color</p>
 				</div>
 				<div class="col-6">
-					<select  @change="changeRightPaddleColor($event)" class="form-control" id="sel3" style="width: 70%;">
+					<select  @change="changeRightPaddleColor($event)" class="form-control selectCenter" id="sel3" style="width: 70%;">
 					<template v-for="color in colors">
 						<option>{{ color }}</option>
 					</template>
@@ -216,7 +252,7 @@ onUnmounted(async () => {
 					<p class="textDisplay">Field</p>
 				</div>
 				<div class="col-6">
-					<select @change="changeBackGround($event)" class="form-control" id="sel4" style="width: 70%;">
+					<select @change="changeBackGround($event)" class="form-control selectCenter" id="sel4" style="width: 70%;">
 					<template v-for="bg in backGrounds">
 						<option>{{ bg }}</option>
 					</template>
@@ -224,7 +260,37 @@ onUnmounted(async () => {
 				</div>
 			</div>
 		</div>
-		<button class="btn btn-secondary" @click="resetSettings()">Default settings</button>
+		<div class="card-body p-0 m-3">
+			<div class="row">
+				<div class="col-6">
+					<p class="textDisplay"> Paddle Sensivity </p>
+				</div>
+				<div class="col-6" style="text-align: center;">
+					<input v-model="sliderValue" type="range" min="0" max="100" class="slider" />
+					<div>
+						{{ sliderValue / 100 }}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card-body p-0 m-3">
+			<div class="row">
+				<div class="col-6">
+					<p class="textDisplay"> Game Mode </p>
+				</div>
+				<div class="col-6" style="text-align: center;">
+					<div class="row">
+						<template v-for="(mode, index) in gameModes" :key="index">
+							<div class="col-4 m-0">
+								<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
+								<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
+							</div>
+						</template>
+					</div>
+				</div>
+			</div>
+		</div>
+ 		<button class="btn btn-secondary m-1" @click="resetSettings()">Default settings</button>
 	</div>
 	<div id="canvas-container">
 		<p> Field Preview </p>
@@ -235,6 +301,11 @@ onUnmounted(async () => {
 <style scoped>
 .textDisplay {
 	margin-top: 0.5em;
+	text-align: center;
+}
+
+.selectCenter {
+	margin: auto;
 	text-align: center;
 }
 #canvas-container {
