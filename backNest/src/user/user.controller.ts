@@ -106,7 +106,15 @@ export class UserController {
     // messages.twofaSecret = null;
     res.json(messages);
   }
-  
+ @Get('findone:login')
+  async getOneUserFromLog(@Res() res: any, @Param() params: any) {
+    const login: string = params.login.slice(1);
+    console.log("got request for user with login %s", login);
+    let messages: User = await this.userService.findOne(login);
+    // messages.twofaSecret = null;
+    res.json(messages);
+  }
+
   @Get('addWin:username')
   async addWin(@Res() res: Response, @Param() params: any) {
     const username: string = params.username.slice(1);

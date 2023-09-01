@@ -1,13 +1,14 @@
 <script setup lang="ts">
 
 const props = defineProps({
-  username: String
+  username: String,
+  login: String
 });
 
 const emit = defineEmits();
 
 function openProfile() {
-  emit('open-profile', props.username);
+  emit('open-profile', props.login);
 }
 </script>
 
