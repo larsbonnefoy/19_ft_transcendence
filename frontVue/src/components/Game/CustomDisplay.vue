@@ -6,18 +6,12 @@ const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 const gameModes: Array<string> = ["Normal", "Hard", "Both"];
-const sliderValue = ref(50);
+const sliderValue = ref(retrieveSensiFromStorage());
 const activeMode = ref(retrieveModeFromStorage()); //recup valeur dans local storage if no exist set to 0;
-
-const sliderModifier = computed(() => {
-	const retval:number = 1 + (((sliderValue.value/100) - 0.5) * 0.4)
-	localStorage.setItem('game_mode', "" + retval);
-	return (retval)
-})
 
 watch(sliderValue, () => {
 	const retval: number = 1 + (((sliderValue.value/100) - 0.5) * 0.4)
-	console.log(retval);
+	console.log("newVal" + retval)
 	localStorage.setItem("paddle_sensitivity", "" + retval);
 })
 
@@ -39,6 +33,18 @@ function retrieveModeFromStorage():number {
 			return 2;
 	}
 }
+
+
+function retrieveSensiFromStorage():number {
+	let valuefromStorage = localStorage.getItem('paddle_sensitivity');
+	if (valuefromStorage == null) {
+		return 50;
+	}
+	let retVal: number = Math.ceil(((((+valuefromStorage -1) / 0.4) + 0.5) * 100) * 100 / 100); 
+	console.log("converted from store" + valuefromStorage);
+	return retVal
+}
+
 
 function changeBallColor(event: any){
 	localStorage.setItem('ballColor', event.target.value);
@@ -65,7 +71,7 @@ function resetSettings() {
 	localStorage.setItem('rightPaddleColor', "white");
 	localStorage.setItem('leftPaddleColor', "white");
 	localStorage.setItem('backGround', "black");
-	localStorage.setItem('game_mode', "" + 0);
+	selectMode(2);
 	drawBackGround();
 	drawBall();
 	drawLeftPaddle();
@@ -78,8 +84,8 @@ function resetSettings() {
 }
 
 
-const canvasWidth = 600;
-const canvasHeight = 450;
+const canvasWidth = 500;
+const canvasHeight = 375;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let backgroundColor : string = "black";
@@ -293,7 +299,6 @@ onUnmounted(async () => {
  		<button class="btn btn-secondary m-1" @click="resetSettings()">Default settings</button>
 	</div>
 	<div id="canvas-container">
-		<p> Field Preview </p>
         <canvas id="displayCustom"></canvas>
     </div>
 </template>
