@@ -35,13 +35,20 @@ export enum states {
   ENDED
 };
 
+export enum game_mode {
+  DEFAULT,
+  OBSTACLES,
+  BOTH
+};
+
 export class Game {
   public state : states = states.STARTING;
   public lastTimeStamp : number;
   public roomName : string = "room0";
+  public gMode : game_mode = game_mode.DEFAULT;
   public player0 : string = "";
   public player1 : string = "";
-  public startDirection : number = 1;
+  private startDirection : number = 1;
   public score0 : number = 0;
   public score1 : number = 0;
   public leftPaddle = {
@@ -64,22 +71,47 @@ export class Game {
     speedx : ballSpeed,
     speedy : 0,
   };
+  public obstacle0 = {
+    x : canvasWidth / 2,
+    y : canvasHeight / 4,
+    width : 6 * ballRadius,
+    height : 6 * ballRadius,
+  };
+  public obstacle1 = {
+    x : canvasWidth / 2,
+    y : 3 * canvasHeight / 4,
+    width : 6 * ballRadius,
+    height : 6 * ballRadius,
+  };
 
   constructor () {
   }
 
-  ballCollisionLeftPaddle() : boolean {
-      return (this.ball.x > this.leftPaddle.x - this.leftPaddle.width / 2 - this.ball.radius
-      && this.ball.x < this.leftPaddle.x + this.leftPaddle.width / 2 + this.ball.radius
-      && this.ball.y > this.leftPaddle.y - this.leftPaddle.height / 2 - this.ball.radius
-      && this.ball.y < this.leftPaddle.y + this.leftPaddle.height / 2 + this.ball.radius);
+  ballCollisionObstacle(obstacle : any) : boolean {
+    return (this.ball.x > obstacle.x - obstacle.width / 2 - this.ball.radius
+      && this.ball.x < obstacle.x + obstacle.width / 2 + this.ball.radius
+      && this.ball.y > obstacle.y - obstacle.height / 2 - this.ball.radius
+      && this.ball.y < obstacle.y + obstacle.height / 2 + this.ball.radius);
   }
 
-  ballCollisionRightPaddle() : boolean {
-      return (this.ball.x > this.rightPaddle.x - this.rightPaddle.width / 2 - this.ball.radius
-      && this.ball.x < this.rightPaddle.x + this.rightPaddle.width / 2 + this.ball.radius
-      && this.ball.y > this.rightPaddle.y - this.rightPaddle.height / 2 - this.ball.radius
-      && this.ball.y < this.rightPaddle.y + this.rightPaddle.height / 2 + this.ball.radius);
+  bounceObstacle(o : any) {
+    if (this.ball.x > o.x + o.width / 2) {
+      this.ball.speedx = this.ball.speed;
+      if (this.ball.y > o.y + o.height / 2) {
+        this.ball.speedy = this.ball.speed;
+      } else if (this.ball.y < o.y - o.height / 2) {
+        this.ball.speedy = -this.ball.speed;
+      }
+    } else if (this.ball.x < o.x - o.width / 2) {
+      this.ball.speedx = -this.ball.speed;
+      if (this.ball.y > o.y + o.height / 2) {
+        this.ball.speedy = this.ball.speed;
+      } else if (this.ball.y < o.y - o.height / 2) {
+        this.ball.speedy = -this.ball.speed;
+      }
+    } else {
+      this.ball.speedy = -this.ball.speedy;
+    }
   }
 
   updateBall(deltaTime : number) : void {
@@ -113,12 +145,18 @@ export class Game {
         this.ball.y = 2 * this.ball.radius - this.ball.y;
         this.ball.speedy *= -1;
     }
-    if (this.ballCollisionLeftPaddle()) {
+    if (this.ballCollisionObstacle(this.leftPaddle)) {
         this.ball.speedy = (this.ball.y - this.leftPaddle.y) * (this.ball.speed - 2) / (this.leftPaddle.height / 2);
         (this.ball.x > this.leftPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
-    } else if (this.ballCollisionRightPaddle()) {
+    } else if (this.ballCollisionObstacle(this.rightPaddle)) {
         this.ball.speedy = (this.ball.y - this.rightPaddle.y) * (this.ball.speed - 2) / (this.rightPaddle.height / 2);
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
+    } else if (+this.gMode === game_mode.OBSTACLES) {
+      if (this.ballCollisionObstacle(this.obstacle0)) {
+        this.bounceObstacle(this.obstacle0);
+      } else if (this.ballCollisionObstacle(this.obstacle1)) {
+        this.bounceObstacle(this.obstacle1);
+      }
     }
   }
 
@@ -138,6 +176,7 @@ export class Game {
     this.score0 = 0;
     this.score1 = 0;
     this.startDirection = 1;
+    this.gMode = game_mode.DEFAULT;
     this.player0 = "";
     this.player1 = "";
     this.leftPaddle.y = canvasHeight / 2;
