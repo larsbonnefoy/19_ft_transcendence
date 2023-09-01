@@ -198,7 +198,7 @@ function init() {
             color = "white";
         ctx.fillStyle = color;
 
-        if (+response.gMode === 1) {
+        if (+response.gMode === 1 || +response.gMode === 2) {
             ctx.beginPath();
             ctx.rect(response.obstacle0.x - response.obstacle0.width / 2, response.obstacle0.y - response.obstacle0.height / 2, response.obstacle0.width, response.obstacle0.height);
             ctx.fill();

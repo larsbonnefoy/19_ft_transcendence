@@ -38,6 +38,7 @@ export enum states {
 export enum game_mode {
   DEFAULT,
   OBSTACLES,
+  RANDOM,
   BOTH
 };
 
@@ -169,36 +170,40 @@ export class Game {
   }
 
   updateObstacle(o : any, deltaTime : number) : void {
-    if (o.x >= o.target.x - 10 && o.x <= o.target.x + 10 && o.y >= o.target.y - 10 && o.y <= o.target.y + 10) {
-      o.target.x = randomIntFromInterval(canvasWidth / 4, 3 * canvasWidth / 4);
-      o.target.y = randomIntFromInterval(canvasHeight / 4, 3 * canvasHeight / 4);
-      o.target.speedx = (o.target.x - o.x) / 100;
-      o.target.speedy = (o.target.y - o.y) / 100;
+    if (+this.gMode === game_mode.OBSTACLES) {
+      switch (o.dir) {
+        case 0:
+          o.x += 2 * (deltaTime / 20);
+          if (o.x >= 3 * canvasWidth / 4)
+            o.dir = 1;
+          break ;
+        case 1:
+          o.y -= 2 * (deltaTime / 20);
+          if (o.y <= canvasHeight / 4)
+            o.dir = 2;
+          break ;
+        case 2:
+          o.x -= 2 * (deltaTime / 20);
+          if (o.x <= canvasWidth / 4)
+            o.dir = 3;
+          break ;
+        case 3:
+          o.y += 2 * (deltaTime / 20);
+          if (o.y >= 3 * canvasHeight / 4)
+            o.dir = 0;
+          break ;
+      }
     }
-    o.x += o.target.speedx * deltaTime / 20;
-    o.y += o.target.speedy * deltaTime / 20;
-    // switch (o.dir) {
-    //   case 0:
-    //     o.x += 2 * (deltaTime / 20);
-    //     if (o.x >= 3 * canvasWidth / 4)
-    //       o.dir = 1;
-    //     break ;
-    //   case 1:
-    //     o.y -= 2 * (deltaTime / 20);
-    //     if (o.y <= canvasHeight / 4)
-    //       o.dir = 2;
-    //     break ;
-    //   case 2:
-    //     o.x -= 2 * (deltaTime / 20);
-    //     if (o.x <= canvasWidth / 4)
-    //       o.dir = 3;
-    //     break ;
-    //   case 3:
-    //     o.y += 2 * (deltaTime / 20);
-    //     if (o.y >= 3 * canvasHeight / 4)
-    //       o.dir = 0;
-    //     break ;
-    // }
+    else if (+this.gMode === game_mode.RANDOM) {
+      if (o.x >= o.target.x - 10 && o.x <= o.target.x + 10 && o.y >= o.target.y - 10 && o.y <= o.target.y + 10) {
+        o.target.x = randomIntFromInterval(canvasWidth / 4, 3 * canvasWidth / 4);
+        o.target.y = randomIntFromInterval(canvasHeight / 4, 3 * canvasHeight / 4);
+        o.target.speedx = (o.target.x - o.x) / 50;
+        o.target.speedy = (o.target.y - o.y) / 50;
+      }
+      o.x += o.target.speedx * deltaTime / 20;
+      o.y += o.target.speedy * deltaTime / 20;
+    }
   }
 
   resetPositions() : void {
@@ -245,10 +250,8 @@ export class Game {
     if (deltaTime > 20) {
       while (deltaTime > 20) {
         this.updateBall(20);
-        if (+this.gMode === game_mode.OBSTACLES) {
-          this.updateObstacle(this.obstacle0, 20);
-          this.updateObstacle(this.obstacle1, 20);
-        }
+        this.updateObstacle(this.obstacle0, 20);
+        this.updateObstacle(this.obstacle1, 20);
         deltaTime -= 20;
       }
       this.updateBall(deltaTime);

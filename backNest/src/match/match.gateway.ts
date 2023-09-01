@@ -146,7 +146,7 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-    if (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES)
+    if (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM)
       data.mode = game_mode.BOTH;
     // console.log("game mode is " + data.mode);
     let roomIndex: number = 0;
