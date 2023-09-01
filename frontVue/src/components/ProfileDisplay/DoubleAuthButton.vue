@@ -26,6 +26,11 @@ function isDigit(e: any) {
         }
 }
 
+watch(digits2fa, () => {
+    if (digits2fa.value.length == 6) {
+        submit();
+    } 
+})
 
 /* check if code is valid, if yes, enable 2fa*/
 let submit = (async () => {

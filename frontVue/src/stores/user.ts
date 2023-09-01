@@ -59,7 +59,6 @@ export const useUserStore = defineStore('user', {
                     try {
                         const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/disable/`, {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
-                        console.log(data);
                     }
                     catch (error) {
                         console.log(error);
