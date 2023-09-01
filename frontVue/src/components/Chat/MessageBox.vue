@@ -19,8 +19,8 @@ onUpdated(() => {
   emit('updated');
 });
 
-function handleProfileClick(username: string) {
-  emit('open-profile', username);
+function handleProfileClick(login: string) {
+  emit('open-profile', login);
 }
 // console.log(messages[3].sender);
 </script>
@@ -30,7 +30,10 @@ function handleProfileClick(username: string) {
     <div v-for="(message,  index) in channel?.getMessages" :key="index" class="message"
          :class="{ 'sent-by-me': (message?.user.login42 === me)}">
       <div class="message-user">
-        <ProfileButton :username="message?.user.login42 === me   ? 'You' : message?.user.username" @open-profile="handleProfileClick"/>
+        <ProfileButton 
+          :username="message?.user.login42 === me   ? 'You' : message?.user.username" @open-profile="handleProfileClick"
+          :login="message?.user.login42"
+          />
       </div>
       <div class="message-content">
         {{ message.message }} 

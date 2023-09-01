@@ -6,24 +6,19 @@ import ChatWindow from './ChatWindow.vue';
 import ProfileWindow from './ProfileWindow.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
 import axios from "axios";
+import { type UserInfo } from '@/types';
 
-const selectedUser = ref<string>("");
+const selectedUser = ref("");
 const emits = defineEmits();
 
 function handleSelectedProfile(user: string) {
-  selectedUser.value = user;
-  console.log('Current selected user:', selectedUser.value);
+  selectedUser.value = user
+  console.log("chat : "+ selectedUser.value)
+  console.log(selectedUser.value)
+  // console.log('Current selected user:', selectedUser.value);
 }
 
 const selectedChannel = ref("" );
-
-
-const me = (await axios.get('http://localhost:3000/user/me/login42', {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-})).data;
 
 let messages: any;
 

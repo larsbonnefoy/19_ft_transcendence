@@ -10,7 +10,7 @@ import ChannelList from './ChannelList.vue';
 const chat = useChatStore();
 const channel = useChannelStore();
 const props = defineProps({
-  messages: Array,
+  // messages: Array,
   user: Object,
   selectedChannel: String
 });
@@ -36,7 +36,7 @@ const me = (await axios.get('http://localhost:3000/user/me/login42', {
 
 
 
-let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
+// let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref<null | HTMLDivElement>(null);
@@ -91,6 +91,7 @@ const handleUpdate = () => {
 
 
 function handleOpenProfile(user: string) {
+  console.log("chatWindow : "+ user)
   emit('open-profile', user);
 }
 

@@ -15,7 +15,6 @@ const props = defineProps<{
 }>()
 
 console.log("profilecard")
-console.log(props.user.value);
 const store = useUserStore();
 
 const activeUser = computed(() => {
