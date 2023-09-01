@@ -5,7 +5,7 @@ import { useUserStore } from '@/stores/user';
 const store = useUserStore();
 const colors : Array<string> = ["white", "red", "green", "blue"];
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
-const gameModes: Array<string> = ["Normal", "Hard", "Both"];
+const gameModes: Array<string> = ["Classic", "Fun", "Hard", "All"];
 const sliderValue = ref(retrieveSensiFromStorage());
 const activeMode = ref(retrieveModeFromStorage()); //recup valeur dans local storage if no exist set to 0;
 
@@ -29,8 +29,10 @@ function retrieveModeFromStorage():number {
 			return 1;
 		case ("2"):
 			return 2;
+		case ("3"):
+			return 3;
 		default:
-			return 2;
+			return 3;
 	}
 }
 
@@ -285,13 +287,15 @@ onUnmounted(async () => {
 					<p class="textDisplay"> Game Mode </p>
 				</div>
 				<div class="col-6" style="text-align: center;">
-					<div class="row">
-						<template v-for="(mode, index) in gameModes" :key="index">
-							<div class="col-4 m-0">
-								<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
-								<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
-							</div>
-						</template>
+					<div class="row d-flex justify-content-center">
+						<div class="d-flex justify-content-center">
+							<template v-for="(mode, index) in gameModes" :key="index">
+								<div class="col-3 m-0">
+									<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
+									<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
+								</div>
+							</template>
+						</div>
 					</div>
 				</div>
 			</div>
