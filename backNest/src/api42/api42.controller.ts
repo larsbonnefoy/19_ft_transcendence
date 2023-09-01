@@ -29,7 +29,7 @@ export class Api42Controller {
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
 				newUser.photo = intraPhoto;
-				this.userService.createUser(newUser);
+				await this.userService.createUser(newUser);
 			}
 			else
 			{
