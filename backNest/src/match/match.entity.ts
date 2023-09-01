@@ -74,12 +74,14 @@ export class Game {
   public obstacle0 = {
     x : canvasWidth / 2,
     y : canvasHeight / 4,
+    dir : 2,
     width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
   public obstacle1 = {
     x : canvasWidth / 2,
     y : 3 * canvasHeight / 4,
+    dir : 0,
     width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
@@ -160,6 +162,31 @@ export class Game {
     }
   }
 
+  updateObstacle(o : any, deltaTime : number) : void {
+    switch (o.dir) {
+      case 0:
+        o.x += 2 * (deltaTime / 20);
+        if (o.x >= 3 * canvasWidth / 4)
+          o.dir = 1;
+        break ;
+      case 1:
+        o.y -= 2 * (deltaTime / 20);
+        if (o.y <= canvasHeight / 4)
+          o.dir = 2;
+        break ;
+      case 2:
+        o.x -= 2 * (deltaTime / 20);
+        if (o.x <= canvasWidth / 4)
+          o.dir = 3;
+        break ;
+      case 3:
+        o.y += 2 * (deltaTime / 20);
+        if (o.y >= 3 * canvasHeight / 4)
+          o.dir = 0;
+        break ;
+    }
+  }
+
   resetPositions() : void {
     this.startDirection *= -1;
     
@@ -177,6 +204,12 @@ export class Game {
     this.score1 = 0;
     this.startDirection = 1;
     this.gMode = game_mode.DEFAULT;
+    this.obstacle0.x = canvasWidth / 2;
+    this.obstacle0.y = canvasHeight / 4;
+    this.obstacle0.dir = 2;
+    this.obstacle1.x = canvasWidth / 2;
+    this.obstacle1.y = 3 * canvasHeight / 4;
+    this.obstacle1.dir = 0;
     this.player0 = "";
     this.player1 = "";
     this.leftPaddle.y = canvasHeight / 2;
@@ -196,9 +229,17 @@ export class Game {
     if (deltaTime > 20) {
       while (deltaTime > 20) {
         this.updateBall(20);
+        if (+this.gMode === game_mode.OBSTACLES) {
+          this.updateObstacle(this.obstacle0, 20);
+          this.updateObstacle(this.obstacle1, 20);
+        }
         deltaTime -= 20;
       }
       this.updateBall(deltaTime);
+      if (+this.gMode === game_mode.OBSTACLES) {
+        this.updateObstacle(this.obstacle0, deltaTime);
+        this.updateObstacle(this.obstacle1, deltaTime);
+      }
       // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
     }
