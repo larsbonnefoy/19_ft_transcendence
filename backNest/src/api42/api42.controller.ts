@@ -18,7 +18,15 @@ export class Api42Controller {
 			const access_token  : string = await this.api42Service.getToken(query);
 			// const access_token  : string = "badAccess";
 			const intraLogin : string = await this.api42Service.getLogin42(access_token);
-			const intraPhoto : string = await this.api42Service.getImage42(access_token);
+			let intraPhoto: string
+			try
+			{
+				 intraPhoto = await this.api42Service.getImage42(access_token);
+			}
+			catch
+			{
+				intraPhoto = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif";
+			}
 			let state : boolean = true;
 			const user = (await this.userService.findOne(intraLogin)); 
 		//create a User object 
@@ -35,8 +43,6 @@ export class Api42Controller {
 			{
 				if (user.has2fa === true)
 					state = false;
-				if (user.photo === "no photo yet") // user created with a script
-					user.photo = intraPhoto;
 				console.log("user already in the db");
 			}
 			const jwtToken : string = await this.api42Service.createJWT(intraLogin, state);
@@ -84,7 +90,7 @@ export class Api42Controller {
 			const user: User = new User;
 			user.login42 = query.login42;
 			user.username = query.login42;
-			//user.photo = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif"
+			// user.photo = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif"
 			await this.userService.createUser(user);
 			return jwtToken;
 		}
