@@ -41,6 +41,10 @@ export enum game_mode {
   BOTH
 };
 
+function randomIntFromInterval(min : number, max : number) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 export class Game {
   public state : states = states.STARTING;
   public lastTimeStamp : number;
@@ -75,6 +79,7 @@ export class Game {
     x : canvasWidth / 2,
     y : canvasHeight / 4,
     dir : 2,
+    target : {x: canvasWidth / 2, y : canvasHeight / 4, speedx: 0, speedy: 0},
     width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
@@ -82,6 +87,7 @@ export class Game {
     x : canvasWidth / 2,
     y : 3 * canvasHeight / 4,
     dir : 0,
+    target : {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0},
     width : 3 * ballRadius,
     height : 6 * ballRadius,
   };
@@ -163,28 +169,36 @@ export class Game {
   }
 
   updateObstacle(o : any, deltaTime : number) : void {
-    switch (o.dir) {
-      case 0:
-        o.x += 2 * (deltaTime / 20);
-        if (o.x >= 3 * canvasWidth / 4)
-          o.dir = 1;
-        break ;
-      case 1:
-        o.y -= 2 * (deltaTime / 20);
-        if (o.y <= canvasHeight / 4)
-          o.dir = 2;
-        break ;
-      case 2:
-        o.x -= 2 * (deltaTime / 20);
-        if (o.x <= canvasWidth / 4)
-          o.dir = 3;
-        break ;
-      case 3:
-        o.y += 2 * (deltaTime / 20);
-        if (o.y >= 3 * canvasHeight / 4)
-          o.dir = 0;
-        break ;
+    if (o.x >= o.target.x - 10 && o.x <= o.target.x + 10 && o.y >= o.target.y - 10 && o.y <= o.target.y + 10) {
+      o.target.x = randomIntFromInterval(canvasWidth / 4, 3 * canvasWidth / 4);
+      o.target.y = randomIntFromInterval(canvasHeight / 4, 3 * canvasHeight / 4);
+      o.target.speedx = (o.target.x - o.x) / 100;
+      o.target.speedy = (o.target.y - o.y) / 100;
     }
+    o.x += o.target.speedx * deltaTime / 20;
+    o.y += o.target.speedy * deltaTime / 20;
+    // switch (o.dir) {
+    //   case 0:
+    //     o.x += 2 * (deltaTime / 20);
+    //     if (o.x >= 3 * canvasWidth / 4)
+    //       o.dir = 1;
+    //     break ;
+    //   case 1:
+    //     o.y -= 2 * (deltaTime / 20);
+    //     if (o.y <= canvasHeight / 4)
+    //       o.dir = 2;
+    //     break ;
+    //   case 2:
+    //     o.x -= 2 * (deltaTime / 20);
+    //     if (o.x <= canvasWidth / 4)
+    //       o.dir = 3;
+    //     break ;
+    //   case 3:
+    //     o.y += 2 * (deltaTime / 20);
+    //     if (o.y >= 3 * canvasHeight / 4)
+    //       o.dir = 0;
+    //     break ;
+    // }
   }
 
   resetPositions() : void {
@@ -207,9 +221,11 @@ export class Game {
     this.obstacle0.x = canvasWidth / 2;
     this.obstacle0.y = canvasHeight / 4;
     this.obstacle0.dir = 2;
+    this.obstacle0.target = {x: canvasWidth / 2, y : canvasHeight / 4, speedx: 0, speedy: 0};
     this.obstacle1.x = canvasWidth / 2;
     this.obstacle1.y = 3 * canvasHeight / 4;
     this.obstacle1.dir = 0;
+    this.obstacle1.target = {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0};
     this.player0 = "";
     this.player1 = "";
     this.leftPaddle.y = canvasHeight / 2;

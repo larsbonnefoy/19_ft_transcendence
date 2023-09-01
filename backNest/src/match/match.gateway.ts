@@ -348,6 +348,7 @@ export class MatchGateway {
         game.state = states.ONGOING;
         game.player0 = data.target;
         game.player1 = login42;
+        game.gMode = game_mode.OBSTACLES;
         game.lastTimeStamp = new Date().getTime();
         mustAppend = false;
         console.log("challenge between " + data.target + " and " + login42 + " in " + game.roomName);
@@ -362,6 +363,7 @@ export class MatchGateway {
       games[roomIndex].state = states.ONGOING;
       games[roomIndex].player0 = data.target;
       games[roomIndex].player1 = login42;
+      games[roomIndex].gMode = game_mode.OBSTACLES;
       games[roomIndex].lastTimeStamp = new Date().getTime();
       console.log("new room for challenge between " + data.target + " and " + login42 + " in " + games[roomIndex].roomName);
     }
