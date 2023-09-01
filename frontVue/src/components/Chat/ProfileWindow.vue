@@ -59,11 +59,9 @@ watch(() => props.user, async (newVal: any) => {
   <div class="profile-window" v-if="dataLoaded">
       <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
     <!-- Buttons -->
-      <!-- <div class="button-container">
-      <button @click="addFriend" class="user-button">Add as Friend</button>
-      <button @click="startMatch" class="user-button">Start Match</button>
-      <button @click="blockUser" class="user-button">Block</button>
-    </div> -->
+      <div class="button-container">
+      <button @click="startMatch" class="start-match-button">Start Match</button>
+    </div>
   </div>
 </template>
 
@@ -75,8 +73,6 @@ watch(() => props.user, async (newVal: any) => {
   overflow: hidden;
   align-items: center;
   flex-direction: column;
-  /* width: 33%; */
-  /* background-color: #6c757d; */
   padding: 0;  /* Remove padding */
   margin: 0;  /* Remove margin */
 }
@@ -88,19 +84,27 @@ watch(() => props.user, async (newVal: any) => {
   gap: 10px;
   width: 30%;  /* Adjust the width to match the image and text */
   align-self: center;  /* Center the button container */
+  display: flex;            
+  justify-content: center;  
+  align-items: center;      
+
 }
 
-.user-button {
-  width: 20%;
+.start-match-button {
+  width: 10vw;
+  height: 5vh;
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: #007BFF;
   color: white;
+  display: flex;            
+  justify-content: center;  
+  align-items: center;      
 }
 
-.user-button:hover {
+.start-match-button:hover {
   background-color: #0056b3;
 }
 
