@@ -40,8 +40,6 @@ Should set max lenght of username here
                 <div class="card-body text-center"> <!-- White Profile card  style="min-height: 60vh; max-height: 70vh;"-->
                     <div v-if="!modProfile"> 
                         <h4> {{ user.username }}</h4>
-						<!-- <h4> {{ user.photo }} </h4> -->
-						<!-- <h4> {{ image }}</h4> -->
                         <div> {{ user.status }}</div>
                         <Status :status="user.status"></Status> <!-- Meme pb que avec les games, ne se refresh pas correctement-->
                         <div class="mt-3 mb-4">

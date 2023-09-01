@@ -32,8 +32,9 @@ async function setUserOpponent() {
         let resUsername = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/UserFromLog:${opponent.login42}`)
         opponentUsername = resUsername.data.username;
     }
-    catch (error) {
-        console.log(error)
+    catch (error : any) {
+        opponentUsername = "deleted User"
+        console.log(error.message + ": user has been deleted")
     }
 }
 

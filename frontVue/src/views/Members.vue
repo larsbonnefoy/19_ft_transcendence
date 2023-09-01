@@ -9,7 +9,6 @@ onMounted(async () => {
     try {
       const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/get`);
       members.value = res.data;
-      console.log(res.data);
     }
     catch (error) {
         alert(error);

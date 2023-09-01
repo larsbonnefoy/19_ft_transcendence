@@ -181,48 +181,60 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('add_friend:username')
+  @Get('add_friend:login42')
   async addFriend(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
-    if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+    const user_2 = await this.userService.findOne(friendLogin);
+    if (user_1 === null || user_2 === null) {
+      res.status(404).json({"error":`no user with such login`});
       return ;
     }
-    console.log("%s sends friend request to %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s sends friend request to %s", user_1.login42, friendLogin);
+    if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
     for (let friend of user_1.friends) {
-      if (friend == user_2.login42) {
+      if (friend === user_2.login42) {
         res.status(409).json({"error":"c'est déjà ton pote boloss"});
         return ;
       }
     }
     for (let pending of user_2.pending) {
-      if (pending == user_1.login42) {
+      if (pending === user_1.login42) {
         res.status(409).json({"error":"tu l'as déjà invité boloss"});
         return ;
       }
     }
+    for (let reverse_pending of user_1.pending) {
+      if (reverse_pending === user_2.login42) {
+        await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
+        await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
+        await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+        if (!(user_1.achievements & 8))
+          await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+        if (!(user_2.achievements & 8))
+          await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
+        return ;
+      }
+    }
     await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
-    res.json({"success":`${user_1.username} sent friend request to ${friendusername}`});
+    res.json({"success":`${user_1.login42} sent friend request to ${friendLogin}`});
   }
   
   @UseGuards(AuthGuard)
-  @Get('remove_request:username')
+  @Get('remove_request:login42')
   async removeRequest(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendLogin);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s removes friend request towards %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s removes friend request towards %s", user_1.login42, friendLogin);
+    if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -238,18 +250,18 @@ export class UserController {
       return ;
     }
     await this.userService.remove_pending(user_2.login42, user_2.pending, user_1.login42);
-    res.json({"success":`${user_1.username} withdrew friend request to ${friendusername}`});
+    res.json({"success":`${user_1.login42} withdrew friend request to ${friendLogin}`});
   }
   
   @UseGuards(AuthGuard)
-  @Get('accept_request:username')
+  @Get('accept_request:login42')
   async acceptRequest(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
-    console.log("In accept_request %s accepts %s friend request", user_1.username, friendusername);
+    const user_2 = await this.userService.findOne(friendLogin);
+    console.log("In accept_request %s accepts %s friend request", user_1.login42, friendLogin);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
     /* if user_1 and user_2 have send requests to each other, one can accept, have to check for second one if already friends to avoid double friends */
@@ -261,8 +273,8 @@ export class UserController {
         return ;
       }
     }
-    console.log("%s accepts %s friend request", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s accepts %s friend request", user_1.login42, friendLogin);
+    if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -284,21 +296,21 @@ export class UserController {
 		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
 	if (!(user_2.achievements & 8))
 		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
-    res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
+    res.json({"success":`friendship blooming between ${user_1.login42} and ${friendLogin}`});
   }
   
   @UseGuards(AuthGuard)
-  @Get('refuse_request:username')
+  @Get('refuse_request:login42')
   async refuseRequest(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendLogin);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s refuses %s friend request", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s refuses %s friend request", user_1.login42, friendLogin);
+    if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -314,7 +326,7 @@ export class UserController {
       return ;
     }
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
-    res.json({"success":`request refused between ${user_1.username} and ${friendusername}`});
+    res.json({"success":`request refused between ${user_1.login42} and ${friendLogin}`});
   }
   
   @UseGuards(AuthGuard)
@@ -404,17 +416,17 @@ export class UserController {
   }
   
   @UseGuards(AuthGuard)
-  @Get('unset_friend:username')
+  @Get('unset_friend:login42')
   async unsetFriends(@Request() req: any, @Res() res:any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendLogin);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("unsetting friendship between %s and %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("unsetting friendship between %s and %s", user_1.login42, friendLogin);
+    if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -431,7 +443,7 @@ export class UserController {
     }
     await this.userService.remove_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.remove_friend(user_2.login42, user_2.friends, user_1.login42);
-    res.json({"success":`friendship sunk between ${user_1.username} and ${friendusername}`});
+    res.json({"success":`friendship sunk between ${user_1.login42} and ${friendLogin}`});
   }
   
   @Get('get')

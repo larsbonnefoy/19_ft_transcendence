@@ -25,7 +25,6 @@ async function getUserInfo() {
                 foundUser.value = false;
             }
             else {
-                console.log(res.data);
                 user = res.data
                 if (user)
                     user.photo = await store.getAvatar(user.photo);

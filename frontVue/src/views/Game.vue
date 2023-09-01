@@ -7,20 +7,43 @@ import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
 import {useRoute} from 'vue-router';
 import { GameType } from '@/types';
+import axios from 'axios';
 
 const route = useRoute();
-
-const displayGame = ref(false);
+const store = useUserStore();
+const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
 let windowWidth = ref(window.innerWidth);
 
-// console.log(route.path);
+let liveGames: any = Array(0);
+const dataLoaded = ref(false);
+
+async function isInGame() {
+    try {
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
+        liveGames = res.data;
+		console.log(liveGames.length);
+		if (liveGames.length != 0 ) {
+			console.log(liveGames);
+			for (let games of liveGames) {
+				if (games.player0 == store.getUserName || games.player1 == store.getUserName) {
+					return true;
+				}
+				return false;
+			}
+		}
+        dataLoaded.value = true;
+    }
+    catch(error:any) {
+        console.log(error.message + ": Pb loading ongoing games")
+    }
+	return false;
+}
+
 if (route.path === "/game/challenge") {
 	displayGame.value = true;
 	playGame.value = GameType.CHALLENGER;
 }
-
-const store = useUserStore();
 
 function joinGame() {
 	displayGame.value = true;
@@ -50,10 +73,12 @@ function handleResize() {
 
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
+	//isInGame();
 });
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
+	socket.off('endGame');
 });
 
 </script>
