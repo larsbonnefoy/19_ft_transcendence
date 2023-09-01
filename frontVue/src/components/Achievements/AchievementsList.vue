@@ -9,19 +9,6 @@ const props = defineProps<{
 
 const displayAll = ref(false);
 
-//probablement devoir faire comme dans profile pr profile card
-/*
-async function getUserInfo(): Promise<UserInfo> {
-    const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/one:${props.usernameProp}`);
-    console.log("User Info for achievment");
-    console.log(res.data);
-    const user: UserInfo = res.data;
-    return user;
-}
-*/
-
-//await getUserInfo();
-
 function toggleAchDisplay() {
     displayAll.value = !displayAll.value
 }

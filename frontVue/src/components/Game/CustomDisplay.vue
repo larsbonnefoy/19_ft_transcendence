@@ -36,7 +36,6 @@ function retrieveModeFromStorage():number {
 	}
 }
 
-
 function retrieveSensiFromStorage():number {
 	let valuefromStorage = localStorage.getItem('paddle_sensitivity');
 	if (valuefromStorage == null) {
@@ -196,6 +195,8 @@ function init() {
 //setDefault();
 
 onMounted(async () => {
+	retrieveSensiFromStorage();
+	retrieveModeFromStorage();
     init();
 	intervalStop = setInterval(drawBackGround, 100);
 })
@@ -287,7 +288,7 @@ onUnmounted(async () => {
 					<p class="textDisplay"> Game Mode </p>
 				</div>
 				<div class="col-6" style="text-align: center;">
-					<div class="row d-flex justify-content-center">
+					<div class="row">
 						<div class="d-flex justify-content-center">
 							<template v-for="(mode, index) in gameModes" :key="index">
 								<div class="col-3 m-0">
