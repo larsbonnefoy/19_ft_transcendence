@@ -34,13 +34,7 @@ const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.me
       }
 })).data;
 
-<<<<<<< HEAD
-
-
-// let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
-=======
 let messages = chat.getChannels?.find((it): boolean => {return props.selectedChannel === it.id})?.messages;
->>>>>>> main
 
 const chatContainerRef = ref(null);
 const endOfChatRef = ref<null | HTMLDivElement>(null);

@@ -107,15 +107,9 @@ export const useChatStore = defineStore('chat', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-<<<<<<< HEAD
                 this.chat = {ChannelList: []};
                 if (this.chat !== null)
                     this.chat.ChannelList = data.data; 
-=======
-                console.log(data.data);
-                this.chat = []
-                this.chat.ChannelList = data.data; 
->>>>>>> main
                 console.log(data.data[0].isDm)
             }
             catch (error)

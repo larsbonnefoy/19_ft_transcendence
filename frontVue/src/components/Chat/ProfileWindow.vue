@@ -17,13 +17,9 @@ let dataLoaded = ref(false)
 
 async function getProfileData(user: string) {
   try {
-<<<<<<< HEAD
     console.log('Current selected user:a', user);
 
     const res = await axios.get(`http://localhost:3000/user/findone:${user}`, {
-=======
-    const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me`, {
->>>>>>> main
       headers:
           {
             'token':localStorage.getItem('jwt_token')
