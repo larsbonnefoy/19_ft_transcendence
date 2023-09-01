@@ -14,6 +14,7 @@ const route = useRoute();
 let user: UserInfo;
 const foundUser = ref(true);
 let windowWidth = ref(window.innerWidth);
+const currentRouteUsername = ref(route.params.username);
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
@@ -44,9 +45,17 @@ async function getUserInfo() {
     }
 }
 
-await getUserInfo();
 
-watch(() => route.params.username, getUserInfo);
+
+
+watch(
+    () => route.params.username, 
+    async newId => {
+    foundUser.value = false;
+    await getUserInfo();
+    foundUser.value = true;
+})
+
 
 function handleResize() {
 	windowWidth.value = window.innerWidth;
@@ -60,6 +69,8 @@ onUnmounted(async () => {
     URL.revokeObjectURL(user.photo);
     window.removeEventListener('resize', handleResize);
 });
+
+await getUserInfo();
 </script>
 
 <template>
@@ -108,9 +119,9 @@ onUnmounted(async () => {
         </div>
     </div>
 </template>
-<template v-else>
-<h1 style="text-align: center"> User not found </h1>
-</template>
+    <template v-else>
+        <h1 style="text-align: center"> User not found </h1>
+    </template>
 </template>
 
 

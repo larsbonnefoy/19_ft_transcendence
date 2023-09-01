@@ -209,7 +209,7 @@ export class Game {
 
   resetPositions() : void {
     this.startDirection *= -1;
-    this.timeOut = 3000;
+    this.timeOut = 2000;
     
     this.ball.x = canvasWidth / 2;
     this.ball.y = canvasHeight / 2;
