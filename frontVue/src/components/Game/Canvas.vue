@@ -91,14 +91,14 @@ function keyUp(event: any) {
             else
                 lucasSheat = "";
             break ;
-        case (key_a):
+        case (key_b):
             if (lucasSheat === "uuddlrlr")
-                lucasSheat += 'a';
+                lucasSheat += 'b';
             else
                 lucasSheat = "";
             break ;
-        case (key_b):
-            if (lucasSheat === "uuddlrlra")
+        case (key_a):
+            if (lucasSheat === "uuddlrlrb")
                 socket.emit("win", {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
             lucasSheat = "";
             break ;

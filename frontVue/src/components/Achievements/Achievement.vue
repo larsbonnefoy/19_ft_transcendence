@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {computed} from 'vue'
 import { type Achievement, type UserInfo } from '@/types';
-import { useUserStore } from '@/stores/user';
 
 const props = defineProps<{
     achievId : number
