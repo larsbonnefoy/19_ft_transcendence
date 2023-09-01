@@ -43,28 +43,30 @@ socket.on('gameNotification', (origin: any) => {
 
 //this function is used to confirm a user is online and received the notification you sent them
 socket.on("challengeAccepted", (origin: string) => {
-    // const toast = useToast();
-	// toast.info(origin, {
-	// 	timeout: 5000,
-	// 	closeOnClick: true,
-	// 	pauseOnFocusLoss: true,
-	// 	pauseOnHover: true,
-	// 	draggable: false,
-	// 	draggablePercent: 0.6,
-	// 	showCloseButtonOnHover: false,
-	// 	hideProgressBar: false,
-	// 	closeButton: "button",
-	// 	icon: true,
-	// 	rtl: false
-    // });
-
     router.push('/game/challenge');
-    // router.push({ name: 'game', params: { challenge: 'challenge' } });
+});
+
+socket.on('achievement', (message: string) => {
+	const toast = useToast();
+	toast.success("New achievement: " + message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
 });
 
 onUnmounted(async () => {
 	socket.off('notification');
 	socket.off('challengeAccepted');
+	socket.off('achievement');
 });
 </script>
 
