@@ -177,6 +177,14 @@ export class UserController {
     await this.userService.change_username(current_user.login42, newUsername);
 	if (!(current_user.achievements & 1))
 		await this.userService.addAchievement(sessionId, +current_user.achievements + 1, 1);
+	newUsername.toLowerCase();
+	for (let i = 0; i < newUsername.length - 3; i++) {
+		if (newUsername.slice(i, i + 4) === "hugo") {
+			if (!(current_user.achievements & 256))
+				await this.userService.addAchievement(sessionId, +current_user.achievements + 256, 256);
+			break ;
+		}
+	}
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }
 

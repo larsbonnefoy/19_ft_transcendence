@@ -30,6 +30,8 @@ const canvasWidth: number = 800;
 const canvasHeight: number = 600;
 const key_a: number = 65;
 const key_b: number = 66;
+const key_s: number = 83;
+const key_w: number = 87;
 const key_left: number = 37;
 const key_up: number = 38;
 const key_right: number = 39;
@@ -194,6 +196,8 @@ function init() {
         ctx.closePath();
 
         color = localStorage.getItem('ballColor'); //we use ballColor for obstacles too
+		if (color === "gold" && +response.state === 1)
+			socket.emit('gold', localStorage.getItem('jwt_token'));
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
@@ -221,7 +225,7 @@ function init() {
         if (+response.timeOut >= 0)
             ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
-        if (response.state === 1) { // === states.ONGOING from backnest
+        if (+response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
                 diff.value = new Date().getTime() - response.lastTimeStamp;
                 lastLatencyUpdate = new Date().getTime();
@@ -236,10 +240,9 @@ function redrawAll() {
     // console.log("room " + roomIndex + ", player " + isPlayer);
 	if (roomIndex === -1 || !isPlayer)
 		return ;
-    if (key === key_up) {
+    if (key === key_up || key === key_w) {
         socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-    }
-    if (key === key_down) {
+    } else if (key === key_down || key === key_s) {
         socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomIndex);

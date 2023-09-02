@@ -31,6 +31,13 @@ export interface LeaderBoardUserInfo {
     photo: string
 }
 
+export interface MemberInfo {
+	username: string
+	status: string
+	elo: number
+	photo: string
+}
+
 export interface Achievement {
     name: string
     imageUrl: string

@@ -132,31 +132,37 @@ export class MatchGateway {
         if (+game.score0 > +game.score1) {
           await this.userService.addWin(p1.login42, +p1.win + 1);
           await this.userService.addLoss(p2.login42, +p2.loss + 1);
-          let newelo1: number = +p1.elo + (1 - expected_result) * (16 * (+game.gMode + 1));
+          let newelo1: number = +p1.elo + (1 - expected_result) * (16 + 8 * (+game.gMode));
           await this.userService.change_elo(p1.login42, newelo1);
-          let newelo2: number = +p2.elo - (1 - expected_result) * (16 * (+game.gMode + 1));
+          let newelo2: number = +p2.elo - (1 - expected_result) * (16 + 8 * (+game.gMode));
           await this.userService.change_elo(p2.login42, newelo2);
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
-          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 * (+game.gMode + 1)));
+          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
 		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
 			await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
+		  }
+		  if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
+			await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
 		  }
         }
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
           await this.userService.addLoss(p1.login42, +p1.loss + 1);
-          let newelo1: number = +p1.elo - expected_result * (16 * (+game.gMode + 1));
-          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * (16 * (+game.gMode + 1)));
-          let newelo2: number = +p2.elo + expected_result * (16 * (+game.gMode + 1));
-          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 * (+game.gMode + 1)));
+          let newelo1: number = +p1.elo - expected_result * (16 + 8 * (+game.gMode));
+          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * (16 + 8 * (+game.gMode)));
+          let newelo2: number = +p2.elo + expected_result * (16 + 8 * (+game.gMode));
+          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 + 8 * (+game.gMode)));
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
-          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 * (+game.gMode + 1)));
+          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
 		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
 			await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
+		  }
+		  if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
+			await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
 		  }
         }
         await this.matchService.createMatch(nMatch);
@@ -310,7 +316,7 @@ export class MatchGateway {
         this.server.to(login42).emit("joinGame", roomIndex);
         console.log(client.id + " joined room " + data.roomName);
         return ;
-	    } else if (game.roomName == data.roomName) { //game ended
+	  } else if (game.roomName == data.roomName) { //game ended
         this.server.to(login42).emit("endGame", roomIndex);
         return ;
       }
@@ -422,6 +428,24 @@ export class MatchGateway {
       client.join(login42);
       await this.userService.set_status(login42, "online");
     }
+  }
+
+  @SubscribeMessage('gold')
+  async gold(@MessageBody() token: string) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	const user = await this.userService.findOne(login42);
+    if (user == null) {
+      console.log("can't find user with login " + login42);
+      return ;
+    }
+	if (!(user.achievements & 64))
+		await this.userService.addAchievement(login42, +user.achievements + 64, 64);
   }
 
   handleConnection(client: Socket) {
