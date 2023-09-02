@@ -188,6 +188,16 @@ export class UserController {
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }
 
+  @Get('pending_list:login42')
+  async pendingList(@Res() res: any, @Param() param: any) {
+	const user = await this.userService.findOne(param.login42);
+	if (user === null) {
+		res.status(404).json({"error":`no user with such login`});
+		return ;
+	}
+	res.json({pending: user.pending});
+  }
+
   @UseGuards(AuthGuard)
   @Get('add_friend:login42')
   async addFriend(@Request() req: any, @Res() res: any, @Param() param: any) {
