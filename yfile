@@ -25,7 +25,6 @@ list of .env content:
 		POSTGRES_PASSWORD=secret
 		POSTGRES_DB=db_nestjs
 		# POSTGRES_DB_HOST=postgres
-		# POSTGRES_DB_NAME_CHAT=chat
 		POSTGRES_DB_PORT=5432
 
 		#API 42
