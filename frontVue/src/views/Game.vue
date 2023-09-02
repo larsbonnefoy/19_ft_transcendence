@@ -17,7 +17,6 @@ let windowWidth = ref(window.innerWidth);
 let router = useRouter();
 
 let liveGames: any = Array(0);
-const dataLoaded = ref(false);
 
 async function isInGame() {
     try {
@@ -27,13 +26,12 @@ async function isInGame() {
 		if (liveGames.length != 0 ) {
 			// console.log(liveGames);
 			for (let games of liveGames) {
-				if (games.player0 == store.getUserName || games.player1 == store.getUserName) {
+				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
 					return true;
 				}
-				return false;
 			}
+			return false;
 		}
-        dataLoaded.value = true;
     }
     catch(error:any) {
         console.log(error.message + ": Pb loading ongoing games")
