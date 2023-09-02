@@ -63,6 +63,23 @@ socket.on('achievement', (message: string) => {
     });
 });
 
+socket.on('warning', (message: string) => {
+	const toast = useToast();
+	toast.error(message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+
 console.log("App.vue loaded");
 
 onUnmounted(async () => {

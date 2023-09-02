@@ -38,17 +38,22 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-	  if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-		  return ;
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length) {
+		return ;
+	}
+	const user = await this.userService.findOne(login42);
+	if (user === null) {
+	  return ;
+	} else if (+user.achievements & 16) {
+	  console.log(login42 + " is already a retro gamer");
+	  this.server.to(login42).emit('warning', "You are already a Retro gamer");
+	  return ;
+	}
     let game: Game = games[data.roomIndex];
     if (game.player0 === login42)
       game.score0 = 9;
     else if (game.player1 === login42)
       game.score1 = 9;
-    const user = await this.userService.findOne(login42);
-    if (user === null) {
-      return ;
-    }
     if (!(+user.achievements & 16)) {
       this.userService.addAchievement(login42, +user.achievements + 16, 16);
     }
@@ -186,7 +191,7 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-    if (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM)
+    if (data.mode === null || (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM))
       data.mode = game_mode.BOTH;
     // console.log("game mode is " + data.mode);
     let roomIndex: number = 0;
