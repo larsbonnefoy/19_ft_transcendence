@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { socket } from '@/socket';
 import AchievementDisplay from './Achievement.vue';
 import { type Achievement, type UserInfo } from '@/types';
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 
 const props = defineProps<{
     userProp: UserInfo
@@ -133,7 +134,6 @@ const achievementList: Achievement[] = [
         max: 1,
     },
 ]
-
 </script>
 
 <template>
