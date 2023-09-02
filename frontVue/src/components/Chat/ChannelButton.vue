@@ -26,9 +26,10 @@ function getDmChatter()
 {
   if(channel?.chatters[0])
   {
+    console.log("getDm: " + channel.chatters[0]?.username + " " + me + " "  +  channel.owner?.login42)
     if (channel.chatters[0]?.login42 === me)
-      return channel.owner?.login42;
-    return (channel.chatters[0]?.login42)
+      return channel.owner?.username;
+    return (channel.chatters[0]?.username);
   }
 }
 

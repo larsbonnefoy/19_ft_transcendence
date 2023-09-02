@@ -28,9 +28,9 @@ export class ChatService
    	{
     	// return this.chatRepository.find();
 		const tmp: Chat[] = [];
-		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true}, isDm: true, chatters: {login42: true}, admins: {login42: true}}})
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true}, isDm: true, chatters: {login42: true}, owner: {login42: true}}}))
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true}, isDm: true, owner: {login42: true}, admins: {login42: true}}})));
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true}, isDm: true, chatters: {login42: true, username: true}, admins: {login42: true, username: true}}})
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true}, isDm: true, chatters: {login42: true, username: true}, owner: {login42: true, username: true}}}))
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true}, isDm: true, owner: {login42: true, username: true}, admins: {login42: true, username: true}}})));
 		return chats;
  	}
 

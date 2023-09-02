@@ -112,8 +112,7 @@ export const useChatStore = defineStore('chat', {
 	                }
                 });
                 this.chat = {ChannelList: []};
-                if (this.chat !== null)
-                    this.chat.ChannelList = data.data; 
+                this.chat.ChannelList = data.data;
                 console.log("hmmmmm " + data.data[0].id)
             }
             catch (error)
