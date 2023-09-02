@@ -77,7 +77,7 @@ export class UserController {
       res.status(404).json({"error":"no user with that login"});
       return ;
     }
-    console.info("%s is now %s", req.user, UserStatus[status]);
+    // console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }
@@ -176,7 +176,7 @@ export class UserController {
 	}
     await this.userService.change_username(current_user.login42, newUsername);
 	if (!(current_user.achievements & 1))
-		await this.userService.addAchievement(sessionId, +current_user.achievements + 1);
+		await this.userService.addAchievement(sessionId, +current_user.achievements + 1, 1);
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
   }
 
@@ -213,9 +213,9 @@ export class UserController {
         await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
         await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
         if (!(user_1.achievements & 8))
-          await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+          await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
         if (!(user_2.achievements & 8))
-          await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
+          await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8, 8);
         return ;
       }
     }
@@ -293,9 +293,9 @@ export class UserController {
     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
 	if (!(user_1.achievements & 8))
-		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
 	if (!(user_2.achievements & 8))
-		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
+		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8, 8);
     res.json({"success":`friendship blooming between ${user_1.login42} and ${friendLogin}`});
   }
   
@@ -525,7 +525,7 @@ export class UserController {
 		});
 		await this.userService.change_avatar(req.user, file.filename);
 		if (!(user.achievements & 2))
-		await this.userService.addAchievement(req.user, +user.achievements + 2);
+		await this.userService.addAchievement(req.user, +user.achievements + 2, 2);
   }
 
   async compareList(err: NodeJS.ErrnoException, files: string[]) {

@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 import { Api42Service } from '../api42/api42.service';
 import { Api42Module } from '../api42/api42.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { AchievementGateway } from './user.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User]), forwardRef(() => Api42Module),
@@ -14,7 +15,7 @@ import { MulterModule } from '@nestjs/platform-express';
 	  dest: './uploads',
   }),],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, AchievementGateway],
   exports: [UserService]
 })
 export class UserModule {}

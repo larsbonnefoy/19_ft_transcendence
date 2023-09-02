@@ -50,7 +50,7 @@ export class MatchGateway {
       return ;
     }
     if (!(+user.achievements & 16)) {
-      this.userService.addAchievement(login42, +user.achievements + 16);
+      this.userService.addAchievement(login42, +user.achievements + 16, 16);
     }
   }
 
@@ -94,7 +94,37 @@ export class MatchGateway {
 		      game.resetGame();
           return ;
         }
-        nMatch.player1 = p1.login42;
+		let games_played : number = +p1.win + (+p1.loss) + 1;
+		let message : string = "";
+		switch (games_played) {
+			case (1):
+				message = "Getting Started";
+				break ;
+			case (19):
+				message = "Lifeguard";
+				break ;
+			case (42):
+				message = "Welcome to the Jar";
+				break ;
+		}
+		if (message !== "")
+			this.server.to(p1.login42).emit('achievement', message);
+		games_played = +p2.win + (+p2.loss) + 1;
+		message = "";
+		switch (games_played) {
+			case (1):
+				message = "Getting Started";
+				break ;
+			case (19):
+				message = "Lifeguard";
+				break ;
+			case (42):
+				message = "Welcome to the Jar";
+				break ;
+		}
+		if (message !== "")
+			this.server.to(p2.login42).emit('achievement', message);
+		nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;
         nMatch.score2 = game.score1;
@@ -111,7 +141,7 @@ export class MatchGateway {
           console.log("player1 wins");
           console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 * (+game.gMode + 1)));
 		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
-			await this.userService.addAchievement(p1.login42, +p1.achievements + 4);
+			await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
 		  }
         }
         else {
@@ -126,7 +156,7 @@ export class MatchGateway {
           console.log("player2 wins");
           console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 * (+game.gMode + 1)));
 		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
-			await this.userService.addAchievement(p2.login42, +p2.achievements + 4);
+			await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
 		  }
         }
         await this.matchService.createMatch(nMatch);

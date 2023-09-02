@@ -9,13 +9,16 @@ TODOS:
 My todo:
 - achievements
 			+ add achievements related to chat
+			+ G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this)
+			+ Telekinesis : win a game without moving
+			+ special name as username (like for nametags in minecraft) -> only prob is if you keep it noone else can claim the achievement
+				-> solutions : 	1) have "pong" as part of username
+								2) have "hugo" as part of username, pour la blague "il n'y a que des hugos dans cette ecole" achiev name="One of us"
+								3) if try to set 'archimede'(or any of the bocal) as username, doesn't work + achiev
+			+ 
 - id in user?
 - check cancel pending of lars
 - update achievements when changename, like for games of lars
-- toastification of achievements
-- sensi palettes
-- obstacles in games
-
 
 
 list of .env content:
@@ -67,6 +70,9 @@ my done:
 - game + matchmaking + watchparty + challenge friend
 - reactive screen everywhere
 - Change achiev images to white
+- toastification of achievements
+- sensi palettes
+- obstacles in games
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1
