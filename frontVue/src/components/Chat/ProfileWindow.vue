@@ -11,7 +11,7 @@ const props = defineProps({
 });
 const selectedUser = ref(props.user);
 
-let userdata= ref<UserInfo>();
+let userdata= ref<any>();
 let dataLoaded = ref(false)
 
 

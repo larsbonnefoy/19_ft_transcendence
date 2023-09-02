@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const channel = useChannelStore();
 
-const emit = defineEmits(["open-profile"]);
+const emit = defineEmits(["open-profile", "updated"] );
 
 const messageBoxRef = ref(null);
 const me: any = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {

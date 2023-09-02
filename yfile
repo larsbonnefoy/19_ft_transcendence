@@ -131,3 +131,11 @@ psql --host=$HOSTNAME --user=$USERNAME -W $DBNAME
 
 nestjs comm w/ postgresql
 	https://medium.com/simform-engineering/nestjs-and-postgresql-a-crud-tutorial-32aa78778752
+
+Delete chat db content :
+Drop table chat cascade;
+Drop table chat_admins_user cascade;
+Drop table chat_bans_user cascade;
+Drop table chat_chatters_user cascade;
+Drop table chat_message cascade;
+Drop table chat_mutes_user cascade;

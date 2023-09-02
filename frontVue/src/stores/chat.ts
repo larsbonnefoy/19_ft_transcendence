@@ -120,7 +120,7 @@ export const useChatStore = defineStore('chat', {
             {
                 console.log("Error: FetchChannels: " + error)
                 // this.chat = Array<Channel>;
-                this.chat = null;
+                this.chat = {ChannelList: []};
             }
         },
 
@@ -128,7 +128,7 @@ export const useChatStore = defineStore('chat', {
         {
             console.log("addChannel " + name + " " + pass + " " + isDm + " " + isPrivate);
             try
-	        {
+            {
 	        	const res = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/create`, {name: name, password: pass, isDm: isDm, isPrivate: isPrivate, usernames: usernames}, 
                 {
 			        headers:

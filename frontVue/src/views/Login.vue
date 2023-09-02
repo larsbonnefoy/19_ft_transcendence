@@ -4,7 +4,7 @@ import { useRouter} from 'vue-router'
 const router = useRouter();
 
 const navigateToHome = () => {
-      router.push('/home');
+      router.push('/admin');
 };
 
 const loginWith42 = () => {

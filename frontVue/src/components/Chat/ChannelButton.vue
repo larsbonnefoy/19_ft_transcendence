@@ -1,21 +1,46 @@
 <script setup lang="ts">
 import { useChatStore, useChannelStore} from '@/stores/chat';
 import { type Channel } from '@/types';
+import {types} from "sass";
+import Boolean = types.Boolean;
+import axios from "axios";
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
 
+
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
+
 // Props
  const { channel } = defineProps({
-  channel: Object
+  channel: Object,
 });
 
+
+function getDmChatter()
+{
+  if(channel?.chatters[0])
+  {
+    if (channel.chatters[0]?.login42 === me)
+      return channel.owner?.login42;
+    return (channel.chatters[0]?.login42)
+  }
+}
+
+let channelName = channel?.name;
+if (channel?.isDm)
+  channelName = getDmChatter();
 // Methods
 const selectChannel = async () => {
   if (channel && chat)
   {
     console.log(`Selected: ${channel.id}`);
-    const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel.id)})  
+    const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
     if (newChannel)
     {
       console.log(newChannel);
@@ -29,9 +54,9 @@ const selectChannel = async () => {
 </script>
 
 <template>
-  <button class="channel-button" @click="selectChannel">
-    {{ channel?.name }}
-  </button>
+    <button class="channel-button" @click="selectChannel">
+      {{ channelName }}
+    </button>
 </template>
 
 

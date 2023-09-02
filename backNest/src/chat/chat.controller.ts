@@ -118,7 +118,12 @@ export class ChatController {
         const chat : Chat = new Chat;
         chat.messages =  [];
         chat.owner = await this.userService.findOne(req.user);
-        chat.name = roomInfos.name;
+        if (roomInfos.isDm)
+        {
+            chat.name = req.user + " " + roomInfos.usernames[0];
+        }
+        else
+            chat.name = roomInfos.name;
         chat.isDm = roomInfos.isDm;
         chat.isPrivate = roomInfos.isPrivate;
         if (roomInfos.password)
