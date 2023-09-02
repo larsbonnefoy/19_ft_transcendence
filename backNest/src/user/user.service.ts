@@ -105,6 +105,15 @@ export class UserService {
       case (32):
         message = "Shielded";
         break ;
+	  case (64):
+		message = "G.O.L.D.";
+		break ;
+	  case (128):
+		message = "Telekinesis";
+		break ;
+	  case (256):
+		message = "One of us";
+		break ;
       default:
         message = "New";
     }

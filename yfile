@@ -9,8 +9,6 @@ TODOS:
 My todo:
 - achievements
 			+ add achievements related to chat
-			+ G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this)
-			+ Telekinesis : win a game without moving
 			+ special name as username (like for nametags in minecraft) -> only prob is if you keep it noone else can claim the achievement
 				-> solutions : 	1) have "pong" as part of username
 								2) have "hugo" as part of username, pour la blague "il n'y a que des hugos dans cette ecole" achiev name="One of us"
@@ -21,6 +19,7 @@ My todo:
 - update achievements when changename, like for games of lars
 - type-check
 - if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
+- if gmode all first + hard second not together ?
 
 
 list of .env content:
@@ -82,6 +81,11 @@ my done:
 			- MAKEUP ARTIST: changed profile picture			(id 4)  => & 2
 			- FLAWLESS: won a game without conceding any point	(id 5)  => & 4
 			- YOU AND ME: made your first friend				(id 6)  => & 8
+			- Retro Gamer												   & 16
+			- Shielded													   & 32
+			- G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this) & 64
+			- Telekinesis : win a game without moving					   & 128
+			- One of use : Your username seems familiar..				   & 256
 
 ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 

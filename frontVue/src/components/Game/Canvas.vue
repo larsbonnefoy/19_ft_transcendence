@@ -196,6 +196,8 @@ function init() {
         ctx.closePath();
 
         color = localStorage.getItem('ballColor'); //we use ballColor for obstacles too
+		if (color === "gold" && +response.state === 1)
+			socket.emit('gold', localStorage.getItem('jwt_token'));
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
@@ -223,7 +225,7 @@ function init() {
         if (+response.timeOut >= 0)
             ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
-        if (response.state === 1) { // === states.ONGOING from backnest
+        if (+response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
                 diff.value = new Date().getTime() - response.lastTimeStamp;
                 lastLatencyUpdate = new Date().getTime();

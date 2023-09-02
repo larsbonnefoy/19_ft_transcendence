@@ -37,6 +37,14 @@ export class Api42Controller {
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
 				newUser.photo = intraPhoto;
+				let hugocheck : string = intraLogin;
+				hugocheck.toLowerCase();
+				for (let i = 0; i < hugocheck.length - 3; i++) {
+					if (hugocheck.slice(i, i + 4) === "hugo") {
+						newUser.achievements = 256;
+						break ;
+					}
+				}
 				await this.userService.createUser(newUser);
 			}
 			else
