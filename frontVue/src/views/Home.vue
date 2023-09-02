@@ -8,7 +8,7 @@ import { socket } from '@/socket';
 
 const achievKey = ref(0); //Each time we need to reload the component the key is changed
 
-socket.on('achievement', async (message: string) => {
+socket.on('achievementUpdate', async () => {
     await store.fetchUser();
     achievKey.value += 1;
 });
@@ -26,6 +26,7 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
+	socket.off('achievementUpdate')
 });
 
 </script>

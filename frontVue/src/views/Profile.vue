@@ -60,7 +60,7 @@ function handleResize() {
 }
 
 
-socket.on('achievement', async (message: string) => {
+socket.on('achievementUpdate', async () => {
     await store.fetchUser();
     await getUserInfo();
     achievKey.value += 1;
@@ -75,7 +75,7 @@ onMounted(async () => {
 onUnmounted(async () => {
     URL.revokeObjectURL(user.photo);
     window.removeEventListener('resize', handleResize);
-    socket.off('achievement');
+    socket.off('achievementUpdate');
 });
 </script>
 

@@ -568,7 +568,7 @@ export class UserController {
 
   @Get('avatar:imgpath')
   seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
-	console.log("get for image %s", image.slice(1));
+	// console.log("get for image %s", image.slice(1));
 	res.sendFile(image.slice(1), {root: 'uploads'});
   }
 }

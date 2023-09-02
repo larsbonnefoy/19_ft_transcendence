@@ -20,6 +20,7 @@ My todo:
 - type-check
 - if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
 - if gmode all first + hard second not together ?
+- si server reload, they don't join their personal room until they refresh their page .. will not happen in prod though
 
 
 list of .env content:

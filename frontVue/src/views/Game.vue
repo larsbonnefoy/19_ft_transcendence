@@ -9,7 +9,6 @@ import {useRoute, useRouter} from 'vue-router';
 import { GameType } from '@/types';
 import axios from 'axios';
 
-const route = useRoute();
 const store = useUserStore();
 const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
@@ -27,21 +26,14 @@ async function isInGame() {
 			// console.log(liveGames);
 			for (let games of liveGames) {
 				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
-					return true;
+					joinGame();
 				}
 			}
-			return false;
 		}
     }
     catch(error:any) {
         console.log(error.message + ": Pb loading ongoing games")
     }
-	return false;
-}
-
-if (route.path === "/game/challenge") {
-	displayGame.value = true;
-	playGame.value = GameType.CHALLENGER;
 }
 
 function joinGame() {
@@ -67,19 +59,23 @@ socket.on('endGame', (roomIndex) => {
 	router.push('/game');
 });
 
+socket.on("challengeAcceptedJoinGame", () => { // router.push /game doesn't work if in /game already
+    joinGame();
+});
+
 function handleResize() {
 	windowWidth.value = window.innerWidth;
 }
 
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
-	displayGame.value = await isInGame();
-	//isInGame();
+	await isInGame();
 });
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
 	socket.off('endGame');
+	socket.off('challengeAcceptedJoinGame');
 });
 
 </script>

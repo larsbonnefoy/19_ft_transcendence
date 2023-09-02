@@ -38,17 +38,22 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-	  if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-		  return ;
+	if (+data.roomIndex < 0 || +data.roomIndex >= games.length) {
+		return ;
+	}
+	const user = await this.userService.findOne(login42);
+	if (user === null) {
+	  return ;
+	} else if (+user.achievements & 16) {
+	  console.log(login42 + " is already a retro gamer");
+	  this.server.to(login42).emit('warning', "You are already a Retro gamer");
+	  return ;
+	}
     let game: Game = games[data.roomIndex];
     if (game.player0 === login42)
       game.score0 = 9;
     else if (game.player1 === login42)
       game.score1 = 9;
-    const user = await this.userService.findOne(login42);
-    if (user === null) {
-      return ;
-    }
     if (!(+user.achievements & 16)) {
       this.userService.addAchievement(login42, +user.achievements + 16, 16);
     }
@@ -107,8 +112,10 @@ export class MatchGateway {
 				message = "Welcome to the Jar";
 				break ;
 		}
-		if (message !== "")
+		if (message !== "") {
 			this.server.to(p1.login42).emit('achievement', message);
+			this.server.to(p1.login42).emit('achievementUpdate');
+		}
 		games_played = +p2.win + (+p2.loss) + 1;
 		message = "";
 		switch (games_played) {
@@ -122,8 +129,10 @@ export class MatchGateway {
 				message = "Welcome to the Jar";
 				break ;
 		}
-		if (message !== "")
+		if (message !== "") {
 			this.server.to(p2.login42).emit('achievement', message);
+			this.server.to(p2.login42).emit('achievementUpdate');
+		}
 		nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;
@@ -182,7 +191,7 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-    if (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM)
+    if (data.mode === null || (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM))
       data.mode = game_mode.BOTH;
     // console.log("game mode is " + data.mode);
     let roomIndex: number = 0;
@@ -324,23 +333,6 @@ export class MatchGateway {
     }
   }
 
-  @SubscribeMessage('isInGame')
-  async isInGame(@MessageBody() data: {origin: string, token: string}) : Promise<boolean> {
-    let login42: string = "";
-    try {
-      login42 = this.api42Service.decodeJWT(data.token);
-    }
-    catch (error) {
-      return ;
-    }
-    console.log("request check isInGame " + login42);
-    for (let game of games) {
-      if (game.player0 === login42 || game.player1 === login42)
-        return ;
-    }
-    this.server.to(login42).emit("gameNotification", data.origin);
-  }
-
   @SubscribeMessage('sendNotification')
   async sendNotification(@MessageBody() data: {target: string, token: string}) {
     let login42: string = "";
@@ -351,7 +343,7 @@ export class MatchGateway {
       return ;
     }
     for (let game of games) {
-      if (game.player0 === login42 || game.player1 === login42) {
+      if (game.player0 === login42 || game.player1 === login42 || game.player0 === data.target || game.player1 === data.target) {
         console.log("already in game, so can't send notification");
         return ;
       }
@@ -362,7 +354,7 @@ export class MatchGateway {
       return ;
     }
     console.log(login42 + " sending notif to " + data.target);
-	  this.server.to(data.target).emit("challenge", {login42:login42, username:user.username});
+	this.server.to(data.target).emit("gameNotification", {login42:login42, username:user.username});
   }
 
   @SubscribeMessage('acceptChallenge')
@@ -372,11 +364,15 @@ export class MatchGateway {
       login42 = this.api42Service.decodeJWT(data.token);
     }
     catch (error) {
+	  console.log("ERROR LOGIN acceptChallenge");
       return ;
     }
+	// console.log(login42 + " acceptChallenge " + data.target);
     for (let game of games) {
-      if (game.player0 === data.target || game.player1 === data.target)
-        return ;
+      if (game.player0 === data.target || game.player1 === data.target || game.player0 === login42 || game.player1 === login42) {
+		  console.log("already in game, so can't accept challenge");
+		  return ;
+	  }
     }
     let mustAppend: boolean = true;
     let roomIndex: number = 0;
@@ -387,6 +383,7 @@ export class MatchGateway {
         game.player1 = login42;
         game.gMode = game_mode.OBSTACLES;
         game.lastTimeStamp = new Date().getTime();
+		games[roomIndex].timeOut = 6000; // to wait for router.push
         mustAppend = false;
         console.log("challenge between " + data.target + " and " + login42 + " in " + game.roomName);
         break ;
@@ -402,10 +399,13 @@ export class MatchGateway {
       games[roomIndex].player1 = login42;
       games[roomIndex].gMode = game_mode.OBSTACLES;
       games[roomIndex].lastTimeStamp = new Date().getTime();
-      games[roomIndex].timeOut = 3000;
+      games[roomIndex].timeOut = 6000; // to wait for router.push
       console.log("new room for challenge between " + data.target + " and " + login42 + " in " + games[roomIndex].roomName);
     }
-	  this.server.to(data.target).emit("challengeAccepted", login42);
+	this.server.to(login42).emit("challengeAccepted");
+	this.server.to(data.target).emit("challengeAccepted");
+	this.server.to(login42).emit("challengeAcceptedJoinGame");
+	this.server.to(data.target).emit("challengeAcceptedJoinGame");
   }
 
   // to allow notifications, we put users in individual rooms that others can trigger to send them notifications
@@ -424,9 +424,10 @@ export class MatchGateway {
       if (current_id !== "") {
         this.server.to(login42).emit('doubleConnection');
       }
-      client.leave(login42);
       client.join(login42);
-      await this.userService.set_status(login42, "online");
+	//   console.log(login42 + " in his room");
+	//   console.log(client.rooms);
+	  await this.userService.set_status(login42, "online");
     }
   }
 

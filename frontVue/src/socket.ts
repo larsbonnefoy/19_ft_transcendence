@@ -18,8 +18,3 @@ socket.on("doubleConnection", async () => {
     localStorage.clear();
     location.reload();
 });
-
-socket.on("challenge", (origin: string) => {
-    console.log("notif time");
-    socket.emit('isInGame', {origin: origin, token: localStorage.getItem('jwt_token')});
-});
