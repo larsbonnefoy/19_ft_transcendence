@@ -288,12 +288,12 @@ onUnmounted(async () => {
 				</div>
 				<div class="col-6  justify-content-start" style="text-align: center;">
 					<div class="row text-center">
-						<template v-for="(mode, index) in gameModes" :key="index">
-							<div class="col-3 m-0">
-								<input type="radio" class="btn-check" name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
-								<label class="btn btn-outline-secondary" :for="`option${index}`">{{ mode }}</label>
-							</div>
-						</template>
+						<div class="btn-group">
+							<template v-for="(mode, index) in gameModes" :key="index">
+									<input type="radio" class="btn-check " name="options" :id="`option${index}`" autocomplete="off" @click="selectMode(index)" :checked="index == activeMode">
+									<label class="btn btn-outline-secondary customButtonWidth" :for="`option${index}`">{{ mode }}</label>
+							</template>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -310,6 +310,12 @@ onUnmounted(async () => {
 	margin-top: 0.5em;
 	text-align: center;
 }
+
+.customButtonWidth {
+	width: 4em !important;
+	font-size: x-small;
+}
+
 
 .selectCenter {
 	margin: auto;

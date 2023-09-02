@@ -86,7 +86,7 @@ const achievementList: Achievement[] = [
     {
         name: "Make up Artist",
         imageUrl: "../../../assets/Achievements/makeup.png",
-        description: "Change profile picture",
+        description: "Change your profile picture",
         progress: () => {
 			return props.userProp.achievements & 2 ? 1 : 0;
 		},
