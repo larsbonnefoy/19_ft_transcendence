@@ -29,7 +29,6 @@ if (store.getLogin42 != undefined) {
     isPendingSend.value = props.pendingUser.pending.includes(store.getLogin42);
 }
 */
-
 //pt devoir switch ca dans le button direct
 const isFriend = computed(() => {
     if (store.getLogin42) {
@@ -45,9 +44,9 @@ async function addFriend() {
         await store.addFriend(props.pendingUser.login42);
         sendOutReq.value = true;
     }
-    catch (error){
+    catch (error: any){
         location.reload();
-        console.log(error)
+        console.log(error.message)
     }
 }
 
@@ -56,9 +55,9 @@ async function unsendFriendRequest() {
         await store.unsendFriendRequest(props.pendingUser.login42);
         sendOutReq.value = false;
     }
-    catch (error){
+    catch (error:any){
         location.reload();
-        console.log(error)
+        console.log(error.message)
     }
 }
 
@@ -77,10 +76,10 @@ async function confirmRequest() {
     try {
         await store.acceptFriendRequest(props.pendingUser.login42);
     }
-    catch (error) {
+    catch (error:any) {
         /* If already friends, forces reload of page, could just append to list */
         location.reload();
-        console.log(error);
+        console.log(error.message);
     }
 }
 
@@ -89,9 +88,9 @@ async function declineFriendRequest() {
         await store.declineFriendRequest(props.pendingUser.login42);
         //isPendingRecv.value = false;
     }
-    catch (error) {
+    catch (error:any) {
         location.reload();
-        console.log(error)
+        console.log(error.message)
     }
 }
 </script>

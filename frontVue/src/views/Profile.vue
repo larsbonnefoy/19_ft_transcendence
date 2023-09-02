@@ -73,7 +73,9 @@ onMounted(async () => {
 });
 
 onUnmounted(async () => {
-    URL.revokeObjectURL(user.photo);
+    if (user) {
+        URL.revokeObjectURL(user.photo);
+    }
     window.removeEventListener('resize', handleResize);
     socket.off('achievementUpdate');
 });
