@@ -121,4 +121,20 @@ export class MatchController {
     }
     res.json(response);
   }
+
+  @Get('startingOngoingGames')
+  async getStartingOngoingGames(@Res() res: Response) {
+    let response : Array<Game> = new Array(0);
+    for (let game of games) {
+      if (game.state === states.ONGOING || game.state === states.STARTING) {
+        response.push(game);
+      }
+    }
+    res.json(response);
+  }
+
+  @Get('GamesArray')
+  async getGamesArray(@Res() res: Response) {
+	return res.json(games);
+  }
 }

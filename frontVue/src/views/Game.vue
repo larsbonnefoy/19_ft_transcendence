@@ -20,7 +20,7 @@ const dataLoaded = ref(false);
 
 async function isInGame() {
     try {
-        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/startingOngoingGames`);
         liveGames = res.data;
 		// console.log(liveGames.length);
 		if (liveGames.length != 0 ) {
