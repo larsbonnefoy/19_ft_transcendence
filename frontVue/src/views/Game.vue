@@ -56,7 +56,6 @@ socket.on('endGame', (roomIndex) => {
 	console.log("game ended");
 	displayGame.value = false;
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-	router.push('/game');
 });
 
 socket.on("challengeAcceptedJoinGame", () => { // router.push /game doesn't work if in /game already
