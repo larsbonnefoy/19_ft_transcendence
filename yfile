@@ -1,7 +1,6 @@
 TODOS:
 	- sql injections
 	- chat?
-	- ingame powerup ?
 	- If in game when /game -> load canvas
 	- If game challenge accepte in /game -> load canvas
 	- change addFriend/remove/unset... endpoint to use login42 and not username;
@@ -13,6 +12,9 @@ My todo:
 - id in user?
 - check cancel pending of lars
 - update achievements when changename, like for games of lars
+- toastification of achievements
+- sensi palettes
+- obstacles in games
 
 
 
@@ -64,6 +66,7 @@ my done:
 - set status using socket io (what charlie boy talked about)
 - game + matchmaking + watchparty + challenge friend
 - reactive screen everywhere
+- Change achiev images to white
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1

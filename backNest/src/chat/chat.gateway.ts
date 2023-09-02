@@ -7,7 +7,7 @@ import {
     WebSocketServer,
     WsResponse,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
 import { Api42Service } from '../api42/api42.service';
 import { UserService } from '../user/user.service';
 import { ChatService } from './chat.service';
@@ -36,5 +36,4 @@ export class ChatGateway {
     }
   this.server.to(data.target).emit("privateMessage", {message: data.message, login: login42});
   }
-
 }

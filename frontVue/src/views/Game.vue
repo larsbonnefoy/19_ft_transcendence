@@ -73,6 +73,7 @@ function handleResize() {
 
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
+	displayGame.value = await isInGame();
 	//isInGame();
 });
 

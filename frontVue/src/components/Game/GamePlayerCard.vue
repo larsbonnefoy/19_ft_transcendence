@@ -61,11 +61,15 @@ await getUserInfo();
                 </router-link>
             </div>
             <div class="row textDisplay m-1">
-                <p> {{ user.username }} </p>
+                <template v-if="user.username == store.getUserName">
+                    <p style="color: darkgreen;"> {{ user.username }} </p>
+                </template>
+                <template v-else>
+                    <p style="color: darkred;"> {{ user.username }} </p>
+                </template>
                 <p style="color: grey;"> elo : {{ Math.ceil(user.elo) }} </p>
             </div> 
             <div v-if="user.username != store.getUserName" class="row p-0 text-center">
-                <AddPendingRemoveButton :pending-user="user"> </AddPendingRemoveButton>
             </div>
         </div>
     </div>

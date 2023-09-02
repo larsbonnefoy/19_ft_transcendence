@@ -21,7 +21,7 @@ export class MatchController {
   @Get('history:username')
   async history(@Res() res: Response, @Param() params: any) {
 	const username: string = params.username.slice(1);
-    console.log("got request for Match history of player %s", username);
+    //console.log("got request for Match history of player %s", username);
     const user = await this.userService.findUsername(username);
     if (user == null) {
       res.status(404).json({"error":"no player with that username"});

@@ -3,24 +3,15 @@ import {
     MessageBody,
     SubscribeMessage,
     WebSocketGateway,
-    WebSocketServer,
-    WsResponse,
+    WebSocketServer
 } from '@nestjs/websockets';
-import {UseGuards, Request, Inject, forwardRef, Get, Res, ConsoleLogger } from '@nestjs/common';
+import { Inject, forwardRef } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
-import { Response } from 'express';
-import { Game, states } from './match.entity';
-import { AuthGuard } from '../guard/auth.guard';
+import { Game, game_mode, states } from './match.entity';
 import { UserService } from '../user/user.service';
 import { Match } from './match.entity';
 import { MatchService } from './match.service';
 import { Api42Service } from '../api42/api42.service';
-import { login42 } from 'src/api42/apiDto.dto';
-
-const canvasWidth : number = 800;
-const canvasHeight : number = 600;
-const ballRadius : number = 10;
-const ballSpeed : number = 10; //speed should be at least > 2
 
 export let games : Array<Game> = new Array(0);
 
@@ -37,20 +28,6 @@ export class MatchGateway {
 
   @WebSocketServer()
   server: Server;
-
-  @SubscribeMessage('events')
-  findAll(@MessageBody() data: any): any /*Observable<WsResponse<number>>*/ {
-      console.log("got message: " + data);
-    //return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
-    //res.json({"test": "salut"});
-    this.server.emit("events", data);
-    return data;
-  }
-
-  @SubscribeMessage('identity')
-  async identity(@MessageBody() data: number): Promise<number> {
-    return data;
-  }
   
   @SubscribeMessage('win')
   async winGame(@MessageBody() data: {roomIndex: number, token: string}) {
@@ -68,21 +45,14 @@ export class MatchGateway {
       game.score0 = 9;
     else if (game.player1 === login42)
       game.score1 = 9;
+    const user = await this.userService.findOne(login42);
+    if (user === null) {
+      return ;
+    }
+    if (!(+user.achievements & 16)) {
+      this.userService.addAchievement(login42, +user.achievements + 16);
+    }
   }
-
-  // @SubscribeMessage('leftPaddle')
-  // async computeLeftPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
-	// if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-	// 	return ;
-	//   games[data.roomIndex].updateLeftPaddle(data.dir);
-  // }
-
-  // @SubscribeMessage('rightPaddle')
-  // async computeRightPaddle(@MessageBody() data: {dir: number, roomIndex: number}) {
-	// if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
-	// 	return ;
-  //   games[data.roomIndex].updateRightPaddle(data.dir);
-  // }
 
   @SubscribeMessage('updatePaddle')
   async computePaddle(@MessageBody() data: {dir: number, roomIndex: number, token: string}) {
@@ -132,14 +102,14 @@ export class MatchGateway {
         if (+game.score0 > +game.score1) {
           await this.userService.addWin(p1.login42, +p1.win + 1);
           await this.userService.addLoss(p2.login42, +p2.loss + 1);
-          let newelo1: number = +p1.elo + (1 - expected_result) * 16;
+          let newelo1: number = +p1.elo + (1 - expected_result) * (16 * (+game.gMode + 1));
           await this.userService.change_elo(p1.login42, newelo1);
-          let newelo2: number = +p2.elo - (1 - expected_result) * 16;
+          let newelo2: number = +p2.elo - (1 - expected_result) * (16 * (+game.gMode + 1));
           await this.userService.change_elo(p2.login42, newelo2);
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
-          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * 16);
+          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 * (+game.gMode + 1)));
 		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
 			await this.userService.addAchievement(p1.login42, +p1.achievements + 4);
 		  }
@@ -147,14 +117,14 @@ export class MatchGateway {
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
           await this.userService.addLoss(p1.login42, +p1.loss + 1);
-          let newelo1: number = +p1.elo - expected_result * 16;
-          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * 16);
-          let newelo2: number = +p2.elo + expected_result * 16;
-          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * 16);
+          let newelo1: number = +p1.elo - expected_result * (16 * (+game.gMode + 1));
+          await this.userService.change_elo(p1.login42, +p1.elo - expected_result * (16 * (+game.gMode + 1)));
+          let newelo2: number = +p2.elo + expected_result * (16 * (+game.gMode + 1));
+          await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 * (+game.gMode + 1)));
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
-          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * 16);
+          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 * (+game.gMode + 1)));
 		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
 			await this.userService.addAchievement(p2.login42, +p2.achievements + 4);
 		  }
@@ -167,32 +137,24 @@ export class MatchGateway {
       this.server.to(game.roomName).emit("display", game);
   }
 
-  // @SubscribeMessage('startGame')
-  // async computeGame() {
-  //     if (!game.ongoing) {
-  //         game.ongoing = true;
-  //         setInterval(updateGameArea, 20);
-  //     }
-  // }
-  //@UseGuards(AuthGuard)
   @SubscribeMessage('joinGame')
-  async joinGame(@ConnectedSocket() client: any, @MessageBody() token: string) {
+  async joinGame(@ConnectedSocket() client: any, @MessageBody() data: {mode: number, token: string}) {
     let login42: string = "";
     try {
-      login42 = this.api42Service.decodeJWT(token);
+      login42 = this.api42Service.decodeJWT(data.token);
     }
     catch (error) {
       return ;
     }
-    // console.log("token in join game" + login42);
-    // console.log(client.id);
+    if (+data.mode !== game_mode.DEFAULT && +data.mode !== game_mode.OBSTACLES && +data.mode !== game_mode.RANDOM)
+      data.mode = game_mode.BOTH;
+    // console.log("game mode is " + data.mode);
     let roomIndex: number = 0;
     let roomName: string = "";
     for (let game of games) { // checking if player already in a game (he left previously)
       roomName = "room" + roomIndex;
-      console.log("checking " + roomName);
+      console.log("checking rejoin " + roomName);
       if (game.state !== states.ENDED && (game.player0 === login42 || game.player1 === login42)) {
-        // console.log(new Date().getTime() - game.lastTimeStamp);
         if (game.state === states.ONGOING && new Date().getTime() - game.lastTimeStamp > 10000) {
           console.log("Game stop because timer");
           game.resetGame();
@@ -209,20 +171,22 @@ export class MatchGateway {
       ++roomIndex;
     }
     roomIndex = 0;
-    for (let game of games) {
+    for (let game of games) { // loop through all rooms to see if someone waiting
       roomName = "room" + roomIndex;
-      console.log("checking " + roomName);
+      console.log("checking second join " + roomName);
       if (game.state === states.STARTING) {
-        if (game.player0 === "") {
-          game.player0 = login42;
-          client.join(roomName);
-          this.server.to(game.roomName).emit("display", game);
-          console.log(login42 + ": joins " + roomName);
-          return ;
-        } else if (game.player1 === "") {
+        if (game.player0 !== "" && game.player1 === ""
+          && (+game.gMode === +data.mode || +game.gMode === game_mode.BOTH || +data.mode === game_mode.BOTH)) {
           game.state = states.ONGOING;
+          if (+game.gMode === game_mode.BOTH) {
+            if (+data.mode === game_mode.BOTH)
+              game.gMode = game_mode.OBSTACLES;
+            else
+              game.gMode = data.mode;
+          }
           game.player1 = login42;
           game.lastTimeStamp = new Date().getTime();
+          game.timeOut = 3000;
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomIndex);
           console.log(login42 + ": second joins " + roomName);
@@ -231,9 +195,26 @@ export class MatchGateway {
       }
       ++roomIndex;
     }
+    roomIndex = 0;
+    for (let game of games) { // loop through all rooms to find empty room
+      roomName = "room" + roomIndex;
+      console.log("checking join " + roomName);
+      if (game.state === states.STARTING) {
+        if (game.player0 === "") {
+          game.player0 = login42;
+          game.gMode = data.mode;
+          client.join(roomName);
+          this.server.to(game.roomName).emit("display", game);
+          console.log(login42 + ": joins " + roomName);
+          return ;
+        }
+      }
+      ++roomIndex;
+    }
     roomName = "room" + roomIndex;
     games.push(new Game())
     games[roomIndex].player0 = login42;
+    games[roomIndex].gMode = data.mode;
     games[roomIndex].roomName = roomName;
     client.join(roomName);
     this.server.to(roomName).emit("display", games[roomIndex]);
@@ -249,57 +230,24 @@ export class MatchGateway {
     catch (error) {
       return ;
     }
-	if (data.roomIndex === -1) { // if user leaves before game starts, we abort matchmaking
-		for (let game of games) {
-			if (game.state === states.STARTING && game.player0 === login42) {
-				game.resetGame();
-				console.log("(index -1) " + login42 + " leaves " + game.roomName);
-				client.leave(game.roomName);
-				return ;
-			}
-		}
-	} else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
-    let game: Game = games[data.roomIndex];
-    console.log(login42 + " leaves " + game.roomName);
-    if (game.state === states.STARTING) {
-      game.resetGame();
-    }
-		client.leave(game.roomName);  // client leaves room, but joins it again when he rejoins the game
-	}
+	  if (data.roomIndex === -1) { // if user leaves before game starts, we abort matchmaking
+		  for (let game of games) {
+			  if (game.state === states.STARTING && game.player0 === login42) {
+				  game.resetGame();
+				  console.log("(index -1) " + login42 + " leaves " + game.roomName);
+				  client.leave(game.roomName);
+				  return ;
+			  }
+		  }
+	  } else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
+      let game: Game = games[data.roomIndex];
+      console.log(login42 + " leaves " + game.roomName);
+      if (game.state === states.STARTING) {
+        game.resetGame();
+      }
+		  client.leave(game.roomName);  // client leaves room, but joins it again when he rejoins the game
+	  }
   }
-
-  // @SubscribeMessage('leaveRoomSearch')
-  // async leaveRoomSearch(@ConnectedSocket() client: any, @MessageBody() token: string) {
-  //   let login42: string = "";
-  //   try {
-  //     login42 = this.api42Service.decodeJWT(token);
-  //   }
-  //   catch (error) {
-  //     return ;
-  //   }
-  //   for (let game of games) {
-  //     if (game.player0 === login42 || game.player1 === login42) {
-  //       if (game.state === states.STARTING) {
-  //         game.resetGame();
-  //       }
-  //       console.log("(search) " + login42 + " leaves " + game.roomName);
-  //       client.leave(game.roomName); // client leaves room, but joins it again when he rejoins the game
-  //       return ;
-  //     }
-  //   }
-	// // if (data.roomIndex === -1) { // if user leaves before game starts, we abort matchmaking
-	// // 	for (let game of games) {
-	// // 		if (game.state === states.STARTING && game.player0 === login42) {
-	// // 			game.resetGame();
-	// // 			console.log(login42 + " leaves " + game.roomName);
-	// // 			client.leave(game.roomName);
-	// // 			return ;
-	// // 		}
-	// // 	}
-	// // } else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
-	// // 	client.leave(games[data.roomIndex].roomName);  // client leaves room, but joins it again when he rejoins the game
-	// // }
-  // }
 
   @SubscribeMessage('watchGame')
   async watchParty(@ConnectedSocket() client: any, @MessageBody() data: {roomName: string, token: string}) {
@@ -314,8 +262,7 @@ export class MatchGateway {
     for (let game of games) {
       if (game.roomName == data.roomName && game.state === states.ONGOING) {
         if (game.player0 === login42 || game.player1 === login42) { //not happening anymore
-          this.joinGame(client, data.token);
-          // this.server.to(login42).emit('setAsPlayer');
+          this.joinGame(client, {mode: game_mode.BOTH, token: data.token});
           return ;
         }
         const diff: number = new Date().getTime() - game.lastTimeStamp;
@@ -402,6 +349,7 @@ export class MatchGateway {
         game.state = states.ONGOING;
         game.player0 = data.target;
         game.player1 = login42;
+        game.gMode = game_mode.OBSTACLES;
         game.lastTimeStamp = new Date().getTime();
         mustAppend = false;
         console.log("challenge between " + data.target + " and " + login42 + " in " + game.roomName);
@@ -416,16 +364,18 @@ export class MatchGateway {
       games[roomIndex].state = states.ONGOING;
       games[roomIndex].player0 = data.target;
       games[roomIndex].player1 = login42;
+      games[roomIndex].gMode = game_mode.OBSTACLES;
       games[roomIndex].lastTimeStamp = new Date().getTime();
+      games[roomIndex].timeOut = 3000;
       console.log("new room for challenge between " + data.target + " and " + login42 + " in " + games[roomIndex].roomName);
     }
 	  this.server.to(data.target).emit("challengeAccepted", login42);
   }
 
-  // to allow notifications, we put users in individual rooms that others can join shortly to send them notifications
+  // to allow notifications, we put users in individual rooms that others can trigger to send them notifications
   @SubscribeMessage('joinMyRoom')
   async joinMyRoom(@ConnectedSocket() client: Socket, @MessageBody() token: string) {
-	let login42: string = "";
+	  let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(token);
     }
@@ -437,12 +387,11 @@ export class MatchGateway {
       await this.userService.setClientId(login42, client.id);
       if (current_id !== "") {
         this.server.to(login42).emit('doubleConnection');
+      }
+      client.leave(login42);
+      client.join(login42);
+      await this.userService.set_status(login42, "online");
     }
-    client.leave(login42);
-    client.join(login42);
-    await this.userService.set_status(login42, "online");
-  }
-  // console.log(client.rooms);
   }
 
   handleConnection(client: Socket) {
@@ -450,7 +399,6 @@ export class MatchGateway {
   }
   
   async handleDisconnect(client: Socket) {
-    //disconnect user here
     console.log(`Client disconnected: ${client.id}`);
     const users = await this.userService.findAll();
     for (let user of users) {

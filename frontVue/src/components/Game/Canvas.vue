@@ -4,6 +4,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
 import { GameType } from '../../types';
 import GamePlayerCard from './GamePlayerCard.vue';
+import _default from 'pinia-plugin-persistedstate';
 
 const props = defineProps<{
     playGame : GameType
@@ -37,18 +38,28 @@ let player0Login = ref("Player1");
 let player1Login= ref("Player2");
 let lastLatencyUpdate = new Date().getTime();
 let lucasSheat: string = "";
+let sensi: number = 1;
 
 let intervalStop : number = -1;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
 let roomIndex : number = -1;
-let backgroundColor : string = "black";
 
 const diff = ref(0);
 
 function keyDown(event: any) {
     key = event.keyCode;
+}
+
+function getSensi() {
+    const sensiStorage = localStorage.getItem("paddle_sensitivity");
+    if (sensiStorage == null || +sensiStorage < 0.8 || +sensiStorage > 1.2) {
+        sensi = 1;
+    }
+    else {
+        sensi = +sensiStorage;
+    }
 }
 
 function keyUp(event: any) {
@@ -80,14 +91,14 @@ function keyUp(event: any) {
             else
                 lucasSheat = "";
             break ;
-        case (key_a):
+        case (key_b):
             if (lucasSheat === "uuddlrlr")
-                lucasSheat += 'a';
+                lucasSheat += 'b';
             else
                 lucasSheat = "";
             break ;
-        case (key_b):
-            if (lucasSheat === "uuddlrlra")
+        case (key_a):
+            if (lucasSheat === "uuddlrlrb")
                 socket.emit("win", {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
             lucasSheat = "";
             break ;
@@ -97,7 +108,7 @@ function keyUp(event: any) {
 }
 
 function updateRoomIndex(response : number) {
-    console.log(response + " got this form joingame")
+    console.log("joingame in room " + response);
     roomIndex = response;
 }
 
@@ -126,7 +137,6 @@ function init() {
         if (player1Login.value === "Player2" || player1Login.value === "") {
             player1Login.value = response.player1;
         }
-        ctx.fillStyle = backgroundColor;
         
         let tmpBg: string | null = localStorage.getItem('backGround');
         if (tmpBg === "black" || tmpBg === null || tmpBg === undefined) {
@@ -183,19 +193,33 @@ function init() {
         ctx.fill();
         ctx.closePath();
 
-        ctx.beginPath();
-        ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
-        color = localStorage.getItem('ballColor');
+        color = localStorage.getItem('ballColor'); //we use ballColor for obstacles too
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
-        ctx.fillStyle = localStorage.getItem('ballColor');
+
+        if (+response.gMode === 1 || +response.gMode === 2) {
+            ctx.beginPath();
+            ctx.rect(response.obstacle0.x - response.obstacle0.width / 2, response.obstacle0.y - response.obstacle0.height / 2, response.obstacle0.width, response.obstacle0.height);
+            ctx.fill();
+            ctx.closePath();
+            
+            ctx.beginPath();
+            ctx.rect(response.obstacle1.x - response.obstacle1.width / 2, response.obstacle1.y - response.obstacle1.height / 2, response.obstacle1.width, response.obstacle1.height);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        ctx.beginPath();
+        ctx.arc(response.ball.x, response.ball.y, response.ball.radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
 
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
+        if (+response.timeOut >= 0)
+            ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
         if (response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
@@ -203,8 +227,10 @@ function init() {
                 lastLatencyUpdate = new Date().getTime();
             }
         }
+        console.log(response.timeOut / 1000);
     });
 	intervalStop = setInterval(redrawAll, 20);
+
 }
 
 function redrawAll() {
@@ -212,10 +238,10 @@ function redrawAll() {
 	if (roomIndex === -1 || !isPlayer)
 		return ;
     if (key === key_up) {
-        socket.emit("updatePaddle", {dir: -1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     if (key === key_down) {
-        socket.emit("updatePaddle", {dir: 1, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomIndex);
 }
@@ -228,11 +254,12 @@ onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
-        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     } else if (props.playGame === GameType.CHALLENGER) {
         console.log("challenger in the place");
-        socket.emit('joinGame', localStorage.getItem('jwt_token'));
+        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     }
+    getSensi();
     init();
 })
 
@@ -240,8 +267,6 @@ onUnmounted(async () => {
     clearInterval(intervalStop);
     removeEventListener('keydown', keyDown);
     removeEventListener('keyup', keyUp);
-    socket.off('joinGame');
-    socket.off('display');
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     await store.setStatus("online");
     socket.off('joinGame');
@@ -266,7 +291,7 @@ onUnmounted(async () => {
             </div>
             <div id="canvas-container">
                 <canvas id="gameCanvas"></canvas>
-                <p class="p-0 m-0" style="text-align: center;"> Latency: {{ diff }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
+                <p class="p-0 m-0" style="text-align: center;"> Latency: {{ Math.abs(diff) }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
             </div>
         </div>
         <div class="col-2" style="display:grid; place-items: center;">
