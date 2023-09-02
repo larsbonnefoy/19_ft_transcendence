@@ -20,6 +20,7 @@ My todo:
 - check cancel pending of lars
 - update achievements when changename, like for games of lars
 - type-check
+- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
 
 
 list of .env content:
