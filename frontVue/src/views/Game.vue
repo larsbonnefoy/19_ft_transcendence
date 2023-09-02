@@ -5,7 +5,7 @@ import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import { GameType } from '@/types';
 import axios from 'axios';
 
@@ -14,6 +14,7 @@ const store = useUserStore();
 const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
 let windowWidth = ref(window.innerWidth);
+let router = useRouter();
 
 let liveGames: any = Array(0);
 const dataLoaded = ref(false);
@@ -65,6 +66,7 @@ socket.on('endGame', (roomIndex) => {
 	console.log("game ended");
 	displayGame.value = false;
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+	router.push('/game');
 });
 
 function handleResize() {
