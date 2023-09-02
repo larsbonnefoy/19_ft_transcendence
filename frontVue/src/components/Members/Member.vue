@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { type UserInfo } from '@/types';
+import { type MemberInfo } from '@/types';
 import { useUserStore } from '@/stores/user';
 import { onUnmounted, onMounted } from 'vue';
 import Status from '../ProfileDisplay/Status.vue';
 
 const props = defineProps<{
-    member : UserInfo
+    member : MemberInfo
 }>()
 
 const store = useUserStore();

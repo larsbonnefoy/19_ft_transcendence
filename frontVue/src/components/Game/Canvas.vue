@@ -30,6 +30,8 @@ const canvasWidth: number = 800;
 const canvasHeight: number = 600;
 const key_a: number = 65;
 const key_b: number = 66;
+const key_s: number = 83;
+const key_w: number = 87;
 const key_left: number = 37;
 const key_up: number = 38;
 const key_right: number = 39;
@@ -236,10 +238,9 @@ function redrawAll() {
     // console.log("room " + roomIndex + ", player " + isPlayer);
 	if (roomIndex === -1 || !isPlayer)
 		return ;
-    if (key === key_up) {
+    if (key === key_up || key === key_w) {
         socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-    }
-    if (key === key_down) {
+    } else if (key === key_down || key === key_s) {
         socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomIndex);
