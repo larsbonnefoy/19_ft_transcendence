@@ -77,12 +77,14 @@ const displayProgress = computed(() => {
 
 <style scoped>
 .HoverAch:hover {
-    opacity: 1;
+    opacity: 1 !important;
+    height: 5em;
+    width: 5em;
 }
 
 img {
-    width: 50px;
-    height: 50px;
+    width: 4em;
+    height: 4em;
 }
 .AchievCompleted {
     opacity: 1;
@@ -90,5 +92,9 @@ img {
 
 .AchievUncompleted {
     opacity: 0.5;
+}
+
+.textDisplay {
+    font-size: 1em;
 }
 </style>
