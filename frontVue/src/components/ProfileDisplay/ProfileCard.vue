@@ -27,6 +27,9 @@ function toggleModProfile() {
     modProfile.value = !modProfile.value;
 }
 
+if (props.user.photo === "no photo yet") {
+    props.user.photo = "../../../assets/placeholder_avatar.png"
+}
 /*
 Should set max lenght of username here
 */

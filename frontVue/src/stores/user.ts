@@ -148,7 +148,6 @@ export const useUserStore = defineStore('user', {
             }
         },
         async removeFriend(FriendtoRemoveLogin: string) {
-            console.log(FriendtoRemoveLogin);
             await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)

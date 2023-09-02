@@ -65,13 +65,13 @@ async function addFriend() {
 async function unsendFriendRequest() {
     try {
         await store.unsendFriendRequest(props.pendingUser.login42);
-        sendOutReq.value = false;
     }
     catch (error:any){
-        sendOutReq.value = false;
         await reloadButton();
         console.log(error.message)
     }
+    sendOutReq.value = false;
+
 }
 
 async function removeFriend() {
