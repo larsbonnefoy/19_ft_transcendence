@@ -190,12 +190,14 @@ export class UserController {
 
   @Get('pending_list:login42')
   async pendingList(@Res() res: any, @Param() param: any) {
-	const user = await this.userService.findOne(param.login42);
+  const user = await this.userService.findOne(param.login42.slice(1));
 	if (user === null) {
+    console.log("error in pending_list get")
 		res.status(404).json({"error":`no user with such login`});
 		return ;
 	}
-	res.json({pending: user.pending});
+    console.log(user.pending[0] + " is in " + param.login42.slice(1) + " pending list");
+	  res.json({pending: user.pending});
   }
 
   @UseGuards(AuthGuard)
@@ -234,11 +236,13 @@ export class UserController {
           await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
         if (!(user_2.achievements & 8))
           await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8, 8);
+          res.json({"success": "Mutual request send"});
         return ;
       }
     }
     await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
     res.json({"success":`${user_1.login42} sent friend request to ${friendLogin}`});
+    return ;
   }
   
   @UseGuards(AuthGuard)

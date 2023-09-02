@@ -1,35 +1,46 @@
 <script setup lang="ts">
-import {ref, computed} from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import { type UserInfo } from '@/types';
 import { useUserStore } from '@/stores/user';
+import axios from 'axios';
 
 const store = useUserStore();
 const err = ref(false);
-const sendOutReq = ref(false);
+const reloadKey = ref(0);
 
 const props = defineProps<{
     pendingUser: UserInfo
 }>()
 
-//const isPendingRecv = ref(store.getPending?.includes(props.pendingUser.login42));
+let viewedProfilePending: Array<string> = props.pendingUser.pending;
+
+async function reloadButton() {
+    await store.fetchUser();
+    reloadKey.value += 1;
+}
+
+async function isInPending():Promise<boolean> {
+    try {
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/pending_list:${props.pendingUser.login42}`)
+        viewedProfilePending = res.data.pending;
+        if (store.getLogin42) {
+            return (viewedProfilePending.includes(store.getLogin42))
+        }
+    }
+    catch (error: any) {
+        console.log(error.message);
+    }
+    return false;
+}
+
+/* Define functions before calling it in ref*/
+const sendOutReq = ref(await isInPending());
+
+
 const isPendingRecv = computed(() => {
     return (store.getPending?.includes(props.pendingUser.login42));
 })
 
-/* Pb c'est que l'autre user n'est pas mis a jour donc on a pas ses infos */
-/* => le button add ne change pas quand une request est send */
-const isPendingSend = computed(() => {
-    if (store.getLogin42) {
-        return (props.pendingUser.pending.includes(store.getLogin42) || sendOutReq.value);
-    }
-})
-
-/*
-if (store.getLogin42 != undefined) {
-    isPendingSend.value = props.pendingUser.pending.includes(store.getLogin42);
-}
-*/
-//pt devoir switch ca dans le button direct
 const isFriend = computed(() => {
     if (store.getLogin42) {
         if (store.getFriends?.includes(props.pendingUser.login42)) {
@@ -39,13 +50,14 @@ const isFriend = computed(() => {
     return false;
 })
 
+
 async function addFriend() {
     try {
         await store.addFriend(props.pendingUser.login42);
         sendOutReq.value = true;
     }
     catch (error: any){
-        location.reload();
+        await reloadButton();
         console.log(error.message)
     }
 }
@@ -56,7 +68,8 @@ async function unsendFriendRequest() {
         sendOutReq.value = false;
     }
     catch (error:any){
-        location.reload();
+        sendOutReq.value = false;
+        await reloadButton();
         console.log(error.message)
     }
 }
@@ -64,10 +77,9 @@ async function unsendFriendRequest() {
 async function removeFriend() {
     try {
         await store.removeFriend(props.pendingUser.login42);
-        console.log("here??")        
     }
     catch (error: any) {
-        location.reload();
+        await reloadButton();
         console.log(error.message);
     }
 }
@@ -77,8 +89,7 @@ async function confirmRequest() {
         await store.acceptFriendRequest(props.pendingUser.login42);
     }
     catch (error:any) {
-        /* If already friends, forces reload of page, could just append to list */
-        location.reload();
+        await reloadButton();
         console.log(error.message);
     }
 }
@@ -86,28 +97,31 @@ async function confirmRequest() {
 async function declineFriendRequest() {
     try {
         await store.declineFriendRequest(props.pendingUser.login42);
-        //isPendingRecv.value = false;
     }
     catch (error:any) {
-        location.reload();
+        await reloadButton();
         console.log(error.message)
     }
 }
+
+onMounted(async () => {
+    //await getPendingList();
+});
 </script>
 
-<template>
-        <div v-if="isPendingRecv">
-            <button type="button" class="btn btn-warning mx-3"  @click="confirmRequest"> Accept </button> 
-            <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
-        </div>
-        <div v-else-if="isPendingSend">
-            <button type="button" class="btn btn-outline-warning mx-3" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
-        </div>
-        <div v-else>
-            <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>
-            <button v-else type="button" class="btn btn-success" @click="addFriend">Add Friend</button>
-        </div>
-        <div v-if="err">
-            <p>Oops Something went Wrong, try a refresh bg</p>
-        </div>
+<template :key="reloadKey">
+    <div v-if="isPendingRecv">
+        <button type="button" class="btn btn-warning mx-3"  @click="confirmRequest"> Accept </button> 
+        <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
+    </div>
+    <div v-else-if="sendOutReq">
+        <button type="button" class="btn btn-outline-warning mx-3" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
+    </div>
+    <div v-else>
+        <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>
+        <button v-else type="button" class="btn btn-success" @click="addFriend">Add Friend</button>
+    </div>
+    <div v-if="err">
+        <p>Oops Something went Wrong, try a refresh bg</p>
+    </div>
 </template>
