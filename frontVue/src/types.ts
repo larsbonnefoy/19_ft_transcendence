@@ -75,6 +75,5 @@ export interface ChatInfo{
 
 export enum GameType {
     PLAYER,
-    WATCHER,
-    CHALLENGER
+    WATCHER
 }

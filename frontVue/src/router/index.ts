@@ -67,20 +67,6 @@ const router = createRouter({
       }
     },
     {
-      path: '/game/:challenge',
-      name: 'challenge',
-      component: Game,
-      beforeEnter: async (to, from) => {
-        const acces = await validAccess();
-        if (!acces && to.name != '/') {
-          return '/';
-        }
-        // console.log("to " + to.path);
-        if (to.path !== "/game/challenge")
-          return 'game';
-      }
-    },
-    {
       path: '/chat/:chatNames',
       name: 'chat',
       component: Chat,

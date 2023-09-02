@@ -13,7 +13,7 @@ const props = defineProps<{
 const emit = defineEmits(['closeCanvas']);
 
 const store = useUserStore();
-let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
+let isPlayer: boolean = props.playGame === GameType.PLAYER;
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
 
@@ -256,9 +256,6 @@ onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
-        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
-    } else if (props.playGame === GameType.CHALLENGER) {
-        console.log("challenger in the place");
         socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     }
     getSensi();

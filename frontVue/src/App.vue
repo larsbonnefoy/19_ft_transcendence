@@ -21,7 +21,6 @@ socket.on('gameNotification', (origin: any) => {
     function clicked() {
         console.log("toast clicked, send receipt notif to " + origin.login42);
         socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
-        router.push('/game/challenge');
         // router.push({ name: 'game', params: { challenge: 'challenge' } });
     };
     const toast = useToast();
@@ -42,8 +41,9 @@ socket.on('gameNotification', (origin: any) => {
 });
 
 //this function is used to confirm a user is online and received the notification you sent them
-socket.on("challengeAccepted", (origin: string) => {
-    router.push('/game/challenge');
+socket.on("challengeAccepted", () => {
+	// console.log("router push /game");
+    router.push('/game');
 });
 
 socket.on('achievement', (message: string) => {
@@ -63,10 +63,13 @@ socket.on('achievement', (message: string) => {
     });
 });
 
+console.log("App.vue loaded");
+
 onUnmounted(async () => {
-	socket.off('notification');
+	socket.off('gameNotification');
 	socket.off('challengeAccepted');
 	socket.off('achievement');
+	console.log("App.vue unmounted");
 });
 </script>
 

@@ -26,23 +26,16 @@ async function isInGame() {
 		if (liveGames.length != 0 ) {
 			// console.log(liveGames);
 			for (let games of liveGames) {
-				if (games.player0 == store.getUserName || games.player1 == store.getUserName) {
-					return true;
+				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
+					joinGame();
+					return ;
 				}
-				return false;
 			}
 		}
-        dataLoaded.value = true;
     }
     catch(error:any) {
         console.log(error.message + ": Pb loading ongoing games")
     }
-	return false;
-}
-
-if (route.path === "/game/challenge") {
-	displayGame.value = true;
-	playGame.value = GameType.CHALLENGER;
 }
 
 function joinGame() {
@@ -67,19 +60,23 @@ socket.on('endGame', (roomIndex) => {
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
 });
 
+socket.on("challengeAcceptedJoinGame", () => { // router.push /game doesn't work if in /game already
+    joinGame();
+});
+
 function handleResize() {
 	windowWidth.value = window.innerWidth;
 }
 
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
-	displayGame.value = await isInGame();
-	//isInGame();
+	await isInGame();
 });
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
 	socket.off('endGame');
+	socket.off('challengeAcceptedJoinGame');
 });
 
 </script>
