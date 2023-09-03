@@ -28,9 +28,9 @@ function toggleModProfile() {
     modProfile.value = !modProfile.value;
 }
 
-async function resetAchievements() {
-	await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/resetAchievements`, { headers: {token: localStorage.getItem('jwt_token')} });
-}
+// async function resetAchievements() {
+// 	await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/resetAchievements`, { headers: {token: localStorage.getItem('jwt_token')} });
+// }
 
 if (props.user.photo === "no photo yet") {
     props.user.photo = "../../../assets/placeholder_avatar.png"
@@ -81,7 +81,7 @@ Should set max lenght of username here
                             </div>
                         </div>
                         <img v-if="activeUser" class="ModProfilePic" src="../../../assets/pen.png" @click.prevent="toggleModProfile" > <!-- Btn to toggle profile only displays if its current user-->
-                        <img v-if="activeUser" class="ResetAchievements" src="../../../assets/TrophyLeaderBoard/bronze.png" @click.prevent="resetAchievements" > <!-- Btn to reset achievements TODO remove this-->
+                        <!-- <img v-if="activeUser" class="ResetAchievements" src="../../../assets/TrophyLeaderBoard/bronze.png" @click.prevent="resetAchievements" > Btn to reset achievements TODO remove this -->
                     </div>
                     <div v-if="modProfile" class="form-group row justify-content-left">
                         <h4> {{ user.username }}</h4>

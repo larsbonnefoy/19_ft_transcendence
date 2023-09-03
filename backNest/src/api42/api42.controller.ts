@@ -37,8 +37,7 @@ export class Api42Controller {
 					intraPhoto = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif";
 				}
 				newUser.photo = intraPhoto;
-				let hugocheck : string = intraLogin;
-				hugocheck.toLowerCase();
+				let hugocheck : string = intraLogin.toLowerCase();
 				for (let i = 0; i < hugocheck.length - 3; i++) {
 					if (hugocheck.slice(i, i + 4) === "hugo") {
 						newUser.achievements = 256;
