@@ -89,6 +89,9 @@ export class UserService {
     await this.userRepository.update(login42, {achievements:achievements});
     let message: string = "";
     switch (current) {
+	  case (0):
+		message = "RESET";
+		break ;
       case (1):
         message = "Incognito";
         break ;
