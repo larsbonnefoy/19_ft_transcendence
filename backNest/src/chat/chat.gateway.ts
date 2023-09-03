@@ -25,7 +25,7 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('sendPrivate')
+  @SubscribeMessage('send')
   handleMessage(@MessageBody()  data: {target: string, message: string, token: string}) {
   let login42: string = "";
     try {
@@ -34,6 +34,20 @@ export class ChatGateway {
     catch (error) {
       return ;
     }
-  this.server.to(data.target).emit("privateMessage", {message: data.message, login: login42});
+  this.server.to("channel" + data.target).emit("getMessage", {message: data.message, login: login42});
+  }
+
+  @SubscribeMessage('joinChannel')
+  joinChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
+  {
+    client.join("channel" + data.target);
+    console.log("client joined : channel" + data.target)
+  }
+
+  @SubscribeMessage('leaveChannel')
+  leaveChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
+  {
+    client.leave("channel" + data.target);
+    console.log("client left : channel" + data.target)
   }
 }

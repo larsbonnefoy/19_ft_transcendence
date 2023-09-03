@@ -81,7 +81,7 @@ export class ChatController {
     async getMessages(@Request() req: any, @Body() body: roomDto, @Res({ passthrough: true }) res: any)
     {
         console.log("GETEMESSAGE");
-        console.log(body)
+        // console.log(body)
         const roomId: number = body.id;
         console.log("getMessage: " + roomId);
 		const user : User = await this.userService.findOne(req.user);
@@ -100,7 +100,7 @@ export class ChatController {
             || await this.chatService.isChatter(roomId, user))
         {
             const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            console.log("yoo: " + messages);
+            // console.log("yoo: " + messages);
             res.status(200).json(messages).send();
             return;
         }

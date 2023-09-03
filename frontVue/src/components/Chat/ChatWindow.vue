@@ -55,22 +55,22 @@ function getDmChatter()
 }
 
 const sendMessage = async () => {
-  console.log(channel.getIsDm);
-  if (channel.getIsDm && newMessage.value.trim())
-  {
-    const chatter = getDmChatter(); 
-
-    console.log("Send Dm to :" + chatter)
-    // console.log(message)
-    await channel.addMessage(newMessage.value);
-    socket.emit("sendPrivate",{target: chatter, message: newMessage.value, token: localStorage.getItem('jwt_token')});
-  }
+  // console.log(channel.getIsDm);
+  // if (channel.getIsDm && newMessage.value.trim())
+  // {
+  //   const chatter = getDmChatter();
+  //
+  //   console.log("Send Dm to :" + chatter)
+  //   // console.log(message)
+  // }
   // if (newMessage.value.trim()) {
     // messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     // nextTick(() => {
       // autoScroll();
     // });
   // }
+  await channel.addMessage(newMessage.value);
+  socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
   newMessage.value = "";
 };
 
@@ -93,7 +93,7 @@ function handleOpenProfile(user: string) {
 }
 
 onMounted(async () => {
-  socket.on("privateMessage", (data : any) => {
+  socket.on("getMessage", (data : any) => {
     console.log("response: "+ data.login + " " + data.message);
     channel.refreshMessages();
   });

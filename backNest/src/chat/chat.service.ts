@@ -80,8 +80,6 @@ export class ChatService
 	{
 		console.log("isOwner");
 		const owner: User | null = await this.getOwner(roomId);
-		console.log(owner);
-		console.log(user)
 		if (!owner || owner.login42 !== user.login42)
 		{
 			console.log("false");
@@ -280,11 +278,11 @@ export class ChatService
 	async addMessage(roomId: number, newMessage: ChatMessage): Promise<boolean>
 	{
 		const chat: Chat = await this.findOne(roomId);
-		console.log(chat);
+		// console.log(chat);
 		if (chat != null)
 		{
 			const messages: ChatMessage[] = await this.getMessagesByRoom(roomId);
-			console.log(messages);
+			// console.log(messages);
 			messages.push(newMessage);
 			chat.messages = messages;
 			await this.chatRepository.save(chat);

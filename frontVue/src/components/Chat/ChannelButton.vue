@@ -4,6 +4,7 @@ import { type Channel } from '@/types';
 import {types} from "sass";
 import Boolean = types.Boolean;
 import axios from "axios";
+import { socket } from '@/socket';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -44,8 +45,11 @@ const selectChannel = async () => {
     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
     if (newChannel)
     {
-      console.log(newChannel);
+      console.log(newChannel.id);
+     if (channel?.id)
+        socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
       await channelStore.setChannel(newChannel);
+      socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
     }
     // console.log(channelStore.getMessages);
     console.log("done");

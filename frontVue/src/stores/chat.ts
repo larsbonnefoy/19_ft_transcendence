@@ -35,7 +35,7 @@ export const useChannelStore = defineStore('channel', {
 	                }
                 });
                 this.channel.messages = messages.data;
-                console.log("setChannel: " + this.channel.messages)
+                // console.log("setChannel: " + this.channel.messages)
             }
             catch (error)
             {
