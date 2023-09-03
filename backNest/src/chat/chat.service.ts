@@ -28,9 +28,9 @@ export class ChatService
    	{
     	// return this.chatRepository.find();
 		const tmp: Chat[] = [];
-		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true}, isDm: true, chatters: {login42: true, username: true}, admins: {login42: true, username: true}}})
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true}, isDm: true, chatters: {login42: true, username: true}, owner: {login42: true, username: true}}}))
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true}, isDm: true, owner: {login42: true, username: true}, admins: {login42: true, username: true}}})));
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, owner: {login42: true, username: true, photo: true}}}))
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true, photo: true}, isDm: true, owner: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})));
 		return chats;
  	}
 
@@ -40,28 +40,28 @@ export class ChatService
 
 	async getOwner(roomId: number) : Promise<User | null>
 	{
-		const owner: User | null = await this.userRepository.findOne({ relations: {owned: true},  where: { owned: {id: roomId}}})	
+		const owner: User | null = await this.userRepository.findOne({ relations: {owned: true},  where: { owned: {id: roomId}}, select: {login42: true, username: true, photo: true}})
 		return owner; 
 	}
 	
 	async getChatters(roomId: number) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {chats: true},  where: { chats: {id: roomId}}})
+		return await this.userRepository.find({ relations: {chats: true},  where: { chats: {id: roomId}}, select: {login42: true, username: true, photo: true}})
 	}
 
 	async getBans(roomId: number) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}});
+		return await this.userRepository.find({ relations: {banned: true},  where: { banned: {id: roomId}}, select: {login42: true, username: true, photo: true}});
 	}
 
 	async getMutes(roomId: number) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}});
+		return await this.userRepository.find({ relations: {muted: true},  where: { muted: {id: roomId}}, select: {login42: true, username: true, photo: true}});
 	}
 
 	async getAdmins(roomId: number) : Promise<User[] | null>
 	{
-		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}});
+		return await this.userRepository.find({ relations: {administered: true},  where: { administered: {id: roomId}}, select: {login42: true, username: true, photo: true}});
 	}
 
 	async getMessagesByRoom(roomId: number) : Promise<ChatMessage[] | null>

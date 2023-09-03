@@ -140,13 +140,14 @@ export class ChatController {
                 try
                 {
 		            const newChatter: User = await this.userService.findUsername(username);
-                    this.chatService.addChatter(chat.id, newChatter);
+                    await this.chatService.addChatter(chat.id, newChatter);
                 }
                 catch
                 {
 
                 }
             }
+           chat.chatters = await this.chatService.getChatters(chat.id);
         	await res.status(200).json(chat).send();
 		// }
 		// else

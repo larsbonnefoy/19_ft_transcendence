@@ -100,7 +100,7 @@ onMounted(async () => {
 })
 
 onUnmounted(async () => {
-  socket.off("privateMessage");
+  socket.off("getMessage");
 });
 
 </script>
