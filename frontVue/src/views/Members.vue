@@ -24,7 +24,7 @@ onMounted(async () => {
 
 		<div class="col-3"></div>
 		<div class="col-6">
-			<div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
+			<div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 80vh;">
 				<div class="card-body">
 					<h5 class="card-title" style="text-align: center;">Members</h5> 
 					<template v-for="(member, index) in members" :key="index">

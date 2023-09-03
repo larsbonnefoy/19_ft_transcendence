@@ -11,7 +11,7 @@ const activeMode = ref(retrieveModeFromStorage()); //recup valeur dans local sto
 
 watch(sliderValue, () => {
 	const retval: number = 1 + (((sliderValue.value/100) - 0.5) * 0.8)
-	console.log("newVal" + retval)
+	// console.log("newVal" + retval)
 	localStorage.setItem("paddle_sensitivity", "" + retval);
 })
 
@@ -43,7 +43,7 @@ function retrieveSensiFromStorage():number {
 		return 50;
 	}
 	let retVal: number = Math.ceil(((((+valuefromStorage -1) / 0.8) + 0.5) * 100) * 100 / 100); 
-	console.log("converted from store" + valuefromStorage);
+	// console.log("converted from store" + valuefromStorage);
 	return retVal
 }
 

@@ -254,22 +254,26 @@ export class Game {
       return ;
     let deltaTime : number = newTimeStamp - this.lastTimeStamp;
     // console.log(deltaTime + ", new is " + newTimeStamp + ", last is " + this.lastTimeStamp);
-    if (deltaTime > 20) {
+    // if (deltaTime > 20) { // TODO analyse if removing this is a good thing or not
       while (deltaTime > 20) {
         this.updateBall(20);
         this.updateObstacle(this.obstacle0, 20);
         this.updateObstacle(this.obstacle1, 20);
         deltaTime -= 20;
-        this.timeOut -= 20;
+		if (+this.timeOut >= 0) {
+		  this.timeOut -= 20;
+		}
       }
       this.updateBall(deltaTime);
       this.updateObstacle(this.obstacle0, deltaTime);
       this.updateObstacle(this.obstacle1, deltaTime);
-      this.timeOut -= deltaTime;
+      if (+this.timeOut >= 0) {
+		this.timeOut -= deltaTime;
+	  }
     
       // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
-    }
+    // }
   }
 
   updateLeftPaddle(dir : number) {

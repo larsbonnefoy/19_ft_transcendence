@@ -61,6 +61,7 @@ function handleResize() {
 
 
 socket.on('achievementUpdate', async () => {
+	// console.log("got ach update");
     await store.fetchUser();
     await getUserInfo();
     achievKey.value += 1;
