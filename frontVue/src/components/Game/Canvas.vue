@@ -18,11 +18,11 @@ const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallFie
 
 
 const player0Connected = computed(() => {
-    return player0Login.value != "Player1"
+    return (player0Login.value != "Player1" && player0Login.value != "");
 })
 
 const player1Connected = computed(() => {
-    return (player1Login.value != "Player2" && player1Login.value != "")
+    return (player1Login.value != "Player2" && player1Login.value != "");
 })
 
 /* GAME */
@@ -43,6 +43,7 @@ let lucasSheat: string = "";
 let sensi: number = 1;
 
 let intervalStop : number = -1;
+let watcherTimeStamp : number = -1;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
@@ -130,13 +131,16 @@ function init() {
 	window.addEventListener('keyup', keyUp);
 
     socket.on('display', (response : any) => {
-        if (roomIndex === -1)
+        if (roomIndex === -1) {
             roomIndex = response.roomName[response.roomName.length - 1];
-        // if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
-        //     isPlayer = true;
-        if (player0Login.value === "Player1")
+		}
+		if (!isPlayer) {
+			watcherTimeStamp = response.lastTimeStamp;
+		}
+        if (response.player0 != player0Login.value) {
             player0Login.value = response.player0;
-        if (player1Login.value === "Player2" || player1Login.value === "") {
+		}
+        if (response.player1 != player1Login.value) {
             player1Login.value = response.player1;
         }
         
@@ -238,8 +242,14 @@ function init() {
 
 function redrawAll() {
     // console.log("room " + roomIndex + ", player " + isPlayer);
-	if (roomIndex === -1 || !isPlayer)
+	if (roomIndex === -1)
 		return ;
+	if (!isPlayer) {
+		if (watcherTimeStamp !== -1 && new Date().getTime() - watcherTimeStamp > 2000) {
+			emit('closeCanvas');
+		}
+		return ;
+	}
     if (key === key_up || key === key_w) {
         socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     } else if (key === key_down || key === key_s) {
