@@ -7,6 +7,7 @@ import AchievementsList from '@/components/Achievements/AchievementsList.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import {type UserInfo} from '../types'
+import { socket } from '@/socket';
 
 
 const store = useUserStore();
@@ -14,7 +15,7 @@ const route = useRoute();
 let user: UserInfo;
 const foundUser = ref(true);
 let windowWidth = ref(window.innerWidth);
-const currentRouteUsername = ref(route.params.username);
+const achievKey = ref(0); //Each time we need to reload the component the key is changed
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
@@ -45,9 +46,6 @@ async function getUserInfo() {
     }
 }
 
-
-
-
 watch(
     () => route.params.username, 
     async newId => {
@@ -61,16 +59,27 @@ function handleResize() {
 	windowWidth.value = window.innerWidth;
 }
 
+
+socket.on('achievementUpdate', async () => {
+	// console.log("got ach update");
+    await store.fetchUser();
+    await getUserInfo();
+    achievKey.value += 1;
+});
+
+await getUserInfo();
+
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(async () => {
-    URL.revokeObjectURL(user.photo);
+    if (user) {
+        URL.revokeObjectURL(user.photo);
+    }
     window.removeEventListener('resize', handleResize);
+    socket.off('achievementUpdate');
 });
-
-await getUserInfo();
 </script>
 
 <template>
@@ -87,7 +96,7 @@ await getUserInfo();
                 <ProfileCard :user="user"> </ProfileCard>
             </div>
             <div class="col-4 p-0">
-                <AchievementsList :user-prop="user"> </AchievementsList>
+                <AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
             </div>
         </div>
         <div v-else-if="windowWidth > 800" class="row">
@@ -96,7 +105,7 @@ await getUserInfo();
                     :username-prop="user.username"
                 >
                 </GameHistory>
-				<AchievementsList :user-prop="user"> </AchievementsList>
+				<AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
             </div>
             <div class="col-6 p-0">
                 <ProfileCard :user="user"> </ProfileCard>
@@ -113,7 +122,7 @@ await getUserInfo();
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<AchievementsList :user-prop="user"> </AchievementsList>
+					<AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
 				</div>
 			</div>
         </div>

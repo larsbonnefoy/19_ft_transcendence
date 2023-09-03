@@ -4,12 +4,14 @@ import { Repository } from 'typeorm';
 import { User, UserStatus } from './user.entity';
 import { ChatMessage } from '../chat/chat.entity';
 import { Api42Service } from '../api42/api42.service';
+import { AchievementGateway } from './user.gateway';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private achievementGateway: AchievementGateway
     // @Inject(forwardRef(() => Api42Service))
     // private  api42Service: Api42Service
   ) {}
@@ -71,6 +73,10 @@ export class UserService {
   async addWin(login42: string, win: number) {
     console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
+	if (+win === 100) {
+		this.achievementGateway.server.to(login42).emit('achievement', "Master");
+		this.achievementGateway.server.to(login42).emit('achievementUpdate');
+	}
   }
   
   async addLoss(login42: string, loss: number) {
@@ -78,9 +84,46 @@ export class UserService {
     await this.userRepository.update(login42, {loss:loss});
   }
 
-  async addAchievement(login42: string, achievements: number) {
-	console.log("achievements of %s now at %d", login42, achievements);
-	await this.userRepository.update(login42, {achievements:achievements});
+  async addAchievement(login42: string, achievements: number, current: number) {
+    console.log("achievements of %s now at %d", login42, achievements);
+    await this.userRepository.update(login42, {achievements:achievements});
+    let message: string = "";
+    switch (current) {
+	  case (0):
+		message = "RESET";
+		break ;
+      case (1):
+        message = "Incognito";
+        break ;
+      case (2):
+        message = "Make Up Artist";
+        break ;
+      case (4):
+        message = "Flawless";
+        break ;
+      case (8):
+        message = "You and Me";
+        break ;
+      case (16):
+        message = "Retro Gamer";
+        break ;
+      case (32):
+        message = "Shielded";
+        break ;
+	  case (64):
+		message = "G.O.L.D.";
+		break ;
+	  case (128):
+		message = "Telekinesis";
+		break ;
+	  case (256):
+		message = "One of us";
+		break ;
+      default:
+        message = "New";
+    }
+    this.achievementGateway.server.to(login42).emit('achievement', message);
+    this.achievementGateway.server.to(login42).emit('achievementUpdate');
   }
 
   async change_elo(login42: string, newelo: number) {
@@ -132,7 +175,7 @@ export class UserService {
       return ;
     }
     if (!(+user.achievements & 32)) {
-      this.addAchievement(login42, +user.achievements + 32);
+      this.addAchievement(login42, +user.achievements + 32, 32);
     }
   }
 

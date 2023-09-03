@@ -52,7 +52,9 @@ export class Game {
   public roomName : string = "room0";
   public gMode : game_mode = game_mode.DEFAULT;
   public player0 : string = "";
+  public move0 : boolean = false;
   public player1 : string = "";
+  public move1 : boolean = false;
   private startDirection : number = 1;
   public timeOut : number = -1;
   public score0 : number = 0;
@@ -235,7 +237,9 @@ export class Game {
     this.obstacle1.dir = 0;
     this.obstacle1.target = {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0};
     this.player0 = "";
+	this.move0 = false;
     this.player1 = "";
+	this.move1 = false;
     this.leftPaddle.y = canvasHeight / 2;
     this.rightPaddle.y = canvasHeight / 2;
     this.ball.x = canvasWidth / 2;
@@ -250,22 +254,26 @@ export class Game {
       return ;
     let deltaTime : number = newTimeStamp - this.lastTimeStamp;
     // console.log(deltaTime + ", new is " + newTimeStamp + ", last is " + this.lastTimeStamp);
-    if (deltaTime > 20) {
+    // if (deltaTime > 20) { // TODO analyse if removing this is a good thing or not
       while (deltaTime > 20) {
         this.updateBall(20);
         this.updateObstacle(this.obstacle0, 20);
         this.updateObstacle(this.obstacle1, 20);
         deltaTime -= 20;
-        this.timeOut -= 20;
+		if (+this.timeOut >= 0) {
+		  this.timeOut -= 20;
+		}
       }
       this.updateBall(deltaTime);
       this.updateObstacle(this.obstacle0, deltaTime);
       this.updateObstacle(this.obstacle1, deltaTime);
-      this.timeOut -= deltaTime;
+      if (+this.timeOut >= 0) {
+		this.timeOut -= deltaTime;
+	  }
     
       // console.log("changing timestamp from " + this.lastTimeStamp + " to " + newTimeStamp);
       this.lastTimeStamp = newTimeStamp;
-    }
+    // }
   }
 
   updateLeftPaddle(dir : number) {
@@ -275,6 +283,7 @@ export class Game {
     } else if (this.leftPaddle.y < this.leftPaddle.height / 2) {
         this.leftPaddle.y = this.leftPaddle.height / 2;
     }
+	this.move0 = true;
   }
 
   updateRightPaddle(dir : number) {
@@ -284,5 +293,6 @@ export class Game {
     } else if (this.rightPaddle.y < this.rightPaddle.height / 2) {
       this.rightPaddle.y = this.rightPaddle.height / 2;
     }
+	this.move1 = true;
   }
 };

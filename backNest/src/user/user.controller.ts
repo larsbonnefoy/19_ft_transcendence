@@ -19,6 +19,13 @@ export class UserController {
 	userServiceForMethod = userService;
   }
 
+  // TODO remove this at some point
+  @UseGuards(AuthGuard)
+  @Get('resetAchievements')
+  async resetAchievements(@Request() req: any) {
+	this.userService.addAchievement(req.user, 0, 0);
+  }
+
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
     const username: string = params.username.slice(1);
@@ -41,27 +48,27 @@ export class UserController {
     res.json({"username":user.username});
   }
 
-  @Get('getElo:login42')
-  async GetEloFromLogin(@Res() res: Response, @Param() params: any) {
-    const login42: string = params.login42.slice(1);
-    const user = await this.userService.findOne(login42);
-    if (user == null) {
-      res.status(404).json({"error":"no user with that login"});
-      return ;
-    }
-    res.json({"elo":user.elo});
-  }
+//   @Get('getElo:login42')
+//   async GetEloFromLogin(@Res() res: Response, @Param() params: any) {
+//     const login42: string = params.login42.slice(1);
+//     const user = await this.userService.findOne(login42);
+//     if (user == null) {
+//       res.status(404).json({"error":"no user with that login"});
+//       return ;
+//     }
+//     res.json({"elo":user.elo});
+//   }
 
-  @Get('getStatus:login42')
-  async GetStatusFromLogin(@Res() res: Response, @Param() params: any) {
-    const login42: string = params.login42.slice(1);
-    const user = await this.userService.findOne(login42);
-    if (user == null) {
-      res.status(404).json({"error":"no user with that login"});
-      return ;
-    }
-    res.json({"status":user.status});
-  }
+//   @Get('getStatus:login42')
+//   async GetStatusFromLogin(@Res() res: Response, @Param() params: any) {
+//     const login42: string = params.login42.slice(1);
+//     const user = await this.userService.findOne(login42);
+//     if (user == null) {
+//       res.status(404).json({"error":"no user with that login"});
+//       return ;
+//     }
+//     res.json({"status":user.status});
+//   }
 
   @UseGuards(AuthGuard)
   @Get('setStatus:status')
@@ -77,18 +84,18 @@ export class UserController {
       res.status(404).json({"error":"no user with that login"});
       return ;
     }
-    console.info("%s is now %s", req.user, UserStatus[status]);
+    // console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
   }
  
-  @UseGuards(AuthGuard)
-  @Get('me')
-  async getMyself(@Request() req: any, @Res() res: any) {
-    const user: User = await this.userService.findOne(req.user);
-    console.log("got myself from %s", user.username);
-    res.json(user);
-  }
+//   @UseGuards(AuthGuard)
+//   @Get('me')
+//   async getMyself(@Request() req: any, @Res() res: any) {
+//     const user: User = await this.userService.findOne(req.user);
+//     console.log("got myself from %s", user.username);
+//     res.json(user);
+//   }
 
   @UseGuards(AuthGuard)
   @Get('me/login42')
@@ -115,35 +122,35 @@ export class UserController {
     res.json(messages);
   }
 
-  @Get('addWin:username')
-  async addWin(@Res() res: Response, @Param() params: any) {
-    const username: string = params.username.slice(1);
-    console.log("increment win field for user with username %s", username);
-    const current_user = await this.userService.findUsername(username);
-    if (current_user == null) {
-      res.status(404).json({"error":`no user with ${username} as username`});
-      return ;
-    }
-    let wins:number = current_user.win;
-    ++wins;
-    await this.userService.addWin(current_user.login42, wins);
-    res.json({"success":`${username} now has ${wins} wins`});
-  }
+//   @Get('addWin:username')
+//   async addWin(@Res() res: Response, @Param() params: any) {
+//     const username: string = params.username.slice(1);
+//     console.log("increment win field for user with username %s", username);
+//     const current_user = await this.userService.findUsername(username);
+//     if (current_user == null) {
+//       res.status(404).json({"error":`no user with ${username} as username`});
+//       return ;
+//     }
+//     let wins:number = current_user.win;
+//     ++wins;
+//     await this.userService.addWin(current_user.login42, wins);
+//     res.json({"success":`${username} now has ${wins} wins`});
+//   }
   
-  @Get('addLoss:username')
-  async addLoss(@Res() res: any, @Param() params: any) {
-    const username: string = params.username.slice(1);
-    console.log("increment loss field for user with username %s", username);
-    const current_user = await this.userService.findUsername(username);
-    if (current_user == null) {
-      res.status(404).json({"error":`no user with ${username} as username`});
-      return ;
-    }
-    let loss:number = current_user.loss;
-    ++loss;
-    await this.userService.addLoss(current_user.login42, loss);
-    res.json({"success":`${username} now has ${loss} loss`});
-  }
+//   @Get('addLoss:username')
+//   async addLoss(@Res() res: any, @Param() params: any) {
+//     const username: string = params.username.slice(1);
+//     console.log("increment loss field for user with username %s", username);
+//     const current_user = await this.userService.findUsername(username);
+//     if (current_user == null) {
+//       res.status(404).json({"error":`no user with ${username} as username`});
+//       return ;
+//     }
+//     let loss:number = current_user.loss;
+//     ++loss;
+//     await this.userService.addLoss(current_user.login42, loss);
+//     res.json({"success":`${username} now has ${loss} loss`});
+//   }
 
   @UseGuards(AuthGuard)
   @Get('change_username:new')
@@ -176,8 +183,30 @@ export class UserController {
 	}
     await this.userService.change_username(current_user.login42, newUsername);
 	if (!(current_user.achievements & 1))
-		await this.userService.addAchievement(sessionId, +current_user.achievements + 1);
+		await this.userService.addAchievement(sessionId, +current_user.achievements + 1, 1);
+	console.log("before tolower: " + newUsername);
+	const loweruser: string = newUsername.toLowerCase();
+	console.log("after tolower: " + loweruser);
+	for (let i = 0; i < loweruser.length - 3; i++) {
+		if (loweruser.slice(i, i + 4) === "hugo") {
+			if (!(current_user.achievements & 256))
+				await this.userService.addAchievement(sessionId, +current_user.achievements + 1 + 256, 256);
+			break ;
+		}
+	}
     res.json({"success":`username of ${sessionId} changed to ${newUsername}`});
+  }
+
+  @Get('pending_list:login42')
+  async pendingList(@Res() res: any, @Param() param: any) {
+  const user = await this.userService.findOne(param.login42.slice(1));
+	if (user === null) {
+    console.log("error in pending_list get")
+		res.status(404).json({"error":`no user with such login`});
+		return ;
+	}
+    console.log(user.pending[0] + " is in " + param.login42.slice(1) + " pending list");
+	  res.json({pending: user.pending});
   }
 
   @UseGuards(AuthGuard)
@@ -213,14 +242,16 @@ export class UserController {
         await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
         await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
         if (!(user_1.achievements & 8))
-          await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+          await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
         if (!(user_2.achievements & 8))
-          await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
+          await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8, 8);
+          res.json({"success": "Mutual request send"});
         return ;
       }
     }
     await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
     res.json({"success":`${user_1.login42} sent friend request to ${friendLogin}`});
+    return ;
   }
   
   @UseGuards(AuthGuard)
@@ -293,9 +324,9 @@ export class UserController {
     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
 	if (!(user_1.achievements & 8))
-		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8);
+		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
 	if (!(user_2.achievements & 8))
-		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8);
+		await this.userService.addAchievement(user_2.login42, +user_2.achievements + 8, 8);
     res.json({"success":`friendship blooming between ${user_1.login42} and ${friendLogin}`});
   }
   
@@ -389,31 +420,31 @@ export class UserController {
     res.json({"success":`${user_1.username} unblocked ${friendusername}`});
   }
   
-  @UseGuards(AuthGuard)
-  @Get('set_friends:username')
-  async setFriends(@Request() req: any, @Res() res:any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
-    const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
-    if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
-      return ;
-    }
-    console.log("setting friendship between %s and %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
-      res.status(409).json({"error":"c'est déjà toi boloss."});
-      return ;
-    }
-    for (let friend of user_1.friends) {
-      if (friend == user_2.login42) {
-        res.status(409).json({"error":"c'est déjà ton pote boloss"});
-        return ;
-      }
-    }
-    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
-    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
-    res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
-  }
+//   @UseGuards(AuthGuard)
+//   @Get('set_friends:username')
+//   async setFriends(@Request() req: any, @Res() res:any, @Param() param: any) {
+//     const friendusername: string = param.username.slice(1);
+//     const user_1 = await this.userService.findOne(req.user);
+//     const user_2 = await this.userService.findUsername(friendusername);
+//     if (user_1 == null || user_2 == null) {
+//       res.status(404).json({"error":`no user with such username`});
+//       return ;
+//     }
+//     console.log("setting friendship between %s and %s", user_1.username, friendusername);
+//     if (user_1.username == friendusername) {
+//       res.status(409).json({"error":"c'est déjà toi boloss."});
+//       return ;
+//     }
+//     for (let friend of user_1.friends) {
+//       if (friend == user_2.login42) {
+//         res.status(409).json({"error":"c'est déjà ton pote boloss"});
+//         return ;
+//       }
+//     }
+//     await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
+//     await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+//     res.json({"success":`friendship blooming between ${user_1.username} and ${friendusername}`});
+//   }
   
   @UseGuards(AuthGuard)
   @Get('unset_friend:login42')
@@ -525,7 +556,7 @@ export class UserController {
 		});
 		await this.userService.change_avatar(req.user, file.filename);
 		if (!(user.achievements & 2))
-		await this.userService.addAchievement(req.user, +user.achievements + 2);
+		await this.userService.addAchievement(req.user, +user.achievements + 2, 2);
   }
 
   async compareList(err: NodeJS.ErrnoException, files: string[]) {
@@ -546,7 +577,7 @@ export class UserController {
 				if (err) 
 					console.log(err);
 				else
-					console.log("found and destroyed unused file in uploads: " + file);
+					console.log("\tfound and destroyed unused file in uploads: " + file);
 			});
 		}
 	}
@@ -560,7 +591,7 @@ export class UserController {
 
   @Get('avatar:imgpath')
   seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
-	console.log("get for image %s", image.slice(1));
+	// console.log("get for image %s", image.slice(1));
 	res.sendFile(image.slice(1), {root: 'uploads'});
   }
 }

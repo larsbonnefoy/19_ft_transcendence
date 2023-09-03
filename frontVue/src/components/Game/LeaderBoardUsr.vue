@@ -70,15 +70,15 @@ switch(props.index) {
 <style scoped>
 .profileImg {
     height: fit-content;
-    width: 2vw;
+    width: 3em;
     border-radius: 10%;
     display: block;
     text-align: center;
-    margin: 1em;
+    margin: auto;
 }
 .statusImage {
     height: fit-content;
-    width: 2vw;
+    width: 2em;
     border-radius: 10%;
     display: block;
     text-align: center;
@@ -86,6 +86,6 @@ switch(props.index) {
 }
 .textDisplay {
     margin: auto;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 </style>

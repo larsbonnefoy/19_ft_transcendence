@@ -124,7 +124,7 @@ export const useUserStore = defineStore('user', {
 			return "../../assets/placeholder_avatar.png";
 		},
         async addFriend(newFriendLogin: string) {
-            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
         async unsendFriendRequest(newFriendLogin: string) {
             await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/remove_request:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
@@ -148,8 +148,7 @@ export const useUserStore = defineStore('user', {
             }
         },
         async removeFriend(FriendtoRemoveLogin: string) {
-            console.log(FriendtoRemoveLogin);
-            axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { type UserInfo } from '@/types';
+import { type MemberInfo } from '@/types';
 import { useUserStore } from '@/stores/user';
 import { onUnmounted, onMounted } from 'vue';
 import Status from '../ProfileDisplay/Status.vue';
 
 const props = defineProps<{
-    member : UserInfo
+    member : MemberInfo
 }>()
 
 const store = useUserStore();
@@ -25,7 +25,7 @@ onUnmounted(async () => {
     	<div class="col-1 p-0 buttonStyle">
 			<Status :status="props.member.status"></Status>
 		</div>
-		<div class="col-4"> 
+		<div class="col-3"> 
 			<router-link 
                	:to="{
         	       	name:'profile',
@@ -40,7 +40,7 @@ onUnmounted(async () => {
         <div class="col-5">
            	{{ props.member.username }}
         </div> 
-		<div class="col-2">
+		<div class="col-3">
 			<p style="color: grey;"> elo : {{ Math.ceil(props.member.elo) }} </p>
 		</div>
 	</div>

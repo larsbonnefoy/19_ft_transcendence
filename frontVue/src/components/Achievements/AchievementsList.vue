@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { socket } from '@/socket';
 import AchievementDisplay from './Achievement.vue';
 import { type Achievement, type UserInfo } from '@/types';
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 
 const props = defineProps<{
     userProp: UserInfo
@@ -25,7 +26,7 @@ const progressAchToDisplay = computed(() => {
 
 /* In normal mode: display only first value that is not = 1 or last value if all = 1 */
 const gameProgressAchievements: Achievement[] = [
-{
+	{
         name: "Getting Started",
         imageUrl: "../../../assets/Achievements/1game.png",
         description: "Play one game.",
@@ -33,7 +34,7 @@ const gameProgressAchievements: Achievement[] = [
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
             return val < 1 ? val : 1; /* Return only val in order to overflow 1 and not to be displayed in list */
         },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
+		current: (props.userProp.win * 1 + props.userProp.loss * 1 === 0) ? 0 : -1,
         max: 1,
     },
     {
@@ -44,7 +45,7 @@ const gameProgressAchievements: Achievement[] = [
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 19;
             return val < 1 ? val : 1;
         },
-		current: props.userProp.win * 1 + props.userProp.loss * 1,
+		current: (props.userProp.win * 1 + props.userProp.loss * 1 < 19) ? +props.userProp.win + (+props.userProp.loss) : -1,
         max: 19,
     },
     {
@@ -85,13 +86,23 @@ const achievementList: Achievement[] = [
     {
         name: "Make up Artist",
         imageUrl: "../../../assets/Achievements/makeup.png",
-        description: "Change profile picture",
+        description: "Change your profile picture",
         progress: () => {
 			return props.userProp.achievements & 2 ? 1 : 0;
 		},
 		current: -1,
         max: 1,
     },
+	{
+		name: "One of us",
+		imageUrl: "../../../assets/Achievements/hugos.png",
+		description: "Your username seems familiar..",
+		progress: () => {
+			return props.userProp.achievements & 256 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
     {
         name: "Flawless",
         imageUrl: "../../../assets/Achievements/flawless.png",
@@ -102,6 +113,16 @@ const achievementList: Achievement[] = [
 		current: -1,
         max: 1,
     },
+	{
+		name: "Telekinesis",
+		imageUrl: "../../../assets/Achievements/telekinesis.png",
+		description: "Win a game without moving",
+		progress: () => {
+			return props.userProp.achievements & 128 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",
@@ -122,6 +143,16 @@ const achievementList: Achievement[] = [
 		current: -1,
         max: 1,
     },
+	{
+		name: "G.O.L.D.",
+		imageUrl: "../../../assets/Achievements/gold.png",
+		description: "Play with the golden ball",
+		progress: () => {
+			return props.userProp.achievements & 64 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
     {
         name: "Shielded",
         imageUrl: "../../../assets/Achievements/shield.png",
@@ -133,7 +164,6 @@ const achievementList: Achievement[] = [
         max: 1,
     },
 ]
-
 </script>
 
 <template>

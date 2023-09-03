@@ -13,16 +13,16 @@ const props = defineProps<{
 const emit = defineEmits(['closeCanvas']);
 
 const store = useUserStore();
-let isPlayer: boolean = (props.playGame === GameType.PLAYER || props.playGame === GameType.CHALLENGER);
+let isPlayer: boolean = props.playGame === GameType.PLAYER;
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 
 
 const player0Connected = computed(() => {
-    return player0Login.value != "Player1"
+    return (player0Login.value != "Player1" && player0Login.value != "");
 })
 
 const player1Connected = computed(() => {
-    return (player1Login.value != "Player2" && player1Login.value != "")
+    return (player1Login.value != "Player2" && player1Login.value != "");
 })
 
 /* GAME */
@@ -30,6 +30,8 @@ const canvasWidth: number = 800;
 const canvasHeight: number = 600;
 const key_a: number = 65;
 const key_b: number = 66;
+const key_s: number = 83;
+const key_w: number = 87;
 const key_left: number = 37;
 const key_up: number = 38;
 const key_right: number = 39;
@@ -41,6 +43,7 @@ let lucasSheat: string = "";
 let sensi: number = 1;
 
 let intervalStop : number = -1;
+let watcherTimeStamp : number = -1;
 let canvas: HTMLCanvasElement | any = null;
 let ctx: any = null;
 let key: number = 0;
@@ -128,13 +131,16 @@ function init() {
 	window.addEventListener('keyup', keyUp);
 
     socket.on('display', (response : any) => {
-        if (roomIndex === -1)
+        if (roomIndex === -1) {
             roomIndex = response.roomName[response.roomName.length - 1];
-        // if (isPlayer === false && (store.getLogin42 === response.player0 || store.getLogin42 === response.player1))
-        //     isPlayer = true;
-        if (player0Login.value === "Player1")
+		}
+		if (!isPlayer) {
+			watcherTimeStamp = response.lastTimeStamp;
+		}
+        if (response.player0 != player0Login.value) {
             player0Login.value = response.player0;
-        if (player1Login.value === "Player2" || player1Login.value === "") {
+		}
+        if (response.player1 != player1Login.value) {
             player1Login.value = response.player1;
         }
         
@@ -194,6 +200,8 @@ function init() {
         ctx.closePath();
 
         color = localStorage.getItem('ballColor'); //we use ballColor for obstacles too
+		if (color === "gold" && +response.state === 1)
+			socket.emit('gold', localStorage.getItem('jwt_token'));
         if (color === undefined || color === null)
             color = "white";
         ctx.fillStyle = color;
@@ -221,13 +229,12 @@ function init() {
         if (+response.timeOut >= 0)
             ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
-        if (response.state === 1) { // === states.ONGOING from backnest
+        if (+response.state === 1) { // === states.ONGOING from backnest
             if (new Date().getTime() - lastLatencyUpdate > 2000) {
                 diff.value = new Date().getTime() - response.lastTimeStamp;
                 lastLatencyUpdate = new Date().getTime();
             }
         }
-        console.log(response.timeOut / 1000);
     });
 	intervalStop = setInterval(redrawAll, 20);
 
@@ -235,12 +242,17 @@ function init() {
 
 function redrawAll() {
     // console.log("room " + roomIndex + ", player " + isPlayer);
-	if (roomIndex === -1 || !isPlayer)
+	if (roomIndex === -1)
 		return ;
-    if (key === key_up) {
+	if (!isPlayer) {
+		if (watcherTimeStamp !== -1 && new Date().getTime() - watcherTimeStamp > 2000) {
+			emit('closeCanvas');
+		}
+		return ;
+	}
+    if (key === key_up || key === key_w) {
         socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
-    }
-    if (key === key_down) {
+    } else if (key === key_down || key === key_s) {
         socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     }
     socket.emit('display', roomIndex);
@@ -254,9 +266,6 @@ onMounted(async () => {
     await store.setStatus("ingame");
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
-        socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
-    } else if (props.playGame === GameType.CHALLENGER) {
-        console.log("challenger in the place");
         socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
     }
     getSensi();

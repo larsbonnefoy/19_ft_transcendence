@@ -45,7 +45,7 @@ const displayProgress = computed(() => {
 <template>
     <div class="card-body textDisplay p-0 m-3" :class="[completed ? 'AchievCompleted' : 'AchievUncompleted']">
         <div class="row">
-            <div class="col-1">
+            <div class="col-2">
                 <template v-if="props.extendable"> 
                     <img class="HoverAch" :src="props.achievementProp.imageUrl"  @click="toggleAchiev">
                 </template>
@@ -57,7 +57,7 @@ const displayProgress = computed(() => {
                 <p class="m-0"> {{ props.achievementProp.name }} </p>
                 <p class="m-0"  style="color: grey;">  {{ props.achievementProp.description }} </p>               
             </div>
-            <div class="col-6" style="margin: auto;"> 
+            <div class="col-5" style="margin: auto;"> 
                 <div class="progress" >
                     <div class="progress-bar" 
                     role="progressbar" 
@@ -77,12 +77,14 @@ const displayProgress = computed(() => {
 
 <style scoped>
 .HoverAch:hover {
-    opacity: 1;
+    opacity: 1 !important;
+    height: 5em;
+    width: 5em;
 }
 
 img {
-    width: 50px;
-    height: 50px;
+    width: 4em;
+    height: 4em;
 }
 .AchievCompleted {
     opacity: 1;
@@ -90,5 +92,9 @@ img {
 
 .AchievUncompleted {
     opacity: 0.5;
+}
+
+.textDisplay {
+    font-size: 1em;
 }
 </style>
