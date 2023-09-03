@@ -1,7 +1,7 @@
 import { flatten, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat, ChatMessage } from './chat.entity';
-import { Repository } from 'typeorm';
+import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
 
@@ -24,17 +24,41 @@ export class ChatService
 	{
 		return this.chatRepository.find();
 	}
-   	async findAll(login42: string): Promise<Chat[]>
+   	async findPublic(login42: string): Promise<Chat[]>
    	{
     	// return this.chatRepository.find();
+		const chats: Chat[] = [];
+		const tmp : Chat[] = await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true},
+											where: {
+												isPrivate: false, isDm: false, owner: {login42: Not(login42)}
+											},
+											select: {
+													id: true, name: true,
+													owner: {login42: true, username: true, photo: true},
+													isDm: true,
+													chatters: {login42: true, username: true, photo: true},
+													admins: {login42: true, username: true, photo: true}
+												}
+											});
+		for (let chat  of tmp) {
+			if (!chat.chatters?.find((it) => {return (it.login42 === login42)})
+				&& !chat.admins?.find((it) => {return (it.login42 === login42)})
+				&& !chat.bans?.find((it) => {return (it.login42 === login42)}))
+					chats.push(chat)
+		}
+		return chats;
+ 	}
+
+	async findAll(login42: string): Promise<Chat[]>
+	{
+		// return this.chatRepository.find();
 		const tmp: Chat[] = [];
 		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})
 			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, owner: {login42: true, username: true, photo: true}}}))
 			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true, photo: true}, isDm: true, owner: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})));
 		return chats;
- 	}
-
-  	findOne(roomId: number): Promise<Chat | null> {	
+	}
+  	findOne(roomId: number): Promise<Chat | null> {
    	 	return this.chatRepository.findOneBy({id: roomId});
   	}
 
