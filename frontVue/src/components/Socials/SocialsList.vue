@@ -41,7 +41,7 @@ const hasBlocked = computed(() => {
     </div>
 
     <div v-if="hasPendings">
-        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 15vh;">
+        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 30vh;">
             <div class="card-body">
             <h5 class="card-title">Pending</h5> 
                 <template v-for="(pendingUser, index) in pendings" :key="index">
@@ -52,7 +52,7 @@ const hasBlocked = computed(() => {
     </div>
 
     <div v-if="hasBlocked">
-        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 15vh;">
+        <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 30vh;">
             <div class="card-body">
             <h5 class="card-title">Blocked</h5> 
                 <template v-for="(blockedUser, index) in blocked" :key="index">
