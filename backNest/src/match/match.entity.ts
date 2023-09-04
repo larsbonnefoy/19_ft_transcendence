@@ -51,7 +51,7 @@ function randomIntFromInterval(min : number, max : number) { // min and max incl
 
 export class Game {
   public state : states = states.STARTING;
-  public lastTimeStamp : number;
+  public lastTimeStamp : number = new Date().getTime();
   public roomName : string = "room0";
   public gMode : game_mode = game_mode.DEFAULT;
   public player0 : string = "";

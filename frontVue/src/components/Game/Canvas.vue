@@ -251,7 +251,6 @@ function redrawAll() {
 		return ;
 	}
     if (key === key_up || key === key_w) {
-        console.log((player1Login.value === "Player2" || player1Login.value === ""));
         if (player1Login.value === "Player2" || player1Login.value === "") {
             socket.emit("updateBothPaddles", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
         } else {

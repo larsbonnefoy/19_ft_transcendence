@@ -46,7 +46,7 @@ await getUserInfo();
 </script>
 
 <template>
-    <div class="card text-white bg-dark overflow-auto shadow-lg m-5">
+    <div class="card text-white bg-dark overflow-auto shadow-lg">
         <div class="card-body">
             <div class="row">
                 <router-link 
