@@ -94,9 +94,9 @@ const achievementList: Achievement[] = [
         max: 1,
     },
 	{
-		name: "One of us",
+		name: "Incognhugo",
 		imageUrl: "../../../assets/Achievements/hugos.png",
-		description: "Your username seems familiar..",
+		description: "One of us",
 		progress: () => {
 			return props.userProp.achievements & 256 ? 1 : 0;
 		},
