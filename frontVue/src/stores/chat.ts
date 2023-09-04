@@ -86,6 +86,19 @@ export const useChannelStore = defineStore('channel', {
 
         }
        },
+
+       async hasPassFromId(id: number)
+       {
+            const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/hasPass`, {id: id},
+            {
+                headers: 
+                {
+	                'token':localStorage.getItem('jwt_token')
+	            }
+            });
+            return data.data;
+
+       },
     }
 })
 
@@ -99,6 +112,7 @@ export const useChatStore = defineStore('chat', {
     getters: {
         // getChat: (state): ChatInfo | null => state.chat,
         getChannels: (state) => state.chat?.ChannelList,
+        getPublics: (state) => state.chat?.PublicList,
           },
     actions: {
         async fetchChannels() {
@@ -111,15 +125,25 @@ export const useChatStore = defineStore('chat', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                this.chat = {ChannelList: []};
+                this.chat = {ChannelList: [], PublicList: []};
                 this.chat.ChannelList = data.data;
-                console.log("hmmmmm " + data.data[0].id)
+                console.log("hmmmmm " + data.data[0].id);
+                const dataPublic: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/public`,
+                {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                console.log(dataPublic.data)
+                this.chat.PublicList = dataPublic.data;
+                console.log(this.chat.PublicList)
             }
             catch (error)
             {
                 console.log("Error: FetchChannels: " + error)
                 // this.chat = Array<Channel>;
-                this.chat = {ChannelList: []};
+                this.chat = {ChannelList: [], PublicList: []};
             }
         },
 

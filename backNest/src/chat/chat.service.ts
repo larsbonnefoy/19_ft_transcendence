@@ -72,6 +72,7 @@ export class ChatService
 				&& !chat.bans?.find((it) => {return (it.login42 === login42)}))
 					chats.push(chat)
 		}
+		console.log(chats)
 		return chats;
  	}
 
@@ -348,4 +349,13 @@ export class ChatService
 		}
 		return false;
 	}
+	async hasPass(id: number) : Promise<boolean>
+	{
+		const chat : Chat = await this.findOne(id);
+		console.log(chat?.password)
+		if(chat?.password)
+			return true;
+		return false;
+	}
 }
+

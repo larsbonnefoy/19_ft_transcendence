@@ -75,6 +75,15 @@ export class ChatController {
         console.log("PUBLIC");
         return (await this.chatService.findPublic(req.user));
     }
+
+    @UseGuards(AuthGuard)
+    @Post('hasPass')
+    async hasPass(@Request() req: any, @Body() body: string)
+    {
+        console.log("hasPass");
+        return (await this.chatService.hasPass(body['id']));
+    }
+
     @UseGuards(AuthGuard)
     @Get('all')
     async getAll(@Request() req: any) 

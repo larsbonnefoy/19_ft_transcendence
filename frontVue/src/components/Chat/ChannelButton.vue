@@ -4,12 +4,12 @@ import EditChannel from './EditChannel.vue';  // Importing the EditChannel compo
 import { useChatStore, useChannelStore } from '@/stores/chat';
 import { type Channel } from '@/types';
 import {types} from "sass";
-import Boolean = types.Boolean;
 import axios from "axios";
 import { socket } from '@/socket';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
+const emit = defineEmits(['click']);
 
 
 const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
@@ -20,8 +20,9 @@ const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.me
 })).data;
 
 // Props
- const { channel } = defineProps({
+ const { channel, isPublic } = defineProps({
   channel: Object,
+  isPublic: Boolean 
 });
 
 
@@ -43,18 +44,30 @@ if (channel?.isDm)
 const selectChannel = async () => {
   if (channel && chat)
   {
-    console.log(`Selected: ${channel.id}`);
-    const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
-    if (newChannel)
+    if(!isPublic)
     {
-      console.log(newChannel.id);
-     if (channel?.id)
-        socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
-      await channelStore.setChannel(newChannel);
-      socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     console.log(`Selected: ${channel.id}`);
+     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
+     if (newChannel)
+     {
+        console.log(newChannel.id);
+        if (channel?.id)
+         socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
+        await channelStore.setChannel(newChannel);
+        socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     }
+     // console.log(channelStore.getMessages);
+     console.log("done");
     }
-    // console.log(channelStore.getMessages);
-    console.log("done");
+    else
+    {
+      console.log("PUBLIC " + channel?.id);
+      const emitInfo: any = {id: channel?.id, hasPass: await channelStore?.hasPassFromId(channel?.id)}
+      console.log(emitInfo.id);
+      console.log(emitInfo.hasPass);
+      console.log(emitInfo);
+      emit('click', emitInfo)
+    }
   }
 }
 // State for context menu and EditChannel modal
