@@ -40,12 +40,12 @@ export class MatchController {
 		res.json(response);
   }
   
-//   @Get('get')
-//   async getMatch(@Res() res: Response) {
-// 	console.log("Get /match");
-//     const messages = await this.matchService.findAll();
-//     res.json(messages);
-//   }
+  @Get('get')
+  async getMatch(@Res() res: Response) {
+	// console.log("Get /match");
+    const messages = await this.matchService.findAll();
+    res.json(messages);
+  }
 
 //   @Get('add')
 //     async addMatch(@Res() res: Response, @Query() query: newMatchDto) {
