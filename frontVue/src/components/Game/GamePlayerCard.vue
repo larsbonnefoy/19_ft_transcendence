@@ -77,8 +77,9 @@ await getUserInfo();
 
 <style scoped>
 img {
-    max-width: 10vw;
-    height: auto;
+    height: fit-content;
+    width: 15vw;
+    border-radius: 10%;
 }
 
 .textDisplay {

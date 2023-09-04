@@ -39,7 +39,7 @@ onMounted(async () => {
 <template>
     <h2 style="text-align: center; " class="m-5">Game history </h2>
     <div v-if="isLoaded"> <!-- display only if login has been fetch-->
-        <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
+        <div  v-if="succesReqHistory" class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
             <template v-for="(game, index) in games.slice().reverse()" :key="index">
                 <Game :game-prop="game" :login-prop="login" :username-prop="props.usernameProp"> </Game>
             </template>
