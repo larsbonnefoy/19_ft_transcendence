@@ -108,15 +108,18 @@ export class ChatController {
         {
             let messages : ChatMessage[] = [];    
             const tmp: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            // console.log("yoo: " );
-            // console.log(user.blocked_users);
+            console.log(tmp);
+            console.log("yoo: " );
+            console.log(user.blocked_users);
 		    for (let message  of tmp) {
 			    if (!user.blocked_users.find((it) =>{return (it === message.user.login42)}))
                 {
 				    messages.push(message)
                 }
             }
-            // console.log(messages);
+
+            console.log(messages);
+            
             res.status(200).json(messages).send();
             return;
         }

@@ -98,7 +98,7 @@ export class ChatService
 
 	async getMessagesByRoom(roomId: number) : Promise<ChatMessage[] | null>
 	{
-		return await this.chatMessageRepository.find({ relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true, name: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
+		return await this.chatMessageRepository.find({order: {id: "ASC"}, relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true, name: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
 	}
 	
 	async getMessagesByUser(userId: string) : Promise<ChatMessage[] | null>
