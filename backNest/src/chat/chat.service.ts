@@ -58,6 +58,14 @@ export class ChatService
 			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true, photo: true}, isDm: true, owner: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})));
 		return chats;
 	}
+	async getUsers(roomId: number)
+	{
+		let tmp: User[] = [];
+		const chat: Chat =  await this.chatRepository.findOne({relations: {owner: true, chatters: true, admins: true, mutes: true}, where : {id: roomId}, select: {owner: {login42: true}, admins: {login42: true}, chatters: {login42: true}, mutes: {login42: true}}});
+		console.log(chat);
+		const users : User[] = tmp.concat(chat.owner, chat.admins, chat.chatters);
+		return (users);
+	}
   	findOne(roomId: number): Promise<Chat | null> {
    	 	return this.chatRepository.findOneBy({id: roomId});
   	}

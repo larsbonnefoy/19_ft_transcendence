@@ -106,8 +106,17 @@ export class ChatController {
             || await this.chatService.isOwner(roomId, user) 
             || await this.chatService.isChatter(roomId, user))
         {
-            const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            // console.log("yoo: " + messages);
+            let messages : ChatMessage[] = [];    
+            const tmp: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
+            // console.log("yoo: " );
+            // console.log(user.blocked_users);
+		    for (let message  of tmp) {
+			    if (!user.blocked_users.find((it) =>{return (it === message.user.login42)}))
+                {
+				    messages.push(message)
+                }
+            }
+            // console.log(messages);
             res.status(200).json(messages).send();
             return;
         }
