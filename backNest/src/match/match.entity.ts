@@ -65,6 +65,8 @@ export class Game {
   public score1 : number = 0;
   private bounce0 : number = 0;
   private bounce1 : number = 0;
+  private b0time : number = new Date().getTime();
+  private b1time : number = new Date().getTime();
   public leftPaddle = {
     x : 2 * ballRadius,
     y : canvasHeight / 2,
@@ -166,12 +168,13 @@ export class Game {
     if (this.ballCollisionObstacle(this.leftPaddle)) {
         this.ball.speedy = (this.ball.y - this.leftPaddle.y) * (this.ball.speed - 2) / (this.leftPaddle.height / 2);
         (this.ball.x > this.leftPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
-        if (+this.state === states.ONGOING) {
+        if (+this.state === states.ONGOING && new Date().getTime() - this.b0time > 100) {
           this.bounce0++;
+		  this.b0time = new Date().getTime();
           this.bounce1 = 0;
-          const user = await userService.findOne(this.player0);
-          if (+this.bounce0 >= 5 && user) {
-            if (!(user.achievements & 2048)) {
+          if (+this.bounce0 >= 5) {
+			const user = await userService.findOne(this.player0);
+            if (user && !(user.achievements & 2048)) {
               userService.addAchievement(user.login42, +user.achievements + 2048, 2048);
             }
           }
@@ -179,12 +182,13 @@ export class Game {
     } else if (this.ballCollisionObstacle(this.rightPaddle)) {
         this.ball.speedy = (this.ball.y - this.rightPaddle.y) * (this.ball.speed - 2) / (this.rightPaddle.height / 2);
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
-        if (+this.state === states.ONGOING) {
+        if (+this.state === states.ONGOING && new Date().getTime() - this.b1time > 100) {
           this.bounce1++;
+		  this.b1time = new Date().getTime();
           this.bounce0 = 0;
-          const user = await userService.findOne(this.player1);
-          if (+this.bounce1 >= 5 && user) {
-            if (!(user.achievements & 2048)) {
+          if (+this.bounce1 >= 5) {
+			const user = await userService.findOne(this.player1);
+            if (user && !(user.achievements & 2048)) {
               userService.addAchievement(user.login42, +user.achievements + 2048, 2048);
             }
           }
