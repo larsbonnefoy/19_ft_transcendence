@@ -119,6 +119,16 @@ const achievementList: Achievement[] = [
 		current: -1,
         max: 1,
     },
+    {
+		name: "Is this multiplayer ?",
+		imageUrl: "../../../assets/Achievements/touch5.png",
+		description: "Hit the ball 5 times in a row without your opponent hitting it once",
+		progress: () => {
+			return props.userProp.achievements & 2048 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
 	{
 		name: "Telekinesis",
 		imageUrl: "../../../assets/Achievements/telekinesis.png",

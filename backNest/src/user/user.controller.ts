@@ -239,8 +239,8 @@ export class UserController {
     for (let reverse_pending of user_1.pending) {
       if (reverse_pending === user_2.login42) {
         await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
-        await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
-        await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+        await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42, user_2.username);
+        await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42, user_1.username);
         if (!(user_1.achievements & 8))
           await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
         if (!(user_2.achievements & 8))
@@ -249,7 +249,7 @@ export class UserController {
         return ;
       }
     }
-    await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
+    await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42, user_1.username);
     res.json({"success":`${user_1.login42} sent friend request to ${friendLogin}`});
     return ;
   }
@@ -321,8 +321,8 @@ export class UserController {
       return ;
     }
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
-    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
-    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42, user_2.username);
+    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42, user_1.username);
 	if (!(user_1.achievements & 8))
 		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
 	if (!(user_2.achievements & 8))
