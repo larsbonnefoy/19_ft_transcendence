@@ -28,8 +28,9 @@ export class UserService {
 	await this.userRepository.update(login42, {photo: avatar});
   }
   
-  async add_pending(login42: string, current_pending_list: string[], friend: string) {
+  async add_pending(login42: string, current_pending_list: string[], friend: string, friend_username) {
     current_pending_list.push(friend);
+    this.achievementGateway.server.to(login42).emit('warningToast', friend_username + " wants to be your friend");
     await this.userRepository.update(login42, {pending:current_pending_list});
   }
   
@@ -56,8 +57,9 @@ export class UserService {
     await this.userRepository.update(login42, {pending:new_blocked_users});
   }
 
-  async add_friend(login42: string, current_friend_list: string[], friend: string) {
+  async add_friend(login42: string, current_friend_list: string[], friend: string, friend_username: string) {
     current_friend_list.push(friend);
+    this.achievementGateway.server.to(login42).emit('succesToast', "New friend: " + friend_username);
     await this.userRepository.update(login42, {friends:current_friend_list});
   }
 
@@ -74,7 +76,7 @@ export class UserService {
     console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
 	if (+win === 50) {
-		this.achievementGateway.server.to(login42).emit('achievement', "Master");
+		this.achievementGateway.server.to(login42).emit('succesToast', "New achievement: Master");
 		this.achievementGateway.server.to(login42).emit('achievementUpdate');
 	}
   }
@@ -128,7 +130,7 @@ export class UserService {
       default:
         message = "New";
     }
-    this.achievementGateway.server.to(login42).emit('achievement', message);
+    this.achievementGateway.server.to(login42).emit('succesToast', "New achievement: " + message);
     this.achievementGateway.server.to(login42).emit('achievementUpdate');
   }
 

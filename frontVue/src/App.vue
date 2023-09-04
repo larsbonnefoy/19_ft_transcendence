@@ -46,9 +46,26 @@ socket.on("challengeAccepted", () => {
     router.push('/game');
 });
 
-socket.on('achievement', (message: string) => {
+socket.on('succesToast', (message: string) => {
 	const toast = useToast();
-	toast.success("New achievement: " + message, {
+	toast.success(message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+
+socket.on('warningToast', (message: string) => {
+	const toast = useToast();
+	toast.warning(message, {
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,
@@ -102,7 +119,8 @@ console.log("App.vue loaded");
 onUnmounted(async () => {
 	socket.off('gameNotification');
 	socket.off('challengeAccepted');
-	socket.off('achievement');
+	socket.off('succesToast');
+	socket.off('warningToast');
 	socket.off('warning');
 	socket.off('messageToast');
 	console.log("App.vue unmounted");

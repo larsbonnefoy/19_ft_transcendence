@@ -129,7 +129,7 @@ export class MatchGateway {
             break ;
         }
         if (message !== "") {
-          this.server.to(p1.login42).emit('achievement', message);
+          this.server.to(p1.login42).emit('succesToast', "New achievement: " + message);
           this.server.to(p1.login42).emit('achievementUpdate');
         }
         games_played = +p2.win + (+p2.loss) + 1;
@@ -146,7 +146,7 @@ export class MatchGateway {
             break ;
         }
         if (message !== "") {
-          this.server.to(p2.login42).emit('achievement', message);
+          this.server.to(p2.login42).emit('succesToast', "New achievement: " + message);
           this.server.to(p2.login42).emit('achievementUpdate');
         }
         nMatch.gMode = game.gMode;
