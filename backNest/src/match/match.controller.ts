@@ -49,7 +49,7 @@ export class MatchController {
     let index: number = 0;
     for (let match of games.slice().reverse()) {
       if (index >= start) {
-        if (index > +start + 10) {
+        if (index >= +start + 10) {
           break ;
         }
         response.push(match);
