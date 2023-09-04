@@ -5,16 +5,32 @@ import { useToast } from "vue-toastification";
 import { useRouter } from 'vue-router';
 import { socket } from './socket';
 import { onUnmounted } from 'vue';
+import axios from 'axios';
 
-window.addEventListener("beforeunload", leavingApp);
-
-// const store = useUserStore();
+const store = useUserStore();
 const router = useRouter();
 
-async function leavingApp() {
-//   if (store.getUser != null) {
-//     store.setStatus("offline");
-//   }
+let liveGames: any = Array(0);
+
+
+async function isInGame():Promise<boolean> {
+    try {
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/startingOngoingGames`);
+        liveGames = res.data;
+		// console.log(liveGames.length);
+		if (liveGames.length != 0 ) {
+			// console.log(liveGames);
+			for (let games of liveGames) {
+				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
+					return true;
+				}
+			}
+		}
+    }
+    catch(error:any) {
+        console.log(error.message + ": Pb loading ongoing games")
+    }
+	return false;
 }
 
 socket.on('gameNotification', (origin: any) => {
@@ -80,7 +96,10 @@ socket.on('warning', (message: string) => {
     });
 });
 
-socket.on('messageToast', (data: any) => {
+socket.on('messageToast', async (data: any) => {
+	if (await isInGame()) {
+		return ;
+	}
 	const toast = useToast();
 	toast.info(data.from + ": " + data.message, {
 		timeout: 5000,
