@@ -4,6 +4,7 @@ import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
+import { toHandlers } from 'vue';
 
 @Injectable()
 export class ChatService 
@@ -23,6 +24,29 @@ export class ChatService
 	async all(): Promise<Chat[]>
 	{
 		return this.chatRepository.find();
+	}
+
+	async getDmWith(me: string, target: string) : Promise<Chat | null>
+	{
+		const chats1 = await this.chatRepository.find({
+			relations: {chatters: true, owner: true},
+			where: {chatters: {login42: me}, isDm: true},
+			select: {owner: {login42: true}}
+		});
+		const chats2 = await this.chatRepository.find({
+			relations: {chatters: true, owner: true},
+			where: {chatters: {login42: target}, isDm: true},
+			select: {owner: {login42: true}}
+		});
+		const chat1 = chats1.find((it)=> {return (it.owner.login42 === target)})
+		const chat2 = chats2.find((it)=> {return (it.owner.login42 === me)})
+		console.log(chat1);
+		console.log(chat2);
+		if (chat1)	
+			return chat1;
+		if (chat2)	
+			return chat2;
+		return null
 	}
    	async findPublic(login42: string): Promise<Chat[]>
    	{

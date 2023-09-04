@@ -25,14 +25,27 @@ const addUser = async () => {
   errorMessage.value = '';
   if (messageType.value === 'Direct Messages') {
     addedUsers.value = [];
-    addedUsers.value = [userInput.value];
     try 
     {
       await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+      const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+      if (check)
+      {
+        errorMessage.value = "Room already exist";
+        addedUsers.value = [];
+        return;
+      }
+      addedUsers.value = [userInput.value];
     }
-    catch
+    catch (error)
     {
-      errorMessage.value = "Unknown user"
+      errorMessage.value = "Unknown user";
       addedUsers.value = [];
       // userInput.value = '';
       return;

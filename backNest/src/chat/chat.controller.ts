@@ -84,6 +84,14 @@ export class ChatController {
     }
 
     @UseGuards(AuthGuard)
+    @Post('getDmWith')
+    async getDmWith(@Request() req: any, @Body() body: string) 
+    {
+        console.log("getDmWith");
+        return (await this.chatService.getDmWith(req.user, body['target']));
+    }
+
+    @UseGuards(AuthGuard)
     @Post('getMessages')
     async getMessages(@Request() req: any, @Body() body: roomDto, @Res({ passthrough: true }) res: any)
     {
