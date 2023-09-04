@@ -28,14 +28,14 @@ const addUser = async () => {
     try 
     {
       await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
-      const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput},
+      const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput.value},
                  {
                     headers: 
                     {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-      if (check)
+      if (check.data)
       {
         errorMessage.value = "Room already exist";
         addedUsers.value = [];

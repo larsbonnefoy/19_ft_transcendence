@@ -38,10 +38,12 @@ export class ChatService
 			where: {chatters: {login42: target}, isDm: true},
 			select: {owner: {login42: true}}
 		});
+		// console.log(chats1);
+		// console.log(chats2);
 		const chat1 = chats1.find((it)=> {return (it.owner.login42 === target)})
 		const chat2 = chats2.find((it)=> {return (it.owner.login42 === me)})
-		console.log(chat1);
-		console.log(chat2);
+		// console.log(chat1);
+		// console.log(chat2);
 		if (chat1)	
 			return chat1;
 		if (chat2)	
