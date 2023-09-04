@@ -62,7 +62,20 @@ await setUserOpponent();
     <div class="card-body textDisplay p-0 m-3">
         <div class="row">
         <div class="col-2"><span class="">{{ gMode }}</span></div>
-        <div class="col-4 p-0"> <span class="eloDisplay mx-1">({{ player0.elo}}) </span> {{ player0.username }} </div>
+        <div class="col-4 p-0"> 
+            <span class="eloDisplay mx-1">({{ player0.elo}}) </span> 
+            <router-link
+                    :to="{
+                        name:'profile',
+                        params: {
+                            username: player0.username
+                        }
+                    }"
+                class="linkDisplay"
+                >
+                {{ player0.username }} 
+                </router-link>
+           </div>
         <!-- <div class="col-1 scoreDisplay"> {{ user.score }} </div> -->
         <div v-if="player0Won" class="col-2 p-0">
 			<span class="eloDisplay gameWon mx-1">{{ player0.score}} </span> <span class="eloDisplay gameLost mx-1">{{ player1.score}} </span>
@@ -70,12 +83,36 @@ await setUserOpponent();
         <div v-else class="col-2 p-0"> 
 			<span class="eloDisplay gameLost mx-1">{{ player0.score}} </span> <span class="eloDisplay gameWon mx-1">{{ player1.score}} </span>
 		</div>
-        <div class="col-4 p-0"> {{ player1.username }} <span class="eloDisplay mx-1">({{ player1.elo}}) </span></div>
+        <div class="col-4 p-0">
+                <router-link
+                    :to="{
+                        name:'profile',
+                        params: {
+                            username: player1.username
+                        }
+                    }"
+                class="linkDisplay"
+                >
+                {{ player1.username }} 
+                </router-link>
+            <span class="eloDisplay mx-1">({{ player1.elo}}) </span>
+        </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+.linkDisplay {
+    text-decoration: none;
+    color : white;
+}
+
+.linkDisplay:hover {
+    color : grey;
+}
+
+
 .textDisplay {
     font-size: large;
     font-weight: bolder;
