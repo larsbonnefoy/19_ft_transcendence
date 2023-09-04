@@ -592,6 +592,13 @@ export class UserController {
   @Get('avatar:imgpath')
   seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
 	// console.log("get for image %s", image.slice(1));
-	res.sendFile(image.slice(1), {root: 'uploads'});
+	fs.access("uploads/" + image.slice(1), (err) => {
+		if (err) {
+			console.log("file uploads/" + image.slice(1) + " not found");
+			res.status(404).json({error:"file not found"});
+			return ;
+		}
+		res.sendFile(image.slice(1), {root: 'uploads'});
+	});
   }
 }

@@ -16,10 +16,7 @@ My todo:
 			+ 
 - id in user?
 - check cancel pending of lars
-- update achievements when changename, like for games of lars
 - type-check
-- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
-- if gmode all first + hard second not together ?
 - si server reload, they don't join their personal room until they refresh their page .. will not happen in prod though
 
 
@@ -61,7 +58,7 @@ list of .env content:
 
 
 
-my done:
+Done:
 - elo modif like chess
 - status can be changed
 - photos <==  https://stackoverflow.com/questions/37510801/convert-octet-stream-to-image
@@ -75,6 +72,9 @@ my done:
 - sensi palettes
 - obstacles in games
 - sort members by alpha
+- update achievements when changename, like for games of lars
+- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
+- if gmode all first + hard second not together ?
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1
