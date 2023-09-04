@@ -206,7 +206,7 @@ function init() {
             color = "white";
         ctx.fillStyle = color;
 
-        if (+response.gMode === 1 || +response.gMode === 2) {
+        if (+response.gMode === 1 || +response.gMode === 2 || +response.gMode === 3) {
             ctx.beginPath();
             ctx.rect(response.obstacle0.x - response.obstacle0.width / 2, response.obstacle0.y - response.obstacle0.height / 2, response.obstacle0.width, response.obstacle0.height);
             ctx.fill();
@@ -251,9 +251,18 @@ function redrawAll() {
 		return ;
 	}
     if (key === key_up || key === key_w) {
-        socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        console.log((player1Login.value === "Player2" || player1Login.value === ""));
+        if (player1Login.value === "Player2" || player1Login.value === "") {
+            socket.emit("updateBothPaddles", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        } else {
+            socket.emit("updatePaddle", {dir: -1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        }
     } else if (key === key_down || key === key_s) {
-        socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        if (player1Login.value === "Player2" || player1Login.value === "") {
+            socket.emit("updateBothPaddles", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        } else {
+            socket.emit("updatePaddle", {dir: 1 * sensi, roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
+        }
     }
     socket.emit('display', roomIndex);
 }

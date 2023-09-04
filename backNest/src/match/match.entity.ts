@@ -130,7 +130,7 @@ export class Game {
   }
 
   updateBall(deltaTime : number) : void {
-	if (this.state !== states.ONGOING || +this.timeOut >= 0)
+	if (this.state === states.ENDED || +this.timeOut >= 0)
 		return ;
     this.ball.x += this.ball.speedx * (deltaTime / 20);
     if (this.ball.x > canvasWidth + this.ball.radius) {
@@ -138,7 +138,7 @@ export class Game {
         //   this.ball.speedx *= -1;
 		this.resetPositions();
         ++this.score0;
-        if (this.score0 >= 10 && this.score0 - this.score1 > 1) {
+        if (this.state === states.ONGOING && this.score0 >= 10 && this.score0 - this.score1 > 1) {
           this.state = states.ENDED;
           return ;
         }
@@ -147,7 +147,7 @@ export class Game {
         //   this.ball.speedx *= -1;
 		this.resetPositions();
         ++this.score1;
-        if (this.score1 >= 10 && this.score1 - this.score0 > 1) {
+        if (this.state === states.ONGOING && this.score1 >= 10 && this.score1 - this.score0 > 1) {
           this.state = states.ENDED;
           return ;
         }
@@ -166,7 +166,7 @@ export class Game {
     } else if (this.ballCollisionObstacle(this.rightPaddle)) {
         this.ball.speedy = (this.ball.y - this.rightPaddle.y) * (this.ball.speed - 2) / (this.rightPaddle.height / 2);
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
-    } else if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.RANDOM) {
+    } else if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.RANDOM || +this.gMode === game_mode.BOTH) {
       if (this.ballCollisionObstacle(this.obstacle0)) {
         this.bounceObstacle(this.obstacle0);
       } else if (this.ballCollisionObstacle(this.obstacle1)) {
@@ -176,7 +176,7 @@ export class Game {
   }
 
   updateObstacle(o : any, deltaTime : number) : void {
-    if (+this.gMode === game_mode.OBSTACLES) {
+    if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.BOTH) {
       switch (o.dir) {
         case 0:
           o.x += 2 * (deltaTime / 20);
@@ -223,6 +223,25 @@ export class Game {
 
     this.leftPaddle.y = canvasHeight / 2;
     this.rightPaddle.y = canvasHeight / 2;
+  }
+
+  launchGame() : void {
+    this.resetPositions();
+    this.startDirection = 1;
+    this.obstacle0.x = canvasWidth / 2;
+    this.obstacle0.y = canvasHeight / 4;
+    this.obstacle0.dir = 2;
+    this.obstacle0.target = {x: canvasWidth / 2, y : canvasHeight / 4, speedx: 0, speedy: 0};
+    this.obstacle1.x = canvasWidth / 2;
+    this.obstacle1.y = 3 * canvasHeight / 4;
+    this.obstacle1.dir = 0;
+    this.obstacle1.target = {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0};
+    this.move0 = false;
+    this.move1 = false;
+    this.score0 = 0;
+    this.score1 = 0;
+    this.timeOut = 3000;
+    this.lastTimeStamp = new Date().getTime();
   }
 
   resetGame() : void {

@@ -77,6 +77,22 @@ export class MatchGateway {
       game.updateRightPaddle(data.dir);
   }
 
+  @SubscribeMessage('updateBothPaddles')
+  async computeBothPaddles(@MessageBody() data: {dir: number, roomIndex: number, token: string}) {
+    if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	  	return ;
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+    const game: Game = games[data.roomIndex];
+    game.updateLeftPaddle(data.dir);
+    game.updateRightPaddle(data.dir);
+  }
+
   @SubscribeMessage('display')
   async display(@MessageBody() roomIndex: number) {
 	if (+roomIndex < 0 || +roomIndex >= games.length)
@@ -243,8 +259,7 @@ export class MatchGateway {
               game.gMode = data.mode;
           }
           game.player1 = login42;
-          game.lastTimeStamp = new Date().getTime();
-          game.timeOut = 3000;
+          game.launchGame();
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomIndex);
           console.log(login42 + ": second joins " + roomName);
