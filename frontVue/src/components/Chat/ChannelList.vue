@@ -9,12 +9,7 @@ import { socket } from '@/socket';
 const chat = useChatStore();
 const emit = defineEmits(["channel-selected"]);
 
-
-
 await chat.fetchChannels();
-// console.log("FUNCTION ? "+ chat.getChannels);
-
-
 
 const searchTerm = ref('');
 const showSearchBar = ref(false);
@@ -27,7 +22,13 @@ const toggleSearchBar = () => {
 const currentView = ref('private');
 
 const toggleView = () => {
-  currentView.value = currentView.value === 'private' ? 'channels' : 'private';
+  if (currentView.value === 'private') {
+    currentView.value = 'channels';
+  } else if (currentView.value === 'channels') {
+    currentView.value = 'public-group';
+  } else {
+    currentView.value = 'private';
+  }
 };
 
 async function handleSelected(id: number)
@@ -36,15 +37,19 @@ async function handleSelected(id: number)
   emit('channel-selected', id);
 }
 
-
 </script>
-
 
 <template>
   <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
-      <h3 @click="toggleView">{{ currentView === 'private' ? 'Direct Messages' : 'Channels' }}</h3>
+      <h3 @click="toggleView">
+        {{
+          currentView === 'private' ? 'Private Messages' : 
+          currentView === 'channels' ? 'Public Groups' : 
+          'Private Groups'
+        }}
+      </h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
       <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
     </div>
@@ -78,7 +83,6 @@ async function handleSelected(id: number)
    
     	</div>
     </div>
-
   </div>
 </template>
 
