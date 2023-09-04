@@ -71,13 +71,13 @@ const achievementList: Achievement[] = [
     {
         name: "Master",
         imageUrl: "../../../assets/Achievements/100games.png",
-        description: "Win 100 games",
+        description: "Win 50 games",
         progress: () => {
-            const val = (props.userProp.win * 1) / 100
+            const val = (props.userProp.win * 1) / 50
             return val < 1 ? val : 1;
         },
 		current: props.userProp.win * 1,
-        max: 100,  
+        max: 50,  
     },
     {
         name: "Incognito",
