@@ -69,9 +69,12 @@ const sendMessage = async () => {
       // autoScroll();
     // });
   // }
-  await channel.addMessage(newMessage.value);
-  socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
-  newMessage.value = "";
+  if (newMessage.value && newMessage.value.trim().length !== 0)
+  {
+    await channel.addMessage(newMessage.value);
+    socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
+  }
+    newMessage.value = "";
 };
 
 const autoScroll = () => {
@@ -100,7 +103,8 @@ onMounted(async () => {
 })
 
 onUnmounted(async () => {
-  socket.off("privateMessage");
+  socket.emit("leaveChannel",{target: channel.getId, token: localStorage.getItem('jwt_token')});
+  socket.off("getMessage");
 });
 
 </script>

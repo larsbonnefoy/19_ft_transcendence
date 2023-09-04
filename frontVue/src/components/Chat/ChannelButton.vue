@@ -25,7 +25,7 @@ const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.me
 
 function getDmChatter()
 {
-  if(channel?.chatters[0])
+  if(channel?.chatters)
   {
     console.log("getDm: " + channel.chatters[0]?.username + " " + me + " "  +  channel.owner?.login42)
     if (channel.chatters[0]?.login42 === me)
