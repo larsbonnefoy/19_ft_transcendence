@@ -133,6 +133,7 @@ export class MatchGateway {
 			this.server.to(p2.login42).emit('achievement', message);
 			this.server.to(p2.login42).emit('achievementUpdate');
 		}
+    nMatch.gMode = game.gMode;
 		nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;

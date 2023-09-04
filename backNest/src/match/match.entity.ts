@@ -6,6 +6,9 @@ export class Match {
   id: number;
 
   @Column()
+  gMode: number
+
+  @Column()
   player1: string;
   
   @Column()

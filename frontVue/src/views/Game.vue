@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Canvas from '@/components/Game/Canvas.vue';
 import Actions from '@/components/Game/Actions.vue'
-import GameHistory from '@/components/GameHistory/GameHistory.vue';
+import GlobalGameHistory from '@/components/Game/GlobalGameHistory.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
@@ -52,7 +52,7 @@ function closeCanvas() {
 	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
 };
 
-socket.on('endGame', (roomIndex) => {
+socket.on('endGame', (roomIndex : number) => {
 	console.log("game ended");
 	displayGame.value = false;
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
@@ -86,9 +86,7 @@ onUnmounted(async () => {
 	<div v-else>
 		<div v-if="windowWidth > 800" class="row" style="max-width: 100vw;">
 			<div v-if="store.getUserName != undefined" class="col-6">
-				<GameHistory
-					:username-prop="store.getUserName"> 
-				</GameHistory>
+				<GlobalGameHistory> </GlobalGameHistory>
     		</div>
 			<div class="col-6">
 				<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
@@ -97,9 +95,7 @@ onUnmounted(async () => {
 		<div v-else class="row">
 			<Actions @watch-game="watchGame()" @play-game="joinGame()"> </Actions>
 			<div v-if="store.getUserName != undefined">
-				<GameHistory
-					:username-prop="store.getUserName"> 
-				</GameHistory>
+				<GlobalGameHistory> </GlobalGameHistory>
 			</div>
 		</div>
 	</div>

@@ -39,13 +39,35 @@ export class MatchController {
 	else
 		res.json(response);
   }
-  
-  @Get('get')
-  async getMatch(@Res() res: Response) {
-	// console.log("Get /match");
-    const messages = await this.matchService.findAll();
-    res.json(messages);
+
+
+  @Get('tenFrom:start')
+  async tenFrom(@Res() res: Response, @Param() params: any) {
+    const games = await this.matchService.findAll();
+    let response: Array<Match> = new Array(0);
+    const start: number = +params.start.slice(1);
+    let index: number = 0;
+    for (let match of games.slice().reverse()) {
+      if (index >= start) {
+        if (index > +start + 10) {
+          break ;
+        }
+        response.push(match);
+      }
+      ++index;
+    }
+    if (response.length == 0)
+      res.status(404).json({error:"No match in range [" + start + ':' + (start + 10) + ']'});
+    else
+      res.json(response);
   }
+  
+//   @Get('get')
+//   async getMatch(@Res() res: Response) {
+// 	console.log("Get /match");
+//     const messages = await this.matchService.findAll();
+//     res.json(messages);
+//   }
 
 //   @Get('add')
 //     async addMatch(@Res() res: Response, @Query() query: newMatchDto) {
