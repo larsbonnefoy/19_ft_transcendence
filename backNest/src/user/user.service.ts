@@ -117,7 +117,7 @@ export class UserService {
 		message = "Telekinesis";
 		break ;
 	  case (256):
-		message = "One of us";
+		message = "Incognhugo";
 		break ;
       default:
         message = "New";

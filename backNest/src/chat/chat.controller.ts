@@ -69,6 +69,13 @@ export class ChatController {
     }
 
     @UseGuards(AuthGuard)
+    @Get('public')
+    async getPublic(@Request() req: any)
+    {
+        console.log("PUBLIC");
+        return (await this.chatService.findPublic(req.user));
+    }
+    @UseGuards(AuthGuard)
     @Get('all')
     async getAll(@Request() req: any) 
     {
@@ -99,8 +106,17 @@ export class ChatController {
             || await this.chatService.isOwner(roomId, user) 
             || await this.chatService.isChatter(roomId, user))
         {
-            const messages: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            // console.log("yoo: " + messages);
+            let messages : ChatMessage[] = [];    
+            const tmp: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
+            // console.log("yoo: " );
+            // console.log(user.blocked_users);
+		    for (let message  of tmp) {
+			    if (!user.blocked_users.find((it) =>{return (it === message.user.login42)}))
+                {
+				    messages.push(message)
+                }
+            }
+            // console.log(messages);
             res.status(200).json(messages).send();
             return;
         }
@@ -140,13 +156,14 @@ export class ChatController {
                 try
                 {
 		            const newChatter: User = await this.userService.findUsername(username);
-                    this.chatService.addChatter(chat.id, newChatter);
+                    await this.chatService.addChatter(chat.id, newChatter);
                 }
                 catch
                 {
 
                 }
             }
+           chat.chatters = await this.chatService.getChatters(chat.id);
         	await res.status(200).json(chat).send();
 		// }
 		// else

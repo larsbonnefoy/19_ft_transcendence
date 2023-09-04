@@ -80,12 +80,31 @@ socket.on('warning', (message: string) => {
     });
 });
 
+socket.on('messageToast', (data: any) => {
+	const toast = useToast();
+	toast.info(data.from + ": " + data.message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+
 console.log("App.vue loaded");
 
 onUnmounted(async () => {
 	socket.off('gameNotification');
 	socket.off('challengeAccepted');
 	socket.off('achievement');
+	socket.off('warning');
+	socket.off('messageToast');
 	console.log("App.vue unmounted");
 });
 </script>
