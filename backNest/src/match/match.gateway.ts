@@ -99,42 +99,42 @@ export class MatchGateway {
 		      game.resetGame();
           return ;
         }
-		let games_played : number = +p1.win + (+p1.loss) + 1;
-		let message : string = "";
-		switch (games_played) {
-			case (1):
-				message = "Getting Started";
-				break ;
-			case (19):
-				message = "Lifeguard";
-				break ;
-			case (42):
-				message = "Welcome to the Jar";
-				break ;
-		}
-		if (message !== "") {
-			this.server.to(p1.login42).emit('achievement', message);
-			this.server.to(p1.login42).emit('achievementUpdate');
-		}
-		games_played = +p2.win + (+p2.loss) + 1;
-		message = "";
-		switch (games_played) {
-			case (1):
-				message = "Getting Started";
-				break ;
-			case (19):
-				message = "Lifeguard";
-				break ;
-			case (42):
-				message = "Welcome to the Jar";
-				break ;
-		}
-		if (message !== "") {
-			this.server.to(p2.login42).emit('achievement', message);
-			this.server.to(p2.login42).emit('achievementUpdate');
-		}
-    nMatch.gMode = game.gMode;
-		nMatch.player1 = p1.login42;
+        let games_played : number = +p1.win + (+p1.loss) + 1;
+        let message : string = "";
+        switch (games_played) {
+          case (1):
+            message = "Getting Started";
+            break ;
+          case (19):
+            message = "Lifeguard";
+            break ;
+          case (42):
+            message = "Welcome to the Jar";
+            break ;
+        }
+        if (message !== "") {
+          this.server.to(p1.login42).emit('achievement', message);
+          this.server.to(p1.login42).emit('achievementUpdate');
+        }
+        games_played = +p2.win + (+p2.loss) + 1;
+        message = "";
+        switch (games_played) {
+          case (1):
+            message = "Getting Started";
+            break ;
+          case (19):
+            message = "Lifeguard";
+            break ;
+          case (42):
+            message = "Welcome to the Jar";
+            break ;
+        }
+        if (message !== "") {
+          this.server.to(p2.login42).emit('achievement', message);
+          this.server.to(p2.login42).emit('achievementUpdate');
+        }
+        nMatch.gMode = game.gMode;
+        nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;
         nMatch.score2 = game.score1;
@@ -150,12 +150,12 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
           console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
-		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
-			await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
-		  }
-		  if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
-			await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
-		  }
+          if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
+          }
+          if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
+          }
         }
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
@@ -168,12 +168,24 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
           console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
-		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
-			await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
-		  }
-		  if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
-			await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
-		  }
+          if (+game.score0 === 0 && !(p2.achievements & 4)) {
+            await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
+          }
+          if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
+            await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
+          }
+        }
+        if (+game.score0 >= 20 && !(p1.achievements & 512)) { //Double The Trouble
+          await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
+          if (+game.score1 > +game.score0 && !(p1.achievements & 1024)) { //All for nothing
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 1024, 1024);
+          }
+        }
+        if (+game.score1 >= 20 && !(p2.achievements & 512)) { //Double The Trouble
+          await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
+          if (+game.score0 > +game.score1 && !(p2.achievements & 1024)) { //All for nothing
+            await this.userService.addAchievement(p2.login42, +p2.achievements + 1024, 1024);
+          }
         }
         await this.matchService.createMatch(nMatch);
         game.resetGame();

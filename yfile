@@ -86,6 +86,8 @@ Done:
 			- G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this) & 64
 			- Telekinesis : win a game without moving					   & 128
 			- One of use : Your username seems familiar..				   & 256
+			- Double The Trouble: finish a game with more than 20 points   & 512
+			- All for nothing:   lose a game with more than 20 points      & 1024
 
 ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 
