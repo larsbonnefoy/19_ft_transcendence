@@ -8,10 +8,16 @@ const props = defineProps<{
     userProp: UserInfo
 }>()
 
+const emit = defineEmits(['toggleFriendDisplay']);
+
 const displayAll = ref(false);
 
 function toggleAchDisplay() {
     displayAll.value = !displayAll.value
+}
+
+function toggleFriends() {
+    emit('toggleFriendDisplay');
 }
 
 const progressAchToDisplay = computed(() => {
@@ -167,7 +173,7 @@ const achievementList: Achievement[] = [
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5">Achievements </h2>
+    <h2 style="text-align: center; " class="m-5 HoverTitle" @click="toggleFriends">Achievements </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in gameProgressAchievements" :key="index">
             <div v-if="displayAll">
@@ -185,3 +191,10 @@ const achievementList: Achievement[] = [
         </template>
     </div>
 </template>
+
+<style scoped>
+.HoverTitle:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+</style>

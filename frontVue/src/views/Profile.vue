@@ -5,6 +5,7 @@ import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import AchievementsList from '@/components/Achievements/AchievementsList.vue';
 import Friend from '../components/Socials/Friend.vue';
+import FriendWrapper from '@/components/ProfileDisplay/FriendWrapper.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';
 import {type UserInfo} from '../types'
@@ -17,6 +18,7 @@ let user: UserInfo;
 const foundUser = ref(true);
 let windowWidth = ref(window.innerWidth);
 const achievKey = ref(0); //Each time we need to reload the component the key is changed
+const displayAch = ref(true);
 
 async function getUserInfo() {
     if (route.params.username != store.getUserName) {
@@ -47,6 +49,10 @@ async function getUserInfo() {
     }
 }
 
+function toggleAch() {
+    displayAch.value = !displayAch.value;
+}
+
 watch(
     () => route.params.username, 
     async newId => {
@@ -55,15 +61,10 @@ watch(
     foundUser.value = true;
 })
 
-const hasFriends = computed(() => {
-	console.log(user.friends);
-	return (user.friends.length != 0);
-})
 
 function handleResize() {
 	windowWidth.value = window.innerWidth;
 }
-
 
 socket.on('achievementUpdate', async () => {
 	// console.log("got ach update");
@@ -93,27 +94,20 @@ onUnmounted(async () => {
         <div v-if="windowWidth > 1400" class="row">
             <div class="col-4">
                 <GameHistory :username-prop="user.username"></GameHistory>
-				<div v-if="hasFriends"> 
-					<div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-height: 60vh;">
-						<div class="card-body">
-						<h5 class="card-title">Friends</h5>
-							<template v-for="(friend, index) in user.friends" :key="index">
-								<Friend :login42="friend"></Friend>
-							</template>
-						</div>
-					</div>
-				</div>
-				<div v-else> 
-					<h3 style="text-align: center;"> No Friends </h3>
-				</div>
             </div>
             <div class="col-4 p-0">
                 <ProfileCard :user="user"> </ProfileCard>
             </div>
             <div class="col-4 p-0">
-                <AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
+                <template v-if="displayAch">
+                    <AchievementsList @toggle-friend-display="toggleAch" :key="achievKey" :user-prop="user"> </AchievementsList>
+                </template>
+                <template v-else>
+                    <FriendWrapper  @toggle-friend-display="toggleAch" :use-friend-list=user.friends> </FriendWrapper>
+                </template>
             </div>
         </div>
+
         <div v-else-if="windowWidth > 800" class="row">
             <div class="col-6">
                 <GameHistory :username-prop="user.username"></GameHistory>
