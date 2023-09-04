@@ -127,6 +127,9 @@ export class UserService {
       case (1024):
         message = "All for nothing";
         break ;
+      case (2048):
+        message = "Is this multiplayer ?";
+        break ;
       default:
         message = "New";
     }

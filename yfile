@@ -88,6 +88,7 @@ Done:
 			- One of use : Your username seems familiar..				   & 256
 			- Double The Trouble: finish a game with more than 20 points   & 512
 			- All for nothing:   lose a game with more than 20 points      & 1024
+			- Is this multiplayer ?: Hit the ball 5 times in a row without your opponent hitting it once   & 2048
 
 ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 

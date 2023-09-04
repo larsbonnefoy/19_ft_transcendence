@@ -100,7 +100,7 @@ export class MatchGateway {
     // console.log("display update from room " + roomIndex);
 	const game: Game = games[roomIndex];
     let save_state : states = game.state;
-    game.updateGameArea(new Date().getTime());
+    await game.updateGameArea(new Date().getTime(), this.userService);
     if (game.state === states.ENDED) {
       this.server.to(game.roomName).emit("endGame", roomIndex);
       if (save_state === states.ONGOING) {

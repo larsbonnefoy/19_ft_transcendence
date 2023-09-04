@@ -1,3 +1,4 @@
+import { UserService } from '../user/user.service';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -62,6 +63,8 @@ export class Game {
   public timeOut : number = -1;
   public score0 : number = 0;
   public score1 : number = 0;
+  private bounce0 : number = 0;
+  private bounce1 : number = 0;
   public leftPaddle = {
     x : 2 * ballRadius,
     y : canvasHeight / 2,
@@ -129,7 +132,7 @@ export class Game {
     }
   }
 
-  updateBall(deltaTime : number) : void {
+  async updateBall(deltaTime : number, userService : UserService) : Promise<void> {
 	if (this.state === states.ENDED || +this.timeOut >= 0)
 		return ;
     this.ball.x += this.ball.speedx * (deltaTime / 20);
@@ -163,9 +166,29 @@ export class Game {
     if (this.ballCollisionObstacle(this.leftPaddle)) {
         this.ball.speedy = (this.ball.y - this.leftPaddle.y) * (this.ball.speed - 2) / (this.leftPaddle.height / 2);
         (this.ball.x > this.leftPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
+        if (+this.state === states.ONGOING) {
+          this.bounce0++;
+          this.bounce1 = 0;
+          const user = await userService.findOne(this.player0);
+          if (+this.bounce0 >= 5 && user) {
+            if (!(user.achievements & 2048)) {
+              userService.addAchievement(user.login42, +user.achievements + 2048, 2048);
+            }
+          }
+        }
     } else if (this.ballCollisionObstacle(this.rightPaddle)) {
         this.ball.speedy = (this.ball.y - this.rightPaddle.y) * (this.ball.speed - 2) / (this.rightPaddle.height / 2);
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
+        if (+this.state === states.ONGOING) {
+          this.bounce1++;
+          this.bounce0 = 0;
+          const user = await userService.findOne(this.player1);
+          if (+this.bounce1 >= 5 && user) {
+            if (!(user.achievements & 2048)) {
+              userService.addAchievement(user.login42, +user.achievements + 2048, 2048);
+            }
+          }
+        }
     } else if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.RANDOM || +this.gMode === game_mode.BOTH) {
       if (this.ballCollisionObstacle(this.obstacle0)) {
         this.bounceObstacle(this.obstacle0);
@@ -223,6 +246,9 @@ export class Game {
 
     this.leftPaddle.y = canvasHeight / 2;
     this.rightPaddle.y = canvasHeight / 2;
+
+    this.bounce0 = 0;
+    this.bounce1 = 0;
   }
 
   launchGame() : void {
@@ -240,6 +266,8 @@ export class Game {
     this.move1 = false;
     this.score0 = 0;
     this.score1 = 0;
+    this.bounce0 = 0;
+    this.bounce1 = 0;
     this.timeOut = 3000;
     this.lastTimeStamp = new Date().getTime();
   }
@@ -247,6 +275,8 @@ export class Game {
   resetGame() : void {
     this.score0 = 0;
     this.score1 = 0;
+    this.bounce0 = 0;
+    this.bounce1 = 0;
     this.startDirection = 1;
     this.timeOut = -1;
     this.gMode = game_mode.DEFAULT;
@@ -271,14 +301,14 @@ export class Game {
     this.state = states.STARTING;
   }
 
-  updateGameArea = (newTimeStamp : number) : void => {
+  updateGameArea = async (newTimeStamp : number, userService: UserService) : Promise<void> => {
     if (this.state === states.ENDED)
       return ;
     let deltaTime : number = newTimeStamp - this.lastTimeStamp;
     // console.log(deltaTime + ", new is " + newTimeStamp + ", last is " + this.lastTimeStamp);
     // if (deltaTime > 20) { // TODO analyse if removing this is a good thing or not
       while (deltaTime > 20) {
-        this.updateBall(20);
+        await this.updateBall(20, userService);
         this.updateObstacle(this.obstacle0, 20);
         this.updateObstacle(this.obstacle1, 20);
         deltaTime -= 20;
@@ -286,7 +316,7 @@ export class Game {
 		  this.timeOut -= 20;
 		}
       }
-      this.updateBall(deltaTime);
+      await this.updateBall(deltaTime, userService);
       this.updateObstacle(this.obstacle0, deltaTime);
       this.updateObstacle(this.obstacle1, deltaTime);
       if (+this.timeOut >= 0) {
