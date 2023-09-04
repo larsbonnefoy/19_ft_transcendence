@@ -129,6 +129,26 @@ const achievementList: Achievement[] = [
 		current: -1,
 		max: 1,
 	},
+	{
+		name: "Double The Trouble",
+		imageUrl: "../../../assets/Achievements/finish20.png",
+		description: "Finish a game with more than 20 points",
+		progress: () => {
+			return props.userProp.achievements & 512 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
+	{
+		name: "All For Nothing",
+		imageUrl: "../../../assets/Achievements/lose20.png",
+		description: "Lose a game while having more than 20 points",
+		progress: () => {
+			return props.userProp.achievements & 1024 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",

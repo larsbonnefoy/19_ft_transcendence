@@ -138,16 +138,16 @@ export class Game {
         //   this.ball.speedx *= -1;
 		this.resetPositions();
         ++this.score0;
-        if (this.score0 >= 10) {
-			this.state = states.ENDED;
-			return ;
+        if (this.score0 >= 10 && this.score0 - this.score1 > 1) {
+          this.state = states.ENDED;
+          return ;
         }
 	} else if (this.ball.x < -this.ball.radius) {
 		//   this.ball.x = 2 * this.ball.radius - this.ball.x;
         //   this.ball.speedx *= -1;
 		this.resetPositions();
         ++this.score1;
-        if (this.score1 >= 10) {
+        if (this.score1 >= 10 && this.score1 - this.score0 > 1) {
           this.state = states.ENDED;
           return ;
         }
