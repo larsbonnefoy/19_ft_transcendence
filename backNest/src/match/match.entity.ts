@@ -55,6 +55,7 @@ export class Game {
   public lastTimeStamp : number = new Date().getTime();
   public roomName : string = "room0";
   public gMode : game_mode = game_mode.DEFAULT;
+  public viewers : number = 0;
   public player0 : string = "";
   public move0 : boolean = false;
   public player1 : string = "";
@@ -268,6 +269,7 @@ export class Game {
     this.obstacle1.target = {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0};
     this.move0 = false;
     this.move1 = false;
+    this.viewers = 0;
     this.score0 = 0;
     this.score1 = 0;
     this.bounce0 = 0;
@@ -284,6 +286,7 @@ export class Game {
     this.startDirection = 1;
     this.timeOut = -1;
     this.gMode = game_mode.DEFAULT;
+    this.viewers = 0;
     this.obstacle0.x = canvasWidth / 2;
     this.obstacle0.y = canvasHeight / 4;
     this.obstacle0.dir = 2;

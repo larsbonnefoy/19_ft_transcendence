@@ -318,6 +318,9 @@ export class MatchGateway {
 	  } else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
       let game: Game = games[data.roomIndex];
       console.log(login42 + " leaves " + game.roomName);
+      if (game.player0 !== login42 && game.player1 !== login42 && +game.viewers > 0) { //viewer leaves the room
+        game.viewers--;
+      }
       if (game.state === states.STARTING) {
         game.resetGame();
       }
@@ -352,6 +355,7 @@ export class MatchGateway {
           this.server.to(login42).emit("endGame", roomIndex);
           return ;
         }
+        game.viewers++;
         client.join(data.roomName);
         this.server.to(login42).emit("joinGame", roomIndex);
         console.log(client.id + " joined room " + data.roomName);
