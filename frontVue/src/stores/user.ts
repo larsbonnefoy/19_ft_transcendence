@@ -166,6 +166,9 @@ export const useUserStore = defineStore('user', {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }
         },
+        async blockUser(UsertoBlock: string){
+            
+        },
       },
      persist: false,
   })
