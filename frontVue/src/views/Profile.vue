@@ -111,7 +111,12 @@ onUnmounted(async () => {
         <div v-else-if="windowWidth > 800" class="row">
             <div class="col-6">
                 <GameHistory :username-prop="user.username"></GameHistory>
-				<AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
+				<template v-if="displayAch">
+                    <AchievementsList @toggle-friend-display="toggleAch" :key="achievKey" :user-prop="user"> </AchievementsList>
+                </template>
+                <template v-else>
+                    <FriendWrapper  @toggle-friend-display="toggleAch" :use-friend-list=user.friends> </FriendWrapper>
+                </template>
             </div>
             <div class="col-6 p-0">
                 <ProfileCard :user="user"> </ProfileCard>
@@ -128,7 +133,12 @@ onUnmounted(async () => {
 			</div>
 			<div class="row">
 				<div class="col-12">
-					<AchievementsList :key="achievKey" :user-prop="user"> </AchievementsList>
+					<template v-if="displayAch">
+                        <AchievementsList @toggle-friend-display="toggleAch" :key="achievKey" :user-prop="user"> </AchievementsList>
+                    </template>
+                    <template v-else>
+                        <FriendWrapper  @toggle-friend-display="toggleAch" :use-friend-list=user.friends> </FriendWrapper>
+                    </template>
 				</div>
 			</div>
         </div>
