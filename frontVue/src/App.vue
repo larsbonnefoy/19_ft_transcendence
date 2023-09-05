@@ -12,6 +12,14 @@ const router = useRouter();
 
 let liveGames: any = Array(0);
 
+function isBlocked(login42 : string) : boolean {
+	for (let user of store.getBlocked) {
+		if (user === login42) {
+			return true;
+		}
+	}
+	return false;
+}
 
 async function isInGame():Promise<boolean> {
     try {
@@ -39,6 +47,9 @@ socket.on('gameNotification', (origin: any) => {
         socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
         // router.push({ name: 'game', params: { challenge: 'challenge' } });
     };
+	if (isBlocked(origin.login42)) {
+		return ;
+	}
     const toast = useToast();
 	toast.warning(origin.username + " wants to play !\nClick to join game", {
 		timeout: 5000,
@@ -114,11 +125,11 @@ socket.on('warning', (message: string) => {
 });
 
 socket.on('messageToast', async (data: any) => {
-	if (await isInGame()) {
+	if (await isInGame() || isBlocked(data.from.login42)) {
 		return ;
 	}
 	const toast = useToast();
-	toast.info(data.from + ": " + data.message, {
+	toast.info(data.from.username + ": " + data.message, {
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,
