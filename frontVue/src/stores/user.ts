@@ -11,6 +11,7 @@ export const useUserStore = defineStore('user', {
     getters: {
         getUser: (state): UserInfo | null => state.user,
         getUserName: (state) => state.user?.username,
+        getDisplayLogin: (state) => state.user?.displayLogin,
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
