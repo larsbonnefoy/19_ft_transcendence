@@ -148,6 +148,11 @@ export class UserService {
     console.log(login42 + " is now " + newstatus);
     await this.userRepository.update(login42, {status:newstatus});
   }
+  
+  async set_display_log(login42: string, newValue: boolean) {
+    console.log("displayLog of " + login42 + " is now " + newValue);
+    await this.userRepository.update(login42, {displayLogin:newValue});
+  }
 
   findAll(): Promise<User[]> {
     return this.userRepository.find();

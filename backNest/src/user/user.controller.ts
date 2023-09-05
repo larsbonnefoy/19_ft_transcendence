@@ -10,6 +10,7 @@ import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { responseEncoding } from 'axios';
 
 let userServiceForMethod: UserService;
 
@@ -87,6 +88,19 @@ export class UserController {
     // console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('setDisplayLog:bool')
+  async setDisplayLog(@Request() req: any, @Res() res: Response, @Param() param: any) {
+    const newValue: boolean = param.bool.slice(1) === "true";
+    const user = await this.userService.findOne(req.user);
+    if (user == null) {
+      res.status(404).json({"error":"no user with that login"});
+      return ;
+    }
+    await this.userService.set_display_log(req.user, newValue);
+    res.json({"success":`DisplayLog set to to ${newValue}`});
   }
  
 //   @UseGuards(AuthGuard)
