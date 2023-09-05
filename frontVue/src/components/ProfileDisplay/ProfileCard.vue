@@ -15,7 +15,6 @@ const props = defineProps<{
     user : UserInfo
 }>()
 
-// console.log("profilecard")
 const store = useUserStore();
 
 const activeUser = computed(() => {
@@ -35,6 +34,7 @@ function toggleModProfile() {
 if (props.user.photo === "no photo yet") {
     props.user.photo = "../../../assets/placeholder_avatar.png"
 }
+
 /*
 Should set max lenght of username here
 */

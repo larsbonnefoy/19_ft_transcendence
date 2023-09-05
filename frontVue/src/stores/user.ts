@@ -67,6 +67,9 @@ export const useUserStore = defineStore('user', {
                 }
             }
         },
+        async changeDisplayLogin(value: boolean) {
+            console.log(value);
+        },
         async setName(newUsername:string) {
             if (this.user) {
                     await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/change_username:${newUsername}`, { headers: {token: localStorage.getItem('jwt_token')} });

@@ -17,7 +17,7 @@ export let games : Array<Game> = new Array(0);
 
 @WebSocketGateway({
   cors: {
-    origin: ["http://http://10.2.7.2:5173", "http://localhost:5173"],
+    origin: ["http://http://10.2.8.1:5173", "http://localhost:5173"],
     methods: ["GET", "POST"],
 //      allowedHeaders: ["my-custom-header"],
 //      credentials: true

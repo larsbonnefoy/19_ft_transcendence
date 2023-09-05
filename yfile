@@ -40,11 +40,11 @@ list of .env content:
 		ENC_ALG='aes-256-ctr'
 
 		#NETWORK 
-		LOCAL_IP = "10.2.7.2"
+		LOCAL_IP = "10.2.8.1"
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
-		VITE_LOCAL_IP = "10.2.7.2"  #=localip of machine--> or localhost
+		VITE_LOCAL_IP = "10.2.8.1"  #=localip of machine--> or localhost
 		VITE_BACKEND_PORT = "3000"
 
 -backNest/postgres/.env
