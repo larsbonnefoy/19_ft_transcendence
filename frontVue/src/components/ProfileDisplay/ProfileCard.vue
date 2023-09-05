@@ -5,6 +5,7 @@ import {type UserInfo} from '../../types'
 import AddPendingRemoveButton from './AddPendingRemoveButton.vue';
 import MessageButton from './MessageButton.vue';
 import GameButton from './GameButton.vue';
+import BlockButton from './BlockButton.vue';
 import DoubleAuthButton from './DoubleAuthButton.vue';
 import DisplayLogin from './DisplayLogin.vue';
 import ChangeUsername from './ChangeUsername.vue';
@@ -57,12 +58,13 @@ Should set max lenght of username here
 
                         <!-- Displays only if we are on the current Users page-->
                         <div v-if="!activeUser" class=row>
-                            <div class="m-2">
+                            <div class="my-2">
                                 <AddPendingRemoveButton :pending-user="user"></AddPendingRemoveButton>
                             </div>
-                            <div class="my-4"> 
-                                <GameButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"> </GameButton>
-                                <MessageButton :profile-username="user.username" :profile-login42="user.login42" class="m-2"></MessageButton>
+                            <div class="btn-group text-center my-2">
+                            <GameButton :profile-username="user.username" :profile-login42="user.login42"> </GameButton>
+                            <MessageButton :profile-username="user.username" :profile-login42="user.login42"></MessageButton>
+                            <BlockButton :profile-username="user.username" :profile-login42="user.login42"></BlockButton>
                             </div>
                         </div>
                         
