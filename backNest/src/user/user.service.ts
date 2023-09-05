@@ -51,10 +51,11 @@ export class UserService {
   async unblock_user(login42: string, current_blocked_users: string[], friend: string) {
     let new_blocked_users: Array<string> = new Array(0);
     for (let iter of current_blocked_users) {
-      if (iter != friend)
-      new_blocked_users.push(iter);
+      if (iter != friend) {
+        new_blocked_users.push(iter);
+      }
     }
-    await this.userRepository.update(login42, {pending:new_blocked_users});
+    await this.userRepository.update(login42, {blocked_users:new_blocked_users});
   }
 
   async add_friend(login42: string, current_friend_list: string[], friend: string, friend_username: string) {

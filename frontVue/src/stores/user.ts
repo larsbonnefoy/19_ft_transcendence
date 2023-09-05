@@ -166,8 +166,21 @@ export const useUserStore = defineStore('user', {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }
         },
-        async blockUser(UsertoBlock: string){
-            
+        async blockUser(userToBlock: string){
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/block_user:${userToBlock}`, { headers: {token: localStorage.getItem('jwt_token')} });
+            if (this.user) {
+                this.user.blocked_users.push(userToBlock);
+            }
+        },
+        async unBlockUser(userToUnBlock: string){
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unblock_user:${userToUnBlock}`, { headers: {token: localStorage.getItem('jwt_token')} });
+            console.log("response unBlockUser");
+            console.log(res.data);
+            if (this.user) {
+                this.user.blocked_users = this.user?.blocked_users.filter(name => name !== userToUnBlock);
+                console.log("blocked list");
+                console.log(this.user.blocked_users);
+            }
         },
       },
      persist: false,

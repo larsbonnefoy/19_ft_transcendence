@@ -375,17 +375,17 @@ export class UserController {
   }
   
   @UseGuards(AuthGuard)
-  @Get('block_user:username')
+  @Get('block_user:login42')
   async blockUser(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendlogin42: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendlogin42);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s blocks %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s blocks %s", user_1.login42, friendlogin42);
+    if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -401,37 +401,37 @@ export class UserController {
       return ;
     }
     await this.userService.block_user(user_1.login42, user_1.blocked_users, user_2.login42);
-    res.json({"success":`${user_1.username} blocked ${friendusername}`});
+    res.json({"success":`${user_1.login42} blocked ${friendlogin42}`});
   }
   
   @UseGuards(AuthGuard)
-  @Get('unblock_user:username')
+  @Get('unblock_user:login42')
   async unblockUser(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendlogin42: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendlogin42);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s unblocks %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s unblocks %s", user_1.login42, friendlogin42);
+    if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
-    let notpending: boolean = true;
-    for (let pending of user_1.blocked_users) {
-      if (pending == user_2.login42) {
-        notpending = false;
+    let notblocked: boolean = true;
+    for (let blocked of user_1.blocked_users) {
+      if (blocked == user_2.login42) {
+        notblocked = false;
         break ;
       }
     }
-    if (notpending) {
+    if (notblocked) {
       res.status(404).json({"error":"can't unblock if not blocked in first place"});
       return ;
     }
     await this.userService.unblock_user(user_1.login42, user_1.blocked_users, user_2.login42);
-    res.json({"success":`${user_1.username} unblocked ${friendusername}`});
+    res.json({"success":`${user_1.login42} unblocked ${friendlogin42}`});
   }
   
 //   @UseGuards(AuthGuard)
