@@ -50,6 +50,7 @@ let key: number = 0;
 let roomIndex : number = -1;
 
 const diff = ref(0);
+const viewers = ref(0);
 
 function keyDown(event: any) {
     key = event.keyCode;
@@ -226,6 +227,8 @@ function init() {
         ctx.fillStyle = "white";
         ctx.fillText(response.score0, canvasWidth / 4, canvasHeight / 8);
         ctx.fillText(response.score1, 3 * canvasWidth / 4, canvasHeight / 8);
+        
+        viewers.value = response.viewers;
         if (+response.timeOut >= 0)
             ctx.fillText(Math.ceil(response.timeOut / 1000), canvasWidth / 2 - 7, canvasHeight / 2 - 40);
         
@@ -308,7 +311,15 @@ onUnmounted(async () => {
             </div>
             <div id="canvas-container">
                 <canvas id="gameCanvas"></canvas>
-                <p class="p-0 m-0" style="text-align: center;"> Latency: {{ Math.abs(diff) }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
+                <div class="row">
+                    <div class="col-6">
+                        <p class="p-0 m-0" style="text-align: right;"> Latency: {{ Math.abs(diff) }}ms</p> <!-- Refresh less or ceil value, only display spikes im ms-->
+                    </div>
+                    <div class="col-6">
+                        <p class="p-0 m-0" style="text-align: left;"> Viewers: {{ viewers }}</p> <!-- Refresh less or ceil value, only display spikes im ms-->
+                    </div>
+
+                </div>
             </div>
         </div>
         <div class="col-2" style="display:grid; place-items: center;">
