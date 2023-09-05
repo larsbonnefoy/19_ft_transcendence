@@ -109,6 +109,7 @@ onUnmounted(async () => {
   socket.off("getMessage");
 });
 
+console.log(channel.getId)
 </script>
 
 <template>
@@ -116,8 +117,10 @@ onUnmounted(async () => {
     <!-- Chat header -->
     <div class="chat-header">
       <span class="channel-name">{{ selectedChannel }}</span>
-      <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
-      <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+      <template v-if="channel.getId">
+        <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
+        <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+      </template>
     </div>
 
     <!-- <div id="ChatWindow">{{selectedChannel}}</div> -->

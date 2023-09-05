@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { useChannelStore, useChatStore } from '@/stores/chat';
 import { ref, onUnmounted } from 'vue';
+import { type UserInfo } from '../../types';
 
+const chat = useChatStore();
+const channelStore = useChannelStore();
 // Example list of users in the channel
-const currentUsers = ref(['user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7', 'user8', 'user9', 'user10', 'user11', 'user12', 'user13', 'user14', 'user15']);
+// const currentUsers = ref<UserInfo[]>([]);
 
 const channelName = ref('');  
 const password = ref('');  
@@ -23,8 +27,9 @@ const deletePassword = () => {
 const leaveChannel = () => {
     console.log('Left the channel.');
 };
-
 const section = ref('Manage Channel');  // The current section being displayed.
+if (channelStore.getIsDm)
+  section.value = 'Current Users';  // The current section being displayed.
 const toggleSection = () => {
     section.value = section.value === 'Current Users' ? 'Manage Channel' : 'Current Users';
 };
@@ -39,6 +44,8 @@ const selectedUser = ref(null);
 
 const showContextMenu = (event, user) => {
     contextMenuVisible.value = true;
+    console.log(event.pageX)
+    console.log(user);
     contextMenuPosition.value = { x: `${event.pageX}px`, y: `${event.pageY}px` };
     selectedUser.value = user;
 };
@@ -82,27 +89,43 @@ onUnmounted(() => {
         <div class="modal-content">
             <button @click="closeModal" class="close-button">X</button>
             <h2>Edit Channel</h2>
-            <button @click="toggleSection" class="switch-create-button">
+            <template v-if="!channelStore.getIsDm">
+              <button @click="toggleSection" class="switch-create-button">
                 {{ section === 'Current Users' ? 'Switch to Manage Channel' : 'Switch to Current Users' }}
-            </button>
+              </button>
+            </template>
     
             <!-- Display the section based on the toggle -->
             <div v-if="section === 'Current Users'">
             <!-- Section for Current Users -->
-            <h3>Current Users</h3>
+            <h4>Owner</h4>
+            <div class="user-scroll-container">
+                  <li  :key="channelStore?.getOwner.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner.username)">
+                        {{ channelStore?.getOwner.username }}
+                  </li>
+            </div>
+            <h4>Admins</h4>
             <div class="user-scroll-container">
                 <!-- <ul class="user-list"> -->
-                    <li v-for="user in currentUsers" :key="user" @contextmenu.prevent="showContextMenu($event, user)">
-                        {{ user }}
+                    <li v-for="user in channelStore.getAdmins" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.username)">
+                        {{ user.username }}
                     </li>
                 <!-- </ul> -->
             </div>
-            <div v-if="contextMenuVisible" :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }" class="context-menu">
-                <ul>
-                    <li @click="removeUser">Remove</li>
-                    <li @click="promoteUser">Promote to Admin</li>
-                    <li @click="banUser">Ban</li>
-                    <li @click="kickUser">Kick</li>
+            <h4>Members</h4>
+            <div class="user-scroll-container">
+                <!-- <ul class="user-list"> -->
+                    <li v-for="user in channelStore.getChatters" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.username)">
+                        {{ user.username }}
+                    </li>
+                <!-- </ul> -->
+            </div>
+              <div v-if="contextMenuVisible" v-bind:style="{ 'top': contextMenuPosition.y + 'px', 'left': contextMenuPosition.x + 'px' }" class="context-menu">
+                <ul >
+                    <li  @click="removeUser">Remove</li>
+                    <li  @click="promoteUser">Promote to Admin</li>
+                    <li  @click="banUser">Ban</li>
+                    <li  @click="kickUser">Kick</li>
                     <!-- Add more options as needed -->
                 </ul>
             </div>
@@ -129,8 +152,8 @@ onUnmounted(() => {
                 <button @click="deletePassword">Delete Password</button>
     
                 <!-- Leave Channel -->
-                <button @click="leaveChannel">Leave</button>
             </div>
+          <button @click="leaveChannel">Leave</button>
         </div>
     </div>
 </template>
@@ -176,7 +199,7 @@ onUnmounted(() => {
 }
 
 .user-list {
-  position: absolute;
+  /* position: absolute; */
   top: 100%;
   left: 0;
   background-color: #6c757d;
@@ -301,30 +324,43 @@ button {
     border: 1px solid #ffffff;
     border-radius: 10px;
     padding: 10px;
+    font-size: medium;
+    list-style-type: none;
 }
 
 .user-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
+    list-style: none;
+
 }
 
+/* .context-menu { */
+    /* position: sticky; */
+    /* background-color: #6c757d; */
+    /* border: 1px solid #ffffff; */
+    /* border-radius: 10px; */
+    /* z-index: 10; */
+    /* width: auto;  Adjust width as per your need */
+    /* text-align: left; */
+/* } */
+/* .context-menu-items { */
+    /* font-size: 10%; */
+/* } */
 .context-menu {
-    position: absolute;
-    background-color: #6c757d;
-    border: 1px solid #ffffff;
-    border-radius: 10px;
-    z-index: 10;
-    width: 150px;  /* Adjust width as per your need */
-}
-
-.context-menu {
-    position: absolute;
-  z-index: 1000;
+  position: absolute;
+  /* top: v-bind(contextMenuPosition.x) px;
+  left: v-bind(contextMenuPosition.y) px; */
+  /* position: style; */
+  /* margin-left: 32%; */
+  /* z-index: 1; */
   background-color: #505050;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  /* z-index: 10; */
+  width: auto;  /*Adjust width as per your need */
 }
 
 .context-menu div {
@@ -335,4 +371,13 @@ button {
 .context-menu li:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
+.context-menu ul {
+  list-style: none;
+  font-size: 25%;
+  /* text-align: left; */
+}
+/* .context-menu ul li {
+  /* content: "" */
+  /* text-align: left; */
+/* } */
 </style>
