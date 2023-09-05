@@ -276,6 +276,7 @@ export class MatchGateway {
         if (game.player0 === "") {
           game.player0 = login42;
           game.gMode = data.mode;
+          game.lastTimeStamp = new Date().getTime();
           client.join(roomName);
           this.server.to(game.roomName).emit("display", game);
           console.log(login42 + ": joins " + roomName);
@@ -285,12 +286,14 @@ export class MatchGateway {
       ++roomIndex;
     }
     roomName = "room" + roomIndex;
-    games.push(new Game())
-    games[roomIndex].player0 = login42;
-    games[roomIndex].gMode = data.mode;
-    games[roomIndex].roomName = roomName;
+    let game: Game = new Game();
+    game.player0 = login42;
+    game.gMode = data.mode;
+    game.roomName = roomName;
+    game.lastTimeStamp = new Date().getTime();
+    games.push(game);
     client.join(roomName);
-    this.server.to(roomName).emit("display", games[roomIndex]);
+    this.server.to(roomName).emit("display", game);
     console.log("new game in " + roomName);
   }
 
