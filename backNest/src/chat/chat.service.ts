@@ -218,7 +218,7 @@ export class ChatService
 		await this.chatRepository.update(roomId, {password: null});
 	}
 
-	async verifyPassword(roomId: number, pass: string)
+	async verifyPassword(roomId: number, pass: string) : Promise<boolean>
 	{
 		return (await bcrypt.compare(pass, ((await this.chatRepository.findOneBy({ id: roomId})).password)))
 	}
@@ -246,7 +246,6 @@ export class ChatService
 		const chat : Chat = await this.findOne(roomId);
 		chat.chatters = chatters;
 		await this.chatRepository.save(chat);
-
 	}
 
 	async addMute(roomId: number, newMute: User)

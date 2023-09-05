@@ -35,6 +35,37 @@ export class ChatController {
 	}
 
 	@UseGuards(AuthGuard)
+    @Post('joinChannel')
+    async joinChannel(@Request() req: any, @Body() roomInfos: roomDto, @Res() res: any)
+    {
+        console.log("join channel: " + roomInfos.id + " " + roomInfos.password);
+        console.log(roomInfos.password)
+        const chat: Chat = await this.chatService.findOne(roomInfos.id);
+        if (!chat)
+        {
+            res.status(409).json({"error": "Chat not found"}).send();
+            return; 
+        }
+        if (chat.password)
+        {
+            const result = await this.chatService.verifyPassword(roomInfos.id, roomInfos.password)
+            if (!result)
+            {
+                 res.status(401).json({"error": "Bad Password"});
+                return; 
+            }
+        }
+        const user = await this.userService.findOne(req.user);
+        if (!user)
+        {
+            res.status(409).json({"error": "unknown user"}).send();
+            return; 
+        }
+        await this.chatService.addChatter(roomInfos.id, user);
+        res.status(200).json({"status": "good"});
+    }
+
+	@UseGuards(AuthGuard)
     @Post('message')
     async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)//TODO CHECK IF IS CHATTER NOT BAN NOR MUTED
     {

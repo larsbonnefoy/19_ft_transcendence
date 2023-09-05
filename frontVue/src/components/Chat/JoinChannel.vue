@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import axios, { type AxiosResponse } from 'axios';
 import { ref } from 'vue';
-import { useChatStore } from '@/stores/chat';
+import { socket } from '@/socket';
+
+import { useChatStore, useChannelStore } from '@/stores/chat';
 
 const chat = useChatStore();
+const channelStore = useChannelStore();
 
 const password = ref('');
 const errorMessage = ref('');
@@ -15,21 +18,45 @@ const { hasPass, id } = defineProps({
 
 const emit = defineEmits(["close"]);
 
-
+async function selectChannel()
+{
+  if (chat && channelStore)
+  {
+    {
+     console.log(`Selected: ${id}`);
+     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === id)})
+     if (newChannel)
+     {
+        console.log(newChannel.id);
+        socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
+        await channelStore.setChannel(newChannel);
+        socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     }
+     // console.log(channelStore.getMessages);
+     console.log("done");
+    }
+  }
+}
 
 const submit = async () => {
-
-  let pass: string | null;
-
-    pass = password.value;
   try
 	{
     // const res: any = await chat.(name, pass, isDm, isPrivate.value, addedUsers.value); JOIN CALL
+    await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/joinChannel`, {id: id, password: password.value},
+    {
+        headers: 
+        {
+	        'token':localStorage.getItem('jwt_token')
+	    }
+    });
+    await chat.fetchChannels();
+    await selectChannel();
   }
 	catch (error: any)
 	{
-		//  errror BAD PASS OR NAME
-    return
+    console.log("error")
+    errorMessage.value = "Bad Password"
+    return;
 	}
   emit('close');
 };
@@ -47,7 +74,7 @@ const closeModal = () => {
       <h2>Join New Channel</h2>
         <template v-if="hasPass">
          <div class="input-container">
-            <input v-model="password" type="password" placeholder="Set a password (optional)" />
+            <input v-model="password" type="password" placeholder="password" @keydown.enter="submit" />
          </div>
         </template>
         <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for group chat -->
