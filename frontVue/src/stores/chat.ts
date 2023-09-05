@@ -87,6 +87,94 @@ export const useChannelStore = defineStore('channel', {
         }
        },
 
+       async addChatter(userId: string)
+       {
+        try
+        {
+          console.log(this.channel?.id)
+          const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addChatter`, {id: this.channel?.id, newChatter: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+            console.log(data);
+            if(this.channel !== null)
+                this.channel.chatters = data.data;
+        }
+        catch
+        {
+
+        }
+       },
+
+       async addAdmin(userId: string)
+       {
+        try
+        {
+          console.log(this.channel?.id)
+          const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addAdmin`, {id: this.channel?.id, newAdmin: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+            console.log(data);
+            if(this.channel !== null)
+                this.channel.admins = data.data;
+        }
+        catch
+        {
+
+        }
+        },
+
+        async addBan(userId: string)
+        {
+        try
+        {
+          console.log(this.channel?.id)
+          const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addBan`, {id: this.channel?.id, newBan: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+            console.log(data);
+            if(this.channel !== null)
+                this.channel.bans = data.data;
+        }
+        catch
+        {
+
+        }
+        },
+
+     async addMute(userId: string)
+        {
+        try
+        {
+          console.log(this.channel?.id)
+          const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addMute`, {id: this.channel?.id, newMute: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+            console.log(data);
+            if(this.channel !== null)
+                this.channel.mutes = data.data;
+        }
+        catch
+        {
+
+        }
+        },
+
        async hasPassFromId(id: number)
        {
             const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/hasPass`, {id: id},
@@ -98,6 +186,80 @@ export const useChannelStore = defineStore('channel', {
             });
             return data.data;
 
+       },
+
+      async kickUser(userId: string, status: string)
+       {
+            console.log('kick', status)
+        if(status === 'chatter')
+        {
+            console.log('chatter')
+          console.log(this.channel?.id)
+           const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/delChatter`, {id: this.channel?.id, chatter: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                console.log(data.data)
+                if(this.channel !== null)
+                    this.channel.chatters = data.data;
+        }
+        else if(status === 'admin')
+        {
+           const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/delAdmin`, {id: this.channel?.id, admin: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                if(this.channel !==null)
+                {
+                    this.channel.admins = data.data
+                }
+        }   
+       },
+
+       async removeUser(userId: string, status: string)
+       {
+            console.log('remove', status)
+        if(status === 'chatter')
+        {
+            console.log('chatter')
+          console.log(this.channel?.id)
+           const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/delChatter`, {id: this.channel?.id, chatter: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                console.log(data.data)
+                if(this.channel !== null)
+                    this.channel.chatters = data.data;
+        }
+        else if(status === 'admin')
+        {
+           const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/delAdmin`, {id: this.channel?.id, admin: userId},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+                if(this.channel !==null)
+                {
+                    this.channel.admins = data.data
+                    await this.addChatter(userId);
+                }
+        }   
+       },
+       async promoteChatter(userId: string)
+       {
+            await this.removeUser(userId, 'chatter')
+            await this.addAdmin(userId);
        },
     }
 })

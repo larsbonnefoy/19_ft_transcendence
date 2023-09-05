@@ -2,6 +2,7 @@
 import { useChannelStore, useChatStore } from '@/stores/chat';
 import { ref, onUnmounted } from 'vue';
 import { type UserInfo } from '../../types';
+import axios, { type AxiosResponse } from 'axios';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -10,10 +11,36 @@ const channelStore = useChannelStore();
 
 const channelName = ref('');  
 const password = ref('');  
+const errorMessage = ref('');
+const userInput = ref('');
 
-const addUser = () => {
-    console.log('User added.');
+const addUser = async () => {
+  errorMessage.value = '';
+   {
+    try 
+    {
+      await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+      const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput.value},
+                 {
+                    headers: 
+                    {
+	                    'token':localStorage.getItem('jwt_token')
+	                }
+                });
+      errorMessage.value = `added : ${userInput.value}`
+      await channelStore.addChatter(userInput.value);
+      return;
+    }
+    catch (error)
+    {
+      errorMessage.value = "Unknown user";
+      // userInput.value = '';
+      return;
+    }
+    userInput.value = '';
+  }
 };
+
 
 const changePassword = () => {
     console.log('Password changed to:', password.value);
@@ -39,26 +66,35 @@ const closeModal = () => emit('close');
 
 // Context menu control
 const contextMenuVisible = ref(false);
-const contextMenuPosition = ref({ x: '0px', y: '0px' });
+const contextMenuPosition = ref({ x: '0', y: '0' });
 const selectedUser = ref(null);
+const selectedUserStatus = ref(null);
 
-const showContextMenu = (event, user) => {
+const showContextMenu = (event, user, status) => {
     contextMenuVisible.value = true;
     console.log(event.pageX)
+    console.log(event.pageY)
     console.log(user);
-    contextMenuPosition.value = { x: `${event.pageX}px`, y: `${event.pageY}px` };
+    contextMenuPosition.value = { x: `${(event.pageX/window.innerWidth) * 100}`, y: `${(event.pageY / window.innerHeight) * 100}` };
+    console.log(contextMenuPosition.value.x, contextMenuPosition.value.y)
     selectedUser.value = user;
+    selectedUserStatus.value = status;
+
 };
 
-const removeUser = () => {
+const removeUser = async () => {
     // Add logic to remove the selected user
     console.log(`Remove user: ${selectedUser.value}`);
+    
+    await channelStore.removeUser(selectedUser.value, selectedUserStatus.value);
     contextMenuVisible.value = false;
 };
 
 const promoteUser = () => {
     // Add logic to promote the selected user to admin
     console.log(`Promote user to admin: ${selectedUser.value}`);
+    if (selectedUserStatus.value === 'chatter')
+    channelStore.promoteChatter(selectedUser.value)
     contextMenuVisible.value = false;
 };
 const banUser = () => {
@@ -66,9 +102,10 @@ const banUser = () => {
     console.log(`Ban user: ${selectedUser.value}`);
     contextMenuVisible.value = false;
 };
-const kickUser = () => {
+const kickUser = async () => {
     // Add logic to promote the selected user to admin
     console.log(`Kick user: ${selectedUser.value}`);
+    await channelStore.kickUser(selectedUser.value, selectedUserStatus.value);
     contextMenuVisible.value = false;
 };
 
@@ -85,8 +122,18 @@ onUnmounted(() => {
 </script>
 
 <template>
+
     <div class="modal-background">
         <div class="modal-content">
+            <div v-if="contextMenuVisible" :style="{ top: contextMenuPosition.y + '%', left: contextMenuPosition.x + '%' }" class="context-menu">
+                <ul >
+                    <li  @click="removeUser">Remove</li>
+                    <li  @click="promoteUser">Promote to Admin</li>
+                    <li  @click="banUser">Ban</li>
+                    <li  @click="kickUser">Kick</li>
+                    <!-- Add more options as needed -->
+                </ul>
+            </div>
             <button @click="closeModal" class="close-button">X</button>
             <h2>Edit Channel</h2>
             <template v-if="!channelStore.getIsDm">
@@ -98,16 +145,17 @@ onUnmounted(() => {
             <!-- Display the section based on the toggle -->
             <div v-if="section === 'Current Users'">
             <!-- Section for Current Users -->
+            <div>
             <h4>Owner</h4>
             <div class="user-scroll-container">
-                  <li  :key="channelStore?.getOwner.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner.username)">
+                  <li  :key="channelStore?.getOwner.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner.login42, 'owner') ">
                         {{ channelStore?.getOwner.username }}
                   </li>
             </div>
             <h4>Admins</h4>
             <div class="user-scroll-container">
                 <!-- <ul class="user-list"> -->
-                    <li v-for="user in channelStore.getAdmins" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.username)">
+                    <li v-for="user in channelStore.getAdmins" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.login42, 'admin') ">
                         {{ user.username }}
                     </li>
                 <!-- </ul> -->
@@ -115,20 +163,13 @@ onUnmounted(() => {
             <h4>Members</h4>
             <div class="user-scroll-container">
                 <!-- <ul class="user-list"> -->
-                    <li v-for="user in channelStore.getChatters" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.username)">
+                    <li v-for="user in channelStore.getChatters" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.login42, 'chatter') ">
                         {{ user.username }}
                     </li>
                 <!-- </ul> -->
             </div>
-              <div v-if="contextMenuVisible" v-bind:style="{ 'top': contextMenuPosition.y + 'px', 'left': contextMenuPosition.x + 'px' }" class="context-menu">
-                <ul >
-                    <li  @click="removeUser">Remove</li>
-                    <li  @click="promoteUser">Promote to Admin</li>
-                    <li  @click="banUser">Ban</li>
-                    <li  @click="kickUser">Kick</li>
-                    <!-- Add more options as needed -->
-                </ul>
             </div>
+          
         </div>
     
             <div v-else>
@@ -140,9 +181,10 @@ onUnmounted(() => {
                 <!-- Add New Users -->
                 <h3>Add Users</h3>
                 <div class="input-container">
-                    <input placeholder="Add a user..." @keydown.enter="addUser"/>
+                    <input v-model="userInput" placeholder="Add a user..." @keydown.enter="addUser"/>
                     <button @click="addUser" class="add-button">Add</button>
                 </div>
+                    <div v-if="errorMessage" style="font-size: small">{{ errorMessage }}</div> <!-- Error message display for group chat -->
     
                 <!-- Password Management -->
                 <h3>Password Management</h3>
@@ -335,32 +377,16 @@ button {
     list-style: none;
 
 }
-
-/* .context-menu { */
-    /* position: sticky; */
-    /* background-color: #6c757d; */
-    /* border: 1px solid #ffffff; */
-    /* border-radius: 10px; */
-    /* z-index: 10; */
-    /* width: auto;  Adjust width as per your need */
-    /* text-align: left; */
-/* } */
-/* .context-menu-items { */
-    /* font-size: 10%; */
-/* } */
 .context-menu {
-  position: absolute;
-  /* top: v-bind(contextMenuPosition.x) px;
-  left: v-bind(contextMenuPosition.y) px; */
-  /* position: style; */
-  /* margin-left: 32%; */
+  position:absolute;
+  margin-left: 0%;
   /* z-index: 1; */
   background-color: #505050;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   /* z-index: 10; */
-  width: auto;  /*Adjust width as per your need */
+  /* width: auto;  Adjust width as per your need */
 }
 
 .context-menu div {
@@ -374,10 +400,5 @@ button {
 .context-menu ul {
   list-style: none;
   font-size: 25%;
-  /* text-align: left; */
 }
-/* .context-menu ul li {
-  /* content: "" */
-  /* text-align: left; */
-/* } */
 </style>

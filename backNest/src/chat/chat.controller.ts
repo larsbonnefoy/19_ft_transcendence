@@ -294,7 +294,8 @@ export class ChatController {
         }
 
 		await this.chatService.addAdmin(roomId, newAdmin);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getAdmins(body['id'])).send();
         return;
 	}
 
@@ -321,7 +322,9 @@ export class ChatController {
         console.log(body['admin'])
 
 		await this.chatService.removeAdmin(roomId, body['admin']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getAdmins(body['id'])).send();
+
         return;
 	}
     
@@ -359,7 +362,8 @@ export class ChatController {
             return;
         }
 		await this.chatService.addBan(roomId, newBan);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getBans(body['id'])).send();
         return;
 	}
 
@@ -385,7 +389,8 @@ export class ChatController {
         console.log(body['ban'])
 
 		await this.chatService.removeBan(roomId, body['ban']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getBans(body['id'])).send();
         return;
 	}
 
@@ -424,7 +429,8 @@ export class ChatController {
         }
 
 		await this.chatService.addMute(roomId, newMute);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getMutes(body['id'])).send();
         return;
 	}
 
@@ -452,7 +458,8 @@ export class ChatController {
         console.log(body['mute'])
 
 		await this.chatService.removeMute(roomId, body['mute']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getMutes(body['id'])).send();
         return;
 	}
 
@@ -495,7 +502,8 @@ export class ChatController {
         }
 
 		await this.chatService.addChatter(roomId, newChatter);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getChatters(body['id'])).send();
         return;
 	}
 
@@ -505,6 +513,7 @@ export class ChatController {
 	{
         //get room id
         const roomId: number = body['id'];
+        console.log("delChatter")
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -522,7 +531,7 @@ export class ChatController {
         console.log(body['chatter'])
 
 		await this.chatService.removeChatter(roomId, body['chatter']);
-        await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getChatters(body['id'])).send();
         return;
 	}
 
