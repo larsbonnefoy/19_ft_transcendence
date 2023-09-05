@@ -41,6 +41,6 @@ async function unblockUser() {
         <button type="button" class="btn btn-outline-danger" @click="blockUser">Block</button>
     </template>
     <template v-else> 
-        <button type="button" class="btn btn-outline-danger" @click="unblockUser">Unblock</button>
+        <button type="button" class="btn btn-danger" @click="unblockUser">Unblock</button>
     </template>
 </template>
