@@ -10,7 +10,7 @@ const sliderValue = ref(retrieveSensiFromStorage());
 const activeMode = ref(retrieveModeFromStorage()); //recup valeur dans local storage if no exist set to 0;
 
 watch(sliderValue, () => {
-	const retval: number = 1 + (((sliderValue.value/100) - 0.5) * 0.8)
+	const retval: number = 1 + (((sliderValue.value/100) - 0.5) * 1.8)
 	// console.log("newVal" + retval)
 	localStorage.setItem("paddle_sensitivity", "" + retval);
 })
@@ -42,7 +42,7 @@ function retrieveSensiFromStorage():number {
 	if (valuefromStorage == null) {
 		return 50;
 	}
-	let retVal: number = Math.ceil(((((+valuefromStorage -1) / 0.8) + 0.5) * 100) * 100 / 100); 
+	let retVal: number = Math.ceil(((((+valuefromStorage -1) / 1.8) + 0.5) * 100) * 100 / 100); 
 	// console.log("converted from store" + valuefromStorage);
 	return retVal
 }

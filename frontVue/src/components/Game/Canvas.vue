@@ -57,7 +57,7 @@ function keyDown(event: any) {
 
 function getSensi() {
     const sensiStorage = localStorage.getItem("paddle_sensitivity");
-    if (sensiStorage == null || +sensiStorage < 0.8 || +sensiStorage > 1.2) {
+    if (sensiStorage == null || +sensiStorage < 0.1 || +sensiStorage > 1.9) {
         sensi = 1;
     }
     else {
