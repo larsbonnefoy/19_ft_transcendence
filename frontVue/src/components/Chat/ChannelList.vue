@@ -8,7 +8,6 @@ import { useChatStore } from '@/stores/chat';
 import { socket } from '@/socket';
 
 const chat = useChatStore();
-const emit = defineEmits(["channel-selected"]);
 
 await chat.fetchChannels();
 
@@ -25,7 +24,7 @@ const toggleSearchBar = () => {
 
 const currentView = ref('private');
 
-const toggleView = () => {
+const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POUR LES MESSAGES DE GROUPES
   if (currentView.value === 'private') {
     currentView.value = 'channels';
   } else if (currentView.value === 'channels') {

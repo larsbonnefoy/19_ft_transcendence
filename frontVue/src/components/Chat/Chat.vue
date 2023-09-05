@@ -9,7 +9,6 @@ import SocialsList from '@/components/Socials/SocialsList.vue';
 const selectedUser = ref("");
 const selectedChannel = ref("" );
 
-const emit = defineEmits(["open-profile"]);
 function handleSelectedProfile(user: string) {
   selectedUser.value = user
   console.log("chat : "+ selectedUser.value)
