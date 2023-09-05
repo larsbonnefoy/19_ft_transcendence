@@ -44,7 +44,7 @@ export class ChatGateway {
   for (let user of chatUsers) {
     if (user.login42 !== login42) {
       console.log("sending toast to " + user.login42);
-      this.server.to(user.login42).emit('messageToast', {from: current_user.username, message: data.message});
+      this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:current_user.username}, message: data.message});
     }
   }
   this.server.to("channel" + data.target).emit("getMessage", {message: data.message, login: login42});
