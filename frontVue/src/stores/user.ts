@@ -68,7 +68,16 @@ export const useUserStore = defineStore('user', {
             }
         },
         async changeDisplayLogin(value: boolean) {
-            console.log(value);
+            console.log("Value in changeDisplayLogin " + value);
+            if (this.user) {
+                try {
+                    const data = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/setDisplayLog:${value}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                }
+                catch (error:any) {
+                    console.log(error.message);
+                }
+                this.user.displayLogin = value;
+            }
         },
         async setName(newUsername:string) {
             if (this.user) {

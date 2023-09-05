@@ -6,6 +6,7 @@ import AddPendingRemoveButton from './AddPendingRemoveButton.vue';
 import MessageButton from './MessageButton.vue';
 import GameButton from './GameButton.vue';
 import DoubleAuthButton from './DoubleAuthButton.vue';
+import DisplayLogin from './DisplayLogin.vue';
 import ChangeUsername from './ChangeUsername.vue';
 import UploadAvatar from './UploadAvatar.vue'
 import Status from './Status.vue';
@@ -48,14 +49,13 @@ Should set max lenght of username here
                 <div class="card-body text-center"> <!-- White Profile card  style="min-height: 60vh; max-height: 70vh;"-->
                     <div v-if="!modProfile"> 
                         <h4> {{ user.username }}</h4>
-                        <div> {{ user.status }}</div>
+                        <p style="color: grey;" v-if="user.displayLogin">Login42: {{ user.login42 }} </p>
                         <Status :status="user.status"></Status> <!-- Meme pb que avec les games, ne se refresh pas correctement-->
                         <div class="mt-3 mb-4">
                         <img class="ProfilePic" :src=user.photo />
                         </div>
 
                         <!-- Displays only if we are on the current Users page-->
-
                         <div v-if="!activeUser" class=row>
                             <div class="m-2">
                                 <AddPendingRemoveButton :pending-user="user"></AddPendingRemoveButton>
@@ -87,6 +87,7 @@ Should set max lenght of username here
                         <h4> {{ user.username }}</h4>
                         <ChangeUsername class="my-3"> </ChangeUsername>
                         <UploadAvatar class="my-3"></UploadAvatar>
+                        <DisplayLogin class="my-3"></DisplayLogin>
                         <DoubleAuthButton></DoubleAuthButton>
                         <div v-if="activeUser" > 
                             <img class="ModProfilePic m-5" src="../../../assets/left-arrow.png" @click.prevent="toggleModProfile">

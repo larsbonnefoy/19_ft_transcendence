@@ -44,11 +44,11 @@ export class MatchGateway {
 	const user = await this.userService.findOne(login42);
 	if (user === null) {
 	  return ;
-	} /* else if (+user.achievements & 16) {
+	} else if (+user.achievements & 16) {
 	  console.log(login42 + " is already a retro gamer");
 	  this.server.to(login42).emit('warning', "You are already a Retro gamer");
 	  return ;
-	} */
+	}
     let game: Game = games[data.roomIndex];
     if (game.player0 === login42)
       game.score0 = 9;
