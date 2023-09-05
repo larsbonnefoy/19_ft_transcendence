@@ -66,13 +66,14 @@ onUnmounted(async () => {
             	</div>
         	</div>
         	<!-- Add a getter to get status-->
-
-        	<div class="col-3 p-0 buttonStyle">
-            	<GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
-        	</div>
-        	<div class="col-3 p-0 buttonStyle">
-            	<MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
-        	</div>
+			<template v-if="login42 != store.getLogin42"> 
+				<div class="col-3 p-0 buttonStyle">
+					<GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
+				</div>
+				<div class="col-3 p-0 buttonStyle">
+					<MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
+				</div>
+			</template>
     	</div>
 	</div>
 </template>

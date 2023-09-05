@@ -50,5 +50,4 @@ switch(props.status) {
     border-radius: 50%;
     background-color: #bdbfbb;
     margin: auto;
-}
-</style>
+}</style>
