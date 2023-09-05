@@ -142,7 +142,7 @@ const achievementList: Achievement[] = [
 	{
 		name: "Double The Trouble",
 		imageUrl: "../../../assets/Achievements/finish20.png",
-		description: "Finish a game with more than 20 points",
+		description: "Finish a game with a score above 20",
 		progress: () => {
 			return props.userProp.achievements & 512 ? 1 : 0;
 		},
@@ -152,7 +152,7 @@ const achievementList: Achievement[] = [
 	{
 		name: "All For Nothing",
 		imageUrl: "../../../assets/Achievements/lose20.png",
-		description: "Lose a game while having more than 20 points",
+		description: "Lose a game with a score above 20",
 		progress: () => {
 			return props.userProp.achievements & 1024 ? 1 : 0;
 		},

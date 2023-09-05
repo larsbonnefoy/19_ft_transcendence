@@ -112,26 +112,26 @@ export class MatchController {
 //     res.json({"Match":"created"});
 //   }
   
-  @Get('del')
-  async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
-    console.log("match/del request with id %d", id);
-    const check_base = await this.matchService.findOne(id);
-    if (check_base == null) {
-      res.status(404).json({"Match":"doesn't exist"});
-      return ;
-    }
-    await this.matchService.remove(id);
-    res.json({"Match":"deleted"});
-  }
+  // @Get('del')
+  // async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
+  //   console.log("match/del request with id %d", id);
+  //   const check_base = await this.matchService.findOne(id);
+  //   if (check_base == null) {
+  //     res.status(404).json({"Match":"doesn't exist"});
+  //     return ;
+  //   }
+  //   await this.matchService.remove(id);
+  //   res.json({"Match":"deleted"});
+  // }
   
-  @Get('delAll')
-  async delAll(@Res() res: Response) {
-    const matchs = await this.matchService.findAll();
-    for (let match of matchs) {
-      await this.matchService.remove(match.id);
-    }
-    res.json({"Matchs":"deleted"});
-  }
+  // @Get('delAll')
+  // async delAll(@Res() res: Response) {
+  //   const matchs = await this.matchService.findAll();
+  //   for (let match of matchs) {
+  //     await this.matchService.remove(match.id);
+  //   }
+  //   res.json({"Matchs":"deleted"});
+  // }
 
   @Get('ongoingGames')
   async getOngoingGames(@Res() res: Response) {

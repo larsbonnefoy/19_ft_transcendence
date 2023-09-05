@@ -519,35 +519,35 @@ export class UserController {
     res.json({"user":"created"});
   }
   
-  @Get('delAll')
-  async delAll(@Res() res: any) {
-    const users = await this.userService.findAll();
-    for (let user of users) {
-      await this.userService.remove(user.username);
-    }
-    res.json({"users":"deleted"});
-  }
+  // @Get('delAll')
+  // async delAll(@Res() res: any) {
+  //   const users = await this.userService.findAll();
+  //   for (let user of users) {
+  //     await this.userService.remove(user.username);
+  //   }
+  //   res.json({"users":"deleted"});
+  // }
   
-  @Get('del:username')
-  async delUser(@Res() res: any, @Param() params: any) {
-    const username: string = params.username.slice(1);
-    console.log("got del request with username %s", username);
-    const current_user = await this.userService.findUsername(username);
-    if (current_user == null) {
-      res.status(404).json({"user":"doesn't exist"});
-      return ;
-    }
-    for (let friend of current_user.friends) {
-      const other = await this.userService.findOne(friend);
-      if (other != null) {
-        await this.userService.remove_friend(current_user.login42, current_user.friends, other.login42);
-        await this.userService.remove_friend(other.login42, other.friends, current_user.login42);
-        console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
-      }
-    }
-    await this.userService.remove(username);
-    res.json({"user":"deleted"});
-  }
+  // @Get('del:username')
+  // async delUser(@Res() res: any, @Param() params: any) {
+  //   const username: string = params.username.slice(1);
+  //   console.log("got del request with username %s", username);
+  //   const current_user = await this.userService.findUsername(username);
+  //   if (current_user == null) {
+  //     res.status(404).json({"user":"doesn't exist"});
+  //     return ;
+  //   }
+  //   for (let friend of current_user.friends) {
+  //     const other = await this.userService.findOne(friend);
+  //     if (other != null) {
+  //       await this.userService.remove_friend(current_user.login42, current_user.friends, other.login42);
+  //       await this.userService.remove_friend(other.login42, other.friends, current_user.login42);
+  //       console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
+  //     }
+  //   }
+  //   await this.userService.remove(username);
+  //   res.json({"user":"deleted"});
+  // }
 
   @UseGuards(AuthGuard)
   @Post('avatar')
