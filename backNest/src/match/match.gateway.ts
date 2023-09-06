@@ -194,13 +194,13 @@ export class MatchGateway {
         if (+game.score0 >= 20 && !(p1.achievements & 512)) { //Double The Trouble
           await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
           if (+game.score1 > +game.score0 && !(p1.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p1.login42, +p1.achievements + 1024, 1024);
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 512 + 1024, 1024);
           }
         }
         if (+game.score1 >= 20 && !(p2.achievements & 512)) { //Double The Trouble
           await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
           if (+game.score0 > +game.score1 && !(p2.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p2.login42, +p2.achievements + 1024, 1024);
+            await this.userService.addAchievement(p2.login42, +p2.achievements+ 512 + 1024, 1024);
           }
         }
         await this.matchService.createMatch(nMatch);
