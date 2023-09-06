@@ -1,9 +1,14 @@
 TODOS:
 	- sql injections
 	- chat?
-	- If in game when /game -> load canvas
 	- If game challenge accepte in /game -> load canvas
 	- change addFriend/remove/unset... endpoint to use login42 and not username;
+	- login42 in pending display instead fo usernames ?
+	- you can still be inside a room with someone you blocked if you join queue at the same time
+	- channelButton.vue line 13 axios call not inside a try catch
+	- ChatWindow.vue line 30 axios call not inside a try catch
+	- MessageBox.vue line 12 axios call not inside a try catch
+	- user.controller 115-136 userServices calls not protected
 
 
 My todo:
@@ -72,6 +77,7 @@ Done:
 - sensi palettes
 - obstacles in games
 - sort members by alpha
+- If in game when /game -> load canvas
 - update achievements when changename, like for games of lars
 - if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
 - if gmode all first + hard second not together ?
