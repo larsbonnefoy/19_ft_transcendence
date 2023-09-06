@@ -17,6 +17,7 @@ export const useUserStore = defineStore('user', {
         getFriends: (state) => state.user?.friends,
         getBlocked: (state) => state.user?.blocked_users,
         getLogin42: (state) => state.user?.login42,
+        getElo: (state) => state.user?.elo,
         get2fa: (state) => state.user?.has2fa,
         getWin: (state) => state.user?.win,
         getLoss: (state) => state.user?.loss,
