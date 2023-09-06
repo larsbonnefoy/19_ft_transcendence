@@ -4,6 +4,7 @@ import axios from 'axios';
 import Game from './Game.vue';
 import { GChart } from 'vue-google-charts';
 import { useUserStore } from '../../stores/user';
+import type { GoogleChartOptions } from 'vue-google-charts/dist/types';
 
 
 const props = defineProps<{
@@ -16,13 +17,27 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const succesReqHistory = ref(false);
 const games = ref();
 const chartData = ref();
-const chartOptions = {
-  title: 'Progression curve',
+const chartOptions: GoogleChartOptions | undefined = {
+    colors:['lightgreen'],
+    title: 'Progression curve',
+    titleTextStyle: {
+    color: '#FFFFFF'
+    },
 //   curveType: 'function',
-  legend: { position: 'none' },
+    legend: { position: 'none' },
 //   width: 800,
 //   height: 600,
-  backgroundColor: '#23272b',
+    backgroundColor: '#23272b',
+    vAxis:{
+        textStyle: {
+            color: '#FFFFFF'
+        },
+    },
+    hAxis:{
+        textStyle: {
+            color: '#FFFFFF'
+        },
+    }
 };
 const login = ref("");
 const isLoaded = ref(false);
@@ -71,8 +86,10 @@ onMounted(async () => {
                     <Game :game-prop="game" :login-prop="login" :username-prop="props.usernameProp"> </Game>
                 </template>
             </div>
-            <div class="m-5" >
-                <GChart type="LineChart" :data="chartData" :options="chartOptions"/>
+            <div class="card text-white bg-dark overflow-auto shadow-lg m-5">
+                <div class="card-body textDisplay p-0 m-3">
+                    <GChart type="LineChart" :data="chartData" :options="chartOptions"/>
+                </div>
             </div>
         </div>
         <div v-else>
