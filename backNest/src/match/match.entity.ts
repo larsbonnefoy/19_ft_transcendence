@@ -68,6 +68,8 @@ export class Game {
   private bounce1 : number = 0;
   private b0time : number = new Date().getTime();
   private b1time : number = new Date().getTime();
+  private o0time : number = new Date().getTime();
+  private o1time : number = new Date().getTime();
   public leftPaddle = {
     x : 2 * ballRadius,
     y : canvasHeight / 2,
@@ -185,20 +187,22 @@ export class Game {
         (this.ball.x > this.rightPaddle.x) ? this.ball.speedx = this.ball.speed : this.ball.speedx = - this.ball.speed;
         if (+this.state === states.ONGOING && new Date().getTime() - this.b1time > 100) {
           this.bounce1++;
-		  this.b1time = new Date().getTime();
+          this.b1time = new Date().getTime();
           this.bounce0 = 0;
           if (+this.bounce1 >= 5) {
-			const user = await userService.findOne(this.player1);
+            const user = await userService.findOne(this.player1);
             if (user && !(user.achievements & 2048)) {
               userService.addAchievement(user.login42, +user.achievements + 2048, 2048);
             }
           }
         }
     } else if (+this.gMode === game_mode.OBSTACLES || +this.gMode === game_mode.RANDOM || +this.gMode === game_mode.BOTH) {
-      if (this.ballCollisionObstacle(this.obstacle0)) {
+      if (this.ballCollisionObstacle(this.obstacle0) && new Date().getTime() - this.o0time > 100) {
         this.bounceObstacle(this.obstacle0);
-      } else if (this.ballCollisionObstacle(this.obstacle1)) {
+        this.o0time = new Date().getTime();
+      } else if (this.ballCollisionObstacle(this.obstacle1) && new Date().getTime() - this.o1time > 100) {
         this.bounceObstacle(this.obstacle1);
+        this.o1time = new Date().getTime();
       }
     }
   }
