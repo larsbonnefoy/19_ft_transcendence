@@ -13,9 +13,19 @@ const props = defineProps<{
 const emit = defineEmits(['closeCanvas']);
 
 const store = useUserStore();
-let isPlayer: boolean = props.playGame === GameType.PLAYER;
+const isPlayer: boolean = props.playGame === GameType.PLAYER;
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
+const newMessage = ref("");
+const lenLeft = computed(() => 60 - newMessage.value.length);
+const refreshMsg = ref(0);
+let viewerMessages : Array<string> = [];
 
+
+let windowWidth = ref(window.innerWidth);
+
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
 
 const player0Connected = computed(() => {
     return (player0Login.value != "Player1" && player0Login.value != "");
@@ -51,6 +61,23 @@ let roomIndex : number = -1;
 
 const diff = ref(0);
 const viewers = ref(0);
+
+function sendViewerMessage() {
+    if (newMessage.value && newMessage.value.trim().length !== 0) {
+        socket.emit('viewerMessage', {roomIndex: roomIndex, message:newMessage.value, username: store.getUserName});
+        // console.log("message sent: " + newMessage.value);
+    }
+    newMessage.value = "";
+}
+
+function receiveViewerMessage(data: any) {
+    viewerMessages.push(data.username + ": " + data.message);
+    if (viewerMessages.length > 5) {
+        viewerMessages.shift();
+    }
+    refreshMsg.value++;
+    // console.log("message received from " + data.username + ": " + data.message);
+}
 
 function keyDown(event: any) {
     key = event.keyCode;
@@ -130,6 +157,8 @@ function init() {
 	
 	window.addEventListener('keydown', keyDown);
 	window.addEventListener('keyup', keyUp);
+
+    socket.on('receiveViewerMessage', receiveViewerMessage);
 
     socket.on('display', (response : any) => {
         if (roomIndex === -1) {
@@ -275,6 +304,7 @@ let leaveRoom = (async () => {
 
 onMounted(async () => {
     await store.setStatus("ingame");
+    window.addEventListener('resize', handleResize);
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
         socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
@@ -285,12 +315,14 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     clearInterval(intervalStop);
+    window.removeEventListener('resize', handleResize);
     removeEventListener('keydown', keyDown);
     removeEventListener('keyup', keyUp);
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
     await store.setStatus("online");
     socket.off('joinGame');
     socket.off('display');
+    socket.off('receiveViewerMessage');
 })
 </script>
 
@@ -334,6 +366,35 @@ onUnmounted(async () => {
                     </div>
                 </div>
             </template>
+            <div v-if="windowWidth > 1400" class="row" :key="refreshMsg">
+                <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 10vw; max-width: 15vw; max-height: 80vh;">
+                    <div class="card-body">
+                        <div class="row card-title">
+                            <svg class="col-3 blinking" height="50" width="50">
+                                <circle cx="25" cy="25" r="5" fill="red" />
+                                Sorry, your browser does not support inline SVG.  
+                            </svg>
+                            <h5 class="col-6" style="text-align: center;">Live messages</h5>
+                            <svg class="col-3 blinking" height="50" width="50">
+                                <circle cx="25" cy="25" r="5" fill="red" />
+                                Sorry, your browser does not support inline SVG.  
+                            </svg>
+                        </div>
+                        <template v-for="(message, index) in viewerMessages">
+                            <div> {{ message }} </div>
+                        </template>
+                        <div v-if="!isPlayer">
+                            <div class="input-group">
+                                <input :maxlength="60" v-model="newMessage" @keydown.enter="sendViewerMessage" placeholder="send message">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"> {{ lenLeft }}</span>
+                                </div>
+                            </div>
+                            <!-- <input type="button" value="Submit" @click="sendViewerMessage()"/> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 	</div>
 </template>
@@ -347,6 +408,60 @@ onUnmounted(async () => {
     display: inline;
     width: 80%;
 	height: 80%;
+}
+
+.blinking {
+  -webkit-animation: 1s blink ease infinite;
+  -moz-animation: 1s blink ease infinite;
+  -ms-animation: 1s blink ease infinite;
+  -o-animation: 1s blink ease infinite;
+  animation: 1s blink ease infinite;
+  
+}
+
+@keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 </style>
