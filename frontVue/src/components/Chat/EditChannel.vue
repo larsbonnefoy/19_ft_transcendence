@@ -14,7 +14,17 @@ const password = ref('');
 const errorMessage = ref('');
 const userInput = ref('');
 
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
+
 const addUser = async () => {
+  if (userInput.value.trim().length === 0)
+    return;
+  console.log('adduser');
   errorMessage.value = '';
    {
     try 
@@ -40,19 +50,37 @@ const addUser = async () => {
     userInput.value = '';
   }
 };
+const emit = defineEmits(["close"]);
+const closeModal = () => emit('close');
 
-
-const changePassword = () => {
+const changePassword = async () => {
+    if (password.value.trim().length === 0) 
+      return;
     console.log('Password changed to:', password.value);
+    await channelStore.changePassword(password.value) 
+    errorMessage.value = `Password Changed ` 
+    password.value = '';
 };
 
-const deletePassword = () => {
+const changename = async () => {
+    if (channelName.value.trim().length === 0) 
+      return;
+    console.log('Name changed to:', password.value);
+    await channelStore.changeName(channelName.value) 
+    errorMessage.value = `Name changed to ` + channelName.value
+    channelName.value = '';
+  }
+
+const deletePassword = async () => {
     password.value = '';
     console.log('Password deleted.');
+    await channelStore.deletePassword()
 };
 
-const leaveChannel = () => {
+const leaveChannel = async () => {
     console.log('Left the channel.');
+    await channelStore.leave(me);
+    emit('close');
 };
 const section = ref('Manage Channel');  // The current section being displayed.
 if (channelStore.getIsDm)
@@ -61,8 +89,7 @@ const toggleSection = () => {
     section.value = section.value === 'Current Users' ? 'Manage Channel' : 'Current Users';
 };
 
-const emit = defineEmits(["close"]);
-const closeModal = () => emit('close');
+
 
 // Context menu control
 const contextMenuVisible = ref(false);
@@ -175,7 +202,7 @@ onUnmounted(() => {
             <div v-else>
                 <!-- Channel Name -->
                 <div class="input-container">
-                    <input v-model="channelName" placeholder="Change channel name..." />
+                    <input v-model="channelName" placeholder="Change channel name..." @keydown.enter="changename"/>
                 </div>
     
                 <!-- Add New Users -->
@@ -189,7 +216,7 @@ onUnmounted(() => {
                 <!-- Password Management -->
                 <h3>Password Management</h3>
                 <div class="input-container">
-                    <input v-model="password" placeholder="Change password..." />
+                    <input v-model="password" placeholder="Change password..." @keydown.enter="changePassword"/>
                 </div>
                 <button @click="deletePassword">Delete Password</button>
     

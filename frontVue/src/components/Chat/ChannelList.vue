@@ -22,7 +22,7 @@ const toggleSearchBar = () => {
   showSearchBar.value = !showSearchBar.value;
 };
 
-const currentView = ref('private');
+const currentView = ref('public');
 
 const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POUR LES MESSAGES DE GROUPES
   if (currentView.value === 'private') {

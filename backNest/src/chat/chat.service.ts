@@ -207,6 +207,11 @@ export class ChatService
 		 return ;
 	}
 
+	async setName(roomId: number, name: string)
+	{
+		await this.chatRepository.update(roomId, {name: name});
+	}
+
 	async setPassword(roomId: number, pass: string)
 	{
 		const hash = await bcrypt.hash(pass, 10);
@@ -265,6 +270,43 @@ export class ChatService
 		const chat : Chat = await this.findOne(roomId);
 		chat.bans= bans;
 		await this.chatRepository.save(chat);
+	}
+
+	async removeOwner(roomId : number)
+	{
+		const admins = await this.getAdmins(roomId);
+		let newOwner: User;
+		if (admins.length !== 0)
+		{
+			newOwner = admins[0]
+			await this.removeAdmin(roomId, newOwner.login42)	
+			const chat : Chat = await this.findOne(roomId);
+			chat.owner = newOwner;
+			await this.chatRepository.save(chat);
+		}
+		else
+		{
+			const chatters = await this.getChatters(roomId);
+			if (chatters.length !== 0)
+			{
+
+			
+				newOwner = chatters[0]
+				await this.removeChatter(roomId, newOwner.login42)	
+				const chat : Chat = await this.findOne(roomId);
+				chat.owner = newOwner;
+				await this.chatRepository.save(chat);
+			}
+			else
+			{
+				const messages = await this.getMessagesByRoom(roomId);
+				for (let message of messages)
+				{
+		 			await this.chatMessageRepository.delete(message.id);
+				}
+				await this.deleteRoom(roomId);
+			}
+		}
 	}
 
 	async removeAdmin(roomId : number, adminId: string)

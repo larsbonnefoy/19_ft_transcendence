@@ -63,6 +63,39 @@ export const useChannelStore = defineStore('channel', {
             }
        },
 
+       async leave(userId: string)
+       {
+        try{
+            let status: string;
+            if (this.channel?.owner.login42 === userId)
+                status = 'owner';
+            else if (this.channel?.admins.find((it) => {return (it.login42 === userId) }))
+                status = 'admin';
+            else if (this.channel?.chatters.find((it) => {return (it.login42 === userId) }))
+                status = 'chatter';
+            if (status === 'admin' || status === 'chatter')
+            {
+                this.kickUser(userId, status)
+            }
+            else if (status === 'owner')
+            {
+                const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/delOwner`, {id: this.channel?.id},
+                {
+                   headers: 
+                   {
+                       'token':localStorage.getItem('jwt_token')
+                   }
+               });
+               console.log(data.data)
+               if (!data.data)
+                this.channel = null;
+               if(this.channel !== null)
+                   this.channel.owner = data.data; 
+            }
+        }
+        catch {}
+       },
+
        async addMessage(newMessageString: string)
        {
         try
@@ -177,6 +210,7 @@ export const useChannelStore = defineStore('channel', {
 
        async hasPassFromId(id: number)
        {
+        try{
             const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/hasPass`, {id: id},
             {
                 headers: 
@@ -185,11 +219,14 @@ export const useChannelStore = defineStore('channel', {
 	            }
             });
             return data.data;
+        }
+        catch {}
 
        },
 
       async kickUser(userId: string, status: string)
        {
+        try{
             console.log('kick', status)
         if(status === 'chatter')
         {
@@ -220,10 +257,13 @@ export const useChannelStore = defineStore('channel', {
                     this.channel.admins = data.data
                 }
         }   
+        }
+        catch {}
        },
 
        async removeUser(userId: string, status: string)
        {
+        try{
             console.log('remove', status)
         if(status === 'chatter')
         {
@@ -255,6 +295,53 @@ export const useChannelStore = defineStore('channel', {
                     await this.addChatter(userId);
                 }
         }   
+        }
+        catch {}
+       },
+       async changeName(name:string)
+       {
+            try
+            {
+             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/changeName`, {id: this.channel?.id, name: name},
+              {
+                 headers: 
+                 {
+	                 'token':localStorage.getItem('jwt_token')
+	             }
+             });
+             if(this.channel !==null)
+             {
+                 this.channel.name = data.data
+             }
+            }
+            catch {}
+        },
+
+        async changePassword(name:string)
+       {
+        try{
+             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/changePassword`, {id: this.channel?.id, password: name},
+              {
+                 headers: 
+                 {
+	                 'token':localStorage.getItem('jwt_token')
+	             }
+             });
+            }
+            catch {}
+       },
+        async deletePassword(name:string)
+       {
+        try{
+             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/removePassword`, {id: this.channel?.id},
+              {
+                 headers: 
+                 {
+	                 'token':localStorage.getItem('jwt_token')
+	             }
+             });
+            }
+            catch {}
        },
        async promoteChatter(userId: string)
        {
@@ -289,7 +376,7 @@ export const useChatStore = defineStore('chat', {
                 });
                 this.chat = {ChannelList: [], PublicList: []};
                 this.chat.ChannelList = data.data;
-                console.log("hmmmmm " + data.data[0].id);
+                // console.log("hmmmmm " + data.data[0].id);
                 const dataPublic: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/public`,
                 {
                     headers: 

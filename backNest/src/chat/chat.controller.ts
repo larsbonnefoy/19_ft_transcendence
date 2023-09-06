@@ -300,6 +300,103 @@ export class ChatController {
 	}
 
     @UseGuards(AuthGuard)
+	@Post('delOwner') 
+    async delOwner(@Res() res: any, @Body() body: string, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body['id'];
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)))
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		console.log("delOwner");
+
+		await this.chatService.removeOwner(roomId);
+        await res.status(200).json(await this.chatService.getOwner(body['id'])).send();
+
+        return;
+	}    
+
+
+    @UseGuards(AuthGuard)
+	@Post('changeName') 
+    async changeName(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.setName(roomId, body.name);
+        await res.status(200).json(body.name).send();
+        return;
+	}
+    
+    @UseGuards(AuthGuard)
+	@Post('removePassword') 
+    async removePassword(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.removePassword(roomId);
+        await res.status(200).json({"status":"good"}).send();
+        return;
+	}
+
+    @UseGuards(AuthGuard)
+	@Post('changePassword') 
+    async changePassword(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.setPassword(roomId, body.password);
+        await res.status(200).json({"status":"good"}).send();
+        return;
+	}
+
+    @UseGuards(AuthGuard)
 	@Post('delAdmin') 
     async delAdmin(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
@@ -522,7 +619,7 @@ export class ChatController {
 
         //check if user is owner or chatter
         const agent: User | null = (await this.userService.findOne(req.user));
-        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)))
+        if (body['chatter'] !== req.user && !(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)))
         {
             await res.status(403).json({"error":"Forbidden"}).send();
             return;
