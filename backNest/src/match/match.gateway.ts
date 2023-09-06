@@ -17,7 +17,7 @@ export let games : Array<Game> = new Array(0);
 
 @WebSocketGateway({
   cors: {
-    origin: ["http://http://10.2.8.1:5173", "http://localhost:5173"],
+    origin: [`http://10.2.8.3:5173`, "http://localhost:5173"],
     methods: ["GET", "POST"],
 //      allowedHeaders: ["my-custom-header"],
 //      credentials: true
@@ -194,13 +194,13 @@ export class MatchGateway {
         if (+game.score0 >= 20 && !(p1.achievements & 512)) { //Double The Trouble
           await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
           if (+game.score1 > +game.score0 && !(p1.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p1.login42, +p1.achievements + 1024, 1024);
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 512 + 1024, 1024);
           }
         }
         if (+game.score1 >= 20 && !(p2.achievements & 512)) { //Double The Trouble
           await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
           if (+game.score0 > +game.score1 && !(p2.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p2.login42, +p2.achievements + 1024, 1024);
+            await this.userService.addAchievement(p2.login42, +p2.achievements+ 512 + 1024, 1024);
           }
         }
         await this.matchService.createMatch(nMatch);
@@ -482,6 +482,24 @@ export class MatchGateway {
     }
 	if (!(user.achievements & 64))
 		await this.userService.addAchievement(login42, +user.achievements + 64, 64);
+  }
+
+  @SubscribeMessage('hideChat')
+  async hideChat(@MessageBody() token: string) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	const user = await this.userService.findOne(login42);
+    if (user == null) {
+      console.log("can't find user with login " + login42);
+      return ;
+    }
+	if (!(user.achievements & 4096))
+		await this.userService.addAchievement(login42, +user.achievements + 4096, 4096);
   }
 
   @SubscribeMessage('viewerMessage')
