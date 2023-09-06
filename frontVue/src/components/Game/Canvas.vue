@@ -21,6 +21,12 @@ const refreshMsg = ref(0);
 let viewerMessages : Array<string> = [];
 
 
+let windowWidth = ref(window.innerWidth);
+
+function handleResize() {
+	windowWidth.value = window.innerWidth;
+}
+
 const player0Connected = computed(() => {
     return (player0Login.value != "Player1" && player0Login.value != "");
 })
@@ -298,6 +304,7 @@ let leaveRoom = (async () => {
 
 onMounted(async () => {
     await store.setStatus("ingame");
+    window.addEventListener('resize', handleResize);
     // socket.connect(); //we don't connect and disconnect here
     if (props.playGame === GameType.PLAYER) {    //if he joins a game to play this function launches the game, to watch this function is not called
         socket.emit('joinGame', {mode: localStorage.getItem('game_mode'), token: localStorage.getItem('jwt_token')});
@@ -308,6 +315,7 @@ onMounted(async () => {
 
 onUnmounted(async () => {
     clearInterval(intervalStop);
+    window.removeEventListener('resize', handleResize);
     removeEventListener('keydown', keyDown);
     removeEventListener('keyup', keyUp);
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
@@ -358,10 +366,20 @@ onUnmounted(async () => {
                     </div>
                 </div>
             </template>
-            <div class="row" :key="refreshMsg">
-                <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 10vw; max-height: 80vh;">
+            <div v-if="windowWidth > 1400" class="row" :key="refreshMsg">
+                <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 10vw; max-width: 15vw; max-height: 80vh;">
                     <div class="card-body">
-                        <h5 class="card-title" style="text-align: center;">Live messages</h5>
+                        <div class="row card-title">
+                            <svg class="col-3 blinking" height="50" width="50">
+                                <circle cx="25" cy="25" r="5" fill="red" />
+                                Sorry, your browser does not support inline SVG.  
+                            </svg>
+                            <h5 class="col-6" style="text-align: center;">Live messages</h5>
+                            <svg class="col-3 blinking" height="50" width="50">
+                                <circle cx="25" cy="25" r="5" fill="red" />
+                                Sorry, your browser does not support inline SVG.  
+                            </svg>
+                        </div>
                         <template v-for="(message, index) in viewerMessages">
                             <div> {{ message }} </div>
                         </template>
@@ -390,6 +408,60 @@ onUnmounted(async () => {
     display: inline;
     width: 80%;
 	height: 80%;
+}
+
+.blinking {
+  -webkit-animation: 1s blink ease infinite;
+  -moz-animation: 1s blink ease infinite;
+  -ms-animation: 1s blink ease infinite;
+  -o-animation: 1s blink ease infinite;
+  animation: 1s blink ease infinite;
+  
+}
+
+@keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes blink{
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 </style>
