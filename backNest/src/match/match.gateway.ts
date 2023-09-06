@@ -484,6 +484,13 @@ export class MatchGateway {
 		await this.userService.addAchievement(login42, +user.achievements + 64, 64);
   }
 
+  @SubscribeMessage('viewerMessage')
+  async viewerMessage(@MessageBody() data: {roomIndex: number, message: string, username: string}) {
+    if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	  	return ;
+    this.server.to("room" + data.roomIndex).emit('receiveViewerMessage', {username: data.username, message: data.message});
+  }
+
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
   }

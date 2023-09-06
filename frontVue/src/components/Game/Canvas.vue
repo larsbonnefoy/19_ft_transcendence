@@ -13,8 +13,12 @@ const props = defineProps<{
 const emit = defineEmits(['closeCanvas']);
 
 const store = useUserStore();
-let isPlayer: boolean = props.playGame === GameType.PLAYER;
+const isPlayer: boolean = props.playGame === GameType.PLAYER;
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
+const newMessage = ref("");
+const lenLeft = computed(() => 60 - newMessage.value.length);
+const refreshMsg = ref(0);
+let viewerMessages : Array<string> = [];
 
 
 const player0Connected = computed(() => {
@@ -51,6 +55,23 @@ let roomIndex : number = -1;
 
 const diff = ref(0);
 const viewers = ref(0);
+
+function sendViewerMessage() {
+    if (newMessage.value && newMessage.value.trim().length !== 0) {
+        socket.emit('viewerMessage', {roomIndex: roomIndex, message:newMessage.value, username: store.getUserName});
+        // console.log("message sent: " + newMessage.value);
+    }
+    newMessage.value = "";
+}
+
+function receiveViewerMessage(data: any) {
+    viewerMessages.push(data.username + ": " + data.message);
+    if (viewerMessages.length > 5) {
+        viewerMessages.shift();
+    }
+    refreshMsg.value++;
+    // console.log("message received from " + data.username + ": " + data.message);
+}
 
 function keyDown(event: any) {
     key = event.keyCode;
@@ -130,6 +151,8 @@ function init() {
 	
 	window.addEventListener('keydown', keyDown);
 	window.addEventListener('keyup', keyUp);
+
+    socket.on('receiveViewerMessage', receiveViewerMessage);
 
     socket.on('display', (response : any) => {
         if (roomIndex === -1) {
@@ -291,6 +314,7 @@ onUnmounted(async () => {
     await store.setStatus("online");
     socket.off('joinGame');
     socket.off('display');
+    socket.off('receiveViewerMessage');
 })
 </script>
 
@@ -334,6 +358,25 @@ onUnmounted(async () => {
                     </div>
                 </div>
             </template>
+            <div class="row" :key="refreshMsg">
+                <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 10vw; max-height: 80vh;">
+                    <div class="card-body">
+                        <h5 class="card-title" style="text-align: center;">Live messages</h5>
+                        <template v-for="(message, index) in viewerMessages">
+                            <div> {{ message }} </div>
+                        </template>
+                        <div v-if="!isPlayer">
+                            <div class="input-group">
+                                <input :maxlength="60" v-model="newMessage" @keydown.enter="sendViewerMessage" placeholder="send message">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"> {{ lenLeft }}</span>
+                                </div>
+                            </div>
+                            <!-- <input type="button" value="Submit" @click="sendViewerMessage()"/> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 	</div>
 </template>

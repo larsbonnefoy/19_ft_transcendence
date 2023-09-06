@@ -13,6 +13,8 @@ const router = useRouter();
 let liveGames: any = Array(0);
 
 function isBlocked(login42 : string) : boolean {
+	if (store.getBlocked === undefined)
+		return false;
 	for (let user of store.getBlocked) {
 		if (user === login42) {
 			return true;
