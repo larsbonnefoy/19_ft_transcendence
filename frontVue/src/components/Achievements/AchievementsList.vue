@@ -170,6 +170,16 @@ const achievementList: Achievement[] = [
         max: 1,
     },
     {
+        name: "This is a library",
+        imageUrl: "../../../assets/Achievements/silence.png",
+        description: "Did you know you could hide chat in game ?",
+        progress: () => {
+			return props.userProp.achievements & 4096 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
+    },
+    {
         name: "Retro Gamer",
         imageUrl: "../../../assets/Achievements/retro.png",
         description: "Enter God Mode",

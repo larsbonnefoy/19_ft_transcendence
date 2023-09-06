@@ -131,6 +131,9 @@ export class UserService {
       case (2048):
         message = "Is this multiplayer ?";
         break ;
+      case (4096):
+        message = "This is a library";
+        break ;
       default:
         message = "New";
     }

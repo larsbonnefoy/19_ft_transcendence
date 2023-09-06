@@ -37,6 +37,7 @@ const chartOptions: GoogleChartOptions | undefined = {
         textStyle: {
             color: '#FFFFFF'
         },
+        format: '0',
     }
 };
 const login = ref("");

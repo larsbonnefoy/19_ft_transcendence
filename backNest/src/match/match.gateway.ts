@@ -484,6 +484,24 @@ export class MatchGateway {
 		await this.userService.addAchievement(login42, +user.achievements + 64, 64);
   }
 
+  @SubscribeMessage('hideChat')
+  async hideChat(@MessageBody() token: string) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	const user = await this.userService.findOne(login42);
+    if (user == null) {
+      console.log("can't find user with login " + login42);
+      return ;
+    }
+	if (!(user.achievements & 4096))
+		await this.userService.addAchievement(login42, +user.achievements + 4096, 4096);
+  }
+
   @SubscribeMessage('viewerMessage')
   async viewerMessage(@MessageBody() data: {roomIndex: number, message: string, username: string}) {
     if (+data.roomIndex < 0 || +data.roomIndex >= games.length)

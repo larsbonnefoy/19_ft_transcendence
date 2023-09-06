@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../../socket';
 import { GameType } from '../../types';
 import GamePlayerCard from './GamePlayerCard.vue';
@@ -16,7 +16,7 @@ const store = useUserStore();
 const isPlayer: boolean = props.playGame === GameType.PLAYER;
 const backGrounds : Array<string> = ["black", "Tennis1", "Tennis2", "FootBallField", "Avatar"];
 const newMessage = ref("");
-const lenLeft = computed(() => 60 - newMessage.value.length);
+const displayChat = ref(true);
 const refreshMsg = ref(0);
 let viewerMessages : Array<string> = [];
 
@@ -62,17 +62,30 @@ let roomIndex : number = -1;
 const diff = ref(0);
 const viewers = ref(0);
 
+function hideChat() {
+    displayChat.value = false;
+    socket.emit('hideChat', localStorage.getItem('jwt_token'));
+}
+
 function sendViewerMessage() {
     if (newMessage.value && newMessage.value.trim().length !== 0) {
         socket.emit('viewerMessage', {roomIndex: roomIndex, message:newMessage.value, username: store.getUserName});
         // console.log("message sent: " + newMessage.value);
     }
+    let doc = document.getElementById("MessageBox") as HTMLElement;;
+    if (doc) {
+        nextTick(() => doc.focus());
+        // console.log(doc);
+        // doc.focus();
+    }
+    // console.log(doc);
+    // document.getElementById("MessageBox")?.focus();
     newMessage.value = "";
 }
 
 function receiveViewerMessage(data: any) {
     viewerMessages.push(data.username + ": " + data.message);
-    if (viewerMessages.length > 5) {
+    if (viewerMessages.length > 10) {
         viewerMessages.shift();
     }
     refreshMsg.value++;
@@ -366,35 +379,38 @@ onUnmounted(async () => {
                     </div>
                 </div>
             </template>
-            <div v-if="windowWidth > 1400" class="row" :key="refreshMsg">
-                <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 10vw; max-width: 15vw; max-height: 80vh;">
-                    <div class="card-body">
-                        <div class="row card-title">
-                            <svg class="col-3 blinking" height="50" width="50">
-                                <circle cx="25" cy="25" r="5" fill="red" />
-                                Sorry, your browser does not support inline SVG.  
-                            </svg>
-                            <h5 class="col-6" style="text-align: center;">Live messages</h5>
-                            <svg class="col-3 blinking" height="50" width="50">
-                                <circle cx="25" cy="25" r="5" fill="red" />
-                                Sorry, your browser does not support inline SVG.  
-                            </svg>
-                        </div>
-                        <template v-for="(message, index) in viewerMessages">
-                            <div> {{ message }} </div>
-                        </template>
-                        <div v-if="!isPlayer">
-                            <div class="input-group">
-                                <input :maxlength="60" v-model="newMessage" @keydown.enter="sendViewerMessage" placeholder="send message">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"> {{ lenLeft }}</span>
+            <template v-if="displayChat">
+                <div v-if="windowWidth > 1400" class="row" :key="refreshMsg">
+                    <div>
+                        <div class="card text-white bg-dark overflow-auto shadow-lg" style="min-width: 15vw; max-width: 15vw; max-height: 80vh;">
+                            <div class="card-body">
+
+                                <div class="row card-title">
+                                    <svg class="col-3 blinking" height="50" width="50">
+                                        <circle cx="25" cy="25" r="5" fill="red" />
+                                        Sorry, your browser does not support inline SVG.  
+                                    </svg>
+                                    <h5 class="col-6" style="text-align: center;" @click.prevent="hideChat">Live messages</h5>
+                                    <svg class="col-3 blinking" height="50" width="50">
+                                        <circle cx="25" cy="25" r="5" fill="red" />
+                                        Sorry, your browser does not support inline SVG.  
+                                    </svg>
                                 </div>
+                                <template v-for="n in 10-viewerMessages.length">
+                                    <br>
+                                </template>
+                                <template v-for="(message, index) in viewerMessages">
+                                    <div class="my-1"> {{ message }} </div>
+                                </template>
+                
                             </div>
-                            <!-- <input type="button" value="Submit" @click="sendViewerMessage()"/> -->
+                            <template v-if="!isPlayer">
+                                <input id="MessageBox" :maxlength="60" v-model="newMessage" @keydown.enter="sendViewerMessage" placeholder="send message">
+                            </template>
                         </div>
                     </div>
                 </div>
-            </div>
+            </template>
         </div>
 	</div>
 </template>
