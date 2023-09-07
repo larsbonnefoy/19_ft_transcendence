@@ -2,40 +2,46 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
+import JoinChannel from './JoinChannel.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
 import { socket } from '@/socket';
 
 const chat = useChatStore();
-const emit = defineEmits();
 
 await chat.fetchChannels();
 
 const searchTerm = ref('');
 const showSearchBar = ref(false);
 const showCreateChannel = ref(false);
+const showJoinChannel = ref(false);
+const hasPass = ref(false);
+const channelId = ref<number>(-1)
 
 const toggleSearchBar = () => {
   showSearchBar.value = !showSearchBar.value;
 };
 
-const currentView = ref('private');
+const currentView = ref('public');
 
 const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POUR LES MESSAGES DE GROUPES
   if (currentView.value === 'private') {
     currentView.value = 'channels';
   } else if (currentView.value === 'channels') {
-    currentView.value = 'public-group';
+    currentView.value = 'public';
   } else {
     currentView.value = 'private';
   }
 };
 
-async function handleSelected(name: string) {
-  console.log("LESSGOOO" + name );
-  await emit('channel', name);
-  emit('channel-selected', name);
+function ClickJoin(event: any)
+{
+  console.log("click" + event);
+  hasPass.value = event.hasPass;
+  channelId.value = event.id;
+  showJoinChannel.value = !showJoinChannel.value;
 }
+
 
 </script>
 
@@ -46,12 +52,13 @@ async function handleSelected(name: string) {
       <h3 @click="toggleView">
         {{
           currentView === 'private' ? 'Private Messages' : 
-          currentView === 'channels' ? 'Public Groups' : 
-          'Private Groups'
+          currentView === 'channels' ? 'Group Messages' : 
+          'Join Public Channels'
         }}
       </h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
       <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
+      <JoinChannel v-if="showJoinChannel" :hasPass="hasPass" :id="channelId" @close="showJoinChannel = false" />
     </div>
     <transition name="slide-fade">
       <input 
@@ -65,35 +72,36 @@ async function handleSelected(name: string) {
 
     <div v-if="currentView === 'private'">
     	<div class="channel-scroll">
-          <template v-for="channel in chat.getChannels">
-            <ChannelButton v-if="channel.isDm"
-              :key="channel.id"
-              :channel="channel" 
-              @channel-selected=handleSelected($event)
-            />
-          </template>
+      	<!-- Display filtered channels based on search term and current view -->
+       <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="channel.isDm"
+                  :channel="channel" 
+                  :isPublic=false
+     	 /></template>
     	</div>
     </div>
-    <div v-else-if="currentView === 'channels'">
+    <div v-if="currentView === 'channels'">
     	<div class="channel-scroll">
-          <template v-for="channel in chat.getChannels">
-            <ChannelButton v-if="!channel.isDm && !channel.isPublicGroup"
-              :key="channel.id"
-              :channel="channel" 
-              @channel-selected=handleSelected($event)
-            />
-          </template>
+      	<!-- Display filtered channels based on search term and current view -->
+        <template v-for="channel in chat.getChannels">
+             	<ChannelButton v-if="!channel.isDm"
+               :channel="channel" 
+               :isPublic=false
+     	        />
+      </template>
+   
     	</div>
     </div>
     <div v-else>
     	<div class="channel-scroll">
-          <template v-for="channel in chat.getChannels">
-            <ChannelButton v-if="channel.isPublicGroup"
-              :key="channel.id"
-              :channel="channel" 
-              @channel-selected=handleSelected($event)
-            />
-          </template>
+      	<!-- Display filtered channels based on search term and current view -->
+        <template v-for="channel in chat.getPublics">
+             	<ChannelButton 
+               :channel="channel"
+               :isPublic=true
+               @click="ClickJoin"
+     	        />
+      </template>
     	</div>
     </div>
   </div>

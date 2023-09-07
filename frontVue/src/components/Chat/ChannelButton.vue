@@ -1,37 +1,81 @@
 <script setup lang="ts">
 import { useChatStore, useChannelStore} from '@/stores/chat';
 import { type Channel } from '@/types';
+import {types} from "sass";
+import axios from "axios";
+import { socket } from '@/socket';
+import { ref } from 'vue';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
-const emit = defineEmits();
+const emit = defineEmits(['click'], ['channel-selected']);
+
+
+const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
+})).data;
 
 // Props
- const { channel } = defineProps({
-   channel: Object
-  });
-  
-  // Methods
-  const selectChannel = async () => {
-    if (channel && chat)
-    {
-      console.log(`Selected: ${channel.id}`);
-      const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel.id)})  
-      if (newChannel)
-      {
-        console.log("new channel " + newChannel);
-        await channelStore.setChannel(newChannel);
-      }
-      console.log(channelStore.getMessages);
-      console.log("done");
+ const { channel, isPublic } = defineProps({
+  channel: Object,
+  isPublic: Boolean 
+});
+
+
+function getDmChatter()
+{
+  if(channel?.chatters)
+  {
+    console.log("getDm: " + channel.chatters[0]?.username + " " + me + " "  +  channel.owner?.login42)
+    if (channel.chatters[0]?.login42 === me)
+      return channel.owner?.username;
+    return (channel.chatters[0]?.username);
   }
-  emit('channel-selected',  channel.id);
-};
+}
+
+let channelName = channel?.name;
+if (channel?.isDm)
+  channelName = getDmChatter();
+// Methods
+const selectChannel = async () => {
+  if (channel && chat)
+  {
+    if(!isPublic)
+    {
+     console.log(`Selected: ${channel.id}`);
+     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
+     if (newChannel)
+     {
+        console.log(newChannel.id);
+        if (channel?.id)
+         socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
+        await channelStore.setChannel(newChannel);
+        socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     }
+     // console.log(channelStore.getMessages);
+     console.log("done");
+    }
+    else
+    {
+      console.log("PUBLIC " + channel?.id);
+      const emitInfo: any = {id: channel?.id, hasPass: await channelStore?.hasPassFromId(channel?.id)}
+      console.log(emitInfo.id);
+      console.log(emitInfo.hasPass);
+      console.log(emitInfo);
+      emit('click', emitInfo)
+    }
+  }
+}
 </script>
 
+
 <template>
+
   <button class="channel-button" @click="selectChannel">
-    {{ channel?.id }}
+    {{ channelName }}
   </button>
 </template>
 

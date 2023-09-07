@@ -5,44 +5,35 @@ import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
-import {useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import { GameType } from '@/types';
 import axios from 'axios';
 
-const route = useRoute();
 const store = useUserStore();
 const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
 let windowWidth = ref(window.innerWidth);
+let router = useRouter();
 
 let liveGames: any = Array(0);
-const dataLoaded = ref(false);
 
 async function isInGame() {
     try {
-        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/ongoingGames`);
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/startingOngoingGames`);
         liveGames = res.data;
-		console.log(liveGames.length);
+		// console.log(liveGames.length);
 		if (liveGames.length != 0 ) {
-			console.log(liveGames);
+			// console.log(liveGames);
 			for (let games of liveGames) {
-				if (games.player0 == store.getUserName || games.player1 == store.getUserName) {
-					return true;
+				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
+					joinGame();
 				}
-				return false;
 			}
 		}
-        dataLoaded.value = true;
     }
     catch(error:any) {
         console.log(error.message + ": Pb loading ongoing games")
     }
-	return false;
-}
-
-if (route.path === "/game/challenge") {
-	displayGame.value = true;
-	playGame.value = GameType.CHALLENGER;
 }
 
 function joinGame() {
@@ -56,7 +47,7 @@ function watchGame() {
 }
 
 function closeCanvas() {
-	console.log("canvas closed");
+	// console.log("canvas closed");
 	displayGame.value = false;
 	// socket.emit('leaveRoomSearch', localStorage.getItem('jwt_token'));
 };
@@ -67,18 +58,23 @@ socket.on('endGame', (roomIndex) => {
 	socket.emit('leaveRoom', {roomIndex: roomIndex, token: localStorage.getItem('jwt_token')});
 });
 
+socket.on("challengeAcceptedJoinGame", () => { // router.push /game doesn't work if in /game already
+    joinGame();
+});
+
 function handleResize() {
 	windowWidth.value = window.innerWidth;
 }
 
 onMounted(async () => {
     window.addEventListener('resize', handleResize);
-	//isInGame();
+	await isInGame();
 });
 
 onUnmounted(async () => {
     window.removeEventListener('resize', handleResize);
 	socket.off('endGame');
+	socket.off('challengeAcceptedJoinGame');
 });
 
 </script>

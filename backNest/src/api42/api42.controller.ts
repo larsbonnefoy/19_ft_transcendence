@@ -18,26 +18,33 @@ export class Api42Controller {
 			const access_token  : string = await this.api42Service.getToken(query);
 			// const access_token  : string = "badAccess";
 			const intraLogin : string = await this.api42Service.getLogin42(access_token);
-			let intraPhoto: string
-			try
-			{
-				 intraPhoto = await this.api42Service.getImage42(access_token);
-			}
-			catch
-			{
-				intraPhoto = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif";
-			}
 			let state : boolean = true;
 			const user = (await this.userService.findOne(intraLogin)); 
 		//create a User object 
 			if (!user)
 			{
 				console.log("creating a db entry");
-				const newUser : User  = new User
+				const newUser : User  = new User;
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
+				let intraPhoto: string;
+				try
+				{
+					intraPhoto = await this.api42Service.getImage42(access_token);
+				}
+				catch
+				{
+					intraPhoto = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif";
+				}
 				newUser.photo = intraPhoto;
-				this.userService.createUser(newUser);
+				let hugocheck : string = intraLogin.toLowerCase();
+				for (let i = 0; i < hugocheck.length - 3; i++) {
+					if (hugocheck.slice(i, i + 4) === "hugo") {
+						newUser.achievements = 256;
+						break ;
+					}
+				}
+				await this.userService.createUser(newUser);
 			}
 			else
 			{

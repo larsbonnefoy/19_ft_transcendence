@@ -68,6 +68,7 @@ function playGame() {
   align-items: center;
 }
 
+
 .blinking {
   -webkit-animation: 1s blink ease infinite;
   -moz-animation: 1s blink ease infinite;

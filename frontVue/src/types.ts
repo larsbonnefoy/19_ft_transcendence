@@ -31,18 +31,26 @@ export interface LeaderBoardUserInfo {
     photo: string
 }
 
+export interface MemberInfo {
+	username: string
+	status: string
+	elo: number
+	photo: string
+}
+
 export interface Achievement {
     name: string
     imageUrl: string
     description: string
-    progress(): number //returns in % the completeness of the achievement, could return -1 if there is no progress to be tracked
+    progress(): number
 	current: number
     max: number
 }
 
 export interface Channel
 {
-    id: string
+    id: number
+    name: string
     messages: Messages[]
     chatters: UserInfo[]
     admins: UserInfo[]
@@ -64,10 +72,10 @@ export interface Messages
 
 export interface ChatInfo{
     ChannelList : Channel[]
+    PublicList : Channel[]
 }
 
 export enum GameType {
     PLAYER,
-    WATCHER,
-    CHALLENGER
+    WATCHER
 }

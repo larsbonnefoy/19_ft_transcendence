@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class messageDto {
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
-    roomId : string;
+    roomId : number;
 
     @IsString()
     message : string

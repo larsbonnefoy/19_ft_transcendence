@@ -58,23 +58,26 @@ function getDmChatter()
 }
 
 const sendMessage = async () => {
-  console.log(channel.getIsDm);
-  if (channel.getIsDm && newMessage.value.trim())
-  {
-    const chatter = getDmChatter(); 
-
-    console.log("Send Dm to :" + chatter)
-    // console.log(message)
-    await channel.addMessage(newMessage.value);
-    socket.emit("sendPrivate",{target: chatter, message: newMessage.value, token: localStorage.getItem('jwt_token')});
-  }
+  // console.log(channel.getIsDm);
+  // if (channel.getIsDm && newMessage.value.trim())
+  // {
+  //   const chatter = getDmChatter();
+  //
+  //   console.log("Send Dm to :" + chatter)
+  //   // console.log(message)
+  // }
   // if (newMessage.value.trim()) {
     // messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
     // nextTick(() => {
       // autoScroll();
     // });
   // }
-  newMessage.value = "";
+  if (newMessage.value && newMessage.value.trim().length !== 0)
+  {
+    await channel.addMessage(newMessage.value);
+    socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
+  }
+    newMessage.value = "";
 };
 
 const autoScroll = () => {
@@ -96,16 +99,18 @@ function handleOpenProfile(user: string) {
 }
 
 onMounted(async () => {
-  socket.on("privateMessage", (data : any) => {
+  socket.on("getMessage", (data : any) => {
     console.log("response: "+ data.login + " " + data.message);
     channel.refreshMessages();
   });
 })
 
 onUnmounted(async () => {
-  socket.off("privateMessage");
+  socket.emit("leaveChannel",{target: channel.getId, token: localStorage.getItem('jwt_token')});
+  socket.off("getMessage");
 });
 
+console.log(channel.getId)
 </script>
 
 <template>
@@ -113,11 +118,10 @@ onUnmounted(async () => {
     <!-- Chat header -->
     <div class="chat-header">
       <span class="channel-name">{{ selectedChannel }}</span>
-      <!-- FAUT FIX LA VALEUR EN FALSE PAR DEFAUT SINON CA L ICON MEME SANS CHARGER DE CHANNEL-->
-      <div v-if ="!channel?.getIsPrivate">
+      <template v-if="channel.getId">
         <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
         <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
-      </div>
+      </template>
     </div>
 
     <!-- <div id="ChatWindow">{{selectedChannel}}</div> -->

@@ -34,10 +34,8 @@ export const useUserStore = defineStore('user', {
 					this.user.photo = await this.getAvatar(this.user.photo);
 					this.user.status = "online"; //little trick to be online when you reload your own profile
 				}
-                console.log("yo");
-				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
-                console.log("yo");
-            }
+ 				socket.emit('joinMyRoom', localStorage.getItem('jwt_token')); //each user has his own personal room in which he can be contacted
+             }
             catch (error) {
             //   alert(error);
               console.log("fetch user error : " + error);
@@ -61,7 +59,6 @@ export const useUserStore = defineStore('user', {
                     try {
                         const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/disable/`, {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
-                        console.log(data);
                     }
                     catch (error) {
                         console.log(error);
@@ -127,7 +124,7 @@ export const useUserStore = defineStore('user', {
 			return "../../assets/placeholder_avatar.png";
 		},
         async addFriend(newFriendLogin: string) {
-            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
         },
         async unsendFriendRequest(newFriendLogin: string) {
             await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/remove_request:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
@@ -151,8 +148,7 @@ export const useUserStore = defineStore('user', {
             }
         },
         async removeFriend(FriendtoRemoveLogin: string) {
-            console.log(FriendtoRemoveLogin);
-            axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
+            await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unset_friend:${FriendtoRemoveLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })
             if (this.user) {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }

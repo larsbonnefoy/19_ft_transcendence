@@ -80,7 +80,7 @@ onUnmounted(async () => {
 <style scoped> 
 .profileImg {
     height: fit-content;
-    width: 3vw;
+    width: 3em;
     border-radius: 10%;
 }
 .buttonStyle {

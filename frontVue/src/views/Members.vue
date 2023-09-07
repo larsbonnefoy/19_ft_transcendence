@@ -2,13 +2,14 @@
 import axios from "axios"
 import { onMounted, ref } from "vue";
 import Member from '@/components/Members/Member.vue';
+import {type MemberInfo} from '@/types';
 
 const members:any = ref([]);
 
 onMounted(async () => {
     try {
       const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/get`);
-      members.value = res.data;
+      members.value = res.data.slice().sort((a:MemberInfo, b:MemberInfo) => b.username < a.username);
     }
     catch (error) {
         alert(error);
@@ -23,7 +24,7 @@ onMounted(async () => {
 
 		<div class="col-3"></div>
 		<div class="col-6">
-			<div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 60vh;">
+			<div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 80vh;">
 				<div class="card-body">
 					<h5 class="card-title" style="text-align: center;">Members</h5> 
 					<template v-for="(member, index) in members" :key="index">

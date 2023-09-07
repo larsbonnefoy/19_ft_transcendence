@@ -7,9 +7,11 @@ import {
     WebSocketServer,
     WsResponse,
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
+import { User } from '../user/user.entity';
 import { Api42Service } from '../api42/api42.service';
 import { UserService } from '../user/user.service';
+import { Chat } from './chat.entity';
 import { ChatService } from './chat.service';
 
 @WebSocketGateway(
@@ -25,8 +27,8 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage('sendPrivate')
-  handleMessage(@MessageBody()  data: {target: string, message: string, token: string}) {
+  @SubscribeMessage('send')
+  async handleMessage(@MessageBody()  data: {target: number, message: string, token: string}) {
   let login42: string = "";
     try {
       login42 = this.api42Service.decodeJWT(data.token);
@@ -34,7 +36,22 @@ export class ChatGateway {
     catch (error) {
       return ;
     }
-  this.server.to(data.target).emit("privateMessage", {message: data.message, login: login42});
+  const chatUsers: User[] = await this.chatService.getUsers(data.target);
+  console.log(chatUsers);
+  this.server.to("channel" + data.target).emit("getMessage", {message: data.message, login: login42});
   }
 
+  @SubscribeMessage('joinChannel')
+  joinChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
+  {
+    client.join("channel" + data.target);
+    console.log("client joined : channel" + data.target)
+  }
+
+  @SubscribeMessage('leaveChannel')
+  leaveChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
+  {
+    client.leave("channel" + data.target);
+    console.log("client left : channel" + data.target)
+  }
 }

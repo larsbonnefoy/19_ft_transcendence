@@ -1,7 +1,6 @@
 TODOS:
 	- sql injections
 	- chat?
-	- ingame powerup ?
 	- If in game when /game -> load canvas
 	- If game challenge accepte in /game -> load canvas
 	- change addFriend/remove/unset... endpoint to use login42 and not username;
@@ -10,10 +9,18 @@ TODOS:
 My todo:
 - achievements
 			+ add achievements related to chat
+			+ special name as username (like for nametags in minecraft) -> only prob is if you keep it noone else can claim the achievement
+				-> solutions : 	1) have "pong" as part of username
+								2) have "hugo" as part of username, pour la blague "il n'y a que des hugos dans cette ecole" achiev name="One of us"
+								3) if try to set 'archimede'(or any of the bocal) as username, doesn't work + achiev
+			+ 
 - id in user?
 - check cancel pending of lars
 - update achievements when changename, like for games of lars
-
+- type-check
+- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
+- if gmode all first + hard second not together ?
+- si server reload, they don't join their personal room until they refresh their page .. will not happen in prod though
 
 
 list of .env content:
@@ -23,7 +30,6 @@ list of .env content:
 		POSTGRES_PASSWORD=secret
 		POSTGRES_DB=db_nestjs
 		# POSTGRES_DB_HOST=postgres
-		# POSTGRES_DB_NAME_CHAT=chat
 		POSTGRES_DB_PORT=5432
 
 		#API 42
@@ -37,11 +43,11 @@ list of .env content:
 		ENC_ALG='aes-256-ctr'
 
 		#NETWORK 
-		LOCAL_IP = "10.2.7.2" #--> or localhost
+		LOCAL_IP = "10.2.7.2"
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
-		VITE_LOCAL_IP = "10.2.7.2" #--> or localhost
+		VITE_LOCAL_IP = "10.2.7.2"  #=localip of machine--> or localhost
 		VITE_BACKEND_PORT = "3000"
 
 -backNest/postgres/.env
@@ -64,12 +70,22 @@ my done:
 - set status using socket io (what charlie boy talked about)
 - game + matchmaking + watchparty + challenge friend
 - reactive screen everywhere
+- Change achiev images to white
+- toastification of achievements
+- sensi palettes
+- obstacles in games
+- sort members by alpha
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1
 			- MAKEUP ARTIST: changed profile picture			(id 4)  => & 2
 			- FLAWLESS: won a game without conceding any point	(id 5)  => & 4
 			- YOU AND ME: made your first friend				(id 6)  => & 8
+			- Retro Gamer												   & 16
+			- Shielded													   & 32
+			- G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this) & 64
+			- Telekinesis : win a game without moving					   & 128
+			- One of use : Your username seems familiar..				   & 256
 
 ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 
@@ -129,3 +145,13 @@ psql --host=$HOSTNAME --user=$USERNAME -W $DBNAME
 
 nestjs comm w/ postgresql
 	https://medium.com/simform-engineering/nestjs-and-postgresql-a-crud-tutorial-32aa78778752
+
+docker exec -it postgres_only bash
+    psql --username=user db_nestjs
+        Delete chat db content :
+        Drop table chat cascade;
+        Drop table chat_admins_user cascade;
+        Drop table chat_bans_user cascade;
+        Drop table chat_chatters_user cascade;
+        Drop table chat_message cascade;
+        Drop table chat_mutes_user cascade;

@@ -8,10 +8,11 @@ import { MatchService } from './match.service';
 import { MatchController } from './match.controller';
 import { MatchGateway } from './match.gateway';
 import { Api42Module } from '../api42/api42.module';
+import { AchievementGateway } from '../user/user.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Match]), forwardRef(() => Api42Module)],
   controllers: [MatchController],
-  providers: [UserService, MatchService, MatchGateway],
+  providers: [UserService, AchievementGateway, MatchService, MatchGateway],
 })
 export class MatchModule {}
