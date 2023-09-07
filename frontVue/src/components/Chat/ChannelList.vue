@@ -53,7 +53,7 @@ function ClickJoin(event: any)
         {{
           currentView === 'private' ? 'Private Messages' : 
           currentView === 'channels' ? 'Group Messages' : 
-          'Join Public Channels'
+          'Public Channels'
         }}
       </h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
@@ -80,7 +80,7 @@ function ClickJoin(event: any)
      	 /></template>
     	</div>
     </div>
-    <div v-if="currentView === 'channels'">
+    <div v-else-if="currentView === 'channels'">
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
@@ -94,7 +94,6 @@ function ClickJoin(event: any)
     </div>
     <div v-else>
     	<div class="channel-scroll">
-      	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getPublics">
              	<ChannelButton 
                :channel="channel"
