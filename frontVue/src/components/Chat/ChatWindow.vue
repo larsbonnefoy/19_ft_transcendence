@@ -11,6 +11,7 @@ import EditChannel from './EditChannel.vue';
 const chat = useChatStore();
 const channel = useChannelStore();
 const showEditChannel = ref(false);
+// const private = ref(true);
 const props = defineProps({
   // messages: Array,
   user: Object,
@@ -112,8 +113,11 @@ onUnmounted(async () => {
     <!-- Chat header -->
     <div class="chat-header">
       <span class="channel-name">{{ selectedChannel }}</span>
-      <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
-      <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+      <!-- FAUT FIX LA VALEUR EN FALSE PAR DEFAUT SINON CA L ICON MEME SANS CHARGER DE CHANNEL-->
+      <div v-if ="!channel?.getIsPrivate">
+        <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
+        <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+      </div>
     </div>
 
     <!-- <div id="ChatWindow">{{selectedChannel}}</div> -->
