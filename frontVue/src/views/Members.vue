@@ -9,7 +9,7 @@ const members:any = ref([]);
 onMounted(async () => {
     try {
       const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/get`);
-      members.value = res.data.slice().sort((a:MemberInfo, b:MemberInfo) => b.username < a.username);
+      members.value = res.data.slice().sort((a:MemberInfo, b:MemberInfo) => b.username.toLowerCase() < a.username.toLowerCase());
     }
     catch (error) {
         alert(error);

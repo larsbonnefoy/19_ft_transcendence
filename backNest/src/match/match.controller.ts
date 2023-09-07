@@ -39,6 +39,28 @@ export class MatchController {
 	else
 		res.json(response);
   }
+
+
+  @Get('tenFrom:start')
+  async tenFrom(@Res() res: Response, @Param() params: any) {
+    const games = await this.matchService.findAll();
+    let response: Array<Match> = new Array(0);
+    const start: number = +params.start.slice(1);
+    let index: number = 0;
+    for (let match of games.slice().reverse()) {
+      if (index >= start) {
+        if (index >= +start + 10) {
+          break ;
+        }
+        response.push(match);
+      }
+      ++index;
+    }
+    if (response.length == 0)
+      res.status(404).json({error:"No match in range [" + start + ':' + (start + 10) + ']'});
+    else
+      res.json(response);
+  }
   
 //   @Get('get')
 //   async getMatch(@Res() res: Response) {
@@ -90,26 +112,26 @@ export class MatchController {
 //     res.json({"Match":"created"});
 //   }
   
-  @Get('del')
-  async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
-    console.log("match/del request with id %d", id);
-    const check_base = await this.matchService.findOne(id);
-    if (check_base == null) {
-      res.status(404).json({"Match":"doesn't exist"});
-      return ;
-    }
-    await this.matchService.remove(id);
-    res.json({"Match":"deleted"});
-  }
+  // @Get('del')
+  // async delMatch(@Res() res: Response, @Query('id', ParseIntPipe) id: number) {
+  //   console.log("match/del request with id %d", id);
+  //   const check_base = await this.matchService.findOne(id);
+  //   if (check_base == null) {
+  //     res.status(404).json({"Match":"doesn't exist"});
+  //     return ;
+  //   }
+  //   await this.matchService.remove(id);
+  //   res.json({"Match":"deleted"});
+  // }
   
-  @Get('delAll')
-  async delAll(@Res() res: Response) {
-    const matchs = await this.matchService.findAll();
-    for (let match of matchs) {
-      await this.matchService.remove(match.id);
-    }
-    res.json({"Matchs":"deleted"});
-  }
+  // @Get('delAll')
+  // async delAll(@Res() res: Response) {
+  //   const matchs = await this.matchService.findAll();
+  //   for (let match of matchs) {
+  //     await this.matchService.remove(match.id);
+  //   }
+  //   res.json({"Matchs":"deleted"});
+  // }
 
   @Get('ongoingGames')
   async getOngoingGames(@Res() res: Response) {

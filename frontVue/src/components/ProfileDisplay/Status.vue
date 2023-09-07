@@ -5,6 +5,7 @@ const props = defineProps<{
 }>()
 
 let color: string;
+
 switch(props.status) {
     case"online":
         color = "circle-green"
@@ -22,8 +23,7 @@ switch(props.status) {
 
 
 <template>
-    <div>
-    <div :class="color"> </div>
+    <div :class="color" data-toggle="tooltip" data-placement="bottom" :title="props.status">
     </div>
 </template>
 
@@ -50,10 +50,4 @@ switch(props.status) {
     border-radius: 50%;
     background-color: #bdbfbb;
     margin: auto;
-}
-
-/* .statusImg{
-    height: 15px;
-    width: auto;
-} */
-</style>
+}</style>

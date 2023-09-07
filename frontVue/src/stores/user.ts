@@ -11,11 +11,13 @@ export const useUserStore = defineStore('user', {
     getters: {
         getUser: (state): UserInfo | null => state.user,
         getUserName: (state) => state.user?.username,
+        getDisplayLogin: (state) => state.user?.displayLogin,
         getStatus: (state) => state.user?.status,
         getImg: (state) => state.user?.photo,
         getFriends: (state) => state.user?.friends,
         getBlocked: (state) => state.user?.blocked_users,
         getLogin42: (state) => state.user?.login42,
+        getElo: (state) => state.user?.elo,
         get2fa: (state) => state.user?.has2fa,
         getWin: (state) => state.user?.win,
         getLoss: (state) => state.user?.loss,
@@ -64,6 +66,18 @@ export const useUserStore = defineStore('user', {
                         console.log(error);
                     }
                 }
+            }
+        },
+        async changeDisplayLogin(value: boolean) {
+            console.log("Value in changeDisplayLogin " + value);
+            if (this.user) {
+                try {
+                    const data = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/setDisplayLog:${value}`, { headers: {token: localStorage.getItem('jwt_token')} });
+                }
+                catch (error:any) {
+                    console.log(error.message);
+                }
+                this.user.displayLogin = value;
             }
         },
         async setName(newUsername:string) {
@@ -153,6 +167,22 @@ export const useUserStore = defineStore('user', {
                 this.user.friends = this.user?.friends.filter(name => name !== FriendtoRemoveLogin)
             }
         },
+        async blockUser(userToBlock: string){
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/block_user:${userToBlock}`, { headers: {token: localStorage.getItem('jwt_token')} });
+            if (this.user) {
+                this.user.blocked_users.push(userToBlock);
+            }
+        },
+        async unBlockUser(userToUnBlock: string){
+            const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unblock_user:${userToUnBlock}`, { headers: {token: localStorage.getItem('jwt_token')} });
+            console.log("response unBlockUser");
+            console.log(res.data);
+            if (this.user) {
+                this.user.blocked_users = this.user?.blocked_users.filter(name => name !== userToUnBlock);
+                console.log("blocked list");
+                console.log(this.user.blocked_users);
+            }
+        },
       },
-     persist: true,
+     persist: false,
   })

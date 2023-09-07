@@ -8,10 +8,16 @@ const props = defineProps<{
     userProp: UserInfo
 }>()
 
+const emit = defineEmits(['toggleFriendDisplay']);
+
 const displayAll = ref(false);
 
 function toggleAchDisplay() {
     displayAll.value = !displayAll.value
+}
+
+function toggleFriends() {
+    emit('toggleFriendDisplay');
 }
 
 const progressAchToDisplay = computed(() => {
@@ -65,13 +71,13 @@ const achievementList: Achievement[] = [
     {
         name: "Master",
         imageUrl: "../../../assets/Achievements/100games.png",
-        description: "Win 100 games",
+        description: "Win 50 games",
         progress: () => {
-            const val = (props.userProp.win * 1) / 100
+            const val = (props.userProp.win * 1) / 50
             return val < 1 ? val : 1;
         },
 		current: props.userProp.win * 1,
-        max: 100,  
+        max: 50,  
     },
     {
         name: "Incognito",
@@ -94,9 +100,9 @@ const achievementList: Achievement[] = [
         max: 1,
     },
 	{
-		name: "One of us",
+		name: "Incognhugo",
 		imageUrl: "../../../assets/Achievements/hugos.png",
-		description: "Your username seems familiar..",
+		description: "One of us",
 		progress: () => {
 			return props.userProp.achievements & 256 ? 1 : 0;
 		},
@@ -113,6 +119,16 @@ const achievementList: Achievement[] = [
 		current: -1,
         max: 1,
     },
+    {
+		name: "Is this multiplayer ?",
+		imageUrl: "../../../assets/Achievements/touch5.png",
+		description: "Hit the ball 5 times in a row without your opponent hitting it once",
+		progress: () => {
+			return props.userProp.achievements & 2048 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
 	{
 		name: "Telekinesis",
 		imageUrl: "../../../assets/Achievements/telekinesis.png",
@@ -123,12 +139,42 @@ const achievementList: Achievement[] = [
 		current: -1,
 		max: 1,
 	},
+	{
+		name: "Double The Trouble",
+		imageUrl: "../../../assets/Achievements/finish20.png",
+		description: "Finish a game with a score above 20",
+		progress: () => {
+			return props.userProp.achievements & 512 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
+	{
+		name: "All For Nothing",
+		imageUrl: "../../../assets/Achievements/lose20.png",
+		description: "Lose a game with a score above 20",
+		progress: () => {
+			return props.userProp.achievements & 1024 ? 1 : 0;
+		},
+		current: -1,
+		max: 1,
+	},
     {
         name: "You and Me",
         imageUrl: "../../../assets/Achievements/handshake.png",
         description: "Make your first friend",
         progress: () => {
 			return props.userProp.achievements & 8 ? 1 : 0;
+		},
+		current: -1,
+        max: 1,
+    },
+    {
+        name: "This is a library",
+        imageUrl: "../../../assets/Achievements/silence.png",
+        description: "Did you know you could hide chat in game ?",
+        progress: () => {
+			return props.userProp.achievements & 4096 ? 1 : 0;
 		},
 		current: -1,
         max: 1,
@@ -167,7 +213,7 @@ const achievementList: Achievement[] = [
 </script>
 
 <template>
-    <h2 style="text-align: center; " class="m-5">Achievements </h2>
+    <h2 style="text-align: center; " class="m-5 HoverTitle" @click="toggleFriends">Achievements </h2>
     <div class="card text-white bg-dark overflow-auto shadow-lg m-5" style="max-width: 100vw; max-height: 70vh;">
         <template v-for="(achievement, index) in gameProgressAchievements" :key="index">
             <div v-if="displayAll">
@@ -185,3 +231,10 @@ const achievementList: Achievement[] = [
         </template>
     </div>
 </template>
+
+<style scoped>
+.HoverTitle:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+</style>

@@ -21,5 +21,5 @@ async function sendMessage() {
 </script>
 
 <template>
-    <button v-if="display" type="button" class="btn btn-primary" @click="sendMessage">Message</button>
+    <button v-if="display" type="button" class="btn btn-outline-primary" @click="sendMessage">Message</button>
 </template>

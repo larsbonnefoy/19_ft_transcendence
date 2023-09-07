@@ -17,7 +17,7 @@ import { ChatService } from './chat.service';
 @WebSocketGateway(
   {
     cors: {
-      origin: [`http://${process.env.LOCAL_IP}:5173`, "http://localhost:5173"],
+      origin: [`http://10.2.8.3:5173`, "http://localhost:5173"],
       methods: ["GET", "POST"],
     },
   })
@@ -36,8 +36,17 @@ export class ChatGateway {
     catch (error) {
       return ;
     }
+  const current_user = await this.userService.findOne(login42);
+  if (current_user === null)
+    return ; // should not happen but you never know
   const chatUsers: User[] = await this.chatService.getUsers(data.target);
   console.log(chatUsers);
+  for (let user of chatUsers) {
+    if (user.login42 !== login42) {
+      console.log("sending toast to " + user.login42);
+      this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:current_user.username}, message: data.message});
+    }
+  }
   this.server.to("channel" + data.target).emit("getMessage", {message: data.message, login: login42});
   }
 

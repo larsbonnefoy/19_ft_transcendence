@@ -10,6 +10,7 @@ import { User, UserStatus } from './user.entity';
 import { UserService } from './user.service';
 import { newUserDto } from './userDto.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { responseEncoding } from 'axios';
 
 let userServiceForMethod: UserService;
 
@@ -87,6 +88,19 @@ export class UserController {
     // console.info("%s is now %s", req.user, UserStatus[status]);
     await this.userService.set_status(req.user, UserStatus[status]);
     res.json({"success":`status changed from ${user.status} to ${UserStatus[status]}`});
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('setDisplayLog:bool')
+  async setDisplayLog(@Request() req: any, @Res() res: Response, @Param() param: any) {
+    const newValue: boolean = param.bool.slice(1) === "true";
+    const user = await this.userService.findOne(req.user);
+    if (user == null) {
+      res.status(404).json({"error":"no user with that login"});
+      return ;
+    }
+    await this.userService.set_display_log(req.user, newValue);
+    res.json({"success":`DisplayLog set to to ${newValue}`});
   }
  
 //   @UseGuards(AuthGuard)
@@ -239,8 +253,8 @@ export class UserController {
     for (let reverse_pending of user_1.pending) {
       if (reverse_pending === user_2.login42) {
         await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
-        await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
-        await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+        await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42, user_2.username);
+        await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42, user_1.username);
         if (!(user_1.achievements & 8))
           await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
         if (!(user_2.achievements & 8))
@@ -249,7 +263,7 @@ export class UserController {
         return ;
       }
     }
-    await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42);
+    await this.userService.add_pending(user_2.login42, user_2.pending, user_1.login42, user_1.username);
     res.json({"success":`${user_1.login42} sent friend request to ${friendLogin}`});
     return ;
   }
@@ -321,8 +335,8 @@ export class UserController {
       return ;
     }
     await this.userService.remove_pending(user_1.login42, user_1.pending, user_2.login42);
-    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42);
-    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42);
+    await this.userService.add_friend(user_1.login42, user_1.friends, user_2.login42, user_2.username);
+    await this.userService.add_friend(user_2.login42, user_2.friends, user_1.login42, user_1.username);
 	if (!(user_1.achievements & 8))
 		await this.userService.addAchievement(user_1.login42, +user_1.achievements + 8, 8);
 	if (!(user_2.achievements & 8))
@@ -361,17 +375,17 @@ export class UserController {
   }
   
   @UseGuards(AuthGuard)
-  @Get('block_user:username')
+  @Get('block_user:login42')
   async blockUser(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendlogin42: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendlogin42);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s blocks %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s blocks %s", user_1.login42, friendlogin42);
+    if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
@@ -387,37 +401,37 @@ export class UserController {
       return ;
     }
     await this.userService.block_user(user_1.login42, user_1.blocked_users, user_2.login42);
-    res.json({"success":`${user_1.username} blocked ${friendusername}`});
+    res.json({"success":`${user_1.login42} blocked ${friendlogin42}`});
   }
   
   @UseGuards(AuthGuard)
-  @Get('unblock_user:username')
+  @Get('unblock_user:login42')
   async unblockUser(@Request() req: any, @Res() res: any, @Param() param: any) {
-    const friendusername: string = param.username.slice(1);
+    const friendlogin42: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
-    const user_2 = await this.userService.findUsername(friendusername);
+    const user_2 = await this.userService.findOne(friendlogin42);
     if (user_1 == null || user_2 == null) {
-      res.status(404).json({"error":`no user with such username`});
+      res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s unblocks %s", user_1.username, friendusername);
-    if (user_1.username == friendusername) {
+    console.log("%s unblocks %s", user_1.login42, friendlogin42);
+    if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
     }
-    let notpending: boolean = true;
-    for (let pending of user_1.blocked_users) {
-      if (pending == user_2.login42) {
-        notpending = false;
+    let notblocked: boolean = true;
+    for (let blocked of user_1.blocked_users) {
+      if (blocked == user_2.login42) {
+        notblocked = false;
         break ;
       }
     }
-    if (notpending) {
+    if (notblocked) {
       res.status(404).json({"error":"can't unblock if not blocked in first place"});
       return ;
     }
     await this.userService.unblock_user(user_1.login42, user_1.blocked_users, user_2.login42);
-    res.json({"success":`${user_1.username} unblocked ${friendusername}`});
+    res.json({"success":`${user_1.login42} unblocked ${friendlogin42}`});
   }
   
 //   @UseGuards(AuthGuard)
@@ -505,35 +519,35 @@ export class UserController {
     res.json({"user":"created"});
   }
   
-  @Get('delAll')
-  async delAll(@Res() res: any) {
-    const users = await this.userService.findAll();
-    for (let user of users) {
-      await this.userService.remove(user.username);
-    }
-    res.json({"users":"deleted"});
-  }
+  // @Get('delAll')
+  // async delAll(@Res() res: any) {
+  //   const users = await this.userService.findAll();
+  //   for (let user of users) {
+  //     await this.userService.remove(user.username);
+  //   }
+  //   res.json({"users":"deleted"});
+  // }
   
-  @Get('del:username')
-  async delUser(@Res() res: any, @Param() params: any) {
-    const username: string = params.username.slice(1);
-    console.log("got del request with username %s", username);
-    const current_user = await this.userService.findUsername(username);
-    if (current_user == null) {
-      res.status(404).json({"user":"doesn't exist"});
-      return ;
-    }
-    for (let friend of current_user.friends) {
-      const other = await this.userService.findOne(friend);
-      if (other != null) {
-        await this.userService.remove_friend(current_user.login42, current_user.friends, other.login42);
-        await this.userService.remove_friend(other.login42, other.friends, current_user.login42);
-        console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
-      }
-    }
-    await this.userService.remove(username);
-    res.json({"user":"deleted"});
-  }
+  // @Get('del:username')
+  // async delUser(@Res() res: any, @Param() params: any) {
+  //   const username: string = params.username.slice(1);
+  //   console.log("got del request with username %s", username);
+  //   const current_user = await this.userService.findUsername(username);
+  //   if (current_user == null) {
+  //     res.status(404).json({"user":"doesn't exist"});
+  //     return ;
+  //   }
+  //   for (let friend of current_user.friends) {
+  //     const other = await this.userService.findOne(friend);
+  //     if (other != null) {
+  //       await this.userService.remove_friend(current_user.login42, current_user.friends, other.login42);
+  //       await this.userService.remove_friend(other.login42, other.friends, current_user.login42);
+  //       console.log(`friendship sunk between ${current_user.username} and ${other.username}`);
+  //     }
+  //   }
+  //   await this.userService.remove(username);
+  //   res.json({"user":"deleted"});
+  // }
 
   @UseGuards(AuthGuard)
   @Post('avatar')
@@ -592,6 +606,13 @@ export class UserController {
   @Get('avatar:imgpath')
   seeUploadedAvatar(@Res() res: Response, @Param('imgpath') image: any) {
 	// console.log("get for image %s", image.slice(1));
-	res.sendFile(image.slice(1), {root: 'uploads'});
+	fs.access("uploads/" + image.slice(1), (err) => {
+		if (err) {
+			console.log("file uploads/" + image.slice(1) + " not found");
+			res.status(404).json({error:"file not found"});
+			return ;
+		}
+		res.sendFile(image.slice(1), {root: 'uploads'});
+	});
   }
 }

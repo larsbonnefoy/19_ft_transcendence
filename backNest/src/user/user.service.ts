@@ -28,8 +28,9 @@ export class UserService {
 	await this.userRepository.update(login42, {photo: avatar});
   }
   
-  async add_pending(login42: string, current_pending_list: string[], friend: string) {
+  async add_pending(login42: string, current_pending_list: string[], friend: string, friend_username) {
     current_pending_list.push(friend);
+    this.achievementGateway.server.to(login42).emit('warningToast', friend_username + " wants to be your friend");
     await this.userRepository.update(login42, {pending:current_pending_list});
   }
   
@@ -50,14 +51,16 @@ export class UserService {
   async unblock_user(login42: string, current_blocked_users: string[], friend: string) {
     let new_blocked_users: Array<string> = new Array(0);
     for (let iter of current_blocked_users) {
-      if (iter != friend)
-      new_blocked_users.push(iter);
+      if (iter != friend) {
+        new_blocked_users.push(iter);
+      }
     }
-    await this.userRepository.update(login42, {pending:new_blocked_users});
+    await this.userRepository.update(login42, {blocked_users:new_blocked_users});
   }
 
-  async add_friend(login42: string, current_friend_list: string[], friend: string) {
+  async add_friend(login42: string, current_friend_list: string[], friend: string, friend_username: string) {
     current_friend_list.push(friend);
+    this.achievementGateway.server.to(login42).emit('succesToast', "New friend: " + friend_username);
     await this.userRepository.update(login42, {friends:current_friend_list});
   }
 
@@ -73,8 +76,8 @@ export class UserService {
   async addWin(login42: string, win: number) {
     console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
-	if (+win === 100) {
-		this.achievementGateway.server.to(login42).emit('achievement', "Master");
+	if (+win === 50) {
+		this.achievementGateway.server.to(login42).emit('succesToast', "New achievement: Master");
 		this.achievementGateway.server.to(login42).emit('achievementUpdate');
 	}
   }
@@ -89,9 +92,9 @@ export class UserService {
     await this.userRepository.update(login42, {achievements:achievements});
     let message: string = "";
     switch (current) {
-	  case (0):
-		message = "RESET";
-		break ;
+      case (0):
+      message = "RESET";
+      break ;
       case (1):
         message = "Incognito";
         break ;
@@ -110,19 +113,31 @@ export class UserService {
       case (32):
         message = "Shielded";
         break ;
-	  case (64):
-		message = "G.O.L.D.";
-		break ;
-	  case (128):
-		message = "Telekinesis";
-		break ;
-	  case (256):
-		message = "One of us";
-		break ;
+      case (64):
+        message = "G.O.L.D.";
+        break ;
+      case (128):
+        message = "Telekinesis";
+        break ;
+      case (256):
+        message = "Incognhugo";
+        break ;
+      case (512):
+        message = "Double The Trouble";
+        break ;
+      case (1024):
+        message = "All for nothing";
+        break ;
+      case (2048):
+        message = "Is this multiplayer ?";
+        break ;
+      case (4096):
+        message = "This is a library";
+        break ;
       default:
         message = "New";
     }
-    this.achievementGateway.server.to(login42).emit('achievement', message);
+    this.achievementGateway.server.to(login42).emit('succesToast', "New achievement: " + message);
     this.achievementGateway.server.to(login42).emit('achievementUpdate');
   }
 
@@ -136,6 +151,11 @@ export class UserService {
   async set_status(login42: string, newstatus: string) {
     console.log(login42 + " is now " + newstatus);
     await this.userRepository.update(login42, {status:newstatus});
+  }
+  
+  async set_display_log(login42: string, newValue: boolean) {
+    console.log("displayLog of " + login42 + " is now " + newValue);
+    await this.userRepository.update(login42, {displayLogin:newValue});
   }
 
   findAll(): Promise<User[]> {

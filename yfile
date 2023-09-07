@@ -1,9 +1,14 @@
 TODOS:
 	- sql injections
 	- chat?
-	- If in game when /game -> load canvas
 	- If game challenge accepte in /game -> load canvas
 	- change addFriend/remove/unset... endpoint to use login42 and not username;
+	- login42 in pending display instead fo usernames ?
+	- you can still be inside a room with someone you blocked if you join queue at the same time
+	- channelButton.vue line 13 axios call not inside a try catch
+	- ChatWindow.vue line 30 axios call not inside a try catch
+	- MessageBox.vue line 12 axios call not inside a try catch
+	- user.controller 115-136 userServices calls not protected
 
 
 My todo:
@@ -16,10 +21,7 @@ My todo:
 			+ 
 - id in user?
 - check cancel pending of lars
-- update achievements when changename, like for games of lars
 - type-check
-- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
-- if gmode all first + hard second not together ?
 - si server reload, they don't join their personal room until they refresh their page .. will not happen in prod though
 
 
@@ -29,7 +31,7 @@ list of .env content:
 		POSTGRES_USER=user
 		POSTGRES_PASSWORD=secret
 		POSTGRES_DB=db_nestjs
-		# POSTGRES_DB_HOST=postgres
+		POSTGRES_DB_HOST=postgres
 		POSTGRES_DB_PORT=5432
 
 		#API 42
@@ -43,11 +45,11 @@ list of .env content:
 		ENC_ALG='aes-256-ctr'
 
 		#NETWORK 
-		LOCAL_IP = "10.2.7.2"
+		LOCAL_IP = "10.2.8.1"
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
-		VITE_LOCAL_IP = "10.2.7.2"  #=localip of machine--> or localhost
+		VITE_LOCAL_IP = "10.2.8.1"  #=localip of machine--> or localhost
 		VITE_BACKEND_PORT = "3000"
 
 -backNest/postgres/.env
@@ -61,7 +63,7 @@ list of .env content:
 
 
 
-my done:
+Done:
 - elo modif like chess
 - status can be changed
 - photos <==  https://stackoverflow.com/questions/37510801/convert-octet-stream-to-image
@@ -75,6 +77,10 @@ my done:
 - sensi palettes
 - obstacles in games
 - sort members by alpha
+- If in game when /game -> load canvas
+- update achievements when changename, like for games of lars
+- if someone has Retro Gamer, cheat code doesn't work (to avoid exploit and keep it fun)
+- if gmode all first + hard second not together ?
 - achievements
 			- 1 10 100 games played 							(id 0, 1, 2)
 			- INCOGNITO: changed username						(id 3)  => & 1
@@ -86,6 +92,9 @@ my done:
 			- G.O.L.D.: Play with the golden ball (they have to change their localstorage to receive this) & 64
 			- Telekinesis : win a game without moving					   & 128
 			- One of use : Your username seems familiar..				   & 256
+			- Double The Trouble: finish a game with more than 20 points   & 512
+			- All for nothing:   lose a game with more than 20 points      & 1024
+			- Is this multiplayer ?: Hit the ball 5 times in a row without your opponent hitting it once   & 2048
 
 ok already handled:	- user a picks <login42 of someone who is not in the data base> as username, then that user joins the database, what happens ?
 

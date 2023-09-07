@@ -5,12 +5,14 @@ export interface match {
     score1: number,
     score2: number
     elo1: number,
-    elo2: number
+    elo2: number,
+    gMode: number,
 }
 
 export interface UserInfo {
     login42: string
     username: string
+    displayLogin:  boolean
     status: string
     photo: string
     elo: number

@@ -9,9 +9,9 @@ const store = useUserStore();
 const props = defineProps({
   user: String
 });
-const selectedUser = ref(props.user);
 
-let userdata= ref<any>();
+let userdata: UserInfo;
+
 let dataLoaded = ref(false)
 
 
@@ -19,19 +19,22 @@ async function getProfileData(user: string) {
   try {
     console.log('Current selected user:a', user);
 
-    const res = await axios.get(`http://localhost:3000/user/findone:${user}`, {
+    const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/findone:${user}`, {
       headers:
           {
             'token':localStorage.getItem('jwt_token')
           }});
-    userdata.value = res.data;
-    // console.log(userdata.value)
+    userdata = res.data;
+    userdata.photo = await store.getAvatar(userdata.photo);
+    console.log(userdata.photo);
     dataLoaded.value = true;
   } catch (error: any) {
     console.error("Error fetching user data:", error);
   }
 };
 
+
+/* Dont need those, already on profile card
 function addFriend() {
   console.log("Add as friend clicked for:", store.getUserName);
 }
@@ -43,8 +46,8 @@ function startMatch() {
 function blockUser() {
   console.log("Block clicked for:", store.getUserName);
 }
+*/
 
-// await getProfileData();
 
 watch(() => props.user, async (newVal: any) => {
   dataLoaded.value = false;

@@ -17,6 +17,7 @@ let toggleAchiev = (async () => {
     }
 });
 
+
 const completed = computed(()=> {
     return (props.achievProgress == 1)
 })
@@ -77,9 +78,7 @@ const displayProgress = computed(() => {
 
 <style scoped>
 .HoverAch:hover {
-    opacity: 1 !important;
-    height: 5em;
-    width: 5em;
+    cursor: pointer;
 }
 
 img {

@@ -21,6 +21,7 @@
     "socket.io-client": "^4.7.2",
     "vue": "^3.3.4",
     "vue-cookies": "^1.8.3",
+    "vue-google-charts": "^1.1.0",
     "vue-router": "^4.2.4",
     "vue-toastification": "^2.0.0-rc.5",
     "ws": "^8.13.0"

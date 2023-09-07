@@ -16,5 +16,5 @@ async function invGame() {
 </script>
 
 <template>
-    <button type="button" class="btn btn-outline-success" @click="invGame">Invite Game</button>
+    <button type="button" class="btn btn-outline-success" @click="invGame">Invite</button>
 </template>

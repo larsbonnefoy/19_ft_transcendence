@@ -14,6 +14,9 @@ export class User {
   @Column({ type: "text", unique: true })
   username: string;
 
+  @Column({ type:"boolean", default: "true"})
+  displayLogin: boolean;
+
   @Column({type: "text", default: ""})
   client_id: string;
   

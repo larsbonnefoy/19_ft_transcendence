@@ -17,7 +17,7 @@ export let games : Array<Game> = new Array(0);
 
 @WebSocketGateway({
   cors: {
-    origin: [`http://${process.env.LOCAL_IP}:5173`, "http://localhost:5173"],
+    origin: [`http://10.2.8.3:5173`, "http://localhost:5173"],
     methods: ["GET", "POST"],
 //      allowedHeaders: ["my-custom-header"],
 //      credentials: true
@@ -77,6 +77,22 @@ export class MatchGateway {
       game.updateRightPaddle(data.dir);
   }
 
+  @SubscribeMessage('updateBothPaddles')
+  async computeBothPaddles(@MessageBody() data: {dir: number, roomIndex: number, token: string}) {
+    if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	  	return ;
+    let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(data.token);
+    }
+    catch (error) {
+      return ;
+    }
+    const game: Game = games[data.roomIndex];
+    game.updateLeftPaddle(data.dir);
+    game.updateRightPaddle(data.dir);
+  }
+
   @SubscribeMessage('display')
   async display(@MessageBody() roomIndex: number) {
 	if (+roomIndex < 0 || +roomIndex >= games.length)
@@ -84,7 +100,7 @@ export class MatchGateway {
     // console.log("display update from room " + roomIndex);
 	const game: Game = games[roomIndex];
     let save_state : states = game.state;
-    game.updateGameArea(new Date().getTime());
+    await game.updateGameArea(new Date().getTime(), this.userService);
     if (game.state === states.ENDED) {
       this.server.to(game.roomName).emit("endGame", roomIndex);
       if (save_state === states.ONGOING) {
@@ -99,41 +115,42 @@ export class MatchGateway {
 		      game.resetGame();
           return ;
         }
-		let games_played : number = +p1.win + (+p1.loss) + 1;
-		let message : string = "";
-		switch (games_played) {
-			case (1):
-				message = "Getting Started";
-				break ;
-			case (19):
-				message = "Lifeguard";
-				break ;
-			case (42):
-				message = "Welcome to the Jar";
-				break ;
-		}
-		if (message !== "") {
-			this.server.to(p1.login42).emit('achievement', message);
-			this.server.to(p1.login42).emit('achievementUpdate');
-		}
-		games_played = +p2.win + (+p2.loss) + 1;
-		message = "";
-		switch (games_played) {
-			case (1):
-				message = "Getting Started";
-				break ;
-			case (19):
-				message = "Lifeguard";
-				break ;
-			case (42):
-				message = "Welcome to the Jar";
-				break ;
-		}
-		if (message !== "") {
-			this.server.to(p2.login42).emit('achievement', message);
-			this.server.to(p2.login42).emit('achievementUpdate');
-		}
-		nMatch.player1 = p1.login42;
+        let games_played : number = +p1.win + (+p1.loss) + 1;
+        let message : string = "";
+        switch (games_played) {
+          case (1):
+            message = "Getting Started";
+            break ;
+          case (19):
+            message = "Lifeguard";
+            break ;
+          case (42):
+            message = "Welcome to the Jar";
+            break ;
+        }
+        if (message !== "") {
+          this.server.to(p1.login42).emit('succesToast', "New achievement: " + message);
+          this.server.to(p1.login42).emit('achievementUpdate');
+        }
+        games_played = +p2.win + (+p2.loss) + 1;
+        message = "";
+        switch (games_played) {
+          case (1):
+            message = "Getting Started";
+            break ;
+          case (19):
+            message = "Lifeguard";
+            break ;
+          case (42):
+            message = "Welcome to the Jar";
+            break ;
+        }
+        if (message !== "") {
+          this.server.to(p2.login42).emit('succesToast', "New achievement: " + message);
+          this.server.to(p2.login42).emit('achievementUpdate');
+        }
+        nMatch.gMode = game.gMode;
+        nMatch.player1 = p1.login42;
         nMatch.player2 = p2.login42;
         nMatch.score1 = game.score0;
         nMatch.score2 = game.score1;
@@ -149,12 +166,12 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player1 wins");
           console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
-		  if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
-			await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
-		  }
-		  if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
-			await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
-		  }
+          if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
+          }
+          if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
+          }
         }
         else {
           await this.userService.addWin(p2.login42, +p2.win + 1);
@@ -167,12 +184,24 @@ export class MatchGateway {
           nMatch.elo2 = Math.ceil(newelo2);
           console.log("player2 wins");
           console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
-		  if (+game.score0 === 0 && !(p2.achievements & 4)) {
-			await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
-		  }
-		  if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
-			await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
-		  }
+          if (+game.score0 === 0 && !(p2.achievements & 4)) {
+            await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
+          }
+          if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
+            await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
+          }
+        }
+        if (+game.score0 >= 20 && !(p1.achievements & 512)) { //Double The Trouble
+          await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
+          if (+game.score1 > +game.score0 && !(p1.achievements & 1024)) { //All for nothing
+            await this.userService.addAchievement(p1.login42, +p1.achievements + 512 + 1024, 1024);
+          }
+        }
+        if (+game.score1 >= 20 && !(p2.achievements & 512)) { //Double The Trouble
+          await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
+          if (+game.score0 > +game.score1 && !(p2.achievements & 1024)) { //All for nothing
+            await this.userService.addAchievement(p2.login42, +p2.achievements+ 512 + 1024, 1024);
+          }
         }
         await this.matchService.createMatch(nMatch);
         game.resetGame();
@@ -230,8 +259,7 @@ export class MatchGateway {
               game.gMode = data.mode;
           }
           game.player1 = login42;
-          game.lastTimeStamp = new Date().getTime();
-          game.timeOut = 3000;
+          game.launchGame();
           client.join(roomName);
           this.server.to(roomName).emit("joinGame", roomIndex);
           console.log(login42 + ": second joins " + roomName);
@@ -248,6 +276,7 @@ export class MatchGateway {
         if (game.player0 === "") {
           game.player0 = login42;
           game.gMode = data.mode;
+          game.lastTimeStamp = new Date().getTime();
           client.join(roomName);
           this.server.to(game.roomName).emit("display", game);
           console.log(login42 + ": joins " + roomName);
@@ -257,12 +286,14 @@ export class MatchGateway {
       ++roomIndex;
     }
     roomName = "room" + roomIndex;
-    games.push(new Game())
-    games[roomIndex].player0 = login42;
-    games[roomIndex].gMode = data.mode;
-    games[roomIndex].roomName = roomName;
+    let game: Game = new Game();
+    game.player0 = login42;
+    game.gMode = data.mode;
+    game.roomName = roomName;
+    game.lastTimeStamp = new Date().getTime();
+    games.push(game);
     client.join(roomName);
-    this.server.to(roomName).emit("display", games[roomIndex]);
+    this.server.to(roomName).emit("display", game);
     console.log("new game in " + roomName);
   }
 
@@ -287,6 +318,9 @@ export class MatchGateway {
 	  } else if (data.roomIndex >= 0 && data.roomIndex < games.length) {
       let game: Game = games[data.roomIndex];
       console.log(login42 + " leaves " + game.roomName);
+      if (game.player0 !== login42 && game.player1 !== login42 && +game.viewers > 0) { //viewer leaves the room
+        game.viewers--;
+      }
       if (game.state === states.STARTING) {
         game.resetGame();
       }
@@ -321,6 +355,7 @@ export class MatchGateway {
           this.server.to(login42).emit("endGame", roomIndex);
           return ;
         }
+        game.viewers++;
         client.join(data.roomName);
         this.server.to(login42).emit("joinGame", roomIndex);
         console.log(client.id + " joined room " + data.roomName);
@@ -447,6 +482,31 @@ export class MatchGateway {
     }
 	if (!(user.achievements & 64))
 		await this.userService.addAchievement(login42, +user.achievements + 64, 64);
+  }
+
+  @SubscribeMessage('hideChat')
+  async hideChat(@MessageBody() token: string) {
+	let login42: string = "";
+    try {
+      login42 = this.api42Service.decodeJWT(token);
+    }
+    catch (error) {
+      return ;
+    }
+	const user = await this.userService.findOne(login42);
+    if (user == null) {
+      console.log("can't find user with login " + login42);
+      return ;
+    }
+	if (!(user.achievements & 4096))
+		await this.userService.addAchievement(login42, +user.achievements + 4096, 4096);
+  }
+
+  @SubscribeMessage('viewerMessage')
+  async viewerMessage(@MessageBody() data: {roomIndex: number, message: string, username: string}) {
+    if (+data.roomIndex < 0 || +data.roomIndex >= games.length)
+	  	return ;
+    this.server.to("room" + data.roomIndex).emit('receiveViewerMessage', {username: data.username, message: data.message});
   }
 
   handleConnection(client: Socket) {

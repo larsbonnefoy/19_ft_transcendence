@@ -5,16 +5,42 @@ import { useToast } from "vue-toastification";
 import { useRouter } from 'vue-router';
 import { socket } from './socket';
 import { onUnmounted } from 'vue';
+import axios from 'axios';
 
-window.addEventListener("beforeunload", leavingApp);
-
-// const store = useUserStore();
+const store = useUserStore();
 const router = useRouter();
 
-async function leavingApp() {
-//   if (store.getUser != null) {
-//     store.setStatus("offline");
-//   }
+let liveGames: any = Array(0);
+
+function isBlocked(login42 : string) : boolean {
+	if (store.getBlocked === undefined)
+		return false;
+	for (let user of store.getBlocked) {
+		if (user === login42) {
+			return true;
+		}
+	}
+	return false;
+}
+
+async function isInGame():Promise<boolean> {
+    try {
+        const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/match/startingOngoingGames`);
+        liveGames = res.data;
+		// console.log(liveGames.length);
+		if (liveGames.length != 0 ) {
+			// console.log(liveGames);
+			for (let games of liveGames) {
+				if (games.player0 == store.getLogin42 || games.player1 == store.getLogin42) {
+					return true;
+				}
+			}
+		}
+    }
+    catch(error:any) {
+        console.log(error.message + ": Pb loading ongoing games")
+    }
+	return false;
 }
 
 socket.on('gameNotification', (origin: any) => {
@@ -23,6 +49,9 @@ socket.on('gameNotification', (origin: any) => {
         socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
         // router.push({ name: 'game', params: { challenge: 'challenge' } });
     };
+	if (isBlocked(origin.login42)) {
+		return ;
+	}
     const toast = useToast();
 	toast.warning(origin.username + " wants to play !\nClick to join game", {
 		timeout: 5000,
@@ -46,9 +75,26 @@ socket.on("challengeAccepted", () => {
     router.push('/game');
 });
 
-socket.on('achievement', (message: string) => {
+socket.on('succesToast', (message: string) => {
 	const toast = useToast();
-	toast.success("New achievement: " + message, {
+	toast.success(message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+
+socket.on('warningToast', (message: string) => {
+	const toast = useToast();
+	toast.warning(message, {
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,
@@ -80,12 +126,35 @@ socket.on('warning', (message: string) => {
     });
 });
 
+socket.on('messageToast', async (data: any) => {
+	if (await isInGame() || isBlocked(data.from.login42)) {
+		return ;
+	}
+	const toast = useToast();
+	toast.info(data.from.username + ": " + data.message, {
+		timeout: 5000,
+		closeOnClick: true,
+		pauseOnFocusLoss: true,
+		pauseOnHover: true,
+		draggable: false,
+		draggablePercent: 0.6,
+		showCloseButtonOnHover: false,
+		hideProgressBar: false,
+		closeButton: "button",
+		icon: true,
+		rtl: false
+    });
+});
+
 console.log("App.vue loaded");
 
 onUnmounted(async () => {
 	socket.off('gameNotification');
 	socket.off('challengeAccepted');
-	socket.off('achievement');
+	socket.off('succesToast');
+	socket.off('warningToast');
+	socket.off('warning');
+	socket.off('messageToast');
 	console.log("App.vue unmounted");
 });
 </script>

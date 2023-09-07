@@ -112,10 +112,10 @@ onMounted(async () => {
 <template :key="reloadKey">
     <div v-if="isPendingRecv">
         <button type="button" class="btn btn-warning mx-3"  @click="confirmRequest"> Accept </button> 
-        <button type="button" class="btn btn-outline-warning mx-3"  @click="declineFriendRequest"> Decline  </button>
+        <button type="button" class="btn btn-outline-warning"  @click="declineFriendRequest"> Decline  </button>
     </div>
     <div v-else-if="sendOutReq">
-        <button type="button" class="btn btn-outline-warning mx-3" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
+        <button type="button" class="btn btn-outline-warning" @click="unsendFriendRequest"> Unsend </button> <!-- Instead of pending we can display unset -->
     </div>
     <div v-else>
         <button v-if="isFriend" type="button" class="btn btn-danger" @click="removeFriend">Remove</button>
