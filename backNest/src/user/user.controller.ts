@@ -32,7 +32,7 @@ export class UserController {
     const username: string = params.username.slice(1);
     const user = await this.userService.findUsername(username);
     if (user == null) {
-      res.status(404).json({"error":"no user with that username"});
+      res.status(404).json({"error":"Unknown User"}).send();
       return ;
     }
     res.json({"login42":user.login42});
@@ -43,7 +43,7 @@ export class UserController {
     const login42: string = params.login42.slice(1);
     const user = await this.userService.findOne(login42);
     if (user == null) {
-      res.status(404).json({"error":"no user with that login"});
+        res.status(404).json({"error":"Unknown User"}).send();
       return ;
     }
     res.json({"username":user.username});

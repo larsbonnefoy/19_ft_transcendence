@@ -159,13 +159,13 @@ h3:hover {
   margin-bottom: 5px;
   border-radius: 5px;
   outline: none;
-  background-color: #505050; 
+  background-color: #8e8e8e; 
   color: #ffffff;
   transition: max-height 0.3s ease;
   overflow: hidden;
 }
 .search-bar::placeholder {
-    color: #a8a8a8; /* Placeholder color */
+    color: #d4d4d4;
 }
 
 .search-toggle {

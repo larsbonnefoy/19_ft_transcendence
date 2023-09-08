@@ -8,7 +8,7 @@ import { ref } from 'vue';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
-const emit = defineEmits(['click'], ['channel-selected']);
+const emit = defineEmits(['click', 'channel-selected']);
 
 
 const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
@@ -84,7 +84,7 @@ const selectChannel = async () => {
 .channel-button {
   padding: 15px 25px 15px 20px; 
   border: none;
-  background-color: #23272b;
+  background-color: #555550;
   color: white;
   border-radius: 5px;
   text-align: left;
@@ -94,6 +94,6 @@ const selectChannel = async () => {
   margin-bottom: 2px; 
 }
 .channel-button:hover {
-  background-color: #373c42;
+  background-color: #494949;
 }
 </style>

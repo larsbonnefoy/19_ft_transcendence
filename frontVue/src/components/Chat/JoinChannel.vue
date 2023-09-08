@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { socket } from '@/socket';
 
 import { useChatStore, useChannelStore } from '@/stores/chat';
+import { type Channel } from '@/types';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -55,7 +56,10 @@ const submit = async () => {
 	catch (error: any)
 	{
     console.log("error")
-    errorMessage.value = "Bad Password"
+    if (error?.request.response)
+      errorMessage.value = JSON.parse(error.request.response).error;
+    else
+      errorMessage.value = "Bad Password"
     return;
 	}
   emit('close');
@@ -141,7 +145,7 @@ const closeModal = () => {
 }
 button.switch-create-button {
   background-color: #505050;
-  color: #a8a8a8;
+  color: #ffffff;
   transition: background-color 0.3s, transform 0.1s;
 }
 
@@ -191,7 +195,7 @@ button {
   display: flex;
   align-items: center; /* Vertically center the items */
   border-radius: 25px; /* Circular edges */
-  background-color: #505050;
+  background-color: #8e8e8e;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   position: relative; /* To position the add button absolutely */
   margin: 10px 0; /* Margin for spacing */
@@ -211,14 +215,14 @@ button {
 }
 
 .input-container input::placeholder {
-  color: #a8a8a8; /* Placeholder color */
+  color: #d4d4d4;
 }
 
 /* Add Button */
 .input-container .add-button {
   position: absolute;
   right: 0; 
-  background-color: #007BFF; 
+  background-color: #555550; 
   color: #ffffff; 
   border: none;
   padding: 0.5rem 1rem; 
@@ -235,7 +239,7 @@ button {
 }
 
 .input-container .add-button:hover {
-  background-color: #0056b3;
+  background-color: #494949;
 } 
 
 .input-container .add-button:active {

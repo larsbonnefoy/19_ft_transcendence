@@ -66,7 +66,7 @@ export const useChannelStore = defineStore('channel', {
        async leave(userId: string)
        {
         try{
-            let status: string;
+            let status: string = "";
             if (this.channel?.owner.login42 === userId)
                 status = 'owner';
             else if (this.channel?.admins.find((it) => {return (it.login42 === userId) }))
@@ -113,10 +113,11 @@ export const useChannelStore = defineStore('channel', {
             console.log("addMessage")
             console.log(newMessage)
             await this.channel?.messages.push(newMessage);
+            return true;
         }
         catch
         {
-
+            return false;
         }
        },
 
@@ -136,11 +137,11 @@ export const useChannelStore = defineStore('channel', {
             if(this.channel !== null)
                 this.channel.chatters = data.data;
         }
-        catch
+        catch (error: any)
         {
-
-        }
-       },
+            throw error;
+       }
+    },
 
        async addAdmin(userId: string)
        {
@@ -164,10 +165,11 @@ export const useChannelStore = defineStore('channel', {
         }
         },
 
-        async addBan(userId: string)
+        async addBan(userId: string, status: string| undefined)
         {
         try
         {
+          await this.kickUser(userId, status)
           console.log(this.channel?.id)
           const data: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addBan`, {id: this.channel?.id, newBan: userId},
                  {
@@ -180,13 +182,13 @@ export const useChannelStore = defineStore('channel', {
             if(this.channel !== null)
                 this.channel.bans = data.data;
         }
-        catch
+        catch 
         {
-
+  
         }
         },
 
-     async addMute(userId: string)
+     async addMute(userId: string) //TODO
         {
         try
         {
@@ -224,7 +226,7 @@ export const useChannelStore = defineStore('channel', {
 
        },
 
-      async kickUser(userId: string, status: string)
+      async kickUser(userId: string, status: string| undefined)
        {
         try{
             console.log('kick', status)
@@ -261,7 +263,7 @@ export const useChannelStore = defineStore('channel', {
         catch {}
        },
 
-       async removeUser(userId: string, status: string)
+       async removeUser(userId: string, status: string | undefined)
        {
         try{
             console.log('remove', status)
@@ -317,7 +319,21 @@ export const useChannelStore = defineStore('channel', {
             catch {}
         },
 
-        async changePassword(name:string)
+       async muteUser(userId:string)
+       {
+        try{
+             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addMute`, {id: this.channel?.id, newMute: userId},
+              {
+                 headers: 
+                 {
+	                 'token':localStorage.getItem('jwt_token')
+	             }
+             });
+            }
+            catch {}
+       },
+
+       async changePassword(name:string)
        {
         try{
              const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/changePassword`, {id: this.channel?.id, password: name},
@@ -330,7 +346,7 @@ export const useChannelStore = defineStore('channel', {
             }
             catch {}
        },
-        async deletePassword(name:string)
+        async deletePassword()
        {
         try{
              const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/removePassword`, {id: this.channel?.id},

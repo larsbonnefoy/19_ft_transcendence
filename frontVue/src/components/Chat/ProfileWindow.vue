@@ -34,19 +34,18 @@ async function getProfileData(user: string) {
 };
 
 
-/* Dont need those, already on profile card
-function addFriend() {
-  console.log("Add as friend clicked for:", store.getUserName);
-}
+//  Dont need those, already on profile card
+// function addFriend() {
+//   console.log("Add as friend clicked for:", store.getUserName);
+// }
 
-function startMatch() {
-  console.log("Start match clicked for:", store.getUserName);
-}
+// function startMatch() {
+//   console.log("Start match clicked for:", store.getUserName);
+// }
 
-function blockUser() {
-  console.log("Block clicked for:", store.getUserName);
-}
-*/
+// function blockUser() {
+//   console.log("Block clicked for:", store.getUserName);
+// }
 
 
 watch(() => props.user, async (newVal: any) => {
@@ -62,9 +61,9 @@ watch(() => props.user, async (newVal: any) => {
   <div class="profile-window" v-if="dataLoaded">
       <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
     <!-- Buttons -->
-      <div class="button-container">
-      <button @click="startMatch" class="start-match-button">Start Match</button>
-    </div>
+      <!-- <div class="button-container">
+      <button @click="startMatch" class="start-match-button">Start Match</button> -->
+    <!-- </div> -->
   </div>
 </template>
 
@@ -100,7 +99,7 @@ watch(() => props.user, async (newVal: any) => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #007BFF;
+  background-color: #555550;
   color: white;
   display: flex;            
   justify-content: center;  
@@ -108,7 +107,7 @@ watch(() => props.user, async (newVal: any) => {
 }
 
 .start-match-button:hover {
-  background-color: #0056b3;
+  background-color: #494949;
 }
 
 </style>
