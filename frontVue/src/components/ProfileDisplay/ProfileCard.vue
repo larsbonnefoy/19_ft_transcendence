@@ -106,6 +106,7 @@ Should set max lenght of username here
 .ProfilePic {
     height: fit-content;
     width: 15vw;
+    max-height: 30vh;
     border-radius: 10%;
 }
 

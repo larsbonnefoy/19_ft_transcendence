@@ -4,7 +4,6 @@ import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
-import { toHandlers } from 'vue';
 
 @Injectable()
 export class ChatService 
