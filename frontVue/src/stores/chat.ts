@@ -113,10 +113,11 @@ export const useChannelStore = defineStore('channel', {
             console.log("addMessage")
             console.log(newMessage)
             await this.channel?.messages.push(newMessage);
+            return true;
         }
         catch
         {
-
+            return false;
         }
        },
 

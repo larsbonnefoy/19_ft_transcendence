@@ -9,6 +9,14 @@ import * as bcrypt from 'bcrypt';
 import { AuthGuard } from '../guard/auth.guard';
 import { User } from '../user/user.entity';
 
+class timeOut{
+    public chatId: number
+    public userId: string
+    public startTime: number = new Date().getTime()
+}
+
+let muteArray: Array<timeOut> = new Array(0);
+
 //TODO SETPASSWORD
 @Controller('chat')
 export class ChatController {
@@ -86,8 +94,35 @@ export class ChatController {
 		{
             res.status(409).json({"error": "unknown user"}).send();
 		}
-        else if (await this.chatService.isBan(roomId, user) || await this.chatService.isMute(roomId, user))
+        else if (await this.chatService.isBan(roomId, user) )
         {
+            res.status(403).json({"error":"Forbidden"}).send();
+        }
+        else if (await this.chatService.isMute(roomId, user))
+        {
+            const mute: timeOut | undefined = muteArray.find((it) => {
+                return it.chatId === roomId && it.userId === req.user
+            })
+            if (mute)
+            {
+                if (new Date().getTime() - mute.startTime > 10000)
+                {
+                    const index: number = muteArray.findIndex((it) =>{
+                        return it.chatId === roomId && it.userId === req.user
+                    })
+                    let newMuteArray: Array<timeOut> = new Array(0);
+                    let i: number = 0;
+                    for (let mute of muteArray)
+                    {
+                        if (i !== index)
+                            newMuteArray.push(mute);
+                        i++;
+                    }
+                    muteArray = newMuteArray;
+		            await this.chatService.removeMute(roomId, mute.userId);
+                }
+            }
+            
             res.status(403).json({"error":"Forbidden"}).send();
         }
         else if (await this.chatService.isAdmin(roomId, user) 
@@ -501,6 +536,7 @@ export class ChatController {
 	async addMute(@Res() res: any, @Body() body: string, @Request() req: any)
 	{
         //get room id
+        const start: number = new Date().getTime();
         const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
@@ -531,6 +567,10 @@ export class ChatController {
         }
 
 		await this.chatService.addMute(roomId, newMute);
+        const mute : timeOut = new timeOut;
+        mute.chatId = roomId;
+        mute.userId = newMute.login42;
+        muteArray.push(mute);
         // await res.status(200).json({"status":"good"}).send();
         await res.status(200).json(await this.chatService.getMutes(body['id'])).send();
         return;
@@ -542,6 +582,19 @@ export class ChatController {
 	{
         //get room id
         const roomId: number = body['id'];
+        const index: number = muteArray.findIndex((it) =>{
+            return it.chatId === roomId && it.userId === req.user
+        })
+        let newMuteArray: Array<timeOut> = new Array(0);
+        let i: number = 0;
+        for (let mute of muteArray)
+        {
+            if (i !== index)
+                newMuteArray.push(mute);
+            i++;
+        }
+        muteArray = newMuteArray;
+
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();

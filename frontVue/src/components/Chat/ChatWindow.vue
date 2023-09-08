@@ -44,8 +44,6 @@ catch (error)
 {
   me = '';
 }
-console.log("chatter")
-console.log(props.isChatter)
 
 
 const chatContainerRef = ref(null);
@@ -84,8 +82,9 @@ const sendMessage = async () => {
   // }
   if (newMessage.value && newMessage.value.trim().length !== 0)
   {
-    await channel.addMessage(newMessage.value);
-    socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
+    const retval: boolean = await channel.addMessage(newMessage.value);
+    if (retval)
+      socket.emit("send",{target: channel.getId, message: newMessage.value, token: localStorage.getItem('jwt_token')});
   }
     newMessage.value = "";
 };

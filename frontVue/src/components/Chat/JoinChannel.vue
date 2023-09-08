@@ -56,8 +56,8 @@ const submit = async () => {
 	catch (error: any)
 	{
     console.log("error")
-    if (error?.data['error'])
-      errorMessage.value = error.data['error'];
+    if (error?.request.response)
+      errorMessage.value = JSON.parse(error.request.response).error;
     else
       errorMessage.value = "Bad Password"
     return;

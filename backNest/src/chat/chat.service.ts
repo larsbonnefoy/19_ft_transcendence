@@ -256,14 +256,13 @@ export class ChatService
 
 	async addMute(roomId: number, newMute: User)
 	{
-        let newVal: [string, number];
-		newVal[0] = newMute.login42;
-		newVal[1] = new Date().getTime();
-		// const mutes: User[] = await this.getMutes(roomId);
-		// mutes.push(newMute);
+        // let newVal: [string, number];
+		// newVal[0] = newMute.login42;
+		// newVal[1] = new Date().getTime();
+		const mutes: User[] = await this.getMutes(roomId);
+		mutes.push(newMute);
 		const chat : Chat = await this.findOne(roomId);
-		// chat.mutes= mutes;
-		chat.mutes.push(newVal);	
+		chat.mutes= mutes;
 		await this.chatRepository.save(chat);
 	}
 
@@ -362,21 +361,21 @@ export class ChatService
 		}
 	}
 
-	// async removeMute(roomId : number, muteId: string)
-	// {
-	// 	const mutes = await this.getMutes(roomId);
-	// 	const index: number = mutes.findIndex(it => { return it.login42 === muteId})
-	// 	if (index >= 0)
-	// 	{
-	// 		const newMutesLeft = mutes.slice(0, index);
-	// 		const newMutesRight = mutes.slice(index + 1);
-	// 		const newMutes = newMutesLeft.concat(newMutesRight);
+	async removeMute(roomId : number, muteId: string)
+	{
+		const mutes = await this.getMutes(roomId);
+		const index: number = mutes.findIndex(it => { return it.login42 === muteId})
+		if (index >= 0)
+		{
+			const newMutesLeft = mutes.slice(0, index);
+			const newMutesRight = mutes.slice(index + 1);
+			const newMutes = newMutesLeft.concat(newMutesRight);
 			
-	// 		const chat : Chat = await this.findOne(roomId);
-	// 		chat.mutes = newMutes;
-	// 		await this.chatRepository.save(chat);
-	// 	}
-	// }
+			const chat : Chat = await this.findOne(roomId);
+			chat.mutes = newMutes;
+			await this.chatRepository.save(chat);
+		}
+	}
 
 	// Message Management 
 
