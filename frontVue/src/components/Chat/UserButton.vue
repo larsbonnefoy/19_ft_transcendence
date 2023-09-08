@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useChannelStore } from '@/stores/chat';
-import { defineProps, defineEmits } from 'vue';
 
 const channelStore = useChannelStore();
 // Props
@@ -36,7 +35,7 @@ const muteUser = async () => {
 
 <template>
     <div class="user-container">
-      <span class="username">{{ user.username }}</span>
+      <span class="username">{{ user?.username }}</span>
       <button @click="banUser" class="action-button ban-button">Ban</button>
       <button @click="kickUser" class="action-button kick-button">Kick</button>
       <button @click="muteUser" class="action-button mute-button">Mute</button>

@@ -40,7 +40,6 @@ async function handleSelectedChannel(event: string)
   console.log('BOIII'+event);
   // console.log(messages.value)
   selectedChannel.value = event;
-    isChatter.value = false
 }
 
 
