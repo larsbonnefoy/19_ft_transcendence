@@ -24,9 +24,8 @@ const loginWith42 = () => {
           </div>
           <div class="card-body">
             <form>
-              <div class="d-flex justify-content-between">
-              <button @click.prevent="navigateToHome" type="submit" class="btn btn-outline-info">Login</button>
-              <button @click.prevent="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
+              <div class="text-center">
+                <button @click.prevent="loginWith42" type="submit" class="btn btn-outline-info">LoginWith42</button>
               </div>
             </form>
           </div>

@@ -70,7 +70,7 @@ const selectChannel = async () => {
 .channel-button {
   padding: 15px 25px 15px 20px; /* Increase the right padding to create a bigger gap */
   border: none;
-  background-color: #7289da;
+  background-color: #23272b;
   color: white;
   border-radius: 5px;
   text-align: left;
@@ -80,6 +80,6 @@ const selectChannel = async () => {
   margin-bottom: 2px; /* Increase the margin-bottom to create a bigger gap between buttons */
 }
 .channel-button:hover {
-  background-color: #5b6eae;
+  background-color: #373c42;
 }
 </style>
