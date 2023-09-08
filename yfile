@@ -6,6 +6,8 @@ TODOS:
 	- login42 in pending display instead fo usernames ?
 	- you can still be inside a room with someone you blocked if you join queue at the same time
 	- user.controller 115-136 userServices calls not protected
+	- 'login' button on login page
+	- send message button on profile card
 
 
 My todo:

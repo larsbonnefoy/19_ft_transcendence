@@ -71,6 +71,7 @@ switch(props.index) {
 .profileImg {
     height: fit-content;
     width: 3em;
+    max-height: 6em;
     border-radius: 10%;
     display: block;
     text-align: center;
