@@ -64,8 +64,8 @@ export class User {
   @ManyToMany(() => Chat, (chat) => chat.bans)
   banned: Relation<Chat[]>;
   
-  @ManyToMany(() => Chat, (chat) => chat.mutes)
-  muted: Relation<Chat[]>;
+  // @ManyToMany(() => Chat, (chat) => chat.mutes)
+  // muted: Relation<Chat[]>;
 
   @OneToMany(() => Chat, (chat) => chat.owner, {cascade: ['insert']})
   owned: Relation<Chat[]>;

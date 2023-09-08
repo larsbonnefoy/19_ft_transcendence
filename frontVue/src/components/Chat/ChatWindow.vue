@@ -7,6 +7,7 @@ import { useChannelStore } from '@/stores/chat';
 import { socket } from '@/socket';
 import ChannelList from './ChannelList.vue';
 import EditChannel from './EditChannel.vue';
+import { type UserInfo } from '@/types';
 
 const chat = useChatStore();
 const channel = useChannelStore();
@@ -14,7 +15,7 @@ const showEditChannel = ref(false);
 const props = defineProps({
   // messages: Array,
   user: Object,
-  selectedChannel: String
+  selectedChannel: String,
 });
 
   // props: ['selectedChannel'];
@@ -43,7 +44,8 @@ catch (error)
 {
   me = '';
 }
-
+console.log("chatter")
+console.log(props.isChatter)
 
 
 const chatContainerRef = ref(null);
@@ -54,16 +56,16 @@ const endOfChatRef = ref<null | HTMLDivElement>(null);
 //        console.log("yo: " + ChannelButton.channel.test);
 const emit = defineEmits(["open-profile"]);
 
-function getDmChatter()
-{
-      if(channel.getChatters)
-      {
-        console.log("getDm: " + channel.getChatters[0]?.login42 + " " + me + " "  +  channel.getOwner?.login42) 
-      if (channel.getChatters[0]?.login42 === me)
-          return channel.getOwner?.login42;
-        return (channel.getChatters[0]?.login42)
-      }
-}
+// function getDmChatter()
+// {
+//       if(channel.getChatters)
+//       {
+//         console.log("getDm: " + channel.getChatters[0]?.login42 + " " + me + " "  +  channel.getOwner?.login42) 
+//       if (channel.getChatters[0]?.login42 === me)
+//           return channel.getOwner?.login42;
+//         return (channel.getChatters[0]?.login42)
+//       }
+// }
 
 const sendMessage = async () => {
   // console.log(channel.getIsDm);
@@ -128,7 +130,7 @@ console.log(channel.getId)
       <span class="channel-name">{{ selectedChannel }}</span>
       <template v-if="channel.getId">
         <template v-if="!channel.getIsDm">
-          <template v-if="true">
+          <template v-if="!channel.getChatters.find((it: UserInfo) => {return it.login42 === me})">
             <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
             <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
           </template>

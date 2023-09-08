@@ -37,10 +37,11 @@ const addUser = async () => {
     catch (error: any)
     {
       console.log('error')
-      console.log(error)
-      if (error['error'])
+      console.log(error.request.response);
+      if (error?.request.response)
       {
-        errorMessage.value = error;
+        const err: any = JSON.parse(error?.request.response)
+        errorMessage.value = err.error;
       }
       else
         errorMessage.value = "Unknown user";
@@ -132,6 +133,15 @@ const kickUser = async () => {
     contextMenuVisible.value = false;
 };
 
+const muteUser = async () => {
+    // Add logic to promote the selected user to admin
+    console.log(`Mute user: ${selectedUser.value}`);
+    await channelStore.muteUser(selectedUser.value);
+    contextMenuVisible.value = false;
+};
+
+
+
 // Close the context menu when clicked outside
 const closeContextMenu = () => {
     contextMenuVisible.value = false;
@@ -155,6 +165,7 @@ onUnmounted(() => {
                     <li  @click="promoteUser">Promote to Admin</li>
                     <li  @click="banUser">Ban</li>
                     <li  @click="kickUser">Kick</li>
+                    <li  @click="muteUser">Mute</li>
                     <!-- Add more options as needed -->
                 </ul>
             </div>

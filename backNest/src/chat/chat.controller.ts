@@ -573,7 +573,7 @@ export class ChatController {
         const roomId: number = body['id'];
         if (!(await this.chatService.findOne(roomId)))
         {
-            res.status(409).json({"error":"no chat room with that id"}).send();
+            res.status(409).json({"error":"No Chat Room with that Id"}).send();
             return;
         }
 
@@ -604,7 +604,7 @@ export class ChatController {
         //check is the User exist
         if (!newChatter)
         {
-            res.status(409).json({"error":"no user with that id"}).send();
+            res.status(409).json({"error":"Unknown User"}).send();
             return;
         }
 

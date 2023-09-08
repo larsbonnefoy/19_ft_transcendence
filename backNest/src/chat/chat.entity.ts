@@ -20,9 +20,8 @@ export class Chat
 	@JoinTable()
 	chatters: Relation<User[]>;
 	
-	@ManyToMany(() => User, (user) => user.muted)
-	@JoinTable()
-	mutes: Relation<User[]>;
+	@Column({type: "simple-array", default: []})
+	mutes: [[string, number]];
 
 	@ManyToMany(() => User, (user) => user.banned)
 	@JoinTable()

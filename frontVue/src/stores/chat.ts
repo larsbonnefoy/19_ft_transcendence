@@ -138,10 +138,9 @@ export const useChannelStore = defineStore('channel', {
         }
         catch (error: any)
         {
-            console.log(error.request.response);
-            throw error.request.response; 
-        }
-       },
+            throw error;
+       }
+    },
 
        async addAdmin(userId: string)
        {
@@ -319,7 +318,21 @@ export const useChannelStore = defineStore('channel', {
             catch {}
         },
 
-        async changePassword(name:string)
+       async muteUser(userId:string)
+       {
+        try{
+             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/addMute`, {id: this.channel?.id, newMute: userId},
+              {
+                 headers: 
+                 {
+	                 'token':localStorage.getItem('jwt_token')
+	             }
+             });
+            }
+            catch {}
+       },
+
+       async changePassword(name:string)
        {
         try{
              const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/changePassword`, {id: this.channel?.id, password: name},
