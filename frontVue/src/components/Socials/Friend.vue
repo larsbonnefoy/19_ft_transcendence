@@ -28,6 +28,7 @@ async function getFriend() {
     }
     catch (error) {
         console.error(error);
+		friend = null;
     }
 }
 
@@ -39,43 +40,45 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <div class="card-body p-0 m-3">
-        <div class="row">
-        
-        	<div class="col-6">
-        		<div class="row"> 
-            		<div class="col-1 p-0 buttonStyle">
-						<Status :status="friend.status"></Status>
+	<template v-if="friend != null">
+		<div class="card-body p-0 m-3">
+			<div class="row">
+				
+				<div class="col-6">
+					<div class="row"> 
+						<div class="col-1 p-0 buttonStyle">
+							<Status :status="friend.status"></Status>
+						</div>
+						<div class="col-4"> 
+							<router-link 
+								:to="{
+									name:'profile',
+									params: {
+										username: FriendUsername
+									}
+								}"
+                    		>
+							<img class="profileImg m-1" :src="friend.photo">
+							</router-link>
+						</div>
+						<div class="col-7">
+							<p class="m-0"> {{ friend.username }} </p>
+							<p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friend.elo) }} </p>
+						</div> 
 					</div>
-					<div class="col-4"> 
-					<router-link 
-                    	:to="{
-                        	name:'profile',
-                        	params: {
-                            	username: FriendUsername
-                        	}
-                    	}"
-                    >
-                    	<img class="profileImg m-1" :src="friend.photo">
-                    </router-link>
-                	</div>
-                	<div class="col-7">
-                    	<p class="m-0"> {{ friend.username }} </p>
-                    	<p class="m-0" style="color: grey;"> elo : {{ Math.ceil(friend.elo) }} </p>
-                	</div> 
-            	</div>
-        	</div>
-        	<!-- Add a getter to get status-->
-			<template v-if="login42 != store.getLogin42"> 
-				<div class="col-3 p-0 buttonStyle">
-					<GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
 				</div>
-				<div class="col-3 p-0 buttonStyle">
-					<MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
-				</div>
-			</template>
-    	</div>
-	</div>
+				<!-- Add a getter to get status-->
+				<template v-if="login42 != store.getLogin42"> 
+					<div class="col-3 p-0 buttonStyle">
+						<GameButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"> </GameButton>
+					</div>
+					<div class="col-3 p-0 buttonStyle">
+						<MessageButton :profile-username="FriendUsername" :profile-login42="login42" class="btn-sm m-1 small"></MessageButton>
+					</div>
+				</template>
+			</div>
+		</div>
+	</template>
 </template>
 
 <style scoped> 
