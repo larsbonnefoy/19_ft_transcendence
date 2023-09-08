@@ -2,51 +2,63 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
+import JoinChannel from './JoinChannel.vue';
 import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
 import { socket } from '@/socket';
 
 const chat = useChatStore();
-const emit = defineEmits(["channel-selected"]);
-
-
 
 await chat.fetchChannels();
-// console.log("FUNCTION ? "+ chat.getChannels);
-
-
 
 const searchTerm = ref('');
 const showSearchBar = ref(false);
 const showCreateChannel = ref(false);
+const showJoinChannel = ref(false);
+const hasPass = ref(false);
+const channelId = ref<number>(-1)
 
 const toggleSearchBar = () => {
   showSearchBar.value = !showSearchBar.value;
 };
 
-const currentView = ref('private');
+const currentView = ref('public');
 
-const toggleView = () => {
-  currentView.value = currentView.value === 'private' ? 'channels' : 'private';
+const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POUR LES MESSAGES DE GROUPES
+  if (currentView.value === 'private') {
+    currentView.value = 'channels';
+  } else if (currentView.value === 'channels') {
+    currentView.value = 'public';
+  } else {
+    currentView.value = 'private';
+  }
 };
 
-async function handleSelected(id: number)
+function ClickJoin(event: any)
 {
-  console.log("LESSGOOO" + id );
-  emit('channel-selected', id);
+  console.log("click" + event);
+  hasPass.value = event.hasPass;
+  channelId.value = event.id;
+  showJoinChannel.value = !showJoinChannel.value;
 }
 
 
 </script>
 
-
 <template>
   <div class="channel-list h-190">
     <div class="header-section">
       <button @click="toggleSearchBar" class="search-toggle">🔍</button>
-      <h3 @click="toggleView">{{ currentView === 'private' ? 'Direct Messages' : 'Channels' }}</h3>
+      <h3 @click="toggleView">
+        {{
+          currentView === 'private' ? 'Private Messages' : 
+          currentView === 'channels' ? 'Group Messages' : 
+          'Public Channels'
+        }}
+      </h3>
       <button @click="showCreateChannel = !showCreateChannel" class="channel-create">+</button>
       <CreateChannel v-if="showCreateChannel" @close="showCreateChannel = false" />
+      <JoinChannel v-if="showJoinChannel" :hasPass="hasPass" :id="channelId" @close="showJoinChannel = false" />
     </div>
     <transition name="slide-fade">
       <input 
@@ -63,22 +75,34 @@ async function handleSelected(id: number)
       	<!-- Display filtered channels based on search term and current view -->
        <template v-for="channel in chat.getChannels">
              	<ChannelButton v-if="channel.isDm"
-                  :channel="channel" @channel-selected=handleSelected($event)
+                  :channel="channel" 
+                  :isPublic=false
      	 /></template>
     	</div>
     </div>
-    <div v-else>
+    <div v-else-if="currentView === 'channels'">
     	<div class="channel-scroll">
       	<!-- Display filtered channels based on search term and current view -->
         <template v-for="channel in chat.getChannels">
              	<ChannelButton v-if="!channel.isDm"
-               :channel="channel" @channel-selected=handleSelected($event)
+               :channel="channel" 
+               :isPublic=false
      	        />
       </template>
    
     	</div>
     </div>
-
+    <div v-else>
+    	<div class="channel-scroll">
+        <template v-for="channel in chat.getPublics">
+             	<ChannelButton 
+               :channel="channel"
+               :isPublic=true
+               @click="ClickJoin"
+     	        />
+      </template>
+    	</div>
+    </div>
   </div>
 </template>
 

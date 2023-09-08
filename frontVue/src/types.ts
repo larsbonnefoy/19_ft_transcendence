@@ -74,6 +74,7 @@ export interface Messages
 
 export interface ChatInfo{
     ChannelList : Channel[]
+    PublicList : Channel[]
 }
 
 export enum GameType {

@@ -4,6 +4,7 @@ import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
+import { toHandlers } from 'vue';
 
 @Injectable()
 export class ChatService 
@@ -24,6 +25,31 @@ export class ChatService
 	{
 		return this.chatRepository.find();
 	}
+
+	async getDmWith(me: string, target: string) : Promise<Chat | null>
+	{
+		const chats1 = await this.chatRepository.find({
+			relations: {chatters: true, owner: true},
+			where: {chatters: {login42: me}, isDm: true},
+			select: {owner: {login42: true}}
+		});
+		const chats2 = await this.chatRepository.find({
+			relations: {chatters: true, owner: true},
+			where: {chatters: {login42: target}, isDm: true},
+			select: {owner: {login42: true}}
+		});
+		// console.log(chats1);
+		// console.log(chats2);
+		const chat1 = chats1.find((it)=> {return (it.owner.login42 === target)})
+		const chat2 = chats2.find((it)=> {return (it.owner.login42 === me)})
+		// console.log(chat1);
+		// console.log(chat2);
+		if (chat1)	
+			return chat1;
+		if (chat2)	
+			return chat2;
+		return null
+	}
    	async findPublic(login42: string): Promise<Chat[]>
    	{
     	// return this.chatRepository.find();
@@ -36,6 +62,7 @@ export class ChatService
 													id: true, name: true,
 													owner: {login42: true, username: true, photo: true},
 													isDm: true,
+													isPrivate: true, 
 													chatters: {login42: true, username: true, photo: true},
 													admins: {login42: true, username: true, photo: true}
 												}
@@ -46,6 +73,7 @@ export class ChatService
 				&& !chat.bans?.find((it) => {return (it.login42 === login42)}))
 					chats.push(chat)
 		}
+		console.log(chats)
 		return chats;
  	}
 
@@ -53,9 +81,9 @@ export class ChatService
 	{
 		// return this.chatRepository.find();
 		const tmp: Chat[] = [];
-		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true, photo: true}, isDm: true, chatters: {login42: true, username: true, photo: true}, owner: {login42: true, username: true, photo: true}}}))
-			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true, photo: true}, isDm: true, owner: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})));
+		const chats : Chat[] = tmp.concat(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {owner: {login42: login42}}, select: {id: true, name: true, owner: {login42: true, username: true, photo: true}, isDm: true, isPrivate: true, chatters: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {admins: {login42: login42}}, select: { id: true, name: true,admins: {login42: true, username: true, photo: true}, isDm: true, isPrivate: true, chatters: {login42: true, username: true, photo: true}, owner: {login42: true, username: true, photo: true}}}))
+			,(await this.chatRepository.find({ relations: {owner: true, chatters: true, admins: true}, where: {chatters: {login42: login42}}, select : {id: true, name: true, chatters: {login42: true, username: true, photo: true}, isDm: true, isPrivate: true, owner: {login42: true, username: true, photo: true}, admins: {login42: true, username: true, photo: true}}})));
 		return chats;
 	}
 	async getUsers(roomId: number)
@@ -98,7 +126,7 @@ export class ChatService
 
 	async getMessagesByRoom(roomId: number) : Promise<ChatMessage[] | null>
 	{
-		return await this.chatMessageRepository.find({ relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true, name: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
+		return await this.chatMessageRepository.find({order: {id: "ASC"}, relations: {chat: true, user: true },  where: { chat: {id: roomId}}, select : {id: true, time: true, message: true, chat: {id: true, name: true}, user: {login42: true, username: true, blocked_users: true, photo: true}}});
 	}
 	
 	async getMessagesByUser(userId: string) : Promise<ChatMessage[] | null>
@@ -180,6 +208,11 @@ export class ChatService
 		 return ;
 	}
 
+	async setName(roomId: number, name: string)
+	{
+		await this.chatRepository.update(roomId, {name: name});
+	}
+
 	async setPassword(roomId: number, pass: string)
 	{
 		const hash = await bcrypt.hash(pass, 10);
@@ -191,7 +224,7 @@ export class ChatService
 		await this.chatRepository.update(roomId, {password: null});
 	}
 
-	async verifyPassword(roomId: number, pass: string)
+	async verifyPassword(roomId: number, pass: string) : Promise<boolean>
 	{
 		return (await bcrypt.compare(pass, ((await this.chatRepository.findOneBy({ id: roomId})).password)))
 	}
@@ -219,7 +252,6 @@ export class ChatService
 		const chat : Chat = await this.findOne(roomId);
 		chat.chatters = chatters;
 		await this.chatRepository.save(chat);
-
 	}
 
 	async addMute(roomId: number, newMute: User)
@@ -239,6 +271,43 @@ export class ChatService
 		const chat : Chat = await this.findOne(roomId);
 		chat.bans= bans;
 		await this.chatRepository.save(chat);
+	}
+
+	async removeOwner(roomId : number)
+	{
+		const admins = await this.getAdmins(roomId);
+		let newOwner: User;
+		if (admins.length !== 0)
+		{
+			newOwner = admins[0]
+			await this.removeAdmin(roomId, newOwner.login42)	
+			const chat : Chat = await this.findOne(roomId);
+			chat.owner = newOwner;
+			await this.chatRepository.save(chat);
+		}
+		else
+		{
+			const chatters = await this.getChatters(roomId);
+			if (chatters.length !== 0)
+			{
+
+			
+				newOwner = chatters[0]
+				await this.removeChatter(roomId, newOwner.login42)	
+				const chat : Chat = await this.findOne(roomId);
+				chat.owner = newOwner;
+				await this.chatRepository.save(chat);
+			}
+			else
+			{
+				const messages = await this.getMessagesByRoom(roomId);
+				for (let message of messages)
+				{
+		 			await this.chatMessageRepository.delete(message.id);
+				}
+				await this.deleteRoom(roomId);
+			}
+		}
 	}
 
 	async removeAdmin(roomId : number, adminId: string)
@@ -322,4 +391,13 @@ export class ChatService
 		}
 		return false;
 	}
+	async hasPass(id: number) : Promise<boolean>
+	{
+		const chat : Chat = await this.findOne(id);
+		console.log(chat?.password)
+		if(chat?.password)
+			return true;
+		return false;
+	}
 }
+
