@@ -97,7 +97,7 @@ watch(() => props.user, async (newVal: any) => {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: #007BFF;
+  background-color: #555550;
   color: white;
   display: flex;            
   justify-content: center;  
@@ -105,7 +105,7 @@ watch(() => props.user, async (newVal: any) => {
 }
 
 .start-match-button:hover {
-  background-color: #0056b3;
+  background-color: #494949;
 }
 
 </style>

@@ -4,7 +4,9 @@ changer le fond avec plusieurs images predefinie ou permettre de les charger ave
 PALETTE DE COULEUR
 
 background : #6c757d
-background-searchbar : #505050
 text: #ffffff
 text-searchbar(ex: "type a message..."): #a8a8a8
-couleur pour bouton : ???????????????????????/
+buttons : 555550
+buttons hover : 494949
+search nbar : 8e8e8e
+placeholder  : d4d4d4

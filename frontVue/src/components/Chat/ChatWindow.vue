@@ -132,7 +132,7 @@ console.log(channel.getId)
       @open-profile="handleOpenProfile"
     />
     <div class="chat-input-container">
-      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="send message"/>
+      <input v-model="newMessage" @keydown.enter="sendMessage" placeholder="type a message"/>
       <button @click="sendMessage" class="send-button">Send</button>
     </div>
     <div id="endOfChat" ref="endOfChatRef"></div>
@@ -159,7 +159,7 @@ console.log(channel.getId)
 
 .scroll-to-bottom {
     margin: 10px 0;
-    background-color: #007BFF;
+    background-color: #555550;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -169,7 +169,7 @@ console.log(channel.getId)
 }
 
 .scroll-to-bottom:hover {
-    background-color: #0056b3;
+    background-color: #494949;
 }
 
 /* Chat Input Container */
@@ -181,7 +181,7 @@ console.log(channel.getId)
     display: flex;
     align-items: center; /* Vertically center the items */
     border-radius: 50px; /* Circular edges */
-    background-color: #505050;
+    background-color: #8e8e8e;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     position: relative; /* To position the send button absolutely */
 }
@@ -204,14 +204,14 @@ console.log(channel.getId)
 }
 
 .chat-input-container input::placeholder {
-    color: #a8a8a8; /* Placeholder color */
+    color: #d4d4d4; 
 }
 
 /* Send Button */
 .chat-input-container .send-button {
     position: absolute;
     right: 0; 
-    background-color: #007BFF; 
+    background-color: #555550; 
     color: #ffffff; 
     border: none;
     padding: 0.5rem 1rem; 
@@ -230,7 +230,7 @@ console.log(channel.getId)
 }
 
 .chat-input-container .send-button:hover {
-    background-color: #0056b3;
+    background-color: #494949;
 } 
 
 .chat-input-container .send-button:active {

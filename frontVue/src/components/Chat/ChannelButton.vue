@@ -84,7 +84,7 @@ const selectChannel = async () => {
 .channel-button {
   padding: 15px 25px 15px 20px; 
   border: none;
-  background-color: #7289da;
+  background-color: #555550;
   color: white;
   border-radius: 5px;
   text-align: left;
@@ -94,6 +94,6 @@ const selectChannel = async () => {
   margin-bottom: 2px; 
 }
 .channel-button:hover {
-  background-color: #5b6eae;
+  background-color: #494949;
 }
 </style>
