@@ -129,7 +129,7 @@ const banUser = async () => {
 const kickUser = async () => {
     // Add logic to promote the selected user to admin
     console.log(`Kick user: ${selectedUser.value}`);
-    await channelStore.kickUser(selectedUser.value);
+    await channelStore.kickUser(selectedUser.value, selectedUserStatus.value);
     contextMenuVisible.value = false;
 };
 
