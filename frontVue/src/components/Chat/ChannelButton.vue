@@ -8,7 +8,7 @@ import { ref } from 'vue';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
-const emit = defineEmits(['click'], ['channel-selected']);
+const emit = defineEmits(['click', 'channel-selected']);
 
 
 const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
