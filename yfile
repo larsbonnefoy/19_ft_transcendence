@@ -9,6 +9,8 @@ TODOS:
 	- ChatWindow.vue line 30 axios call not inside a try catch
 	- MessageBox.vue line 12 axios call not inside a try catch
 	- user.controller 115-136 userServices calls not protected
+	- 'login' button on login page
+	- send message button on profile card
 
 
 My todo:

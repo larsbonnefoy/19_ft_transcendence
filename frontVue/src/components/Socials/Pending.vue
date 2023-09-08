@@ -27,6 +27,7 @@ async function getPending() {
     }
     catch (error) {
         console.error(error);
+        pendingUser = null;
     }
 }
 
@@ -38,38 +39,40 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <div class="card-body textDisplay p-0 m-3">
-        <div class="row">
-            
-            <div class="col-6">
-                <div class="row"> 
-					<div class="col-1 p-0 buttonStyle">
-						<Status :status="pendingUser.status"></Status>
-					</div>
-                    <div class="col-4"> 
-                        <router-link 
-                        :to="{
-                            name:'profile',
-                            params: {
-                                username: pendingUserName
-                            }
-                        }"
-                        >
-                        <img class="profileImg m-1" :src="pendingUser.photo">
-                        </router-link>
+	<template v-if="pendingUser != null">
+        <div class="card-body textDisplay p-0 m-3">
+            <div class="row">
+                
+                <div class="col-6">
+                    <div class="row"> 
+                        <div class="col-1 p-0 buttonStyle">
+                            <Status :status="pendingUser.status"></Status>
+                        </div>
+                        <div class="col-4"> 
+                            <router-link 
+                            :to="{
+                                name:'profile',
+                                params: {
+                                    username: pendingUserName
+                                }
+                            }"
+                            >
+                            <img class="profileImg m-1" :src="pendingUser.photo">
+                            </router-link>
+                        </div>
+                        <div class="col-7">
+                            <p class="m-0"> {{ pendingUser.username }} </p>
+                            <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(pendingUser.elo) }} </p>
+                        </div> 
                     </div>
-                    <div class="col-7">
-                        <p class="m-0"> {{ pendingUser.username }} </p>
-                        <p class="m-0" style="color: grey;"> elo : {{ Math.ceil(pendingUser.elo) }} </p>
-                    </div> 
+                </div>
+
+                <div class="col-6 p-0 buttonStyle">
+                    <AddPendingRemoveButton :pending-user="pendingUser"></AddPendingRemoveButton>
                 </div>
             </div>
-
-        <div class="col-6 p-0 buttonStyle">
-            <AddPendingRemoveButton :pending-user="pendingUser"></AddPendingRemoveButton>
         </div>
-        </div>
-   </div>    
+    </template>
 </template>
 
 <style scoped>

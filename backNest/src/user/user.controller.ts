@@ -20,12 +20,12 @@ export class UserController {
 	userServiceForMethod = userService;
   }
 
-  // TODO remove this at some point
-  @UseGuards(AuthGuard)
-  @Get('resetAchievements')
-  async resetAchievements(@Request() req: any) {
-	this.userService.addAchievement(req.user, 0, 0);
-  }
+  // // TODO remove this at some point
+  // @UseGuards(AuthGuard)
+  // @Get('resetAchievements')
+  // async resetAchievements(@Request() req: any) {
+	// this.userService.addAchievement(req.user, 0, 0);
+  // }
 
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
@@ -504,20 +504,20 @@ export class UserController {
     res.json(LeaderBoardInfo);
   }
 
-  @Get('add')
-  async addUser(@Res() res: any, @Query() query: newUserDto) {
-    console.log("got from query: %s as login42 and %s as username", query.login42, query.username);
-    const check_base = await this.userService.findOne(query.login42);
-    if (check_base != null) {
-      res.status(409).json({"user":"already exists"});
-      return ;
-    }
-    const nUser: User = new User;
-    nUser.login42 = query.login42;
-	  nUser.username = query.username;
-    await this.userService.createUser(nUser);
-    res.json({"user":"created"});
-  }
+  // @Get('add')
+  // async addUser(@Res() res: any, @Query() query: newUserDto) {
+  //   console.log("got from query: %s as login42 and %s as username", query.login42, query.username);
+  //   const check_base = await this.userService.findOne(query.login42);
+  //   if (check_base != null) {
+  //     res.status(409).json({"user":"already exists"});
+  //     return ;
+  //   }
+  //   const nUser: User = new User;
+  //   nUser.login42 = query.login42;
+	//   nUser.username = query.username;
+  //   await this.userService.createUser(nUser);
+  //   res.json({"user":"created"});
+  // }
   
   // @Get('delAll')
   // async delAll(@Res() res: any) {
