@@ -590,7 +590,7 @@ export class ChatController {
             return;
         }
         // if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isChatter(roomId, agent)))
-        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)) || (this.chatService.isBan(roomId, body['newChatter'])))
+        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)) || (await this.chatService.isBan(roomId, body['newChatter'])))
         {
             await res.status(403).json({"error":"Forbidden"}).send();
             return;
