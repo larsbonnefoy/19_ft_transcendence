@@ -4,7 +4,6 @@ import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
-import { toHandlers } from 'vue';
 
 @Injectable()
 export class ChatService 
@@ -95,7 +94,7 @@ export class ChatService
 		return (users);
 	}
   	findOne(roomId: number): Promise<Chat | null> {
-   	 	return this.chatRepository.findOneBy({id: roomId});
+		return this.chatRepository.findOne({relations: {owner: true, chatters: true, admins: true, mutes: true}, where : {id: roomId}, select: {owner: {login42: true}, admins: {login42: true}, chatters: {login42: true}, mutes: {login42: true}}});
   	}
 
 	async getOwner(roomId: number) : Promise<User | null>

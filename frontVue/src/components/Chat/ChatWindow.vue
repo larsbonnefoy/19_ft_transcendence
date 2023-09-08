@@ -29,12 +29,21 @@ const props = defineProps({
 // });
 const newMessage = ref("");
 // const selectedChannel = ref(selectedChannel)
-const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-})).data;
+let me : string
+try
+{
+   me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+    headers:
+        {
+          'token':localStorage.getItem('jwt_token')
+        }
+  })).data;
+}
+catch (error)
+{
+  me = '';
+}
+
 
 
 const chatContainerRef = ref(null);
@@ -118,8 +127,12 @@ console.log(channel.getId)
     <div class="chat-header">
       <span class="channel-name">{{ selectedChannel }}</span>
       <template v-if="channel.getId">
-        <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
-        <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+        <template v-if="!channel.getIsDm">
+          <template v-if="true">
+            <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
+            <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+          </template>
+        </template>
       </template>
     </div>
 

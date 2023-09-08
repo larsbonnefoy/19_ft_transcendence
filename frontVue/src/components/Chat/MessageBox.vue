@@ -8,13 +8,21 @@ const channel = useChannelStore();
 
 const emit = defineEmits(["open-profile", "updated"] );
 
+let me : string
+try
+{
+   me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+    headers:
+        {
+          'token':localStorage.getItem('jwt_token')
+        }
+  })).data;
+}
+catch (error)
+{
+  me = '';
+}
 const messageBoxRef = ref(null);
-const me: any = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
-  headers:
-      {
-        'token':localStorage.getItem('jwt_token')
-      }
-})).data;
 onUpdated(() => {
   emit('updated');
 });

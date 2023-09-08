@@ -132,14 +132,12 @@ const router = createRouter({
         }
       }
     },
-    /*
     {
       path: '/admin',
       name: 'admin',
       component: Admin
 
     },
-    */
     {
       path: '/showUsers',
       name: 'showUsers',
