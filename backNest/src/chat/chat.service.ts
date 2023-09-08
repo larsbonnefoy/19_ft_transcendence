@@ -4,7 +4,6 @@ import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../user/user.entity';
-import { login42 } from 'src/api42/apiDto.dto';
 
 @Injectable()
 export class ChatService 
@@ -256,9 +255,6 @@ export class ChatService
 
 	async addMute(roomId: number, newMute: User)
 	{
-        // let newVal: [string, number];
-		// newVal[0] = newMute.login42;
-		// newVal[1] = new Date().getTime();
 		const mutes: User[] = await this.getMutes(roomId);
 		mutes.push(newMute);
 		const chat : Chat = await this.findOne(roomId);

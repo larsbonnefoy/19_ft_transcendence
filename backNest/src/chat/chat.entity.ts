@@ -19,7 +19,7 @@ export class Chat
 	@ManyToMany(() => User, (user) => user.chats)
 	@JoinTable()
 	chatters: Relation<User[]>;
-	 
+	
 	@ManyToMany(() => User, (user) => user.muted)
 	@JoinTable()
 	mutes: Relation<User[]>;
@@ -45,7 +45,8 @@ export class Chat
 @Entity()
 export class ChatMessage 
 {
-
+	// @PrimaryColumn({ type: "timestamptz", default: Date.now()})
+	// time: Date;
 	@PrimaryGeneratedColumn('increment')
     id: number;
 
