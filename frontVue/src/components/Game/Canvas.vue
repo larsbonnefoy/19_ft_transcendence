@@ -404,9 +404,9 @@ onUnmounted(async () => {
                                 </template>
                 
                             </div>
-                            <template v-if="!isPlayer">
+                           <!-- <template v-if="!isPlayer">--> 
                                 <input id="MessageBox" :maxlength="60" v-model="newMessage" @keydown.enter="sendViewerMessage" placeholder="send message">
-                            </template>
+                            <!--- </template> -->
                         </div>
                     </div>
                 </div>
