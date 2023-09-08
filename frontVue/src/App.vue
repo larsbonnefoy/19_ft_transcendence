@@ -26,7 +26,7 @@ function isBlocked(login42 : string) : boolean {
 }
 
 function seesMessage(id : number) : boolean {
-	console.log("room id: " + channel.getId + ", msg id: " + id);
+	// console.log("room id: " + channel.getId + ", msg id: " + id);
 	return channel.getId === id;
 }
 
