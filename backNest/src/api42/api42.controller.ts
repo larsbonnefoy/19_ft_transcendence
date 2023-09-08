@@ -27,12 +27,8 @@ export class Api42Controller {
 				const newUser : User  = new User;
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
-				let intraPhoto: string;
-				try
-				{
-					intraPhoto = await this.api42Service.getImage42(access_token);
-				}
-				catch
+				let intraPhoto: string | null = await this.api42Service.getImage42(access_token);
+				if (intraPhoto === null)
 				{
 					intraPhoto = "https://media.tenor.com/YBa1MzJt-44AAAAd/haven-salamash.gif";
 				}

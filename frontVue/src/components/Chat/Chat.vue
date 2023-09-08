@@ -5,11 +5,11 @@ import ChannelList from './ChannelList.vue';
 import ChatWindow from './ChatWindow.vue';
 import ProfileWindow from './ProfileWindow.vue';
 import SocialsList from '@/components/Socials/SocialsList.vue';
+import { useChannelStore, useChatStore } from '@/stores/chat';
 
 const selectedUser = ref("");
 const selectedChannel = ref("" );
 
-const emit = defineEmits(["open-profile"]);
 function handleSelectedProfile(user: string) {
   selectedUser.value = user
   console.log("chat : "+ selectedUser.value)

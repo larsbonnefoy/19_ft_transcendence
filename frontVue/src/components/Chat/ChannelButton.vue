@@ -2,12 +2,13 @@
 import { useChatStore, useChannelStore} from '@/stores/chat';
 import { type Channel } from '@/types';
 import {types} from "sass";
-import Boolean = types.Boolean;
 import axios from "axios";
 import { socket } from '@/socket';
+import { ref } from 'vue';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
+const emit = defineEmits(['click'], ['channel-selected']);
 
 
 const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
@@ -18,8 +19,9 @@ const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.me
 })).data;
 
 // Props
- const { channel } = defineProps({
+ const { channel, isPublic } = defineProps({
   channel: Object,
+  isPublic: Boolean 
 });
 
 
@@ -41,45 +43,57 @@ if (channel?.isDm)
 const selectChannel = async () => {
   if (channel && chat)
   {
-    console.log(`Selected: ${channel.id}`);
-    const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
-    if (newChannel)
+    if(!isPublic)
     {
-      console.log(newChannel.id);
-     if (channel?.id)
-        socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
-      await channelStore.setChannel(newChannel);
-      socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     console.log(`Selected: ${channel.id}`);
+     const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
+     if (newChannel)
+     {
+        console.log(newChannel.id);
+        if (channel?.id)
+         socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
+        await channelStore.setChannel(newChannel);
+        socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
+     }
+     // console.log(channelStore.getMessages);
+     console.log("done");
     }
-    // console.log(channelStore.getMessages);
-    console.log("done");
+    else
+    {
+      console.log("PUBLIC " + channel?.id);
+      const emitInfo: any = {id: channel?.id, hasPass: await channelStore?.hasPassFromId(channel?.id)}
+      console.log(emitInfo.id);
+      console.log(emitInfo.hasPass);
+      console.log(emitInfo);
+      emit('click', emitInfo)
+    }
   }
-  // emit('channel-selected',  channel.id);
-};
+}
 </script>
 
-<template>
-    <button class="channel-button" @click="selectChannel">
-      {{ channelName }}
-    </button>
-</template>
 
+<template>
+
+  <button class="channel-button" @click="selectChannel">
+    {{ channelName }}
+  </button>
+</template>
 
 <style scoped>
 
 .channel-button {
-  padding: 15px 25px 15px 20px; /* Increase the right padding to create a bigger gap */
+  padding: 15px 25px 15px 20px; 
   border: none;
-  background-color: #7289da;
+  background-color: #23272b;
   color: white;
   border-radius: 5px;
   text-align: left;
   transition: background-color 0.3s ease;
   display: block;
   width: 99.5%;
-  margin-bottom: 2px; /* Increase the margin-bottom to create a bigger gap between buttons */
+  margin-bottom: 2px; 
 }
 .channel-button:hover {
-  background-color: #5b6eae;
+  background-color: #373c42;
 }
 </style>

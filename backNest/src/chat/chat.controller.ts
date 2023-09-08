@@ -35,6 +35,37 @@ export class ChatController {
 	}
 
 	@UseGuards(AuthGuard)
+    @Post('joinChannel')
+    async joinChannel(@Request() req: any, @Body() roomInfos: roomDto, @Res() res: any)
+    {
+        console.log("join channel: " + roomInfos.id + " " + roomInfos.password);
+        console.log(roomInfos.password)
+        const chat: Chat = await this.chatService.findOne(roomInfos.id);
+        if (!chat)
+        {
+            res.status(409).json({"error": "Chat not found"}).send();
+            return; 
+        }
+        if (chat.password)
+        {
+            const result = await this.chatService.verifyPassword(roomInfos.id, roomInfos.password)
+            if (!result)
+            {
+                 res.status(401).json({"error": "Bad Password"});
+                return; 
+            }
+        }
+        const user = await this.userService.findOne(req.user);
+        if (!user)
+        {
+            res.status(409).json({"error": "unknown user"}).send();
+            return; 
+        }
+        await this.chatService.addChatter(roomInfos.id, user);
+        res.status(200).json({"status": "good"});
+    }
+
+	@UseGuards(AuthGuard)
     @Post('message')
     async postMessage(@Request() req: any, @Body() messageInfos: messageDto, @Res() res: any)//TODO CHECK IF IS CHATTER NOT BAN NOR MUTED
     {
@@ -75,12 +106,29 @@ export class ChatController {
         console.log("PUBLIC");
         return (await this.chatService.findPublic(req.user));
     }
+
+    @UseGuards(AuthGuard)
+    @Post('hasPass')
+    async hasPass(@Request() req: any, @Body() body: string)
+    {
+        console.log("hasPass");
+        return (await this.chatService.hasPass(body['id']));
+    }
+
     @UseGuards(AuthGuard)
     @Get('all')
     async getAll(@Request() req: any) 
     {
         console.log("ALL");
         return (await this.chatService.findAll(req.user));
+    }
+
+    @UseGuards(AuthGuard)
+    @Post('getDmWith')
+    async getDmWith(@Request() req: any, @Body() body: string) 
+    {
+        console.log("getDmWith");
+        return (await this.chatService.getDmWith(req.user, body['target']));
     }
 
     @UseGuards(AuthGuard)
@@ -108,15 +156,18 @@ export class ChatController {
         {
             let messages : ChatMessage[] = [];    
             const tmp: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            // console.log("yoo: " );
-            // console.log(user.blocked_users);
+            console.log(tmp);
+            console.log("yoo: " );
+            console.log(user.blocked_users);
 		    for (let message  of tmp) {
 			    if (!user.blocked_users.find((it) =>{return (it === message.user.login42)}))
                 {
 				    messages.push(message)
                 }
             }
-            // console.log(messages);
+
+            console.log(messages);
+            
             res.status(200).json(messages).send();
             return;
         }
@@ -243,6 +294,104 @@ export class ChatController {
         }
 
 		await this.chatService.addAdmin(roomId, newAdmin);
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getAdmins(body['id'])).send();
+        return;
+	}
+
+    @UseGuards(AuthGuard)
+	@Post('delOwner') 
+    async delOwner(@Res() res: any, @Body() body: string, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body['id'];
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)))
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		console.log("delOwner");
+
+		await this.chatService.removeOwner(roomId);
+        await res.status(200).json(await this.chatService.getOwner(body['id'])).send();
+
+        return;
+	}    
+
+
+    @UseGuards(AuthGuard)
+	@Post('changeName') 
+    async changeName(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.setName(roomId, body.name);
+        await res.status(200).json(body.name).send();
+        return;
+	}
+    
+    @UseGuards(AuthGuard)
+	@Post('removePassword') 
+    async removePassword(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.removePassword(roomId);
+        await res.status(200).json({"status":"good"}).send();
+        return;
+	}
+
+    @UseGuards(AuthGuard)
+	@Post('changePassword') 
+    async changePassword(@Res() res: any, @Body() body: roomDto, @Request() req: any)
+	{
+        //get room id
+        const roomId: number = body.id;
+        if (!(await this.chatService.findOne(roomId)))
+        {
+            res.status(409).json({"error":"no chat room with that id"}).send();
+            return;
+        }
+        //check if user is owner or admin
+        const agent: User | null = (await this.userService.findOne(req.user));
+        if (!(await this.chatService.isOwner(roomId, agent)) )
+        {
+            await res.status(403).json({"error":"Forbidden"}).send();
+            return;
+        }
+		await this.chatService.setPassword(roomId, body.password);
         await res.status(200).json({"status":"good"}).send();
         return;
 	}
@@ -270,7 +419,9 @@ export class ChatController {
         console.log(body['admin'])
 
 		await this.chatService.removeAdmin(roomId, body['admin']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getAdmins(body['id'])).send();
+
         return;
 	}
     
@@ -308,7 +459,8 @@ export class ChatController {
             return;
         }
 		await this.chatService.addBan(roomId, newBan);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getBans(body['id'])).send();
         return;
 	}
 
@@ -334,7 +486,8 @@ export class ChatController {
         console.log(body['ban'])
 
 		await this.chatService.removeBan(roomId, body['ban']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getBans(body['id'])).send();
         return;
 	}
 
@@ -373,7 +526,8 @@ export class ChatController {
         }
 
 		await this.chatService.addMute(roomId, newMute);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getMutes(body['id'])).send();
         return;
 	}
 
@@ -401,7 +555,8 @@ export class ChatController {
         console.log(body['mute'])
 
 		await this.chatService.removeMute(roomId, body['mute']);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getMutes(body['id'])).send();
         return;
 	}
 
@@ -444,7 +599,8 @@ export class ChatController {
         }
 
 		await this.chatService.addChatter(roomId, newChatter);
-        await res.status(200).json({"status":"good"}).send();
+        // await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getChatters(body['id'])).send();
         return;
 	}
 
@@ -454,6 +610,7 @@ export class ChatController {
 	{
         //get room id
         const roomId: number = body['id'];
+        console.log("delChatter")
         if (!(await this.chatService.findOne(roomId)))
         {
             res.status(409).json({"error":"no chat room with that id"}).send();
@@ -462,7 +619,7 @@ export class ChatController {
 
         //check if user is owner or chatter
         const agent: User | null = (await this.userService.findOne(req.user));
-        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)))
+        if (body['chatter'] !== req.user && !(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)))
         {
             await res.status(403).json({"error":"Forbidden"}).send();
             return;
@@ -471,7 +628,7 @@ export class ChatController {
         console.log(body['chatter'])
 
 		await this.chatService.removeChatter(roomId, body['chatter']);
-        await res.status(200).json({"status":"good"}).send();
+        await res.status(200).json(await this.chatService.getChatters(body['id'])).send();
         return;
 	}
 

@@ -37,7 +37,8 @@ export class Api42Service
 			console.log(response.data['access_token'])
 			return (response.data["access_token"])
 		}
-		catch {
+		catch (error){
+			console.log(error)
 			throw "getTokenError" ;
 
 		}

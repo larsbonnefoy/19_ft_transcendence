@@ -6,9 +6,11 @@ import { useChatStore } from '@/stores/chat';
 import { useChannelStore } from '@/stores/chat';
 import { socket } from '@/socket';
 import ChannelList from './ChannelList.vue';
+import EditChannel from './EditChannel.vue';
 
 const chat = useChatStore();
 const channel = useChannelStore();
+const showEditChannel = ref(false);
 const props = defineProps({
   // messages: Array,
   user: Object,
@@ -108,11 +110,21 @@ onUnmounted(async () => {
   channel.unsetChannel();
 });
 
+console.log(channel.getId)
 </script>
 
 <template>
   <div class="chat-window" ref="chatContainerRef">
-    <div id="ChatWindow">{{selectedChannel}}</div>
+    <!-- Chat header -->
+    <div class="chat-header">
+      <span class="channel-name">{{ selectedChannel }}</span>
+      <template v-if="channel.getId">
+        <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
+        <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
+      </template>
+    </div>
+
+    <!-- <div id="ChatWindow">{{selectedChannel}}</div> -->
     <MessageBox 
       :user="user"
       class="chat-messages" 
@@ -225,7 +237,29 @@ onUnmounted(async () => {
     transform: scale(0.94); 
 }
 
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #6c757d; /* You can choose your own color */
+  padding: 10px 15px;
+  color: white;
+  font-size: 40px;
+}
 
+.channel-name {
+  flex: 1;
+  text-align: center;
+  color: #ffffff;
+}
+
+.gear-icon {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: white;
+}
 
 </style>
   
