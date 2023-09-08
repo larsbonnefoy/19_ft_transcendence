@@ -3,6 +3,7 @@ import { useChannelStore, useChatStore } from '@/stores/chat';
 import { ref, onUnmounted } from 'vue';
 import { type UserInfo } from '../../types';
 import axios, { type AxiosResponse } from 'axios';
+import UserButton from './UserButton.vue';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -112,33 +113,7 @@ const showContextMenu = (event: any, user : string | undefined, status: string) 
 
 };
 
-const removeUser = async () => {
-    await channelStore.removeUser(selectedUser.value, selectedUserStatus.value);
-    contextMenuVisible.value = false;
-};
 
-const promoteUser = async () => {
-    if (selectedUserStatus.value === 'chatter')
-    await channelStore.promoteChatter(selectedUser.value)
-    contextMenuVisible.value = false;
-};
-const banUser = async () => {
-    await channelStore.addBan(selectedUser.value, selectedUserStatus.value);
-    contextMenuVisible.value = false;
-};
-const kickUser = async () => {
-    // Add logic to promote the selected user to admin
-    console.log(`Kick user: ${selectedUser.value}`);
-    await channelStore.kickUser(selectedUser.value, selectedUserStatus.value);
-    contextMenuVisible.value = false;
-};
-
-const muteUser = async () => {
-    // Add logic to promote the selected user to admin
-    console.log(`Mute user: ${selectedUser.value}`);
-    await channelStore.muteUser(selectedUser.value);
-    contextMenuVisible.value = false;
-};
 
 
 
@@ -159,16 +134,6 @@ onUnmounted(() => {
   <template v-if="!channelStore.getIsDm">
     <div class="modal-background">
         <div class="modal-content">
-            <div v-if="contextMenuVisible" :style="{ top: contextMenuPosition.y + '%', left: contextMenuPosition.x + '%' }" class="context-menu">
-                <ul >
-                    <li  @click="removeUser">Remove</li>
-                    <li  @click="promoteUser">Promote to Admin</li>
-                    <li  @click="banUser">Ban</li>
-                    <li  @click="kickUser">Kick</li>
-                    <li  @click="muteUser">Mute</li>
-                    <!-- Add more options as needed -->
-                </ul>
-            </div>
             <button @click="closeModal" class="close-button">X</button>
             <h2>Edit Channel</h2>
               <button @click="toggleSection" class="switch-create-button">
@@ -179,28 +144,18 @@ onUnmounted(() => {
             <div v-if="section === 'Current Users'">
             <!-- Section for Current Users -->
             <div>
-            <h4>Owner</h4>
-            <div class="user-scroll-container">
-                  <li  :key="channelStore?.getOwner?.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner?.login42, 'owner') ">
-                        {{ channelStore?.getOwner?.username }}
-                  </li>
-            </div>
-            <h4>Admins</h4>
-            <div class="user-scroll-container">
-                <!-- <ul class="user-list"> -->
-                    <li v-for="user in channelStore.getAdmins" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.login42, 'admin') ">
-                        {{ user.username }}
-                    </li>
-                <!-- </ul> -->
-            </div>
-            <h4>Members</h4>
-            <div class="user-scroll-container">
-                <!-- <ul class="user-list"> -->
-                    <li v-for="user in channelStore.getChatters" :key="user.username" @contextmenu.prevent="showContextMenu($event, user.login42, 'chatter') ">
-                        {{ user.username }}
-                    </li>
-                <!-- </ul> -->
-            </div>
+              <h4>Owner</h4>
+                <div class="user-scroll-container">
+                  <UserButton :user="channelStore?.getOwner" status="owner"/>
+                </div>
+              <h4>Admins</h4>
+                <div class="user-scroll-container">
+                  <UserButton v-for="user in channelStore.getAdmins" :key="user.username" :user="user" status="admin"/>
+                </div>
+              <h4>Members</h4>
+                <div class="user-scroll-container">
+                  <UserButton v-for="user in channelStore.getChatters" :key="user.username" :user="user" status="chatter"/>
+                </div>
             </div>
           
         </div>
@@ -292,7 +247,7 @@ onUnmounted(() => {
 }
 button.switch-create-button {
   background-color: #505050;
-  color: #a8a8a8;
+  color: #ffffff;
   transition: background-color 0.3s, transform 0.1s;
 }
 
@@ -320,8 +275,8 @@ button.switch-create-button:active {
 }
 
 button {
-  background-color: #ffffff;
-  color: #6c757d;
+  background-color: #555550;
+  color: #ffffff;
   height: 3vh;
   width: 50wh;
 }
@@ -342,7 +297,7 @@ button {
   display: flex;
   align-items: center; /* Vertically center the items */
   border-radius: 25px; /* Circular edges */
-  background-color: #505050;
+  background-color: #8e8e8e;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   position: relative; /* To position the add button absolutely */
   margin: 10px 0; /* Margin for spacing */
@@ -362,14 +317,14 @@ button {
 }
 
 .input-container input::placeholder {
-  color: #a8a8a8; /* Placeholder color */
+  color: #d4d4d4; 
 }
 
 /* Add Button */
 .input-container .add-button {
   position: absolute;
   right: 0; 
-  background-color: #007BFF; 
+  background-color: #555550; 
   color: #ffffff; 
   border: none;
   padding: 0.5rem 1rem; 
@@ -386,7 +341,7 @@ button {
 }
 
 .input-container .add-button:hover {
-  background-color: #0056b3;
+  background-color: #494949;
 } 
 
 .input-container .add-button:active {
@@ -397,11 +352,14 @@ button {
     max-height: 200px;
     overflow-y: auto;
     margin-top: 20px;
-    border: 1px solid #ffffff;
+    /* border: 1px solid #ffffff; */
     border-radius: 10px;
     padding: 10px;
+    margin: 10px;
     font-size: medium;
     list-style-type: none;
+    border-radius: 20px;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); */
 }
 
 .user-list {
@@ -410,29 +368,5 @@ button {
     list-style-type: none;
     list-style: none;
 
-}
-.context-menu {
-  position:absolute;
-  margin-left: 0%;
-  /* z-index: 1; */
-  background-color: #505050;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  /* z-index: 10; */
-  /* width: auto;  Adjust width as per your need */
-}
-
-.context-menu div {
-    padding: 10px;
-    cursor: pointer;
-}
-
-.context-menu li:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-.context-menu ul {
-  list-style: none;
-  font-size: 25%;
 }
 </style>

@@ -165,7 +165,7 @@ export const useChannelStore = defineStore('channel', {
         }
         },
 
-        async addBan(userId: string, status: string)
+        async addBan(userId: string, status: string| undefined)
         {
         try
         {
@@ -226,7 +226,7 @@ export const useChannelStore = defineStore('channel', {
 
        },
 
-      async kickUser(userId: string, status: string)
+      async kickUser(userId: string, status: string| undefined)
        {
         try{
             console.log('kick', status)
@@ -263,7 +263,7 @@ export const useChannelStore = defineStore('channel', {
         catch {}
        },
 
-       async removeUser(userId: string, status: string)
+       async removeUser(userId: string, status: string | undefined)
        {
         try{
             console.log('remove', status)
