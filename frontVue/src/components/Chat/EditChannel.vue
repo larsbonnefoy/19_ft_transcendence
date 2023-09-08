@@ -30,20 +30,20 @@ const addUser = async () => {
     try 
     {
       await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
-      const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput.value},
-                 {
-                    headers: 
-                    {
-	                    'token':localStorage.getItem('jwt_token')
-	                }
-                });
-      errorMessage.value = `added : ${userInput.value}`
       await channelStore.addChatter(userInput.value);
+      errorMessage.value = `added : ${userInput.value}`
       return;
     }
-    catch (error)
+    catch (error: any)
     {
-      errorMessage.value = "Unknown user";
+      console.log('error')
+      console.log(error)
+      if (error['error'])
+      {
+        errorMessage.value = error;
+      }
+      else
+        errorMessage.value = "Unknown user";
       // userInput.value = '';
       return;
     }
@@ -94,10 +94,12 @@ const toggleSection = () => {
 // Context menu control
 const contextMenuVisible = ref(false);
 const contextMenuPosition = ref({ x: '0', y: '0' });
-const selectedUser = ref(null);
-const selectedUserStatus = ref(null);
+const selectedUser = ref('');
+const selectedUserStatus = ref('');
 
-const showContextMenu = (event, user, status) => {
+const showContextMenu = (event: any, user : string | undefined, status: string) => {
+  if (!user)
+    return;
     contextMenuVisible.value = true;
     console.log(event.pageX)
     console.log(event.pageY)
@@ -110,29 +112,23 @@ const showContextMenu = (event, user, status) => {
 };
 
 const removeUser = async () => {
-    // Add logic to remove the selected user
-    console.log(`Remove user: ${selectedUser.value}`);
-    
     await channelStore.removeUser(selectedUser.value, selectedUserStatus.value);
     contextMenuVisible.value = false;
 };
 
-const promoteUser = () => {
-    // Add logic to promote the selected user to admin
-    console.log(`Promote user to admin: ${selectedUser.value}`);
+const promoteUser = async () => {
     if (selectedUserStatus.value === 'chatter')
-    channelStore.promoteChatter(selectedUser.value)
+    await channelStore.promoteChatter(selectedUser.value)
     contextMenuVisible.value = false;
 };
-const banUser = () => {
-    // Add logic to promote the selected user to admin
-    console.log(`Ban user: ${selectedUser.value}`);
+const banUser = async () => {
+    await channelStore.addBan(selectedUser.value, selectedUserStatus.value);
     contextMenuVisible.value = false;
 };
 const kickUser = async () => {
     // Add logic to promote the selected user to admin
     console.log(`Kick user: ${selectedUser.value}`);
-    await channelStore.kickUser(selectedUser.value, selectedUserStatus.value);
+    await channelStore.kickUser(selectedUser.value);
     contextMenuVisible.value = false;
 };
 
@@ -150,6 +146,7 @@ onUnmounted(() => {
 
 <template>
 
+  <template v-if="!channelStore.getIsDm">
     <div class="modal-background">
         <div class="modal-content">
             <div v-if="contextMenuVisible" :style="{ top: contextMenuPosition.y + '%', left: contextMenuPosition.x + '%' }" class="context-menu">
@@ -163,11 +160,9 @@ onUnmounted(() => {
             </div>
             <button @click="closeModal" class="close-button">X</button>
             <h2>Edit Channel</h2>
-            <template v-if="!channelStore.getIsDm">
               <button @click="toggleSection" class="switch-create-button">
                 {{ section === 'Current Users' ? 'Switch to Manage Channel' : 'Switch to Current Users' }}
               </button>
-            </template>
     
             <!-- Display the section based on the toggle -->
             <div v-if="section === 'Current Users'">
@@ -175,8 +170,8 @@ onUnmounted(() => {
             <div>
             <h4>Owner</h4>
             <div class="user-scroll-container">
-                  <li  :key="channelStore?.getOwner.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner.login42, 'owner') ">
-                        {{ channelStore?.getOwner.username }}
+                  <li  :key="channelStore?.getOwner?.username" @contextmenu.prevent="showContextMenu($event, channelStore?.getOwner?.login42, 'owner') ">
+                        {{ channelStore?.getOwner?.username }}
                   </li>
             </div>
             <h4>Admins</h4>
@@ -225,6 +220,7 @@ onUnmounted(() => {
           <button @click="leaveChannel">Leave</button>
         </div>
     </div>
+  </template>
 </template>
     
 <style scoped>

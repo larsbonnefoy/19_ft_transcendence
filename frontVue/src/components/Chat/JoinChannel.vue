@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { socket } from '@/socket';
 
 import { useChatStore, useChannelStore } from '@/stores/chat';
+import { type Channel } from '@/types';
 
 const chat = useChatStore();
 const channelStore = useChannelStore();
@@ -55,7 +56,10 @@ const submit = async () => {
 	catch (error: any)
 	{
     console.log("error")
-    errorMessage.value = "Bad Password"
+    if (error?.data['error'])
+      errorMessage.value = error.data['error'];
+    else
+      errorMessage.value = "Bad Password"
     return;
 	}
   emit('close');

@@ -61,6 +61,11 @@ export class ChatController {
             res.status(409).json({"error": "unknown user"}).send();
             return; 
         }
+        if (await this.chatService.isBan(roomInfos.id, user))
+        {
+            res.status(403).json({"error": "You are Banned"}).send();
+            return; 
+        }
         await this.chatService.addChatter(roomInfos.id, user);
         res.status(200).json({"status": "good"});
     }
@@ -579,8 +584,13 @@ export class ChatController {
         }
         //check if user is owner or chatter
         const agent: User | null = (await this.userService.findOne(req.user));
+        if (!agent)
+        {
+           res.status(409).json({"error":"Unknown User"}).send();
+            return;
+        }
         // if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isChatter(roomId, agent)))
-        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)))
+        if (!(await this.chatService.isOwner(roomId, agent)) && !(await this.chatService.isAdmin(roomId, agent)) || (this.chatService.isBan(roomId, body['newChatter'])))
         {
             await res.status(403).json({"error":"Forbidden"}).send();
             return;
