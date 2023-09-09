@@ -13,7 +13,7 @@ const props = defineProps<{
 
 const store = useUserStore();
 let FriendUsername: string="";
-let friend: UserInfo;
+let friend: UserInfo | null;
 //get et Set status aussi
 async function getFriend() {
     try {
@@ -35,7 +35,8 @@ async function getFriend() {
 await getFriend();
 
 onUnmounted(async () => {
-    URL.revokeObjectURL(friend.photo);
+	if (friend)
+		URL.revokeObjectURL(friend.photo);
 });
 </script>
 

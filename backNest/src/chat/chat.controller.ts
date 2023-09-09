@@ -5,7 +5,7 @@ import { Chat, ChatMessage } from './chat.entity';
 import { ChatService } from './chat.service';
 import { messageDto } from './messageDto.dto';
 import { roomDto } from './roomDto.dto ';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { AuthGuard } from '../guard/auth.guard';
 import { User } from '../user/user.entity';
 

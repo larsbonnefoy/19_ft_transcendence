@@ -21,6 +21,11 @@ export const useChannelStore = defineStore('channel', {
         getIsPrivate: (state) => state.channel?.isPrivate,
     },
     actions: {
+       async  unsetChannel()
+       {
+        this.channel = null;
+       },
+
        async setChannel(newChannel: Channel)
        {
             this.channel = newChannel;

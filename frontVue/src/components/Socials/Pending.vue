@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const store = useUserStore();
-let pendingUser: UserInfo;
+let pendingUser: UserInfo | null;
 let pendingUserName : string = "";
 
 async function getPending() {
@@ -34,7 +34,8 @@ async function getPending() {
 await getPending();
 
 onUnmounted(async () => {
-    URL.revokeObjectURL(pendingUser.photo);
+    if (pendingUser)
+        URL.revokeObjectURL(pendingUser.photo);
 });
 </script>
 

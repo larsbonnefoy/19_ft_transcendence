@@ -1,24 +1,41 @@
-FROM node:18-alpine as dev
+# FROM node:18-alpine as dev
 
+# WORKDIR /usr/src/app/
 
+# RUN npm install -g http-server
 
-WORKDIR /usr/src/app/
+# COPY package*.json ./
+# COPY tsconfig*.json ./
 
-RUN npm install -g http-server
+# RUN npm install glob rimraf vue
 
-COPY package*.json ./
-COPY tsconfig*.json ./
+# RUN npm install
+# # ENV HOST=0.0.0.0
+# COPY . .
 
-RUN npm install glob rimraf vue
+# RUN npm run build
 
-RUN npm install
-# ENV HOST=0.0.0.0
+# # EXPOSE 8080
+
+# EXPOSE 8080
+
+# CMD [ "http-server", "dist" ]
+
+FROM debian:bookworm as dev
+
+WORKDIR /usr/src/app
+
 COPY . .
 
-RUN npm run build
+RUN apt-get update
+RUN apt-get install -y nginx nodejs npm
+# curl vim
 
-# EXPOSE 5173
+# RUN npm install -g n && n 20.3.1
+RUN mv nginx.conf /etc/nginx/sites-enabled/default
+RUN npm install
+RUN chmod +x ./entrypoint.sh
 
-EXPOSE 8080
+ENTRYPOINT [ "./entrypoint.sh" ]
 
-CMD [ "http-server", "dist" ]
+CMD ["nginx", "-g", "daemon off;"]

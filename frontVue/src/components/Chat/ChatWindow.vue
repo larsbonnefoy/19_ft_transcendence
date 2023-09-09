@@ -118,6 +118,7 @@ onMounted(async () => {
 onUnmounted(async () => {
   socket.emit("leaveChannel",{target: channel.getId, token: localStorage.getItem('jwt_token')});
   socket.off("getMessage");
+  channel.unsetChannel();
 });
 
 console.log(channel.getId)

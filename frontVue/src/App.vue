@@ -6,8 +6,10 @@ import { useRouter } from 'vue-router';
 import { socket } from './socket';
 import { onUnmounted } from 'vue';
 import axios from 'axios';
+import { useChannelStore } from './stores/chat';
 
 const store = useUserStore();
+const channel = useChannelStore();
 const router = useRouter();
 
 let liveGames: any = Array(0);
@@ -21,6 +23,11 @@ function isBlocked(login42 : string) : boolean {
 		}
 	}
 	return false;
+}
+
+function seesMessage(id : number) : boolean {
+	// console.log("room id: " + channel.getId + ", msg id: " + id);
+	return channel.getId === id;
 }
 
 async function isInGame():Promise<boolean> {
@@ -127,11 +134,11 @@ socket.on('warning', (message: string) => {
 });
 
 socket.on('messageToast', async (data: any) => {
-	if (await isInGame() || isBlocked(data.from.login42)) {
+	if (await isInGame() || isBlocked(data.from.login42) || seesMessage(data.message.id)) {
 		return ;
 	}
 	const toast = useToast();
-	toast.info(data.from.username + ": " + data.message, {
+	toast.info(data.from.username + ": " + data.message.content, {
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,

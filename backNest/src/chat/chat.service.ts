@@ -2,7 +2,7 @@ import { flatten, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat, ChatMessage } from './chat.entity';
 import {Not, Repository} from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { User } from '../user/user.entity';
 
 @Injectable()
