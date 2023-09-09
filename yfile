@@ -45,11 +45,13 @@ list of .env content:
 
 		#NETWORK 
 		LOCAL_IP = "10.2.8.1"
+		VUE_PORT = PORT
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
 		VITE_LOCAL_IP = "10.2.8.1"  #=localip of machine--> or localhost
 		VITE_BACKEND_PORT = "3000"
+		VITE_VUE_PORT = 8081
 
 -backNest/postgres/.env
 		#Postgres

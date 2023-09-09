@@ -35,6 +35,7 @@ RUN apt-get install -y nginx nodejs npm
 RUN mv nginx.conf /etc/nginx/sites-enabled/default
 RUN npm install
 RUN chmod +x ./entrypoint.sh
+# COPY .../../../assets /usr/src/app/dist
 
 ENTRYPOINT [ "./entrypoint.sh" ]
 

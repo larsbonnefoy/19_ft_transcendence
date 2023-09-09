@@ -137,7 +137,7 @@ export class ChatService
 
 	async	isOwner(roomId: number, user: User) : Promise<boolean>
 	{
-		console.log("isOwner");
+		// console.log("isOwner");
 		const owner: User | null = await this.getOwner(roomId);
 		if (!owner || owner.login42 !== user.login42)
 		{
@@ -149,7 +149,7 @@ export class ChatService
 
 	async isAdmin(roomId: number, user: User) : Promise<boolean>
 	{
-		console.log("isAdmin");
+		// console.log("isAdmin");
 		const admins: User[] = await this.getAdmins(roomId);
 		if (!admins || !admins.find(it => { return it.login42 === user.login42}))
 		{
@@ -161,11 +161,11 @@ export class ChatService
 
 	async isChatter(roomId: number, user: User) : Promise<boolean>
 	{
-		console.log("isChatter");
+		// console.log("isChatter");
 		const chatters: User[] = await this.getChatters(roomId);
 		if (!chatters || !chatters.find(it => { return it.login42 === user.login42}))
 		{
-			console.log("false");
+			// console.log("false");
 			return false;
 		}
 		return true;
@@ -173,11 +173,11 @@ export class ChatService
 
 	async isMute(roomId: number, user: User) : Promise<boolean>
 	{
-		console.log("isMute");
+		// console.log("isMute");
 		const mutes: User[] = await this.getMutes(roomId);
 		if (!mutes || !mutes.find(it => { return it.login42 === user.login42}))
 		{
-			console.log("false");
+			// console.log("false");
 			return false;
 		}
 		return true;
@@ -185,11 +185,11 @@ export class ChatService
 
 	async isBan(roomId: number, user: User) : Promise<boolean>
 	{
-		console.log("isBan");
+		// console.log("isBan");
 		const bans: User[] = await this.getBans(roomId);
 		if (!bans || !bans.find(it => { return it.login42 === user.login42}))
 		{
-			console.log("false");
+			// console.log("false");
 			return false;
 		}
 		return true;

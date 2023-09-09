@@ -20,6 +20,7 @@ export class Api42Service
 			console.log(query);
 			console.error(jwtConstants);
 			console.error(process.env.JWT_SECRET);
+			console.log(`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}/auth`)
 		try
 		{
 			const response  = await this.httpService.axiosRef.post('https://api.intra.42.fr/oauth/token', {
@@ -27,7 +28,7 @@ export class Api42Service
 					client_id: process.env.API_UID,
 					client_secret: process.env.API_SECRET,
 					code: query,
-					redirect_uri: `http://${process.env.LOCAL_IP}:5173/auth`,
+					redirect_uri: `http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}/auth`,
 	  			}, {
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'

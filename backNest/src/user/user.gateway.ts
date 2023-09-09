@@ -4,8 +4,10 @@ import { Server } from 'socket.io';
 @WebSocketGateway(
     {
       cors: {
-        origin: [`http://10.2.8.3:5173`, "http://localhost:5173"],
+    	origin: [`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}`, `http://localhost:${process.env.VUE_PORT}`],
         methods: ["GET", "POST"],
+    //  allowedHeaders: ["Access-Control-Allow-Origin"],
+     credentials: true
       },
     })
 export class AchievementGateway {

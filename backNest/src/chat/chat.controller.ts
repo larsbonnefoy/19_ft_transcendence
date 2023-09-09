@@ -178,7 +178,7 @@ export class ChatController {
         console.log("GETEMESSAGE");
         // console.log(body)
         const roomId: number = body.id;
-        console.log("getMessage: " + roomId);
+        // console.log("getMessage: " + roomId);
 		const user : User = await this.userService.findOne(req.user);
 		if (!user)
 		{
@@ -196,9 +196,9 @@ export class ChatController {
         {
             let messages : ChatMessage[] = [];    
             const tmp: ChatMessage[] | null = (await this.chatService.getMessagesByRoom(roomId)); 
-            console.log(tmp);
-            console.log("yoo: " );
-            console.log(user.blocked_users);
+            // console.log(tmp);
+            // console.log("yoo: " );
+            // console.log(user.blocked_users);
 		    for (let message  of tmp) {
 			    if (!user.blocked_users.find((it) =>{return (it === message.user.login42)}))
                 {
@@ -206,7 +206,7 @@ export class ChatController {
                 }
             }
 
-            console.log(messages);
+            // console.log(messages);
             
             res.status(200).json(messages).send();
             return;

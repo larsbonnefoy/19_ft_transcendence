@@ -137,6 +137,7 @@ socket.on('messageToast', async (data: any) => {
 	if (await isInGame() || isBlocked(data.from.login42) || seesMessage(data.message.id)) {
 		return ;
 	}
+	console.log("AYO");
 	const toast = useToast();
 	toast.info(data.from.username + ": " + data.message.content, {
 		timeout: 5000,

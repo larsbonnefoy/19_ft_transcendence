@@ -29,8 +29,11 @@ import { TwofaController } from './twofa/twofa.controller';
     TypeOrmModule.forRoot({
       type: 'postgres',
       // host: 'localhost', // if running with docker, comment this and use line below
-      host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
-      port: +process.env.POSTGRES_DB_PORT,
+    //   host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
+      host: 'postgres',
+    //   host: '172.18.0.3 ',
+    //   port: +process.env.POSTGRES_DB_PORT, // for some reason it works like this sooooo lesgo
+
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,

@@ -124,7 +124,7 @@ export const useUserStore = defineStore('user', {
 		},
 		async getAvatar(imgpath: string) : Promise<string> {
 			if (imgpath === "no photo yet")
-				return  "../../assets/placeholder_avatar.png";
+				return  "../..../../../assets/placeholder_avatar.png";
 			else if (imgpath.slice(0, 5) === "https") //is still intra photo, which we don't store ourself since it's a url
 				return imgpath;
 			try {
@@ -135,7 +135,7 @@ export const useUserStore = defineStore('user', {
 				}
 			}
 			catch (error) {}
-			return "../../assets/placeholder_avatar.png";
+			return "../..../../../assets/placeholder_avatar.png";
 		},
         async addFriend(newFriendLogin: string) {
             const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/add_friend:${newFriendLogin}`, { headers: {token: localStorage.getItem('jwt_token')} })

@@ -17,8 +17,10 @@ import { ChatService } from './chat.service';
 @WebSocketGateway(
   {
     cors: {
-      origin: [`http://10.2.8.3:5173`, "http://localhost:5173"],
+      origin: [`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}`, `http://localhost:${process.env.VUE_PORT}`],
       methods: ["GET", "POST"],
+    //  allowedHeaders: ["Access-Control-Allow-Origin"],
+     credentials: true
     },
   })
 export class ChatGateway {
@@ -36,11 +38,12 @@ export class ChatGateway {
     catch (error) {
       return ;
     }
+  console.log("SEND");
   const current_user = await this.userService.findOne(login42);
   if (current_user === null)
     return ; // should not happen but you never know
   const chatUsers: User[] = await this.chatService.getUsers(data.target);
-  console.log(chatUsers);
+//   console.log(chatUsers);
   for (let user of chatUsers) {
     if (user.login42 !== login42) {
       console.log("sending toast to " + user.login42);

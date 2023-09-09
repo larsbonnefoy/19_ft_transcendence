@@ -114,26 +114,8 @@ const showContextMenu = (event: any, user : string | undefined, status: string) 
 };
 
 
-<<<<<<< HEAD
 
 
-=======
-const promoteUser = async () => {
-    if (selectedUserStatus.value === 'chatter')
-    await channelStore.promoteChatter(selectedUser.value)
-    contextMenuVisible.value = false;
-};
-const banUser = async () => {
-    await channelStore.addBan(selectedUser.value, selectedUserStatus.value);
-    contextMenuVisible.value = false;
-};
-const kickUser = async () => {
-    // Add logic to promote the selected user to admin
-    console.log(`Kick user: ${selectedUser.value}`);
-    await channelStore.kickUser(selectedUser.value, selectedUserStatus.value);
-    contextMenuVisible.value = false;
-};
->>>>>>> yhuberla
 
 // Close the context menu when clicked outside
 const closeContextMenu = () => {

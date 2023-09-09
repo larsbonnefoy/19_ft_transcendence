@@ -11,8 +11,8 @@ services:
       dockerfile: Dockerfile
     entrypoint: ["./wait-for-postgres.sh", "npm", "run", "start:dev"]
     # entrypoint: ["npm", "run", "start:dev"]
-    # ports:
-    # - 3000:3000
+    ports:
+    - 3000:3000
     env_file:
       - backNest/.env
     depends_on:
@@ -39,7 +39,7 @@ services:
     env_file:
       - frontVue/.env
     ports:
-      - 8080:8080
+      - 8081:8080
     # depends_on:
     #   - api
       # - postgres
@@ -65,8 +65,8 @@ services:
     #   PG_DATA: /var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     restart: always
 volumes:
   pgdata:
@@ -79,10 +79,7 @@ volumes:
 
 
 networks:
-  nesjs-network:
-
-
-
+  nesjs-network:    
 
 
 # pgadmin:

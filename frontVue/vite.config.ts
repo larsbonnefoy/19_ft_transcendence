@@ -9,8 +9,9 @@ export default defineConfig({
     vue(),
   ],
   server: {
-    port: 5173,
-    host: true
+    port: 8081,
+    host: true,
+	cors: true
   },
   resolve: {
     alias: {
