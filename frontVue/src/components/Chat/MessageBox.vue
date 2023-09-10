@@ -60,6 +60,7 @@ function handleProfileClick(login: string) {
 }
 
 .message-content {
+  margin-left: 60px;
   background-color: #f2f3f5;
   color: black;
   padding: 8px 12px;
