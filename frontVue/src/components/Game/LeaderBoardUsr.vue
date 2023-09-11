@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const profilePicture = ref();
 // if (props.user.photo == "no photo yet") {
-//     profilePicture.value = "../..../../../assets/placeholder_avatar_white.png"
+//     profilePicture.value = "/assets/placeholder_avatar_white.png"
 // }
 // else {
     profilePicture.value = props.user.photo;
@@ -19,16 +19,16 @@ const profilePicture = ref();
 let statusImage: string;
 switch(props.index) {
     case 0 :
-        statusImage = "../..../../../assets/TrophyLeaderBoard/gold.png"
+        statusImage = "/assets/TrophyLeaderBoard/gold.png"
         break;
     case 1:
-        statusImage = "../..../../../assets/TrophyLeaderBoard/silver.png"
+        statusImage = "/assets/TrophyLeaderBoard/silver.png"
         break;
     case 2 :
-        statusImage= "../..../../../assets/TrophyLeaderBoard/bronze.png"
+        statusImage= "/assets/TrophyLeaderBoard/bronze.png"
         break;
     case 3 :
-        statusImage= "../..../../../assets/TrophyLeaderBoard/trophy_broken.png"
+        statusImage= "/assets/TrophyLeaderBoard/trophy_broken.png"
         break;
     default:
         statusImage = ""

@@ -32,7 +32,7 @@ import { TwofaController } from './twofa/twofa.controller';
     //   host: 'host.docker.internal', //https://stackoverflow.com/questions/24319662/from-inside-of-a-docker-container-how-do-i-connect-to-the-localhost-of-the-mach
       host: 'postgres',
     //   host: '172.18.0.3 ',
-    //   port: +process.env.POSTGRES_DB_PORT, // for some reason it works like this sooooo lesgo
+      port: +process.env.POSTGRES_DB_PORT, // for some reason it works like this sooooo lesgo
 
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,

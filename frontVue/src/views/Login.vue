@@ -40,7 +40,7 @@ const loginWith42 = () => {
 .fullscreen-background {
     
     /* Set background image and styles */
-    background-image: url('backgroundv2.jpg');
+    background-image: url('/backgroundv2.jpg');
     background-size: cover;
     background-repeat: no-repeat;
 
