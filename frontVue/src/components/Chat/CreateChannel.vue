@@ -18,7 +18,17 @@ const toggleMessageType = () => {
   addedUsers.value = [];
   messageType.value = messageType.value === 'Direct Messages' ? 'group' : 'Direct Messages';
 };
+let me: string = ""
+try{
+ me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+  headers:
+      {
+        'token':localStorage.getItem('jwt_token')
+      }
 
+})).data;
+}
+catch{}
 const emit = defineEmits(["close"]);
 
 const addUser = async () => {
@@ -27,7 +37,12 @@ const addUser = async () => {
     addedUsers.value = [];
     try 
     {
-      await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+      const log: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+      if(log?.data.login42 === me)
+      {
+        errorMessage.value = `You cannot add yourself`;
+        return ;
+      }
       const check = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getDmWith`, {target: userInput.value},
                  {
                     headers: 
@@ -55,7 +70,12 @@ const addUser = async () => {
     if (!addedUsers.value.includes(userInput.value)) {
       try 
       {
-        await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+        const log: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+        if(log?.data.login42 === me)
+        {
+         errorMessage.value = `You cannot add yourself`;
+         return ;
+       }
       }
       catch
       {
@@ -152,7 +172,7 @@ const closeModal = () => {
       <div v-else>
 
 	    <div class="input-container">
-          <input v-model="channelName" placeholder="Channel name" />
+          <input maxlength="24" v-model="channelName" placeholder="Channel name" />
         </div>
         <div class="input-container">
           <input v-model="userInput" placeholder="Search for users" @keydown.enter="addUser"/>

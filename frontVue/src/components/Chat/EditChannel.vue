@@ -14,13 +14,16 @@ const channelName = ref('');
 const password = ref('');  
 const errorMessage = ref('');
 const userInput = ref('');
-
-const me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
+let me: string = ""
+try{
+ me = (await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/me/login42`, {
   headers:
       {
         'token':localStorage.getItem('jwt_token')
       }
 })).data;
+}
+catch{}
 
 const addUser = async () => {
   if (userInput.value.trim().length === 0)
@@ -30,10 +33,19 @@ const addUser = async () => {
    {
     try 
     {
-      await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
-      await channelStore.addChatter(userInput.value);
-      errorMessage.value = `added : ${userInput.value}`
-      return;
+      const log: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
+      console.log(log.data.login42);
+      if(log?.data.login42 === me)
+      {
+        errorMessage.value = `You cannot add yourself`;
+        return ;
+      }
+      else
+      {
+        await channelStore.addChatter(userInput.value);
+        errorMessage.value = `added : ${userInput.value}`
+        return;
+      }
     }
     catch (error: any)
     {
@@ -75,7 +87,8 @@ const changename = async () => {
 
 const deletePassword = async () => {
     password.value = '';
-    console.log('Password deleted.');
+    console.log();
+    errorMessage.value = 'Password deleted.';
     await channelStore.deletePassword()
 };
 
@@ -163,7 +176,7 @@ onUnmounted(() => {
             <div v-else>
                 <!-- Channel Name -->
                 <div class="input-container">
-                    <input v-model="channelName" placeholder="Change channel name..." @keydown.enter="changename"/>
+                    <input maxlength="24" v-model="channelName" placeholder="Change channel name..." @keydown.enter="changename"/>
                 </div>
     
                 <!-- Add New Users -->

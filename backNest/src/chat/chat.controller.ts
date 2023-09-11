@@ -5,7 +5,8 @@ import { Chat, ChatMessage } from './chat.entity';
 import { ChatService } from './chat.service';
 import { messageDto } from './messageDto.dto';
 import { roomDto } from './roomDto.dto ';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
+// import * as bcrypt from 'bcryptjs';
 import { AuthGuard } from '../guard/auth.guard';
 import { User } from '../user/user.entity';
 
@@ -227,7 +228,13 @@ export class ChatController {
         chat.owner = await this.userService.findOne(req.user);
         if (roomInfos.isDm)
         {
-            chat.name = req.user + " " + roomInfos.usernames[0];
+            if (!await this.chatService.getDmWith(req.user, roomInfos.usernames[0])) 
+                chat.name = req.user + " " + roomInfos.usernames[0];
+            else
+            {
+        	    await res.status(409).json('{error: already exist}').send();
+                return ;
+            }
         }
         else
             chat.name = roomInfos.name;

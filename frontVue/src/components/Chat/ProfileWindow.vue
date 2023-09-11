@@ -10,9 +10,8 @@ const props = defineProps({
   user: String
 });
 
-let userdata: UserInfo;
-
 let dataLoaded = ref(false)
+let userdata= ref<any>();
 
 
 async function getProfileData(user: string) {
@@ -60,10 +59,6 @@ watch(() => props.user, async (newVal: any) => {
 <template>
   <div class="profile-window" v-if="dataLoaded">
       <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
-    <!-- Buttons -->
-      <!-- <div class="button-container">
-      <button @click="startMatch" class="start-match-button">Start Match</button> -->
-    <!-- </div> -->
   </div>
 </template>
 

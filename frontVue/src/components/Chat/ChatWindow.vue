@@ -12,7 +12,6 @@ import { type UserInfo } from '@/types';
 const chat = useChatStore();
 const channel = useChannelStore();
 const showEditChannel = ref(false);
-// const private = ref(true);
 const props = defineProps({
   // messages: Array,
   user: Object,
@@ -21,16 +20,8 @@ const props = defineProps({
 
   // props: ['selectedChannel'];
 
-
-
-// const data : any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/room:${props.selectedChannel}`, {
-//   headers:
-//       {
-//         'token':localStorage.getItem('jwt_token')
-//       }
-// });
+let channelName: string = "";
 const newMessage = ref("");
-// const selectedChannel = ref(selectedChannel)
 let me : string
 try
 {
@@ -45,10 +36,19 @@ catch (error)
 {
   me = '';
 }
+function getDmChatter()
+{
+  if(channel?.getChatters)
+  {
+    if (channel.getChatters[0]?.login42 === me)
+      return channel.getOwner?.username;
+    return (channel.getChatters[0]?.username);
+  }
+}
 
 
-const chatContainerRef = ref(null);
-const endOfChatRef = ref<null | HTMLDivElement>(null);
+// Methods
+
 // const channel = ChannelButton.channel.name
 // if (channel)
 //        console.log("yo: " + channel);
@@ -90,16 +90,7 @@ const sendMessage = async () => {
     newMessage.value = "";
 };
 
-const autoScroll = () => {
-    if (endOfChatRef.value) {
-        endOfChatRef.value.scrollIntoView({ behavior: 'smooth' });
-    }
-};
 
-const handleUpdate = () => {
-    console.log("MessageBox updated!"); 
-    autoScroll();
-};
 
 
 
@@ -113,6 +104,10 @@ onMounted(async () => {
     console.log("response: "+ data.login + " " + data.message);
     channel.refreshMessages();
   });
+  channelName = channel?.getName;
+  if (channel?.getIsDm)
+    channelName = getDmChatter();
+  console.log("channelName: "+ channelName)
 })
 
 onUnmounted(async () => {
@@ -125,10 +120,17 @@ console.log(channel.getId)
 </script>
 
 <template>
-  <div class="chat-window" ref="chatContainerRef">
+  <div class="chat-window">
     <!-- Chat header -->
     <div class="chat-header">
-      <span class="channel-name">{{ selectedChannel }}</span>
+      <template v-if="channel.getId">
+        <template v-if="!channel?.getIsDm">
+          <span class="channel-name">{{ channel?.getName }}</span>
+        </template>
+        <template v-else>
+          <span class="channel-name">{{ getDmChatter() }}</span>
+        </template>
+      </template>
       <template v-if="channel.getId">
         <template v-if="!channel.getIsDm">
           <template v-if="!channel.getChatters?.find((it: UserInfo) => {return it.login42 === me})">
@@ -143,7 +145,6 @@ console.log(channel.getId)
     <MessageBox 
       :user="user"
       class="chat-messages" 
-      @updated="autoScroll" 
       @open-profile="handleOpenProfile"
     />
     <div class="chat-input-container">
@@ -170,21 +171,6 @@ console.log(channel.getId)
 .chat-messages {
   padding: 0.5rem 0; /* Adjusted padding */
     margin-bottom: 0.5rem;
-}
-
-.scroll-to-bottom {
-    margin: 10px 0;
-    background-color: #555550;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background-color 0.3s;
-}
-
-.scroll-to-bottom:hover {
-    background-color: #494949;
 }
 
 /* Chat Input Container */
@@ -266,6 +252,18 @@ console.log(channel.getId)
   flex: 1;
   text-align: center;
   color: #ffffff;
+  background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  border: none;
+  padding: 0.5rem 1rem; 
+  border-top-left-radius: 0; 
+  border-bottom-left-radius: 0; 
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px; 
+  border-top-right-radius: 25px; 
+  border-bottom-right-radius: 25px; 
+  max-width: 33%;
+  font-size: large;
 }
 
 .gear-icon {

@@ -9,7 +9,7 @@ export default defineConfig({
     vue(),
   ],
   server: {
-    port: 8081,
+    port: 5173,
     host: true,
 	cors: true
   },
