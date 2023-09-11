@@ -133,10 +133,10 @@ console.log(channel.getId)
       </template>
       <template v-if="channel.getId">
         <template v-if="!channel.getIsDm">
-          <template v-if="!channel.getChatters?.find((it: UserInfo) => {return it.login42 === me})">
+          <!-- <template v-if="!channel.getChatters?.find((it: UserInfo) => {return it.login42 === me})"> -->
             <button @click="showEditChannel = !showEditChannel" class="gear-icon">⚙️</button>
             <EditChannel v-if="showEditChannel" @close="showEditChannel = false"/>
-          </template>
+          <!-- </template> -->
         </template>
       </template>
     </div>

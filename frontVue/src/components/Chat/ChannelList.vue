@@ -18,9 +18,7 @@ const showJoinChannel = ref(false);
 const hasPass = ref(false);
 const channelId = ref<number>(-1)
 
-const toggleSearchBar = () => {
-  showSearchBar.value = !showSearchBar.value;
-};
+
 
 const currentView = ref('public');
 
@@ -48,7 +46,6 @@ function ClickJoin(event: any)
 <template>
   <div class="channel-list h-190">
     <div class="header-section">
-      <button @click="toggleSearchBar" class="search-toggle">🔍</button>
       <h3 @click="toggleView">
         {{
           currentView === 'private' ? 'Private Messages' : 

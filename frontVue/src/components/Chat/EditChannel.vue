@@ -71,7 +71,13 @@ const changePassword = async () => {
     if (password.value.trim().length === 0) 
       return;
     console.log('Password changed to:', password.value);
-    await channelStore.changePassword(password.value) 
+    const res: boolean = await channelStore.changePassword(password.value) 
+    console.log("bool: "+ res);
+    if (!res)
+    {
+      errorMessage.value = 'forbidden';
+      return;
+    }
     errorMessage.value = `Password Changed ` 
     password.value = '';
 };
@@ -80,22 +86,34 @@ const changename = async () => {
     if (channelName.value.trim().length === 0) 
       return;
     console.log('Name changed to:', password.value);
-    await channelStore.changeName(channelName.value) 
+    const res = await channelStore.changeName(channelName.value) 
+    console.log("bool: "+ res);
+    if (!res)
+    {
+      errorMessage.value = 'forbidden';
+      return;
+    }
     errorMessage.value = `Name changed to ` + channelName.value
     channelName.value = '';
   }
 
 const deletePassword = async () => {
     password.value = '';
-    console.log();
+    const res: boolean = await channelStore.deletePassword()
+    console.log("bool: "+ res);
+    if (!res)
+    {
+      errorMessage.value = 'forbidden';
+      return;
+    }
     errorMessage.value = 'Password deleted.';
-    await channelStore.deletePassword()
 };
 
 const leaveChannel = async () => {
     console.log('Left the channel.');
-    await channelStore.leave(me);
     emit('close');
+    const roomId: number = channelStore?.getId
+    await channelStore?.leave(me);
 };
 const section = ref('Manage Channel');  // The current section being displayed.
 if (channelStore.getIsDm)
@@ -145,60 +163,62 @@ onUnmounted(() => {
 <template>
 
   <template v-if="!channelStore.getIsDm">
-    <div class="modal-background">
-        <div class="modal-content">
-            <button @click="closeModal" class="close-button">X</button>
-            <h2>Edit Channel</h2>
-              <button @click="toggleSection" class="switch-create-button">
-                {{ section === 'Current Users' ? 'Switch to Manage Channel' : 'Switch to Current Users' }}
-              </button>
-    
-            <!-- Display the section based on the toggle -->
-            <div v-if="section === 'Current Users'">
-            <!-- Section for Current Users -->
-            <div>
-              <h4>Owner</h4>
-                <div class="user-scroll-container">
-                  <UserButton :user="channelStore?.getOwner" status="owner"/>
-                </div>
-              <h4>Admins</h4>
-                <div class="user-scroll-container">
-                  <UserButton v-for="user in channelStore.getAdmins" :key="user.username" :user="user" status="admin"/>
-                </div>
-              <h4>Members</h4>
-                <div class="user-scroll-container">
-                  <UserButton v-for="user in channelStore.getChatters" :key="user.username" :user="user" status="chatter"/>
-                </div>
-            </div>
-          
-        </div>
-    
-            <div v-else>
-                <!-- Channel Name -->
-                <div class="input-container">
-                    <input maxlength="24" v-model="channelName" placeholder="Change channel name..." @keydown.enter="changename"/>
-                </div>
-    
-                <!-- Add New Users -->
-                <h3>Add Users</h3>
-                <div class="input-container">
-                    <input v-model="userInput" placeholder="Add a user..." @keydown.enter="addUser"/>
-                    <button @click="addUser" class="add-button">Add</button>
-                </div>
-                    <div v-if="errorMessage" style="font-size: small">{{ errorMessage }}</div> <!-- Error message display for group chat -->
-    
-                <!-- Password Management -->
-                <h3>Password Management</h3>
-                <div class="input-container">
-                    <input v-model="password" placeholder="Change password..." @keydown.enter="changePassword"/>
-                </div>
-                <button @click="deletePassword">Delete Password</button>
-    
-                <!-- Leave Channel -->
-            </div>
-          <button @click="leaveChannel">Leave</button>
-        </div>
-    </div>
+     <div class="modal-background">
+         <div class="modal-content">
+          <button @click="closeModal" class="close-button">X</button>
+           <template v-if="!channelStore.getChatters?.find((it: UserInfo) => {return it.login42 === me})">
+             <h2>Edit Channel</h2>
+               <button @click="toggleSection" class="switch-create-button">
+                 {{ section === 'Current Users' ? 'Switch to Manage Channel' : 'Switch to Current Users' }}
+               </button>
+              
+             <!-- Display the section based on the toggle -->
+             <div v-if="section === 'Current Users'">
+             <!-- Section for Current Users -->
+             <div>
+               <h4>Owner</h4>
+                 <div class="user-scroll-container">
+                   <UserButton :user="channelStore?.getOwner" status="owner"/>
+                 </div>
+               <h4>Admins</h4>
+                 <div class="user-scroll-container">
+                   <UserButton v-for="user in channelStore.getAdmins" :key="user.username" :user="user" status="admin"/>
+                 </div>
+               <h4>Members</h4>
+                 <div class="user-scroll-container">
+                   <UserButton v-for="user in channelStore.getChatters" :key="user.username" :user="user" status="chatter"/>
+                 </div>
+             </div>
+            
+         </div>
+        
+             <div v-else>
+                 <!-- Channel Name -->
+                 <div class="input-container">
+                     <input maxlength="24" v-model="channelName" placeholder="Change channel name..." @keydown.enter="changename"/>
+                 </div>
+                
+                 <!-- Add New Users -->
+                 <h3>Add Users</h3>
+                 <div class="input-container">
+                     <input v-model="userInput" placeholder="Add a user..." @keydown.enter="addUser"/>
+                     <button @click="addUser" class="add-button">Add</button>
+                 </div>
+                     <div v-if="errorMessage" style="font-size: small">{{ errorMessage }}</div> <!-- Error message display for group chat -->
+                
+                 <!-- Password Management -->
+                 <h3>Password Management</h3>
+                 <div class="input-container">
+                     <input v-model="password" placeholder="Change password..." @keydown.enter="changePassword"/>
+                 </div>
+                 <button @click="deletePassword">Delete Password</button>
+                
+                 <!-- Leave Channel -->
+             </div>
+          </template>
+           <button @click="leaveChannel">Leave</button>
+         </div>
+     </div>
   </template>
 </template>
     

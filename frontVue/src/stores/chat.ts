@@ -71,15 +71,16 @@ export const useChannelStore = defineStore('channel', {
        {
         try{
             let status: string = "";
-            if (this.channel?.owner.login42 === userId)
+            if (await this.channel?.owner.login42 === userId)
                 status = 'owner';
-            else if (this.channel?.admins.find((it) => {return (it.login42 === userId) }))
+            else if (await this.channel?.admins.find((it) => {return (it.login42 === userId) }))
                 status = 'admin';
-            else if (this.channel?.chatters.find((it) => {return (it.login42 === userId) }))
+            else if (await this.channel?.chatters.find((it) => {return (it.login42 === userId) }))
                 status = 'chatter';
             if (status === 'admin' || status === 'chatter')
             {
-                this.kickUser(userId, status)
+                await this.kickUser(userId, status)
+                this.channel = null;
             }
             else if (status === 'owner')
             {
@@ -208,10 +209,9 @@ export const useChannelStore = defineStore('channel', {
             if(this.channel !== null)
                 this.channel.mutes = data.data;
         }
-        catch
-        {
-
-        }
+            catch {
+                return  "{error: forbidden}"
+            }
         },
 
        async hasPassFromId(id: number)
@@ -226,7 +226,10 @@ export const useChannelStore = defineStore('channel', {
             });
             return data.data;
         }
-        catch {}
+        // catch {}
+            catch {
+                return  "{error: forbidden}"
+            }
 
        },
 
@@ -262,9 +265,12 @@ export const useChannelStore = defineStore('channel', {
                 {
                     this.channel.admins = data.data
                 }
+                return true
         }   
         }
-        catch {}
+            catch {
+                return  false
+            }
        },
 
        async removeUser(userId: string, status: string | undefined)
@@ -302,7 +308,11 @@ export const useChannelStore = defineStore('channel', {
                 }
         }   
         }
-        catch {}
+        catch 
+        {
+
+            return  "{error: forbidden}"
+        }
        },
        async changeName(name:string)
        {
@@ -319,8 +329,11 @@ export const useChannelStore = defineStore('channel', {
              {
                  this.channel.name = data.data
              }
+             return true
             }
-            catch {}
+            catch {
+                return  false
+            }
         },
 
        async muteUser(userId:string)
@@ -333,8 +346,11 @@ export const useChannelStore = defineStore('channel', {
 	                 'token':localStorage.getItem('jwt_token')
 	             }
              });
+             return true
             }
-            catch {}
+            catch {
+                return false 
+            }
        },
 
        async changePassword(name:string)
@@ -347,8 +363,11 @@ export const useChannelStore = defineStore('channel', {
 	                 'token':localStorage.getItem('jwt_token')
 	             }
              });
+             return true
             }
-            catch {}
+            catch {
+                return  false
+            }
        },
         async deletePassword()
        {
@@ -360,8 +379,11 @@ export const useChannelStore = defineStore('channel', {
 	                 'token':localStorage.getItem('jwt_token')
 	             }
              });
+            return true
             }
-            catch {}
+            catch {
+                return false 
+            }
        },
        async promoteChatter(userId: string)
        {
@@ -387,6 +409,7 @@ export const useChatStore = defineStore('chat', {
         async fetchChannels() {
             try
             {
+                console.log("fetchChannels")
                 const data: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/all`,
                 {
                     headers: 
@@ -394,8 +417,10 @@ export const useChatStore = defineStore('chat', {
 	                    'token':localStorage.getItem('jwt_token')
 	                }
                 });
-                this.chat = {ChannelList: [], PublicList: []};
+                if (!this.chat)
+                    this.chat = {ChannelList: [], PublicList: []};
                 this.chat.ChannelList = data.data;
+                console.log( this.chat.ChannelList)
                 // console.log("hmmmmm " + data.data[0].id);
                 const dataPublic: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/public`,
                 {
@@ -415,7 +440,15 @@ export const useChatStore = defineStore('chat', {
                 this.chat = {ChannelList: [], PublicList: []};
             }
         },
-
+        async removeChannel(roomId: number)
+        {
+            console.log(roomId)
+            if (this.chat) {
+                this.chat.ChannelList =  this.chat.channelList?.filter((room) => room.id !== roomId)
+                console.log(this.chat.channelList)
+                // if ()
+            }
+        },
         async addChannel(name: string, pass: string | null, isDm: boolean, isPrivate: boolean, usernames: string[])
         {
             console.log("addChannel " + name + " " + pass + " " + isDm + " " + isPrivate);

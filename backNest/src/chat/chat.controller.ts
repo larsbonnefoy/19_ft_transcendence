@@ -73,6 +73,11 @@ export class ChatController {
             res.status(403).json({"error": "You are Banned"}).send();
             return; 
         }
+        if (await this.chatService.isOwner(roomInfos.id, user) || await this.chatService.isAdmin(roomInfos.id, user) || await this.chatService.isChatter(roomInfos.id, user))
+        {
+            res.status(403).json({"error": "Already in the channel"}).send();
+            return; 
+        }
         await this.chatService.addChatter(roomInfos.id, user);
         res.status(200).json({"status": "good"});
     }
@@ -104,7 +109,7 @@ export class ChatController {
             })
             if (mute)
             {
-                if (new Date().getTime() - mute.startTime > 10000)
+                if (new Date().getTime() - mute.startTime > 30000)
                 {
                     const index: number = muteArray.findIndex((it) =>{
                         return it.chatId === roomId && it.userId === req.user
