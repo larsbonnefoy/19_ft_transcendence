@@ -47,7 +47,11 @@ export class ChatGateway {
   for (let user of chatUsers) {
     if (user.login42 !== login42) {
       // console.log("sending toast to " + user.login42);
-      this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:current_user.username}, message: {id:data.target, content:data.message}});
+      if ((await this.chatService.findOne(data.target)).isDm) {
+        this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:current_user.username}, message: {id:data.target, content:data.message}});
+      } else {
+        this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:(await this.chatService.findOne(data.target)).name + '\n' + current_user.username}, message: {id:data.target, content:data.message}});
+      }
     }
   }
   this.server.to("channel" + data.target).emit("getMessage", {message: data.message, login: login42});

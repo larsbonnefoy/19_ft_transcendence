@@ -192,7 +192,7 @@ export const useChannelStore = defineStore('channel', {
         }
         },
 
-     async addMute(userId: string) //TODO
+     async addMute(userId: string)
         {
         try
         {

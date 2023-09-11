@@ -83,7 +83,6 @@ Should set max lenght of username here
                             </div>
                         </div>
                         <img v-if="activeUser" class="ModProfilePic" src="/assets/pen.png" @click.prevent="toggleModProfile" > <!-- Btn to toggle profile only displays if its current user-->
-                        <!-- <img v-if="activeUser" class="ResetAchievements" src="/assets/TrophyLeaderBoard/bronze.png" @click.prevent="resetAchievements" > Btn to reset achievements TODO remove this -->
                     </div>
                     <div v-if="modProfile" class="form-group row justify-content-left">
                         <h4> {{ user.username }}</h4>

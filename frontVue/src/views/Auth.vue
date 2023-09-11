@@ -17,7 +17,6 @@ const digits2fa = ref();
 const has2fa = ref(false);
 const success2fa = ref(true);
 
-//TODO check error throws here, display right information (=> reload right page)
 try
 {
  	if (!urlParams.has('code'))

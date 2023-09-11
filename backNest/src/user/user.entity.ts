@@ -45,7 +45,7 @@ export class User {
   achievements: number;
 
   @Column({ type: "text", default: "no photo yet" })
-  photo: string; // TODO, don't know how to store a photo yet
+  photo: string;
   
   @Column({ type: "boolean", default: "false" })
   has2fa: boolean;  

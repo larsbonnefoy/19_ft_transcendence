@@ -20,13 +20,6 @@ export class UserController {
 	userServiceForMethod = userService;
   }
 
-  // // TODO remove this at some point
-  // @UseGuards(AuthGuard)
-  // @Get('resetAchievements')
-  // async resetAchievements(@Request() req: any) {
-	// this.userService.addAchievement(req.user, 0, 0);
-  // }
-
   @Get('LogFromUser:username')
   async LogFromUser(@Res() res: Response, @Param() params: any) {
     const username: string = params.username.slice(1);

@@ -319,7 +319,6 @@ export class Game {
       return ;
     let deltaTime : number = newTimeStamp - this.lastTimeStamp;
     // console.log(deltaTime + ", new is " + newTimeStamp + ", last is " + this.lastTimeStamp);
-    // if (deltaTime > 20) { // TODO analyse if removing this is a good thing or not
       while (deltaTime > 20) {
         await this.updateBall(20, userService);
         this.updateObstacle(this.obstacle0, 20);

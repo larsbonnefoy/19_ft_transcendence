@@ -27,10 +27,10 @@ export class TwofaController {
 			const cipher = createCipheriv(process.env.ENC_ALG, key, iv);
 			const secret = Buffer.concat([iv, cipher.update(twofaJSON['secret']), cipher.final()]);
 
-			await this.userService.update2faSecret(login42, secret); //TODO CYPHER SECRET
+			await this.userService.update2faSecret(login42, secret);
 			const qrUrl = await this.twofaService.generateQR(twofaJSON['otpUrl'])
 			// console.log('hmmm : '+ qrUrl);
-			// this.userService.enable2fa(login42, twofaJSON['secret']); //TODO CYPHER SECRET
+			// this.userService.enable2fa(login42, twofaJSON['secret']);
 			return (qrUrl);
 		}
 		catch (error)

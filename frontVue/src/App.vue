@@ -138,7 +138,7 @@ socket.on('messageToast', async (data: any) => {
 		return ;
 	}
 	const toast = useToast();
-	toast.info(data.from.username + ": " + data.message.content, { //TODO add room name if not private
+	toast.info(data.from.username + ": " + data.message.content, { //TODO check if room name is correct
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,
