@@ -61,7 +61,7 @@ list of .env content:
 		PG_DATA=/var/lib/postgresql/data
 
 dev vs prod:
-	change gateways : `http://localhost:8081`, because in dev env not loaded on right timing
+	change gateways : `http://ip_address:8081`, because in dev, env is not loaded on right timing
 	change app module : host = localhost / postgres
 
 

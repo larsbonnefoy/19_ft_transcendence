@@ -52,14 +52,15 @@ function randomIntFromInterval(min : number, max : number) { // min and max incl
 
 export class Game {
   public state : states = states.STARTING;
+  private isFriends : boolean = false;
   public lastTimeStamp : number = new Date().getTime();
   public roomName : string = "room0";
   public gMode : game_mode = game_mode.DEFAULT;
   public viewers : number = 0;
   public player0 : string = "";
-  public move0 : boolean = false;
+  private move0 : boolean = false;
   public player1 : string = "";
-  public move1 : boolean = false;
+  private move1 : boolean = false;
   private startDirection : number = 1;
   public timeOut : number = -1;
   public score0 : number = 0;
@@ -300,15 +301,16 @@ export class Game {
     this.obstacle1.dir = 0;
     this.obstacle1.target = {x: canvasWidth / 2, y : 3 * canvasHeight / 4, speedx: 0, speedy: 0};
     this.player0 = "";
-	this.move0 = false;
+    this.move0 = false;
     this.player1 = "";
-	this.move1 = false;
+    this.move1 = false;
     this.leftPaddle.y = canvasHeight / 2;
     this.rightPaddle.y = canvasHeight / 2;
     this.ball.x = canvasWidth / 2;
     this.ball.y = canvasHeight / 2;
     this.ball.speedx = ballSpeed;
     this.ball.speedy = 0;
+    this.isFriends = false;
     this.state = states.STARTING;
   }
 
@@ -357,5 +359,21 @@ export class Game {
       this.rightPaddle.y = this.rightPaddle.height / 2;
     }
 	this.move1 = true;
+  }
+
+  getMove0() : boolean {
+    return this.move0;
+  }
+
+  getMove1() : boolean {
+    return this.move1;
+  }
+
+  setIsFriends(value : boolean) {
+    this.isFriends = value;
+  }
+
+  getIsFriends() : boolean {
+    return this.isFriends;
   }
 };
