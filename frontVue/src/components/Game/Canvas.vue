@@ -340,9 +340,9 @@ onUnmounted(async () => {
 </script>
 
 <template>
-    <img id="backgroundImage1" src="../../../assets/GameBackGrounds/Tennis1.jpg" hidden>
-	<img id="backgroundImage2" src="../../../assets/GameBackGrounds/Tennis2.jpg" hidden>
-	<img id="backgroundImage3" src="../../../assets/GameBackGrounds/FootBallField.jpg" hidden>
+    <img id="backgroundImage1" src="/assets/GameBackGrounds/Tennis1.jpg" hidden>
+	<img id="backgroundImage2" src="/assets/GameBackGrounds/Tennis2.jpg" hidden>
+	<img id="backgroundImage3" src="/assets/GameBackGrounds/FootBallField.jpg" hidden>
     <img id="backgroundImage4" :src=store.getImg hidden>
     <div class="row" style="max-width: 100vw;">
 		<div class="col-2"  style="display:grid; place-items: center;">

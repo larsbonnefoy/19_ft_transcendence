@@ -34,7 +34,7 @@ const progressAchToDisplay = computed(() => {
 const gameProgressAchievements: Achievement[] = [
 	{
         name: "Getting Started",
-        imageUrl: "../../../assets/Achievements/1game.png",
+        imageUrl: "/assets/Achievements/1game.png",
         description: "Play one game.",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 1
@@ -45,7 +45,7 @@ const gameProgressAchievements: Achievement[] = [
     },
     {
         name: "Lifeguard",
-        imageUrl: "../../../assets/Achievements/19.svg",
+        imageUrl: "/assets/Achievements/19.svg",
         description: "Play 19 games",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 19;
@@ -56,7 +56,7 @@ const gameProgressAchievements: Achievement[] = [
     },
     {
         name: "Welcome to the Jar",
-        imageUrl: "../../../assets/Achievements/42_logo.svg",
+        imageUrl: "/assets/Achievements/42_logo.svg",
         description: "Play 42 games",
         progress: () => {
             const val = (props.userProp.win * 1 + props.userProp.loss * 1) / 42;
@@ -70,7 +70,7 @@ const gameProgressAchievements: Achievement[] = [
 const achievementList: Achievement[] = [   
     {
         name: "Master",
-        imageUrl: "../../../assets/Achievements/100games.png",
+        imageUrl: "/assets/Achievements/100games.png",
         description: "Win 50 games",
         progress: () => {
             const val = (props.userProp.win * 1) / 50
@@ -81,7 +81,7 @@ const achievementList: Achievement[] = [
     },
     {
         name: "Incognito",
-        imageUrl: "../../../assets/Achievements/incognito.png",
+        imageUrl: "/assets/Achievements/incognito.png",
         description: "Change username",
         progress: () => {
 			 return props.userProp.achievements & 1 ? 1 : 0;
@@ -91,7 +91,7 @@ const achievementList: Achievement[] = [
     },
     {
         name: "Make up Artist",
-        imageUrl: "../../../assets/Achievements/makeup.png",
+        imageUrl: "/assets/Achievements/makeup.png",
         description: "Change your profile picture",
         progress: () => {
 			return props.userProp.achievements & 2 ? 1 : 0;
@@ -101,7 +101,7 @@ const achievementList: Achievement[] = [
     },
 	{
 		name: "Incognhugo",
-		imageUrl: "../../../assets/Achievements/hugos.png",
+		imageUrl: "/assets/Achievements/hugos.png",
 		description: "One of us",
 		progress: () => {
 			return props.userProp.achievements & 256 ? 1 : 0;
@@ -111,7 +111,7 @@ const achievementList: Achievement[] = [
 	},
     {
         name: "Flawless",
-        imageUrl: "../../../assets/Achievements/flawless.png",
+        imageUrl: "/assets/Achievements/flawless.png",
         description: "Win a game without conceding any points",
         progress: () => {
 			return props.userProp.achievements & 4 ? 1 : 0;
@@ -121,7 +121,7 @@ const achievementList: Achievement[] = [
     },
     {
 		name: "Is this multiplayer ?",
-		imageUrl: "../../../assets/Achievements/touch5.png",
+		imageUrl: "/assets/Achievements/touch5.png",
 		description: "Hit the ball 5 times in a row without your opponent hitting it once",
 		progress: () => {
 			return props.userProp.achievements & 2048 ? 1 : 0;
@@ -131,7 +131,7 @@ const achievementList: Achievement[] = [
 	},
 	{
 		name: "Telekinesis",
-		imageUrl: "../../../assets/Achievements/telekinesis.png",
+		imageUrl: "/assets/Achievements/telekinesis.png",
 		description: "Win a game without moving",
 		progress: () => {
 			return props.userProp.achievements & 128 ? 1 : 0;
@@ -141,7 +141,7 @@ const achievementList: Achievement[] = [
 	},
 	{
 		name: "Double The Trouble",
-		imageUrl: "../../../assets/Achievements/finish20.png",
+		imageUrl: "/assets/Achievements/finish20.png",
 		description: "Finish a game with a score above 20",
 		progress: () => {
 			return props.userProp.achievements & 512 ? 1 : 0;
@@ -151,7 +151,7 @@ const achievementList: Achievement[] = [
 	},
 	{
 		name: "All For Nothing",
-		imageUrl: "../../../assets/Achievements/lose20.png",
+		imageUrl: "/assets/Achievements/lose20.png",
 		description: "Lose a game with a score above 20",
 		progress: () => {
 			return props.userProp.achievements & 1024 ? 1 : 0;
@@ -161,7 +161,7 @@ const achievementList: Achievement[] = [
 	},
     {
         name: "You and Me",
-        imageUrl: "../../../assets/Achievements/handshake.png",
+        imageUrl: "/assets/Achievements/handshake.png",
         description: "Make your first friend",
         progress: () => {
 			return props.userProp.achievements & 8 ? 1 : 0;
@@ -171,7 +171,7 @@ const achievementList: Achievement[] = [
     },
     {
         name: "This is a library",
-        imageUrl: "../../../assets/Achievements/silence.png",
+        imageUrl: "/assets/Achievements/silence.png",
         description: "Did you know you could hide chat in game ?",
         progress: () => {
 			return props.userProp.achievements & 4096 ? 1 : 0;
@@ -181,7 +181,7 @@ const achievementList: Achievement[] = [
     },
     {
         name: "Retro Gamer",
-        imageUrl: "../../../assets/Achievements/retro.png",
+        imageUrl: "/assets/Achievements/retro.png",
         description: "Enter God Mode",
         progress: () => {
 			return props.userProp.achievements & 16 ? 1 : 0;
@@ -191,7 +191,7 @@ const achievementList: Achievement[] = [
     },
 	{
 		name: "G.O.L.D.",
-		imageUrl: "../../../assets/Achievements/gold.png",
+		imageUrl: "/assets/Achievements/gold.png",
 		description: "Play with the golden ball",
 		progress: () => {
 			return props.userProp.achievements & 64 ? 1 : 0;
@@ -201,7 +201,7 @@ const achievementList: Achievement[] = [
 	},
     {
         name: "Shielded",
-        imageUrl: "../../../assets/Achievements/shield.png",
+        imageUrl: "/assets/Achievements/shield.png",
         description: "Activate double authentification",
         progress: () => {
 			return props.userProp.achievements & 32 ? 1 : 0;
