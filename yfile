@@ -45,7 +45,7 @@ list of .env content:
 
 		#NETWORK 
 		LOCAL_IP = "10.2.8.1"
-		VUE_PORT = PORT
+		VUE_PORT = 8081
 
 -frontVue/.env
 		VITE_API_UID="" #same as API_UID in backnest
@@ -60,6 +60,9 @@ list of .env content:
 		POSTGRES_DB=db_nestjs
 		PG_DATA=/var/lib/postgresql/data
 
+dev vs prod:
+	change gateways : `http://localhost:8081`, because in dev env not loaded on right timing
+	change app module : host = localhost / postgres
 
 
 

@@ -24,7 +24,7 @@ async function getProfileData(login: string) {
     // console.log("photo :", userdata.value.photo);
 
     if (userdata.value.photo === "no photo yet") {
-      userdata.value.photo = "../../../assets/placeholder_avatar.png";
+      userdata.value.photo = "/assets/placeholder_avatar.png";
     }
 
     dataLoaded.value = true;
@@ -35,12 +35,16 @@ async function getProfileData(login: string) {
 
 function openProfile() {
   emit('open-profile', props.login);
-  getProfileData(props.login);
+  if (props.login) {
+    getProfileData(props.login);
+  }
 }
 
 // Fetch user data immediately upon component load
 onMounted(() => {
-  getProfileData(props.login);
+  if (props.login) {
+    getProfileData(props.login);
+  }
 });
 
 
