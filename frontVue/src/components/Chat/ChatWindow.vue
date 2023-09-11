@@ -20,7 +20,6 @@ const props = defineProps({
 
   // props: ['selectedChannel'];
 
-let channelName: string = "";
 const newMessage = ref("");
 let me : string
 try
@@ -104,10 +103,6 @@ onMounted(async () => {
     // console.log("response: "+ data.login + " " + data.message);
     channel.refreshMessages();
   });
-  channelName = channel?.getName;
-  if (channel?.getIsDm)
-    channelName = getDmChatter();
-  // console.log("channelName: "+ channelName)
 })
 
 onUnmounted(async () => {
