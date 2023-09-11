@@ -1,6 +1,0 @@
-curl -X POST -H "token: $token" -d "roomId=testroom&message=testmessage" localhost:3000/chat/message 
-curl -H "token: $token" localhost:3000/chat/all
-curl -X POST -H "token: $token" -d "id=testroom" localhost:3000/chat/create
-curl -X POST -H "token: $token" -d "id=testroom" localhost:3000/chat/delete
-curl  "localhost:3000/api42/admin?login42=somelogin"
-curl -X POST -d "id=testroom2&newAdmin=testuser" localhost:3000/chat/addAdmin

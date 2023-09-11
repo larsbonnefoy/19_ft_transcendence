@@ -73,7 +73,7 @@ export class ChatService
 				&& !chat.bans?.find((it) => {return (it.login42 === login42)}))
 					chats.push(chat)
 		}
-		console.log(chats)
+		// console.log(chats)
 		return chats;
  	}
 
@@ -90,7 +90,7 @@ export class ChatService
 	{
 		let tmp: User[] = [];
 		const chat: Chat =  await this.chatRepository.findOne({relations: {owner: true, chatters: true, admins: true, mutes: true}, where : {id: roomId}, select: {owner: {login42: true}, admins: {login42: true}, chatters: {login42: true}, mutes: {login42: true}}});
-		console.log(chat);
+		// console.log(chat);
 		const users : User[] = tmp.concat(chat.owner, chat.admins, chat.chatters);
 		return (users);
 	}
@@ -142,7 +142,7 @@ export class ChatService
 		const owner: User | null = await this.getOwner(roomId);
 		if (!owner || owner.login42 !== user.login42)
 		{
-			console.log("false");
+			// console.log("false");
 			return false
 		}
 		return (true);
@@ -154,7 +154,7 @@ export class ChatService
 		const admins: User[] = await this.getAdmins(roomId);
 		if (!admins || !admins.find(it => { return it.login42 === user.login42}))
 		{
-			console.log("false");
+			// console.log("false");
 			return false;
 		}
 		return true;
@@ -394,7 +394,7 @@ export class ChatService
 	async hasPass(id: number) : Promise<boolean>
 	{
 		const chat : Chat = await this.findOne(id);
-		console.log(chat?.password)
+		// console.log(chat?.password)
 		if(chat?.password)
 			return true;
 		return false;

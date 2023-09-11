@@ -38,7 +38,7 @@ export class ChatGateway {
     catch (error) {
       return ;
     }
-  console.log("SEND");
+  // console.log("SEND");
   const current_user = await this.userService.findOne(login42);
   if (current_user === null)
     return ; // should not happen but you never know
@@ -46,7 +46,7 @@ export class ChatGateway {
 //   console.log(chatUsers);
   for (let user of chatUsers) {
     if (user.login42 !== login42) {
-      console.log("sending toast to " + user.login42);
+      // console.log("sending toast to " + user.login42);
       this.server.to(user.login42).emit('messageToast', {from: {login42:current_user.login42, username:current_user.username}, message: {id:data.target, content:data.message}});
     }
   }
@@ -57,13 +57,13 @@ export class ChatGateway {
   joinChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
   {
     client.join("channel" + data.target);
-    console.log("client joined : channel" + data.target)
+    // console.log("client joined : channel" + data.target)
   }
 
   @SubscribeMessage('leaveChannel')
   leaveChannel(@ConnectedSocket() client: any, @MessageBody()  data: {target: string, token: string})
   {
     client.leave("channel" + data.target);
-    console.log("client left : channel" + data.target)
+    // console.log("client left : channel" + data.target)
   }
 }

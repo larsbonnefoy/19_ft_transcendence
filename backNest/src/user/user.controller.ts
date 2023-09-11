@@ -115,7 +115,7 @@ export class UserController {
   @Get('me/login42')
   async getMyLogin(@Request() req: any) {
     const user: User = await this.userService.findOne(req.user);
-    console.log("got myself from %s", user.username);
+    // console.log("got myself from %s", user.username);
    return user.login42;
     // res.json(user.login42);
   }
@@ -130,7 +130,7 @@ export class UserController {
  @Get('findone:login')
   async getOneUserFromLog(@Res() res: any, @Param() params: any) {
     const login: string = params.login.slice(1);
-    console.log("got request for user with login %s", login);
+    // console.log("got request for user with login %s", login);
     let messages: User = await this.userService.findOne(login);
     // messages.twofaSecret = null;
     res.json(messages);
@@ -198,9 +198,9 @@ export class UserController {
     await this.userService.change_username(current_user.login42, newUsername);
 	if (!(current_user.achievements & 1))
 		await this.userService.addAchievement(sessionId, +current_user.achievements + 1, 1);
-	console.log("before tolower: " + newUsername);
+	// console.log("before tolower: " + newUsername);
 	const loweruser: string = newUsername.toLowerCase();
-	console.log("after tolower: " + loweruser);
+	// console.log("after tolower: " + loweruser);
 	for (let i = 0; i < loweruser.length - 3; i++) {
 		if (loweruser.slice(i, i + 4) === "hugo") {
 			if (!(current_user.achievements & 256))
@@ -215,11 +215,11 @@ export class UserController {
   async pendingList(@Res() res: any, @Param() param: any) {
   const user = await this.userService.findOne(param.login42.slice(1));
 	if (user === null) {
-    console.log("error in pending_list get")
+    // console.log("error in pending_list get")
 		res.status(404).json({"error":`no user with such login`});
 		return ;
 	}
-    console.log(user.pending[0] + " is in " + param.login42.slice(1) + " pending list");
+    // console.log(user.pending[0] + " is in " + param.login42.slice(1) + " pending list");
 	  res.json({pending: user.pending});
   }
 
@@ -233,7 +233,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login`});
       return ;
     }
-    console.log("%s sends friend request to %s", user_1.login42, friendLogin);
+    // console.log("%s sends friend request to %s", user_1.login42, friendLogin);
     if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -278,7 +278,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s removes friend request towards %s", user_1.login42, friendLogin);
+    // console.log("%s removes friend request towards %s", user_1.login42, friendLogin);
     if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -304,7 +304,7 @@ export class UserController {
     const friendLogin: string = param.login42.slice(1);
     const user_1 = await this.userService.findOne(req.user);
     const user_2 = await this.userService.findOne(friendLogin);
-    console.log("In accept_request %s accepts %s friend request", user_1.login42, friendLogin);
+    // console.log("In accept_request %s accepts %s friend request", user_1.login42, friendLogin);
     if (user_1 == null || user_2 == null) {
       res.status(404).json({"error":`no user with such login42`});
       return ;
@@ -318,7 +318,7 @@ export class UserController {
         return ;
       }
     }
-    console.log("%s accepts %s friend request", user_1.login42, friendLogin);
+    // console.log("%s accepts %s friend request", user_1.login42, friendLogin);
     if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -354,7 +354,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s refuses %s friend request", user_1.login42, friendLogin);
+    // console.log("%s refuses %s friend request", user_1.login42, friendLogin);
     if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -384,7 +384,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s blocks %s", user_1.login42, friendlogin42);
+    // console.log("%s blocks %s", user_1.login42, friendlogin42);
     if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -414,7 +414,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("%s unblocks %s", user_1.login42, friendlogin42);
+    // console.log("%s unblocks %s", user_1.login42, friendlogin42);
     if (user_1.login42 == friendlogin42) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -470,7 +470,7 @@ export class UserController {
       res.status(404).json({"error":`no user with such login42`});
       return ;
     }
-    console.log("unsetting friendship between %s and %s", user_1.login42, friendLogin);
+    // console.log("unsetting friendship between %s and %s", user_1.login42, friendLogin);
     if (user_1.login42 == friendLogin) {
       res.status(409).json({"error":"c'est déjà toi boloss."});
       return ;
@@ -559,8 +559,8 @@ export class UserController {
 		new FileTypeValidator({ fileType: 'image/*' }),
 	  ],
 	}),) file : Express.Multer.File) {
-		console.log("uploading file on user %s: ", req.user);
-		console.log(file);
+		// console.log("uploading file on user %s: ", req.user);
+		// console.log(file);
 		const user: User = await this.userService.findOne(req.user);
 		fs.unlink("uploads/" + user.photo, (err) => {
 			if (err) 
@@ -599,7 +599,7 @@ export class UserController {
 
   @Get('checkUnusedUploads')
   delUnusedUploads() {
-	console.log("checking uploads to delete unused files");
+	// console.log("checking uploads to delete unused files");
 	fs.readdir('uploads', this.compareList);
   }
 

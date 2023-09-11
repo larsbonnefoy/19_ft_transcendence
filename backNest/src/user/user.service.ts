@@ -74,7 +74,7 @@ export class UserService {
   }
   
   async addWin(login42: string, win: number) {
-    console.log("win for %s, now at %d wins", login42, win);
+    // console.log("win for %s, now at %d wins", login42, win);
     await this.userRepository.update(login42, {win:win});
 	if (+win === 50) {
 		this.achievementGateway.server.to(login42).emit('succesToast', "New achievement: Master");
@@ -83,12 +83,12 @@ export class UserService {
   }
   
   async addLoss(login42: string, loss: number) {
-    console.log("loss for %s, now at %d loss", login42, loss);
+    // console.log("loss for %s, now at %d loss", login42, loss);
     await this.userRepository.update(login42, {loss:loss});
   }
 
   async addAchievement(login42: string, achievements: number, current: number) {
-    console.log("achievements of %s now at %d", login42, achievements);
+    // console.log("achievements of %s now at %d", login42, achievements);
     await this.userRepository.update(login42, {achievements:achievements});
     let message: string = "";
     switch (current) {
@@ -144,7 +144,7 @@ export class UserService {
   async change_elo(login42: string, newelo: number) {
     if (newelo < 100)
       newelo = 100;
-    console.log("%s now has %d elo", login42, newelo);
+    // console.log("%s now has %d elo", login42, newelo);
     await this.userRepository.update(login42, {elo:newelo});
   }
 
@@ -154,7 +154,7 @@ export class UserService {
   }
   
   async set_display_log(login42: string, newValue: boolean) {
-    console.log("displayLog of " + login42 + " is now " + newValue);
+    // console.log("displayLog of " + login42 + " is now " + newValue);
     await this.userRepository.update(login42, {displayLogin:newValue});
   }
 

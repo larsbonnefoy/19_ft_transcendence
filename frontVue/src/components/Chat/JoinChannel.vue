@@ -24,17 +24,17 @@ async function selectChannel()
   if (chat && channelStore)
   {
     {
-     console.log(`Selected: ${id}`);
+    //  console.log(`Selected: ${id}`);
      const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === id)})
      if (newChannel)
      {
-        console.log(newChannel.id);
+        // console.log(newChannel.id);
         socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
         await channelStore.setChannel(newChannel);
         socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
      }
      // console.log(channelStore.getMessages);
-     console.log("done");
+    //  console.log("done");
     }
   }
 }

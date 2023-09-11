@@ -54,9 +54,9 @@ const selectChannel = async () => {
     else
     {
       const emitInfo: any = {id: channel?.id, hasPass: await channelStore?.hasPassFromId(channel?.id)}
-      console.log(emitInfo.id);
-      console.log(emitInfo.hasPass);
-      console.log(emitInfo);
+      // console.log(emitInfo.id);
+      // console.log(emitInfo.hasPass);
+      // console.log(emitInfo);
       emit('click', emitInfo)
     }
   }

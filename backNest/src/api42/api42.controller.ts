@@ -12,7 +12,7 @@ export class Api42Controller {
 	@Get('getToken')
 	async findAll(@Res({passthrough: true}) response, @Body() signInDto: Record<string, any>, @Query('code') query: string) 
 	{
-		console.log("getIntraInfos");
+		// console.log("getIntraInfos");
 		try
 		{
 			const access_token  : string = await this.api42Service.getToken(query);
@@ -23,7 +23,7 @@ export class Api42Controller {
 		//create a User object 
 			if (!user)
 			{
-				console.log("creating a db entry");
+				console.log("creating a db entry for " + intraLogin);
 				const newUser : User  = new User;
 				newUser.login42 = intraLogin;
 				newUser.username = await this.api42Service.setUserName(intraLogin);
@@ -46,10 +46,10 @@ export class Api42Controller {
 			{
 				if (user.has2fa === true)
 					state = false;
-				console.log("user already in the db");
+				console.log("user already in the db: " + intraLogin);
 			}
 			const jwtToken : string = await this.api42Service.createJWT(intraLogin, state);
-			console.log(jwtToken)
+			// console.log(jwtToken)
 			return jwtToken;
 		}
 		catch (error)

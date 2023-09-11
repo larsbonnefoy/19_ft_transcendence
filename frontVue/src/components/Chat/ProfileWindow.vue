@@ -17,7 +17,7 @@ let dataLoaded = ref(false)
 
 async function getProfileData(user: string) {
   try {
-    console.log('Current selected user:a', user);
+    // console.log('Current selected user:a', user);
 
     const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/findone:${user}`, {
       headers:
@@ -26,7 +26,7 @@ async function getProfileData(user: string) {
           }});
     userdata = res.data;
     userdata.photo = await store.getAvatar(userdata.photo);
-    console.log(userdata.photo);
+    // console.log(userdata.photo);
     dataLoaded.value = true;
   } catch (error: any) {
     console.error("Error fetching user data:", error);

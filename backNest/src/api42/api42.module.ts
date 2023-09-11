@@ -6,7 +6,6 @@ import { HttpModule } from '@nestjs/axios';
 import { Axios} from 'axios';
 import { UserModule } from '../user/user.module';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constant';
 
 @Module(
 		{  

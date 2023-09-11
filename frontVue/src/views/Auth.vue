@@ -59,8 +59,8 @@ function isDigit(e: any) {
 let submit = (async () => {
         try {
             const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/login/`, {token: localStorage.getItem('jwt_token'), code: digits2fa.value});
-            console.log(data.data.is_valid);
-            console.log(data.data.jwt_token);
+            // console.log(data.data.is_valid);
+            // console.log(data.data.jwt_token);
             if (data.data.is_valid) {
 				localStorage.setItem('jwt_token', data.data.jwt_token)	
 				router.push("/home")

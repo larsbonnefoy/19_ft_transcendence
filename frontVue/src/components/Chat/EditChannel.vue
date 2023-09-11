@@ -28,13 +28,13 @@ catch{}
 const addUser = async () => {
   if (userInput.value.trim().length === 0)
     return;
-  console.log('adduser');
+  // console.log('adduser');
   errorMessage.value = '';
    {
     try 
     {
       const log: any = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/LogFromUser:${userInput.value}`);
-      console.log(log.data.login42);
+      // console.log(log.data.login42);
       if(log?.data.login42 === me)
       {
         errorMessage.value = `You cannot add yourself`;
@@ -70,7 +70,7 @@ const closeModal = () => emit('close');
 const changePassword = async () => {
     if (password.value.trim().length === 0) 
       return;
-    console.log('Password changed to:', password.value);
+    // console.log('Password changed to:', password.value);
     await channelStore.changePassword(password.value) 
     errorMessage.value = `Password Changed ` 
     password.value = '';
@@ -79,7 +79,7 @@ const changePassword = async () => {
 const changename = async () => {
     if (channelName.value.trim().length === 0) 
       return;
-    console.log('Name changed to:', password.value);
+    // console.log('Name changed to:', password.value);
     await channelStore.changeName(channelName.value) 
     errorMessage.value = `Name changed to ` + channelName.value
     channelName.value = '';
@@ -87,13 +87,12 @@ const changename = async () => {
 
 const deletePassword = async () => {
     password.value = '';
-    console.log();
     errorMessage.value = 'Password deleted.';
     await channelStore.deletePassword()
 };
 
 const leaveChannel = async () => {
-    console.log('Left the channel.');
+    // console.log('Left the channel.');
     await channelStore.leave(me);
     emit('close');
 };
@@ -116,11 +115,11 @@ const showContextMenu = (event: any, user : string | undefined, status: string) 
   if (!user)
     return;
     contextMenuVisible.value = true;
-    console.log(event.pageX)
-    console.log(event.pageY)
-    console.log(user);
+    // console.log(event.pageX)
+    // console.log(event.pageY)
+    // console.log(user);
     contextMenuPosition.value = { x: `${(event.pageX/window.innerWidth) * 100}`, y: `${(event.pageY / window.innerHeight) * 100}` };
-    console.log(contextMenuPosition.value.x, contextMenuPosition.value.y)
+    // console.log(contextMenuPosition.value.x, contextMenuPosition.value.y)
     selectedUser.value = user;
     selectedUserStatus.value = status;
 

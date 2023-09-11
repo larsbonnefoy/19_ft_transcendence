@@ -51,7 +51,7 @@ export const useUserStore = defineStore('user', {
                     try { 
                         const data = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/twofa/enable/`, {token: localStorage.getItem('jwt_token')});
                         this.user.has2fa = value;
-                        console.log(data);
+                        // console.log(data);
                     }
                     catch (error) {
                         console.log(error);
@@ -69,7 +69,7 @@ export const useUserStore = defineStore('user', {
             }
         },
         async changeDisplayLogin(value: boolean) {
-            console.log("Value in changeDisplayLogin " + value);
+            // console.log("Value in changeDisplayLogin " + value);
             if (this.user) {
                 try {
                     const data = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/setDisplayLog:${value}`, { headers: {token: localStorage.getItem('jwt_token')} });
@@ -175,12 +175,12 @@ export const useUserStore = defineStore('user', {
         },
         async unBlockUser(userToUnBlock: string){
             const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/unblock_user:${userToUnBlock}`, { headers: {token: localStorage.getItem('jwt_token')} });
-            console.log("response unBlockUser");
-            console.log(res.data);
+            // console.log("response unBlockUser");
+            // console.log(res.data);
             if (this.user) {
                 this.user.blocked_users = this.user?.blocked_users.filter(name => name !== userToUnBlock);
-                console.log("blocked list");
-                console.log(this.user.blocked_users);
+                // console.log("blocked list");
+                // console.log(this.user.blocked_users);
             }
         },
       },

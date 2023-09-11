@@ -7,7 +7,6 @@ import Chat from '@/views/Chat.vue';
 import Member from '@/views/Members.vue';
 import Auth from '@/views/Auth.vue';
 import Profile from '@/views/Profile.vue';
-import ShowUsers from '@/views/ShowUsers.vue';
 import Admin from '@/views/Admin.vue';
 import ErrorPage from '@/views/Error.vue';
 import axios from 'axios';
@@ -131,18 +130,14 @@ const router = createRouter({
           return `/profile/${store.getUserName}`
         }
       }
-    },
+    },/*
     {
       path: '/admin',
       name: 'admin',
       component: Admin
 
     },
-    {
-      path: '/showUsers',
-      name: 'showUsers',
-      component: ShowUsers
-    },
+    */
     {
       path: '/:notFound',
       name: 'notFound',

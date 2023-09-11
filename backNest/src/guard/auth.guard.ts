@@ -31,7 +31,7 @@ export class AuthGuard implements CanActivate {
       request['user'] = decoded['sub'];
     }
     catch {
-      console.log("catch");
+      console.log("catch in auth.Guard.ts");
       throw new UnauthorizedException();
     }
     return true;

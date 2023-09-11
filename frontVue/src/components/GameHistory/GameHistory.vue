@@ -56,7 +56,7 @@ async function getGames() {
             chartData.value = [["Games", "Elo"], [0, 1000]];
             let index: number = 1;
             for (let game of games.value) {
-                console.log("current game: " + game);
+                // console.log("current game: " + game);
                 if (game.player1 === login.value) {
                     chartData.value.push([index, game.elo1]);
                 } else {

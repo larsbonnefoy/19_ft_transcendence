@@ -36,7 +36,7 @@ const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POU
 
 function ClickJoin(event: any)
 {
-  console.log("click" + event);
+  // console.log("click" + event);
   hasPass.value = event.hasPass;
   channelId.value = event.id;
   showJoinChannel.value = !showJoinChannel.value;

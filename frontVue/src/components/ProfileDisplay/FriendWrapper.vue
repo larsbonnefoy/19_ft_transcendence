@@ -12,13 +12,13 @@ const props = defineProps<{
     useFriendList: Array<string>
 }>()
 
-console.log(props.useFriendList);
+// console.log(props.useFriendList);
 
 const hasFriends = computed(() => {
 	return (props.useFriendList.length != 0);
 })
 
-console.log(hasFriends.value);
+// console.log(hasFriends.value);
 
 
 </script>
