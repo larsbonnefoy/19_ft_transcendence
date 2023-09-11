@@ -112,7 +112,6 @@ const deletePassword = async () => {
 const leaveChannel = async () => {
     // console.log('Left the channel.');
     emit('close');
-    const roomId: number = channelStore?.getId
     await channelStore?.leave(me);
 };
 const section = ref('Manage Channel');  // The current section being displayed.

@@ -34,13 +34,13 @@ function handleProfileClick(login: string) {
 
 
 const autoScroll = () => {
-  const container = messageBoxRef.value;
+  const container : any = messageBoxRef.value;
   if (container) {
     // Check how far away the user is from the bottom
     const fromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
 
     // Only auto-scroll if the user is within 50 pixels from the bottom (or adjust the value as needed)
-    if (fromBottom <= 100) {
+    if (fromBottom <= 100 && container) {
       container.scrollTop = container.scrollHeight;
     }
   }

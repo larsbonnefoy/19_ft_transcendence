@@ -440,15 +440,7 @@ export const useChatStore = defineStore('chat', {
                 this.chat = {ChannelList: [], PublicList: []};
             }
         },
-        async removeChannel(roomId: number)
-        {
-            console.log(roomId)
-            if (this.chat) {
-                this.chat.ChannelList =  this.chat.channelList?.filter((room) => room.id !== roomId)
-                console.log(this.chat.channelList)
-                // if ()
-            }
-        },
+
         async addChannel(name: string, pass: string | null, isDm: boolean, isPrivate: boolean, usernames: string[])
         {
             // console.log("addChannel " + name + " " + pass + " " + isDm + " " + isPrivate);
