@@ -152,7 +152,7 @@ function keyUp(event: any) {
 }
 
 function updateRoomIndex(response : number) {
-    console.log("joingame in room " + response);
+    // console.log("joingame in room " + response);
     roomIndex = response;
 }
 

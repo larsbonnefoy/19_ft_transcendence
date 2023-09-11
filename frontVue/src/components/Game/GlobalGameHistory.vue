@@ -28,7 +28,7 @@ async function getPage(direction: number) {
     isLoaded.value = false;
     if (page.value + direction >= 0) {
         page.value += direction;
-        console.log(page.value);
+        // console.log(page.value);
         await getGames();
         isLoaded.value = true;
     }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user';
 import LeaderBoardUsr from './LeaderBoardUsr.vue';
-import type LoginVue from '@/views/Login.vue';
 import {type LeaderBoardUserInfo} from '@/types';
 import axios from 'axios';
 import {ref, onUnmounted} from 'vue';
@@ -9,7 +8,6 @@ import {ref, onUnmounted} from 'vue';
 const store = useUserStore();
 const users = ref();
 const LeaderBoardExists = ref(false);
-/*TODO function that gets only elo, username & picture, to avoid a query on whole db */
 async function getLeaderBoard() {
     try {
         const res = await axios.get(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/user/getLeaderBoard`);

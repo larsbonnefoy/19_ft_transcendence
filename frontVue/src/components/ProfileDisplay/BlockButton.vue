@@ -17,7 +17,6 @@ const isBlocked = computed( () => {
 
 
 async function blockUser() {
-    console.log("Block function code goes here");
     try {
         await store.blockUser(props.profileLogin42);
     }

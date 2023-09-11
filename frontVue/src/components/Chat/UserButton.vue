@@ -21,13 +21,13 @@ const banUser = async () => {
 };
 const kickUser = async () => {
     // Add logic to promote the selected user to admin
-    console.log(`Kick user: ${user?.login42}`);
+    // console.log(`Kick user: ${user?.login42}`);
     await channelStore.kickUser(user?.login42, status);
 };
 
 const muteUser = async () => {
     // Add logic to promote the selected user to admin
-    console.log(`Mute user: ${user?.login42}`);
+    // console.log(`Mute user: ${user?.login42}`);
     await channelStore.muteUser(user?.login42);
 };
 

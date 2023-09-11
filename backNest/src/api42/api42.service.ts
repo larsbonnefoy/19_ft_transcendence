@@ -2,7 +2,6 @@ import { Injectable, Req, Query, UnauthorizedException, Inject, forwardRef } fro
 import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { jwtConstants } from './constant';
 
 @Injectable()
 export class Api42Service 
@@ -16,11 +15,10 @@ export class Api42Service
 
 	async getToken(query : string) : Promise<string>
 		{
-			console.log("query : ");
-			console.log(query);
-			console.error(jwtConstants);
-			console.error(process.env.JWT_SECRET);
-			console.log(`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}/auth`)
+			// console.log("query : ");
+			// console.log(query);
+			// console.error(process.env.JWT_SECRET);
+			// console.log(`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}/auth`)
 		try
 		{
 			const response  = await this.httpService.axiosRef.post('https://api.intra.42.fr/oauth/token', {
@@ -34,8 +32,8 @@ export class Api42Service
 						'Content-Type': 'application/x-www-form-urlencoded'
 					}
 				});
-			console.log("access_token");
-			console.log(response.data['access_token'])
+			// console.log("access_token");
+			// console.log(response.data['access_token'])
 			return (response.data["access_token"])
 		}
 		catch (error){
@@ -47,12 +45,12 @@ export class Api42Service
 
 	async getLogin42(access_token : string) : Promise<string>
 	{
-		console.log("fetch login42");
+		// console.log("fetch login42");
 		try
 		{
 			const userInfo = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`);
-			console.log(userInfo.data['login']);
-			console.log("getlogin: ended");
+			// console.log(userInfo.data['login']);
+			// console.log("getlogin: ended");
 			return (userInfo.data['login']);
 		}
 		catch
@@ -63,12 +61,12 @@ export class Api42Service
 
 	async getImage42(access_token : string) : Promise<string>
 	{
-		console.log("fetch photo42");
+		// console.log("fetch photo42");
 		try
 		{
 			const userInfo = await this.httpService.axiosRef.get(`https://api.intra.42.fr/v2/me?access_token=${access_token}`);
-			console.log(userInfo.data['image']['versions']['large']);
-			console.log("getImage : ended");
+			// console.log(userInfo.data['image']['versions']['large']);
+			// console.log("getImage : ended");
 			return (userInfo.data['image']['versions']['large']);
 		}
 		catch
@@ -88,7 +86,6 @@ export class Api42Service
 	async isAuth(jwtToken : string) : Promise<boolean>
 	{
 		try {
-			//console.error(jwtConstants);
 			//console.error(process.env.JWT_SECRET);
 			const payload = await this.jwtService.verifyAsync(
 				jwtToken,
@@ -128,7 +125,7 @@ export class Api42Service
 		while (await this.usersService.findUsername(res) != null)
 		{
 			res = login42 + i;
-			console.log(res);
+			// console.log(res);
 			i++;
 		}
 		return res;

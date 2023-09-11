@@ -20,7 +20,6 @@ const props = defineProps({
 
   // props: ['selectedChannel'];
 
-let channelName: string = "";
 const newMessage = ref("");
 let me : string
 try
@@ -95,19 +94,15 @@ const sendMessage = async () => {
 
 
 function handleOpenProfile(user: string) {
-  console.log("chatWindow : "+ user)
+  // console.log("chatWindow : "+ user)
   emit('open-profile', user);
 }
 
 onMounted(async () => {
   socket.on("getMessage", (data : any) => {
-    console.log("response: "+ data.login + " " + data.message);
+    // console.log("response: "+ data.login + " " + data.message);
     channel.refreshMessages();
   });
-  channelName = channel?.getName;
-  if (channel?.getIsDm)
-    channelName = getDmChatter();
-  console.log("channelName: "+ channelName)
 })
 
 onUnmounted(async () => {
@@ -116,7 +111,7 @@ onUnmounted(async () => {
   channel.unsetChannel();
 });
 
-console.log(channel.getId)
+// console.log(channel.getId)
 </script>
 
 <template>

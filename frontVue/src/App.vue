@@ -52,7 +52,7 @@ async function isInGame():Promise<boolean> {
 
 socket.on('gameNotification', (origin: any) => {
     function clicked() {
-        console.log("toast clicked, send receipt notif to " + origin.login42);
+        // console.log("toast clicked, send receipt notif to " + origin.login42);
         socket.emit("acceptChallenge", {target: origin.login42, token: localStorage.getItem('jwt_token')});
         // router.push({ name: 'game', params: { challenge: 'challenge' } });
     };
@@ -137,9 +137,8 @@ socket.on('messageToast', async (data: any) => {
 	if (await isInGame() || isBlocked(data.from.login42) || seesMessage(data.message.id)) {
 		return ;
 	}
-	console.log("AYO");
 	const toast = useToast();
-	toast.info(data.from.username + ": " + data.message.content, {
+	toast.info(data.from.username + ": " + data.message.content, { //TODO check if room name is correct
 		timeout: 5000,
 		closeOnClick: true,
 		pauseOnFocusLoss: true,
@@ -154,8 +153,6 @@ socket.on('messageToast', async (data: any) => {
     });
 });
 
-console.log("App.vue loaded");
-
 onUnmounted(async () => {
 	socket.off('gameNotification');
 	socket.off('challengeAccepted');
@@ -163,7 +160,6 @@ onUnmounted(async () => {
 	socket.off('warningToast');
 	socket.off('warning');
 	socket.off('messageToast');
-	console.log("App.vue unmounted");
 });
 </script>
 

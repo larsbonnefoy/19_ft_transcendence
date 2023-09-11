@@ -45,7 +45,7 @@ export class MatchGateway {
 	if (user === null) {
 	  return ;
 	} else if (+user.achievements & 16) {
-	  console.log(login42 + " is already a retro gamer");
+	  // console.log(login42 + " is already a retro gamer");
 	  this.server.to(login42).emit('warning', "You are already a Retro gamer");
 	  return ;
 	}
@@ -104,14 +104,14 @@ export class MatchGateway {
     if (game.state === states.ENDED) {
       this.server.to(game.roomName).emit("endGame", roomIndex);
       if (save_state === states.ONGOING) {
-        console.log("updated games history");
+        // console.log("updated games history");
         const nMatch: Match = new Match;
-        console.log("player0" + game.player0);
-        console.log("player1" + game.player1);
+        // console.log("player0" + game.player0);
+        // console.log("player1" + game.player1);
         const p1 = await this.userService.findOne(game.player0);
         const p2 = await this.userService.findOne(game.player1);
         if (p1 == null || p2 == null) {
-          console.log("return on player null in display in match.gateway");
+          // console.log("return on player null in display in match.gateway");
 		      game.resetGame();
           return ;
         }
@@ -164,8 +164,8 @@ export class MatchGateway {
           await this.userService.change_elo(p2.login42, newelo2);
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
-          console.log("player1 wins");
-          console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
+          // console.log("player1 wins");
+          // console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
           if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
             (game.getIsFriends())
               ? this.server.to(p1.login42).emit('warning', "'Flawless' achievement can't be obtained during a friendly game")
@@ -186,8 +186,8 @@ export class MatchGateway {
           await this.userService.change_elo(p2.login42, +p2.elo + expected_result * (16 + 8 * (+game.gMode)));
           nMatch.elo1 = Math.ceil(newelo1);
           nMatch.elo2 = Math.ceil(newelo2);
-          console.log("player2 wins");
-          console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
+          // console.log("player2 wins");
+          // console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
           if (+game.score0 === 0 && !(p2.achievements & 4)) {
             (game.getIsFriends())
               ? this.server.to(p2.login42).emit('warning', "'Flawless' achievement can't be obtained during a friendly game")
@@ -326,7 +326,7 @@ export class MatchGateway {
 		  for (let game of games) {
 			  if (game.state === states.STARTING && game.player0 === login42) {
 				  game.resetGame();
-				  console.log("(index -1) " + login42 + " leaves " + game.roomName);
+				  // console.log("(index -1) " + login42 + " leaves " + game.roomName);
 				  client.leave(game.roomName);
 				  return ;
 			  }
@@ -395,16 +395,16 @@ export class MatchGateway {
     }
     for (let game of games) {
       if (game.player0 === login42 || game.player1 === login42 || game.player0 === data.target || game.player1 === data.target) {
-        console.log("already in game, so can't send notification");
+        // console.log("already in game, so can't send notification");
         return ;
       }
     }
     const user = await this.userService.findOne(login42);
     if (user == null) {
-      console.log("can't find user with login " + login42);
+      // console.log("can't find user with login " + login42);
       return ;
     }
-    console.log(login42 + " sending notif to " + data.target);
+    // console.log(login42 + " sending notif to " + data.target);
 	this.server.to(data.target).emit("gameNotification", {login42:login42, username:user.username});
   }
 
@@ -415,13 +415,13 @@ export class MatchGateway {
       login42 = this.api42Service.decodeJWT(data.token);
     }
     catch (error) {
-	  console.log("ERROR LOGIN acceptChallenge");
+	  // console.log("ERROR LOGIN acceptChallenge");
       return ;
     }
 	// console.log(login42 + " acceptChallenge " + data.target);
     for (let game of games) {
       if (game.player0 === data.target || game.player1 === data.target || game.player0 === login42 || game.player1 === login42) {
-		  console.log("already in game, so can't accept challenge");
+		  // console.log("already in game, so can't accept challenge");
 		  return ;
 	  }
     }
@@ -495,7 +495,7 @@ export class MatchGateway {
     }
 	const user = await this.userService.findOne(login42);
     if (user == null) {
-      console.log("can't find user with login " + login42);
+      // console.log("can't find user with login " + login42);
       return ;
     }
 	if (!(user.achievements & 64))
@@ -513,7 +513,7 @@ export class MatchGateway {
     }
 	const user = await this.userService.findOne(login42);
     if (user == null) {
-      console.log("can't find user with login " + login42);
+      // console.log("can't find user with login " + login42);
       return ;
     }
 	if (!(user.achievements & 4096))

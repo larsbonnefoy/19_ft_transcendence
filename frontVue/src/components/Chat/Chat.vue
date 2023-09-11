@@ -16,8 +16,8 @@ const channel = useChannelStore();
 
 function handleSelectedProfile(user: string) {
   selectedUser.value = user
-  console.log("chat : "+ selectedUser.value)
-  console.log(selectedUser.value)
+  // console.log("chat : "+ selectedUser.value)
+  // console.log(selectedUser.value)
 }
 
 // let me : string
@@ -37,7 +37,7 @@ function handleSelectedProfile(user: string) {
 async function handleSelectedChannel(event: string)
 {
   // await handleChannel(event);
-  console.log('BOIII'+event);
+  // console.log('BOIII'+event);
   // console.log(messages.value)
   selectedChannel.value = event;
 }
@@ -47,7 +47,7 @@ const route = useRoute(); // Get current route object
 
 onMounted(() => {
   const chatName = route.params.chatName; 
-  console.log("Captured chat name from URL:", chatName);
+  // console.log("Captured chat name from URL:", chatName);
 });
 
 
