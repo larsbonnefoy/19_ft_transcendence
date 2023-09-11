@@ -10,8 +10,9 @@ const props = defineProps({
   user: String
 });
 
+let userdata: UserInfo;
+
 let dataLoaded = ref(false)
-let userdata= ref<any>();
 
 
 async function getProfileData(user: string) {

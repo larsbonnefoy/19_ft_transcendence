@@ -167,10 +167,14 @@ export class MatchGateway {
           console.log("player1 wins");
           console.log("formula gives %f, p1 gains %d", expected_result, (1 - expected_result) * (16 + 8 * (+game.gMode)));
           if (+game.score1 === 0 && !(p1.achievements & 4)) { //flawless victory for the first time
-            await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
+            (game.getIsFriends())
+              ? this.server.to(p1.login42).emit('warning', "'Flawless' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p1.login42, +p1.achievements + 4, 4);
           }
-          if (game.move0 === false && !(p1.achievements & 128)) { //telekinesis
-            await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
+          if (game.getMove0() === false && !(p1.achievements & 128)) { //telekinesis
+            (game.getIsFriends())
+              ? this.server.to(p1.login42).emit('warning', "'Telekinesis' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p1.login42, +p1.achievements + 128, 128);
           }
         }
         else {
@@ -185,22 +189,34 @@ export class MatchGateway {
           console.log("player2 wins");
           console.log("formula gives %f, p1 loses %f", 1 - expected_result, expected_result * (16 + 8 * (+game.gMode)));
           if (+game.score0 === 0 && !(p2.achievements & 4)) {
-            await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
+            (game.getIsFriends())
+              ? this.server.to(p2.login42).emit('warning', "'Flawless' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p2.login42, +p2.achievements + 4, 4);
           }
-          if (game.move1 === false && !(p2.achievements & 128)) { //telekinesis
-            await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
+          if (game.getMove1() === false && !(p2.achievements & 128)) { //telekinesis
+            (game.getIsFriends())
+              ? this.server.to(p2.login42).emit('warning', "'Telekinesis' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p2.login42, +p2.achievements + 128, 128);
           }
         }
         if (+game.score0 >= 20 && !(p1.achievements & 512)) { //Double The Trouble
-          await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
+          (game.getIsFriends())
+            ? this.server.to(p1.login42).emit('warning', "'Double The Trouble' achievement can't be obtained during a friendly game")
+            : await this.userService.addAchievement(p1.login42, +p1.achievements + 512, 512);
           if (+game.score1 > +game.score0 && !(p1.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p1.login42, +p1.achievements + 512 + 1024, 1024);
+            (game.getIsFriends())
+              ? this.server.to(p1.login42).emit('warning', "'All For Nothing' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p1.login42, +p1.achievements + 512 + 1024, 1024);
           }
         }
         if (+game.score1 >= 20 && !(p2.achievements & 512)) { //Double The Trouble
-          await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
+          (game.getIsFriends())
+            ? this.server.to(p1.login42).emit('warning', "'Double The Trouble' achievement can't be obtained during a friendly game")
+            : await this.userService.addAchievement(p2.login42, +p2.achievements + 512, 512);
           if (+game.score0 > +game.score1 && !(p2.achievements & 1024)) { //All for nothing
-            await this.userService.addAchievement(p2.login42, +p2.achievements+ 512 + 1024, 1024);
+            (game.getIsFriends())
+              ? this.server.to(p2.login42).emit('warning', "'All For Nothing' achievement can't be obtained during a friendly game")
+              : await this.userService.addAchievement(p2.login42, +p2.achievements+ 512 + 1024, 1024);
           }
         }
         await this.matchService.createMatch(nMatch);
@@ -416,9 +432,10 @@ export class MatchGateway {
         game.state = states.ONGOING;
         game.player0 = data.target;
         game.player1 = login42;
+        game.setIsFriends(true);
         game.gMode = game_mode.OBSTACLES;
         game.lastTimeStamp = new Date().getTime();
-		games[roomIndex].timeOut = 6000; // to wait for router.push
+        games[roomIndex].timeOut = 6000; // to wait for router.push
         mustAppend = false;
         console.log("challenge between " + data.target + " and " + login42 + " in " + game.roomName);
         break ;
@@ -432,6 +449,7 @@ export class MatchGateway {
       games[roomIndex].state = states.ONGOING;
       games[roomIndex].player0 = data.target;
       games[roomIndex].player1 = login42;
+      games[roomIndex].setIsFriends(true);
       games[roomIndex].gMode = game_mode.OBSTACLES;
       games[roomIndex].lastTimeStamp = new Date().getTime();
       games[roomIndex].timeOut = 6000; // to wait for router.push

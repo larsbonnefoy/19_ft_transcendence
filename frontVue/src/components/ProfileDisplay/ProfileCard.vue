@@ -34,7 +34,7 @@ function toggleModProfile() {
 // }
 
 if (props.user.photo === "no photo yet") {
-    props.user.photo = "../../../assets/placeholder_avatar.png"
+    props.user.photo = "/assets/placeholder_avatar.png"
 }
 
 /*
@@ -82,8 +82,8 @@ Should set max lenght of username here
                                 <p class="text-muted mb-0">Elo </p>
                             </div>
                         </div>
-                        <img v-if="activeUser" class="ModProfilePic" src="../../../assets/pen.png" @click.prevent="toggleModProfile" > <!-- Btn to toggle profile only displays if its current user-->
-                        <!-- <img v-if="activeUser" class="ResetAchievements" src="../../../assets/TrophyLeaderBoard/bronze.png" @click.prevent="resetAchievements" > Btn to reset achievements TODO remove this -->
+                        <img v-if="activeUser" class="ModProfilePic" src="/assets/pen.png" @click.prevent="toggleModProfile" > <!-- Btn to toggle profile only displays if its current user-->
+                        <!-- <img v-if="activeUser" class="ResetAchievements" src="/assets/TrophyLeaderBoard/bronze.png" @click.prevent="resetAchievements" > Btn to reset achievements TODO remove this -->
                     </div>
                     <div v-if="modProfile" class="form-group row justify-content-left">
                         <h4> {{ user.username }}</h4>
@@ -92,7 +92,7 @@ Should set max lenght of username here
                         <DisplayLogin class="my-3"></DisplayLogin>
                         <DoubleAuthButton></DoubleAuthButton>
                         <div v-if="activeUser" > 
-                            <img class="ModProfilePic m-5" src="../../../assets/left-arrow.png" @click.prevent="toggleModProfile">
+                            <img class="ModProfilePic m-5" src="/assets/left-arrow.png" @click.prevent="toggleModProfile">
                         </div>
                     </div>
                 </div>
