@@ -60,10 +60,6 @@ watch(() => props.user, async (newVal: any) => {
 <template>
   <div class="profile-window" v-if="dataLoaded">
       <ProfileCard class="imitated-profile-card" :user="userdata"> </ProfileCard>
-    <!-- Buttons -->
-      <!-- <div class="button-container">
-      <button @click="startMatch" class="start-match-button">Start Match</button> -->
-    <!-- </div> -->
   </div>
 </template>
 

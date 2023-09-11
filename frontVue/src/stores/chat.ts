@@ -29,7 +29,6 @@ export const useChannelStore = defineStore('channel', {
        async setChannel(newChannel: Channel)
        {
             this.channel = newChannel;
-            console.log("set : " + this.channel?.id)
             try
             {
                 const messages: any = await axios.post(`http://${import.meta.env.VITE_LOCAL_IP}:${import.meta.env.VITE_BACKEND_PORT}/chat/getMessages`, {id: this.channel?.id},

@@ -12,7 +12,6 @@ import { type UserInfo } from '@/types';
 const chat = useChatStore();
 const channel = useChannelStore();
 const showEditChannel = ref(false);
-// const private = ref(true);
 const props = defineProps({
   // messages: Array,
   user: Object,
@@ -47,8 +46,6 @@ catch (error)
 }
 
 
-const chatContainerRef = ref(null);
-const endOfChatRef = ref<null | HTMLDivElement>(null);
 // const channel = ChannelButton.channel.name
 // if (channel)
 //        console.log("yo: " + channel);
@@ -90,16 +87,7 @@ const sendMessage = async () => {
     newMessage.value = "";
 };
 
-const autoScroll = () => {
-    if (endOfChatRef.value) {
-        endOfChatRef.value.scrollIntoView({ behavior: 'smooth' });
-    }
-};
 
-const handleUpdate = () => {
-    console.log("MessageBox updated!"); 
-    autoScroll();
-};
 
 
 
@@ -125,7 +113,7 @@ console.log(channel.getId)
 </script>
 
 <template>
-  <div class="chat-window" ref="chatContainerRef">
+  <div class="chat-window">
     <!-- Chat header -->
     <div class="chat-header">
       <span class="channel-name">{{ selectedChannel }}</span>
@@ -143,7 +131,6 @@ console.log(channel.getId)
     <MessageBox 
       :user="user"
       class="chat-messages" 
-      @updated="autoScroll" 
       @open-profile="handleOpenProfile"
     />
     <div class="chat-input-container">
@@ -170,21 +157,6 @@ console.log(channel.getId)
 .chat-messages {
   padding: 0.5rem 0; /* Adjusted padding */
     margin-bottom: 0.5rem;
-}
-
-.scroll-to-bottom {
-    margin: 10px 0;
-    background-color: #555550;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background-color 0.3s;
-}
-
-.scroll-to-bottom:hover {
-    background-color: #494949;
 }
 
 /* Chat Input Container */

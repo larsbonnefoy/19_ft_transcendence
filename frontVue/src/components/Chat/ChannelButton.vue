@@ -29,7 +29,6 @@ function getDmChatter()
 {
   if(channel?.chatters)
   {
-    console.log("getDm: " + channel.chatters[0]?.username + " " + me + " "  +  channel.owner?.login42)
     if (channel.chatters[0]?.login42 === me)
       return channel.owner?.username;
     return (channel.chatters[0]?.username);
@@ -45,22 +44,17 @@ const selectChannel = async () => {
   {
     if(!isPublic)
     {
-     console.log(`Selected: ${channel.id}`);
      const newChannel: Channel | undefined = chat.getChannels?.find((it: Channel) => {return (it.id === channel?.id)})
      if (newChannel)
      {
-        console.log(newChannel.id);
         if (channel?.id)
          socket.emit("leaveChannel",{target: channelStore.getId, token: localStorage.getItem('jwt_token')});
         await channelStore.setChannel(newChannel);
         socket.emit("joinChannel",{target: newChannel.id, token: localStorage.getItem('jwt_token')});
      }
-     // console.log(channelStore.getMessages);
-     console.log("done");
     }
     else
     {
-      console.log("PUBLIC " + channel?.id);
       const emitInfo: any = {id: channel?.id, hasPass: await channelStore?.hasPassFromId(channel?.id)}
       console.log(emitInfo.id);
       console.log(emitInfo.hasPass);
