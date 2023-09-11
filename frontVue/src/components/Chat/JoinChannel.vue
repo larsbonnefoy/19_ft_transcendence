@@ -78,7 +78,7 @@ const closeModal = () => {
       <h2>Join New Channel</h2>
         <template v-if="hasPass">
          <div class="input-container">
-            <input v-model="password" type="password" placeholder="password" @keydown.enter="submit" />
+            <input v-model="password" type="text" placeholder="password" @keydown.enter="submit" />
          </div>
         </template>
         <div v-if="errorMessage">{{ errorMessage }}</div> <!-- Error message display for group chat -->
