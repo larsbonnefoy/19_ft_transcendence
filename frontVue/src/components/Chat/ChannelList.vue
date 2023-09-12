@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { ref } from 'vue';
 import ChannelButton from './ChannelButton.vue';
 import CreateChannel from './CreateChannel.vue';
 import JoinChannel from './JoinChannel.vue';
-import axios from 'axios';
 import { useChatStore } from '@/stores/chat';
-import { socket } from '@/socket';
 
 const chat = useChatStore();
 
@@ -22,7 +20,7 @@ const channelId = ref<number>(-1)
 
 const currentView = ref('public');
 
-const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POUR LES MESSAGES DE GROUPES
+const toggleView = () => {  
   if (currentView.value === 'private') {
     currentView.value = 'channels';
   } else if (currentView.value === 'channels') {
@@ -34,7 +32,6 @@ const toggleView = () => {  // HUGO CHANGE CES VALEURS, ELLES SONT PAS JUSTE POU
 
 function ClickJoin(event: any)
 {
-  // console.log("click" + event);
   hasPass.value = event.hasPass;
   channelId.value = event.id;
   showJoinChannel.value = !showJoinChannel.value;

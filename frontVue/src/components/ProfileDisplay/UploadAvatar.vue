@@ -3,9 +3,8 @@
 
 import { useUserStore } from '@/stores/user';
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
+
 const store = useUserStore();
 
 const file = ref(null);

@@ -4,7 +4,6 @@ import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 import ProfileCard from '@/components/ProfileDisplay/ProfileCard.vue';
 import GameHistory from '@/components/GameHistory/GameHistory.vue';
 import AchievementsList from '@/components/Achievements/AchievementsList.vue';
-import Friend from '../components/Socials/Friend.vue';
 import FriendWrapper from '@/components/ProfileDisplay/FriendWrapper.vue';
 import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios';

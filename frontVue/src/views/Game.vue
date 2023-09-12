@@ -5,7 +5,6 @@ import GlobalGameHistory from '@/components/Game/GlobalGameHistory.vue';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { socket } from '../socket';
 import { useUserStore } from '@/stores/user';
-import {useRoute, useRouter} from 'vue-router';
 import { GameType } from '@/types';
 import axios from 'axios';
 
@@ -13,7 +12,6 @@ const store = useUserStore();
 const displayGame = ref(false); //default value should be false
 const playGame = ref(GameType.PLAYER);
 let windowWidth = ref(window.innerWidth);
-let router = useRouter();
 
 let liveGames: any = Array(0);
 

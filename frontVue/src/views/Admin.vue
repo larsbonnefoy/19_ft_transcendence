@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import {ref} from 'vue'
 import axios, { AxiosError } from 'axios';
@@ -56,4 +56,4 @@ async function navigateToHome() {
     </div>
   </div>
   </div>
-</template>
+</template> -->

@@ -1,12 +1,10 @@
 <script setup lang="ts"> 
 import axios from 'axios'
-import {computed, ref} from 'vue'
-import {socket} from '../../socket';
+import { ref} from 'vue'
 import CustomDisplay from './CustomDisplay.vue';
 import { useUserStore } from '@/stores/user';
 import LiveGame from './LiveGame.vue'
 
-const store = useUserStore();
 
 const emit = defineEmits(['watchGame', 'playGame']);
 const dataLoaded = ref(false);

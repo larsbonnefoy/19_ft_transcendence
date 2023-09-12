@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from "axios"
 import {type ChatInfo, type Channel, type Messages} from '../types' 
-import StatusVue from '@/components/ProfileDisplay/Status.vue'
 
 
 export const useChannelStore = defineStore('channel', {

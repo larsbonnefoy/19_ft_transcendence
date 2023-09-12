@@ -5,7 +5,6 @@ import { type UserInfo } from '../../types';
 import axios, { type AxiosResponse } from 'axios';
 import UserButton from './UserButton.vue';
 
-const chat = useChatStore();
 const channelStore = useChannelStore();
 // Example list of users in the channel
 // const currentUsers = ref<UserInfo[]>([]);
@@ -129,23 +128,6 @@ const contextMenuVisible = ref(false);
 const contextMenuPosition = ref({ x: '0', y: '0' });
 const selectedUser = ref('');
 const selectedUserStatus = ref('');
-
-const showContextMenu = (event: any, user : string | undefined, status: string) => {
-  if (!user)
-    return;
-    contextMenuVisible.value = true;
-    // console.log(event.pageX)
-    // console.log(event.pageY)
-    // console.log(user);
-    contextMenuPosition.value = { x: `${(event.pageX/window.innerWidth) * 100}`, y: `${(event.pageY / window.innerHeight) * 100}` };
-    // console.log(contextMenuPosition.value.x, contextMenuPosition.value.y)
-    selectedUser.value = user;
-    selectedUserStatus.value = status;
-
-};
-
-
-
 
 
 // Close the context menu when clicked outside

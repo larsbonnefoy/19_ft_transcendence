@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {type LeaderBoardUserInfo} from '@/types'
 import {ref} from 'vue'
-import LeaderBoard from './LeaderBoard.vue';
 
 const props = defineProps<{
     index: number;

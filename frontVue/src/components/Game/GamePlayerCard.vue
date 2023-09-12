@@ -4,7 +4,6 @@ import { type UserInfo } from '@/types';
 import { useUserStore } from '@/stores/user';
 import type _default from 'pinia-plugin-persistedstate';
 import { ref } from 'vue';
-import AddPendingRemoveButton from '../ProfileDisplay/AddPendingRemoveButton.vue';
 
 const props = defineProps<{
     login42: string;
