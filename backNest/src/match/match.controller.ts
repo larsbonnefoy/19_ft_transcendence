@@ -155,8 +155,8 @@ export class MatchController {
     res.json(response);
   }
 
-  @Get('GamesArray')
-  async getGamesArray(@Res() res: Response) {
-	return res.json(games);
-  }
+  // @Get('GamesArray')
+  // async getGamesArray(@Res() res: Response) {
+	// return res.json(games);
+  // }
 }

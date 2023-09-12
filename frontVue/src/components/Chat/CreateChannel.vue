@@ -6,7 +6,6 @@ import { useChatStore } from '@/stores/chat';
 const chat = useChatStore();
 
 const messageType = ref('Direct Messages');
-const groupType = ref('public');
 const userInput = ref('');
 const addedUsers = ref(['']);
 const password = ref('');

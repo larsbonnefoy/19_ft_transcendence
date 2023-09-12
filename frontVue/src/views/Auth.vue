@@ -2,10 +2,7 @@
 import axios from "axios"
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
-import { useUserStore } from "@/stores/user";
-import { socket } from '../socket';
 
-const store = useUserStore();
 
 /* ON SETUP */
 const router = useRouter();

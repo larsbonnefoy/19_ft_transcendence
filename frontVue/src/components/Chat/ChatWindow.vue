@@ -2,14 +2,10 @@
 import {ref, onMounted, onUnmounted} from 'vue';
 import MessageBox from './MessageBox.vue';
 import axios from 'axios';
-import { useChatStore } from '@/stores/chat';
 import { useChannelStore } from '@/stores/chat';
 import { socket } from '@/socket';
-import ChannelList from './ChannelList.vue';
 import EditChannel from './EditChannel.vue';
-import { type UserInfo } from '@/types';
 
-const chat = useChatStore();
 const channel = useChannelStore();
 const showEditChannel = ref(false);
 const props = defineProps({
@@ -54,32 +50,10 @@ function getDmChatter()
 //        console.log("yo: " + ChannelButton.channel.test);
 const emit = defineEmits(["open-profile"]);
 
-// function getDmChatter()
-// {
-//       if(channel.getChatters)
-//       {
-//         console.log("getDm: " + channel.getChatters[0]?.login42 + " " + me + " "  +  channel.getOwner?.login42) 
-//       if (channel.getChatters[0]?.login42 === me)
-//           return channel.getOwner?.login42;
-//         return (channel.getChatters[0]?.login42)
-//       }
-// }
+
 
 const sendMessage = async () => {
-  // console.log(channel.getIsDm);
-  // if (channel.getIsDm && newMessage.value.trim())
-  // {
-  //   const chatter = getDmChatter();
-  //
-  //   console.log("Send Dm to :" + chatter)
-  //   // console.log(message)
-  // }
-  // if (newMessage.value.trim()) {
-    // messages?.push({ id: Date.now(), user: "You", content: newMessage.value, sender: true });
-    // nextTick(() => {
-      // autoScroll();
-    // });
-  // }
+
   if (newMessage.value && newMessage.value.trim().length !== 0)
   {
     const retval: boolean = await channel.addMessage(newMessage.value);

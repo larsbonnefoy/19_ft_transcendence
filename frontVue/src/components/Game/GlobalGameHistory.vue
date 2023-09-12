@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {toRef, ref, onMounted, reactive} from 'vue'
+import { ref, onMounted} from 'vue'
 import axios from 'axios';
 import GlobalGame from './GlobalGame.vue';
-import { compileString } from 'sass';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

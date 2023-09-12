@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import {toRef, ref, onMounted, reactive} from 'vue'
+import { ref, onMounted} from 'vue'
 import axios from 'axios';
 import Game from './Game.vue';
 import { GChart } from 'vue-google-charts';
-import { useUserStore } from '../../stores/user';
 import type { GoogleChartOptions } from 'vue-google-charts/dist/types';
 
 
@@ -11,7 +10,6 @@ const props = defineProps<{
     usernameProp : string
 }>()
 
-const store = useUserStore();
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const succesReqHistory = ref(false);

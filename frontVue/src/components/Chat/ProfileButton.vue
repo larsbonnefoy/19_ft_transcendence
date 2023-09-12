@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useUserStore } from '@/stores/user';
-import axios from 'axios';
-import { type UserInfo } from '@/types';
+
 
 const props = defineProps({
   username: String,

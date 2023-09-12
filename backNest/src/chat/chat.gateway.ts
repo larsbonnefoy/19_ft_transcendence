@@ -17,7 +17,7 @@ import { ChatService } from './chat.service';
 @WebSocketGateway(
   {
     cors: {
-      origin: [`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}`, `http://localhost:${process.env.VUE_PORT}`, `http://10.2.9.4:5173`],
+      origin: [`http://${process.env.LOCAL_IP}:${process.env.VUE_PORT}`, `http://localhost:${process.env.VUE_PORT}`],
       methods: ["GET", "POST"],
     //  allowedHeaders: ["Access-Control-Allow-Origin"],
      credentials: true

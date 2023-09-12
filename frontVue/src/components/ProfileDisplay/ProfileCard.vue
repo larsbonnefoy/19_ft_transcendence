@@ -11,7 +11,6 @@ import DisplayLogin from './DisplayLogin.vue';
 import ChangeUsername from './ChangeUsername.vue';
 import UploadAvatar from './UploadAvatar.vue'
 import Status from './Status.vue';
-import axios from 'axios';
 
 const props = defineProps<{
     user : UserInfo

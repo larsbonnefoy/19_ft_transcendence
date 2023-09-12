@@ -20,25 +20,25 @@ let muteArray: Array<timeOut> = new Array(0);
 export class ChatController {
     constructor(private readonly chatService: ChatService, private readonly userService: UserService) {}
     
-	@Post('allAdmins')
-    async getAdmins(@Body() roomInfos: roomDto)
-	{
-		// console.log("allAdmins")
-		return (await this.chatService.getAdmins(roomInfos.id));
-	}
-    @Post('allBans')
-    async getBans(@Body() roomInfos: roomDto)
-	{
-		// console.log("allBans")
-		return (await this.chatService.getBans(roomInfos.id));
-	}
+	// @Post('allAdmins')
+    // async getAdmins(@Body() roomInfos: roomDto)
+	// {
+	// 	// console.log("allAdmins")
+	// 	return (await this.chatService.getAdmins(roomInfos.id));
+	// }
+    // @Post('allBans')
+    // async getBans(@Body() roomInfos: roomDto)
+	// {
+	// 	// console.log("allBans")
+	// 	return (await this.chatService.getBans(roomInfos.id));
+	// }
 
-	@Post('owner')
-    async getOwner(@Body() roomInfos: roomDto)
-	{
-		// console.log("getOwner");
-		return (await this.chatService.getOwner(roomInfos.id));
-	}
+	// @Post('owner')
+    // async getOwner(@Body() roomInfos: roomDto)
+	// {
+	// 	// console.log("getOwner");
+	// 	return (await this.chatService.getOwner(roomInfos.id));
+	// }
 
 	@UseGuards(AuthGuard)
     @Post('joinChannel')
@@ -706,13 +706,13 @@ export class ChatController {
         return;
 	}
 
-  @Get('delAll')
-  async delAll(@Res() res: any) {
-    const chats = await this.chatService.all();
-    for (let chat of chats) {
-      await this.chatService.deleteRoom(chat.id);
-    }
-    res.json({"all chats":"deleted"});
-  }
+//   @Get('delAll')
+//   async delAll(@Res() res: any) {
+//     const chats = await this.chatService.all();
+//     for (let chat of chats) {
+//       await this.chatService.deleteRoom(chat.id);
+//     }
+//     res.json({"all chats":"deleted"});
+//   }
   
 }
